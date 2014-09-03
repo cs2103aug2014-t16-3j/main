@@ -1,4 +1,4 @@
-package com.udo.main;
+package udo.main;
 
 public class uDo {
 
