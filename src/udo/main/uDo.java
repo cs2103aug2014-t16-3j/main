@@ -1,7 +1,6 @@
 package udo.main;
 
 import udo.util.Command;
-import udo.util.NoFilenameException;
 import udo.util.OutputData;
 
 /**
@@ -36,7 +35,7 @@ public class uDo {
 		
 		manageArgs(args);
 		
-		engine.loadFile(filename);
+		engine.loadFile();
 		
 		runMainLoop();
 	}
