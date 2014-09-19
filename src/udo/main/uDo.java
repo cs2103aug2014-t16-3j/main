@@ -6,15 +6,43 @@ public class uDo {
 		uDo udo = new uDo();
 		udo.run(args);
 	}
+	
+	UserInterface ui;
+	Parser parser;
+	Engine engine;
+	
+	public uDo() {
+		ui = new UserInterface();
+		parser = new Parser();
+		engine = new Engine();
+	}
 
-	void run(String[] args) {
-		
-		String filename = getFilename(args);
-		engine.loadFile(filename);
-		
+	boolean run(String[] args) {
+		try {
+			
+			String filename = getFilename(args);
+			engine.loadFile(filename);
+			mainLoop();
+			
+		} catch (NoFilenameException e) {
+			ui.showNoFilename();
+		}
+	}
+	
+	String getFilename(String[] args) throws NoFilenameException {
+		if (args.length < 1) {
+			throw new NoFilenameException();
+		} else {
+			// the filename should be the first argument
+			String filename = args[0]; 
+			return filename;
+		}
+	}
+
+	private void mainLoop() {
 		while (isRunning) {
 			String inputString = ui.getInput();
-			String outputString = udo.parseAndExecute(input);
+			String outputString = parseAndExecute(input);
 			ui.show(outputString);
 		}
 	}
