@@ -1,5 +1,16 @@
 package udo.main;
 
+import udo.util.Command;
+import udo.util.NoFilenameException;
+
+/**
+ * This is the main class that will coordinate the other components.
+ * The user launches the program by typing "uDo <filename>"
+ * No, why should he care about the filename??
+ * He should just type "uDo" and launch it. 
+ * The backing file should be hidden.
+ *
+ */
 public class uDo {
 	
 	public static void main(String[] args) {
@@ -11,47 +22,40 @@ public class uDo {
 	Parser parser;
 	Engine engine;
 	
+	boolean isRunning;
+	
 	public uDo() {
 		ui = new UserInterface();
 		parser = new Parser();
 		engine = new Engine();
+		isRunning = true;
 	}
 
 	boolean run(String[] args) {
-		try {
-			
-			String filename = getFilename(args);
-			engine.loadFile(filename);
-			mainLoop();
-			
-		} catch (NoFilenameException e) {
-			ui.showNoFilename();
-		}
+		
+		manageArgs(args);
+		
+		engine.loadFile(filename);
+		
+		runMainLoop();
 	}
 	
-	String getFilename(String[] args) throws NoFilenameException {
-		if (args.length < 1) {
-			throw new NoFilenameException();
-		} else {
-			// the filename should be the first argument
-			String filename = args[0]; 
-			return filename;
-		}
+	boolean manageArgs(String[] args) {
+		// in case we decide to handle any arguments 
 	}
 
-	private void mainLoop() {
+	private void runMainLoop() {
 		while (isRunning) {
 			String inputString = ui.getInput();
-			String outputString = parseAndExecute(input);
-			ui.show(outputString);
+			OutputData outputData = parseAndExecute(inputString);
+			ui.show(outputData);
 		}
 	}
 	
-	String parseAndExecute(String input) {
-		Command cmd = parser.getCmd(input);
-		InputData inputData = parser.getData(cmd, input);
-		OutputData outputData = engine.execute(cmd, inputData);
-		String output = feedback.format(outputData);
+	OutputData parseAndExecute(String input) {
+		InputData inputData = parser.getInputData(input);
+		OutputData outputData = engine.execute(inputData);
+		return outputData;
 	}
 
 }
