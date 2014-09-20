@@ -8,7 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Timer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -20,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 public class UserInterface implements ActionListener {
 	
@@ -33,6 +33,9 @@ public class UserInterface implements ActionListener {
 	
 	private static final int HEIGHT = 400;
 	private static final int WIDTH = 400;
+	
+	private Timer t;
+	private int alpha;
 	
 	public UserInterface(){
 		
@@ -103,8 +106,11 @@ public class UserInterface implements ActionListener {
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
 	@Override
+	/**
+	 * actionPerformed when user press enter on textField.
+	 */
 	public void actionPerformed(ActionEvent arg0) {
 		
 		String text = textField.getText();
@@ -112,10 +118,11 @@ public class UserInterface implements ActionListener {
 		showPopup(text);
 	}
 	
-	/**
-	 * Show popup label as user feedback
-	 */
 	
+	/**
+	 * show popup as feedback to user.
+	 * @param text it is the text to be shown to user (from FeedBack class)
+	 */
 	public void showPopup(String text){
 
 		FontMetrics fm = popup.getFontMetrics(popup.getFont());
@@ -127,13 +134,24 @@ public class UserInterface implements ActionListener {
 		popup.setText(text);
 		popup.setHorizontalAlignment(SwingConstants.CENTER);
 		popup.setBounds(x, y, width, height);
-		popup.setVisible(true);
+		fadePopup();
 	}
 	
 	public void fadePopup(){
-		Timer t = new Timer();
-		
-		// fade in
+
+		t = new Timer(10, new ActionListener(){
+			boolean fadeIn = true;
+			@Override
+			public void actionPerformed(ActionEvent e){
+				popup.setForeground(new Color(255,255,255,alpha++));
+                popup.setBackground(new Color(255,255,255,alpha));
+                popup.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,alpha)));
+                if(alpha==255) t.stop();
+			}
+			
+		});
+		t.setInitialDelay(2000);
+		t.start();
 		
 	}
 	
