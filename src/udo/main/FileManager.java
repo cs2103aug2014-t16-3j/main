@@ -12,21 +12,21 @@ public class FileManager {
 	
 	public static final String FILENAME = "uDo_data.txt";
 	
-	BufferedReader reader;
-	String nextLine;
+	private BufferedReader mReader;
+	private String mNextLine;
 	
 	public FileManager() {
-		nextLine = null;
+		mNextLine = null;
 	}
 	
 	public boolean openFile() {
 		try {
-			reader = new BufferedReader(new FileReader(FILENAME));
-			nextLine = getNextLine();
+			mReader = new BufferedReader(new FileReader(FILENAME));
+			mNextLine = mReader.readLine();
 		} catch (FileNotFoundException e) {
 			// if there's no existing file, create the file.
 			// then try opening it again.
-			createNewFile();
+			createNewFile(FILENAME);
 			openFile();
 		} catch (IOException e) {
 			// for the nextline function
@@ -35,12 +35,18 @@ public class FileManager {
 		return true;
 	}
 
-	private void createNewFile() {
+	protected boolean createNewFile(String filename) {
 		try {
-			new FileWriter(FILENAME).close();
+			new FileWriter(filename).close();
 		} catch (IOException e) {
-			return;
+			return false;
 		}
+		return true;
+	}
+	
+	public boolean hasNext() {
+		boolean hasNext = (mNextLine != null);
+		return hasNext;
 	}
 
 	public ItemData getNextItem() throws IOException {
@@ -49,7 +55,9 @@ public class FileManager {
 	}
 	
 	public String getNextLine() throws IOException {
-		return reader.readLine();
+		String nextLine = mNextLine;
+		mNextLine = mReader.readLine();
+		return nextLine;
 	}
 
 	private ItemData getItemData(String line) {
