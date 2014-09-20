@@ -2,10 +2,13 @@ package udo.main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -15,6 +18,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 public class UserInterface implements ActionListener {
@@ -82,6 +86,7 @@ public class UserInterface implements ActionListener {
 		 * Sets up popup
 		 */
 		popup.setOpaque(true);
+		popup.setFont(new Font("Georgia", Font.PLAIN, 14));
         popup.setBackground(Color.black);
         popup.setForeground(Color.white);
         popup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -101,11 +106,35 @@ public class UserInterface implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		String text = textField.getText();
+		
+		showPopup(text);
+	}
+	
+	/**
+	 * Show popup label as user feedback
+	 */
+	
+	public void showPopup(String text){
+
+		FontMetrics fm = popup.getFontMetrics(popup.getFont());
+		int padding = 5;
+		int height = fm.getHeight() + padding;
+		int width = fm.stringWidth(text) + padding;
+		int x = WIDTH/2 - width/2;
+		int y = HEIGHT - textField.getHeight() - height - padding;
 		popup.setText(text);
-        popup.setBounds(0, 0, 100, 40);
+		popup.setHorizontalAlignment(SwingConstants.CENTER);
+		popup.setBounds(x, y, width, height);
 		popup.setVisible(true);
+	}
+	
+	public void fadePopup(){
+		Timer t = new Timer();
+		
+		// fade in
+		
 	}
 	
 	/**
