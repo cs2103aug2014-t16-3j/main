@@ -161,14 +161,14 @@ public class UserInterface implements ActionListener {
 	 * the uDo main method is run.
 	 */
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				UserInterface newUI = new UserInterface();
 			}
 		});
-	}
+	}*/
 
 	
 }
