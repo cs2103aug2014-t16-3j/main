@@ -4,11 +4,8 @@ import udo.util.Command;
 import udo.util.OutputData;
 
 /**
- * This is the main class that will coordinate the other components.
- * The user launches the program by typing "uDo <filename>"
- * No, why should he care about the filename??
- * He should just type "uDo" and launch it. 
- * The backing file should be hidden.
+ * This is the main class that the user will run.
+ * This class will also coordinate the other components.
  *
  */
 public class uDo {
