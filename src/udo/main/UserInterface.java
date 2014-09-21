@@ -21,6 +21,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import uiItems.FadeLabel;
+
 public class UserInterface implements ActionListener {
 	
 	private JFrame mFrame = new JFrame("uDo");
@@ -88,11 +90,7 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up popup
 		 */
-		mPopup.setOpaque(true);
-		mPopup.setFont(new Font("Georgia", Font.PLAIN, 14));
-        mPopup.setBackground(Color.black);
-        mPopup.setForeground(Color.white);
-        mPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		mPopup = new FadeLabel();
         
         mLayer.add(mPopup, new Integer(1));
 		
@@ -161,14 +159,14 @@ public class UserInterface implements ActionListener {
 	 * the uDo main method is run.
 	 */
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				UserInterface newUI = new UserInterface();
 			}
 		});
-	}
+	}*/
 
 	
 }
