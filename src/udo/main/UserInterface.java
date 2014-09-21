@@ -90,9 +90,9 @@ public class UserInterface implements ActionListener {
 		 */
 		mPopup.setOpaque(true);
 		mPopup.setFont(new Font("Georgia", Font.PLAIN, 14));
-        mPopup.setBackground(Color.black);
-        mPopup.setForeground(Color.white);
-        mPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+//        mPopup.setBackground(Color.black);
+//        mPopup.setForeground(Color.white);
+//        mPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         
         mLayer.add(mPopup, new Integer(1));
 		
@@ -138,19 +138,43 @@ public class UserInterface implements ActionListener {
 	}
 	
 	public void fadePopup(){
-
+		alpha = 0;
 		t = new Timer(10, new ActionListener(){
-			boolean fadeIn = true;
+			int fade = -1;
+			
 			@Override
 			public void actionPerformed(ActionEvent e){
-				mPopup.setForeground(new Color(255,255,255,alpha++));
-                mPopup.setBackground(new Color(255,255,255,alpha));
-                mPopup.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,alpha)));
-                if(alpha==255) t.stop();
+				if(fade<0){
+					if(alpha<255){
+						System.out.println("in " + alpha);
+						alpha += 5;
+						mPopup.setForeground(new Color(255,255,255,alpha));
+		                mPopup.setBackground(new Color(0,0,0,alpha));
+		                mPopup.setBorder(BorderFactory.createLineBorder(new Color(0,0,0,alpha)));
+					}else{
+						fade++;
+					}
+				}else if(fade == 0){
+					System.out.println("in fade == 0");
+					t.setDelay(2000);
+					fade++;
+					alpha = 0;
+				}else{
+					t.setDelay(10);
+					System.out.println("out " + alpha);
+					if(alpha<255){
+						alpha +=5;
+						mPopup.setForeground(new Color(255,255,255,alpha));
+		                mPopup.setBackground(new Color(255,255,255,alpha));
+		                mPopup.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,alpha)));
+					}else{
+	                	t.stop();
+	                }
+				}
 			}
 			
 		});
-		t.setInitialDelay(2000);
+		t.stop(); // to stop in-progress fading
 		t.start();
 		
 	}
