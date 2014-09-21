@@ -10,6 +10,19 @@ public class ItemData {
 		mData = new HashMap<String, Object>();
 	}
 	
+	@Override
+	public String toString() {
+		String info = "{%1$s | %2$s | %3$s | %4$s | %5$s | %6$s}";
+		String result = String.format(info, 
+				mData.get("type"),
+				mData.get("title"),
+				mData.get("date"),
+				mData.get("start time"),
+				mData.get("end time"),
+				mData.get("tags"));
+		return result;
+	}
+	
 	/**
 	 * Associates the specified item with the specified name
 	 * An existing item of the same name will be replaced. 
@@ -48,5 +61,36 @@ public class ItemData {
 	 */
 	public boolean contains(String name) {
 		return mData.containsKey(name);
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for (Object value : mData.values()) {
+			hash = hash | value.hashCode();
+		}
+		return hash;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		} else if (!other.getClass().equals(this.getClass())) {
+			return false;
+		} else {
+			boolean match = true;
+			for (String key : mData.keySet()) {
+				Object otherValue = ((ItemData) other).get(key);
+				Object thisValue = this.get(key);
+				if (otherValue != null && otherValue.equals(thisValue)) {
+					match = true;
+				} else {
+					match = false;
+					break;
+				}
+			}
+			return match;
+		}
 	}
 }

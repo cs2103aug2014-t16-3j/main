@@ -1,2 +1,2 @@
-event|||meeting|||23/01/14|||09.23am|||10.30pm
-event|||bowling|||24/01/14|||12.30pm|||3.45pm
+event|||meeting|||23/01/14|||09.23am|||10.30pm|||meeting, boss, work
+event|||bowling|||24/01/14|||12.30pm|||3.45pm|||play, fun, date

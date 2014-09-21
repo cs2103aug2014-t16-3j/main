@@ -8,9 +8,9 @@ import udo.util.ItemData;
 import udo.util.OutputData;
 
 public class Engine {
-	FileManager fileManager;
-	Cache cache;
-	RecycleBin recycleBin;
+	private FileManager fileManager;
+	private Cache cache;
+	private RecycleBin recycleBin;
 	
 	public Engine() {
 		fileManager = new FileManager();

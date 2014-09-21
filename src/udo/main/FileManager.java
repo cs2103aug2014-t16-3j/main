@@ -37,7 +37,7 @@ public class FileManager {
 		return true;
 	}
 
-	protected boolean createNewFile(String filename) {
+	private boolean createNewFile(String filename) {
 		try {
 			new FileWriter(filename).close();
 		} catch (IOException e) {
@@ -52,9 +52,13 @@ public class FileManager {
 	}
 
 	public ItemData getNextItem() throws IOException {
-		String line = getNextLine();
-		ItemData data = getItemData(line);
-		return data;
+		if (hasNext()) {
+			String line = getNextLine();
+			ItemData data = getItemData(line);
+			return data;
+		} else {
+			return null;
+		}
 	}
 	
 	public String getNextLine() throws IOException {
@@ -63,16 +67,40 @@ public class FileManager {
 		return nextLine;
 	}
 
-	private ItemData getItemData(String line) {
-		// need to parse the item data from the file.
-		if (line == null) {
-			return null;
-		}
+	public ItemData getItemData(String line) {
 		String[] lineArray = getStringArray(line);
-		System.out.println(Arrays.toString(lineArray));
+		//System.out.println(Arrays.toString(lineArray));
 		
+		ItemData item = new ItemData();
 		
-		return null;
+		// we assume every field is filled up, correctly.
+		for (int i = 0; i < lineArray.length; i++) {
+			switch (i) {
+				case 0 :
+					item.put("type", lineArray[i]);
+					break;
+				case 1 :
+					item.put("title", lineArray[i]);
+					break;
+				case 2 :
+					item.put("date", lineArray[i]);
+					break;
+				case 3 :
+					item.put("start time", lineArray[i]);
+					break;
+				case 4 :
+					item.put("end time", lineArray[i]);
+					break;
+				case 5 :
+					item.put("tags", lineArray[i]);
+					break;
+				default:
+					return null;
+					// but this shudnt happen
+			}
+		}
+		
+		return item;
 	}
 	
 	private String[] getStringArray(String str) {
