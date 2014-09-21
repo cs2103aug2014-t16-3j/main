@@ -21,7 +21,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import uiItems.FadeLabel;
+import udo.uiItems.FadeLabel;
 
 public class UserInterface implements ActionListener {
 	
@@ -31,13 +31,13 @@ public class UserInterface implements ActionListener {
 	private JTextArea mTextArea = new JTextArea(20,40);
 	private JScrollPane mScrollPane = new JScrollPane(mTextArea);
 	private JFormattedTextField mTextField = new JFormattedTextField();
-	private JLabel mPopup = new JLabel();
+	private FadeLabel mPopup = new FadeLabel();
 	
 	private static final int HEIGHT = 400;
 	private static final int WIDTH = 400;
 	
-	private Timer t;
-	private int alpha;
+	private Timer mTimer;
+	private float mDirection = -0.05f;
 	
 	public UserInterface(){
 		
@@ -90,7 +90,6 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up popup
 		 */
-		mPopup = new FadeLabel();
         
         mLayer.add(mPopup, new Integer(1));
 		
@@ -137,19 +136,25 @@ public class UserInterface implements ActionListener {
 	
 	public void fadePopup(){
 
-		t = new Timer(10, new ActionListener(){
+		mTimer = new Timer(100, new ActionListener(){
 			boolean fadeIn = true;
 			@Override
 			public void actionPerformed(ActionEvent e){
-				mPopup.setForeground(new Color(255,255,255,alpha++));
-                mPopup.setBackground(new Color(255,255,255,alpha));
-                mPopup.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,alpha)));
-                if(alpha==255) t.stop();
+				 float alpha = mPopup.getAlpha();
+                 alpha += mDirection;
+                 if (alpha < 0) {
+                     alpha = 0;
+                     mDirection = 0.05f;
+                 } else if (alpha > 1) {
+                     alpha = 1;
+                     mDirection = -0.05f;
+                 }
+                 mPopup.setAlpha(alpha);
 			}
 			
 		});
-		t.setInitialDelay(2000);
-		t.start();
+		mTimer.setInitialDelay(2000);
+		mTimer.start();
 		
 	}
 	
@@ -159,14 +164,14 @@ public class UserInterface implements ActionListener {
 	 * the uDo main method is run.
 	 */
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				UserInterface newUI = new UserInterface();
 			}
 		});
-	}*/
+	}
 
 	
 }
