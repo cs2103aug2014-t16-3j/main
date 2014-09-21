@@ -11,11 +11,11 @@ public class ItemData {
 	}
 	
 	/**
-	 * Associates the specified item with the specified name in the OutputData object.
+	 * Associates the specified item with the specified name
 	 * An existing item of the same name will be replaced. 
 	 * The item inserted cannot be {@code null}.
 	 * @param name The name of the item.
-	 * @param item The item to be put inside the OutputData object.
+	 * @param item The item to be put inside
 	 * @return {@code true} when the operation is successful, 
 	 * or {@code false} when the inserted item is null
 	 */
