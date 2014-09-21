@@ -23,13 +23,13 @@ import javax.swing.Timer;
 
 public class UserInterface implements ActionListener {
 	
-	private JFrame frame = new JFrame("uDo");
-	private JLayeredPane layer = new JLayeredPane();
-	private JPanel textPanel = new JPanel(new GridBagLayout());
-	private JTextArea textArea = new JTextArea(20,40);
-	private JScrollPane scrollPane = new JScrollPane(textArea);
-	private JFormattedTextField textField = new JFormattedTextField();
-	private JLabel popup = new JLabel();
+	private JFrame mFrame = new JFrame("uDo");
+	private JLayeredPane mLayer = new JLayeredPane();
+	private JPanel mTextPanel = new JPanel(new GridBagLayout());
+	private JTextArea mTextArea = new JTextArea(20,40);
+	private JScrollPane mScrollPane = new JScrollPane(mTextArea);
+	private JFormattedTextField mTextField = new JFormattedTextField();
+	private JLabel mPopup = new JLabel();
 	
 	private static final int HEIGHT = 400;
 	private static final int WIDTH = 400;
@@ -47,26 +47,26 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up layer
 		 */
-		layer.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		mLayer.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
 		/**
 		 * Sets up textArea
 		 */
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		textArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-		textArea.setEditable(false);
+		mTextArea.setLineWrap(true);
+		mTextArea.setWrapStyleWord(true);
+		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+		mTextArea.setEditable(false);
 		
 		/**
 		 * Sets up textField
 		 */
-		textField.setColumns(20);
-		textField.addActionListener(this);
+		mTextField.setColumns(20);
+		mTextField.addActionListener(this);
 		
 		/**
 		 * Sets up textPanel
 		 */
-		textPanel.setBounds(0, 0, WIDTH, HEIGHT);
+		mTextPanel.setBounds(0, 0, WIDTH, HEIGHT);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -75,36 +75,36 @@ public class UserInterface implements ActionListener {
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		
-		scrollPane.getViewport().add(textArea);
-		textPanel.add(scrollPane, c);
+		mScrollPane.getViewport().add(mTextArea);
+		mTextPanel.add(mScrollPane, c);
 		
 		c.gridy = 1;
 		c.weighty = 0;
 		
-		textPanel.add(textField, c);
+		mTextPanel.add(mTextField, c);
 		
-		layer.add(textPanel, new Integer(0));
+		mLayer.add(mTextPanel, new Integer(0));
 		
 		/**
 		 * Sets up popup
 		 */
-		popup.setOpaque(true);
-		popup.setFont(new Font("Georgia", Font.PLAIN, 14));
-        popup.setBackground(Color.black);
-        popup.setForeground(Color.white);
-        popup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+		mPopup.setOpaque(true);
+		mPopup.setFont(new Font("Georgia", Font.PLAIN, 14));
+        mPopup.setBackground(Color.black);
+        mPopup.setForeground(Color.white);
+        mPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         
-        layer.add(popup, new Integer(1));
+        mLayer.add(mPopup, new Integer(1));
 		
 		/**
 		 * Sets up the frame
 		 */
-		frame.setSize(new Dimension(WIDTH, HEIGHT));
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(layer);
-		frame.setLocationRelativeTo(null);
-		frame.pack();
-		frame.setVisible(true);
+		mFrame.setSize(new Dimension(WIDTH, HEIGHT));
+		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mFrame.add(mLayer);
+		mFrame.setLocationRelativeTo(null);
+		mFrame.pack();
+		mFrame.setVisible(true);
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class UserInterface implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		
-		String text = textField.getText();
+		String text = mTextField.getText();
 		
 		showPopup(text);
 	}
@@ -125,15 +125,15 @@ public class UserInterface implements ActionListener {
 	 */
 	public void showPopup(String text){
 
-		FontMetrics fm = popup.getFontMetrics(popup.getFont());
+		FontMetrics fm = mPopup.getFontMetrics(mPopup.getFont());
 		int padding = 5;
 		int height = fm.getHeight() + padding;
 		int width = fm.stringWidth(text) + padding;
 		int x = WIDTH/2 - width/2;
-		int y = HEIGHT - textField.getHeight() - height - padding;
-		popup.setText(text);
-		popup.setHorizontalAlignment(SwingConstants.CENTER);
-		popup.setBounds(x, y, width, height);
+		int y = HEIGHT - mTextField.getHeight() - height - padding;
+		mPopup.setText(text);
+		mPopup.setHorizontalAlignment(SwingConstants.CENTER);
+		mPopup.setBounds(x, y, width, height);
 		fadePopup();
 	}
 	
@@ -143,9 +143,9 @@ public class UserInterface implements ActionListener {
 			boolean fadeIn = true;
 			@Override
 			public void actionPerformed(ActionEvent e){
-				popup.setForeground(new Color(255,255,255,alpha++));
-                popup.setBackground(new Color(255,255,255,alpha));
-                popup.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,alpha)));
+				mPopup.setForeground(new Color(255,255,255,alpha++));
+                mPopup.setBackground(new Color(255,255,255,alpha));
+                mPopup.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,alpha)));
                 if(alpha==255) t.stop();
 			}
 			
@@ -161,14 +161,14 @@ public class UserInterface implements ActionListener {
 	 * the uDo main method is run.
 	 */
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				UserInterface newUI = new UserInterface();
 			}
 		});
-	}*/
+	}
 
 	
 }
