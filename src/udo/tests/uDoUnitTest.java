@@ -11,15 +11,15 @@ import udo.main.FileManager;
 import udo.util.Command;
 import udo.util.InputData;
 
-public class uDoTest {
+public class uDoUnitTest {
 
 	@Test
-	public void testEngineAddEventNotNull() {
+	public void testEngineLoadFileTrue() {
 		Engine e = new Engine();
 		InputData id = new InputData(Command.ADD_EVENT);
-		assertFalse("the adding of an item should give a non-null input data object"
+		assertTrue("the adding of an item should give a non-null input data object"
 				+ "when successful", 
-				e.execute(id) == null);
+				e.loadFile());
 	}
 	
 	@Test
@@ -35,7 +35,7 @@ public class uDoTest {
 			}
 		}
 		assertEquals("the fileoutput should look like that",
-				"testline 1testline 2",
+				"event|meeting|23/01/14|09.23am|10.30pmevent|bowling|24/01/14|12.30pm|3.45pm",
 				fileoutput);
 	}
 	

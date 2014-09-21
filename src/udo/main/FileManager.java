@@ -5,12 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 
 import udo.util.ItemData;
 
 public class FileManager {
 	
-	public static final String FILENAME = "uDo_data.txt";
+	private static final String FILENAME = "uDo_data.txt";
+	private static final String SEPARATOR_REGEX = "\\|\\|\\|";
 	
 	private BufferedReader mReader;
 	private String mNextLine;
@@ -29,7 +31,7 @@ public class FileManager {
 			createNewFile(FILENAME);
 			openFile();
 		} catch (IOException e) {
-			// for the nextline function
+			// if unable to read the nextline
 			return false;
 		}
 		return true;
@@ -51,7 +53,8 @@ public class FileManager {
 
 	public ItemData getNextItem() throws IOException {
 		String line = getNextLine();
-		return getItemData(line);
+		ItemData data = getItemData(line);
+		return data;
 	}
 	
 	public String getNextLine() throws IOException {
@@ -65,7 +68,14 @@ public class FileManager {
 		if (line == null) {
 			return null;
 		}
+		String[] lineArray = getStringArray(line);
+		System.out.println(Arrays.toString(lineArray));
+		
 		
 		return null;
+	}
+	
+	private String[] getStringArray(String str) {
+		return str.split(SEPARATOR_REGEX);
 	}
 }
