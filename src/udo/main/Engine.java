@@ -27,7 +27,7 @@ public class Engine {
 			case ADD_EVENT :
 				return addEvent(input);
 			case SAVE :
-				return 
+				return saveData();
 			default:
 				return null;
 		}
@@ -48,7 +48,7 @@ public class Engine {
 	}
 	
 	private OutputData saveData() {
-		
+		boolean writeOK = writeCache();
 		return null;
 	}
 	
