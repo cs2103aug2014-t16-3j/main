@@ -56,6 +56,7 @@ public class UserInterface implements ActionListener {
 		mTextArea.setWrapStyleWord(true);
 		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 		mTextArea.setEditable(false);
+		mTextArea.setOpaque(false);
 		
 		/**
 		 * Sets up textField
@@ -115,8 +116,10 @@ public class UserInterface implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		
 		String text = mTextField.getText();
-		
 		showPopup(text);
+		mTextArea.append(text + "\n");
+		mTextField.setText("");
+		
 	}
 	
 	
@@ -157,7 +160,7 @@ public class UserInterface implements ActionListener {
 					}
 				}else if(fade == 0){
 					System.out.println("in fade == 0");
-					t.setDelay(2000);
+					t.setDelay(1500);
 					fade++;
 					alpha = 0;
 				}else{
