@@ -1,6 +1,7 @@
 package udo.util;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class ItemData {
 	
@@ -61,6 +62,10 @@ public class ItemData {
 	 */
 	public boolean contains(String name) {
 		return mData.containsKey(name);
+	}
+	
+	public Set<String> getNames() {
+		return mData.keySet();
 	}
 	
 	@Override

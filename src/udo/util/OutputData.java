@@ -39,7 +39,7 @@ public class OutputData {
 	 * @return {@code true} when the operation is successful, 
 	 * or {@code false} when the inserted item is null
 	 */
-	public boolean putItem(String name, Object item) {
+	public boolean put(String name, Object item) {
 		if (item != null) {
 			mData.put(name, item);
 			return true;
@@ -53,7 +53,7 @@ public class OutputData {
 	 * @param name The name of the item to retrieve
 	 * @return The item, or {@code null} if the name is not mapped.
 	 */
-	public Object getItem(String name) {
+	public Object get(String name) {
 		if (mData.containsKey(name)) {
 			return mData.get(name);
 		} else {

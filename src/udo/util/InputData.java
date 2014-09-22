@@ -1,6 +1,7 @@
 package udo.util;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * This class carries information parsed from the input string.
@@ -27,5 +28,18 @@ public class InputData {
 	
 	public Command getCommand() {
 		return mCommand;
+	}
+	
+	public boolean put(String name, Object info) {
+		mInfo.put(name, info);
+		return true;
+	}
+	
+	public Object get(String name) {
+		return mInfo.get(name);
+	}
+	
+	public Set<String> getNames() {
+		return mInfo.keySet();
 	}
 }

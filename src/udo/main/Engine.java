@@ -1,11 +1,13 @@
 package udo.main;
 
 import java.io.IOException;
+import java.util.Set;
 
 import udo.util.Command;
 import udo.util.InputData;
 import udo.util.ItemData;
 import udo.util.OutputData;
+import udo.util.Status;
 
 public class Engine {
 	private FileManager fileManager;
@@ -18,6 +20,19 @@ public class Engine {
 		recycleBin = new RecycleBin();
 	}
 	
+	public OutputData execute(InputData input) {
+		Command cmd = input.getCommand();
+		// decide what function to run.
+		switch (cmd) {
+			case ADD_EVENT :
+				return addEvent(input);
+			case SAVE :
+				return 
+			default:
+				return null;
+		}
+	}
+
 	public boolean loadFile() {
 		fileManager.openFile();
 		try {
@@ -32,16 +47,43 @@ public class Engine {
 		return true;
 	}
 	
-	public boolean writeCache() {
+	private OutputData saveData() {
+		
+		return null;
+	}
+	
+	private boolean writeCache() {
 		
 		
 		return false;
 	}
 	
-	public OutputData execute(InputData id) {
-		Command cmd = id.getCommand();
-		// decide what function to run.
+	private OutputData addEvent(InputData input) {
+		Command cmd = input.getCommand();
 		
-		return null;
+		ItemData event = new ItemData();
+		
+		// extract data from inputdata to make an event
+		for (String name : input.getNames()) {
+			Object info = input.get(name);
+			event.put(name, info);
+		}
+		
+		OutputData output;
+		
+		boolean addOK = cache.addItem(event);
+		if (addOK) {
+			// if added item successfully
+			// make output object with the event data inside
+			output = new OutputData(cmd, Status.SUCCESS);
+			for (String name : event.getNames()) {
+				Object info = event.get(name);
+				output.put(name, info);
+			}
+		} else {
+			output = new OutputData(cmd, Status.FAIL);
+		}
+		
+		return output;
 	}
 }

@@ -26,9 +26,9 @@ public class uDoUnitTest {
 	}
 	
 	@Test
-	public void testEngineWriteCache() {
+	public void testEngineExecuteSave() {
 		Engine e = new Engine();
-		InputData in = new InputData(Command.ADD_EVENT);
+		InputData in = new InputData(Command.SAVE);
 		e.execute(in);
 		assertTrue("",
 				false);
