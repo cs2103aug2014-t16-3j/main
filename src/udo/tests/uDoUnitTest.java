@@ -1,6 +1,7 @@
 package udo.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -15,6 +16,23 @@ import udo.util.InputData;
 import udo.util.ItemData;
 
 public class uDoUnitTest {
+	
+	@Test
+	public void testEngineExecuteAddEventNotNull() {
+		Engine e = new Engine();
+		InputData in = new InputData(Command.ADD_EVENT);
+		assertFalse("",
+				null == e.execute(in));
+	}
+	
+	@Test
+	public void testEngineWriteCache() {
+		Engine e = new Engine();
+		InputData in = new InputData(Command.ADD_EVENT);
+		e.execute(in);
+		assertTrue("",
+				false);
+	}
 	
 	@Test
 	public void testEngineLoadFile() {

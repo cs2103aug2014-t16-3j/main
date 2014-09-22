@@ -27,9 +27,15 @@ public class Engine {
 				id = fileManager.getNextItem();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			return false;
 		}
 		return true;
+	}
+	
+	public boolean writeCache() {
+		
+		
+		return false;
 	}
 	
 	public OutputData execute(InputData id) {

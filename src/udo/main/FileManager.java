@@ -1,11 +1,11 @@
 package udo.main;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 
 import udo.util.ItemData;
 
@@ -16,6 +16,7 @@ public class FileManager {
 	
 	private BufferedReader mReader;
 	private String mNextLine;
+	private BufferedWriter mWriter;
 	
 	public FileManager() {
 		mNextLine = null;
@@ -46,6 +47,18 @@ public class FileManager {
 		return true;
 	}
 	
+	public boolean saveItem(ItemData item, boolean lastItem) {
+		try {
+			mWriter = new BufferedWriter(new FileWriter(FILENAME));
+			
+			
+		} catch (IOException e) {
+			return false;
+		}
+		
+		return false;
+	}
+	
 	public boolean hasNext() {
 		boolean hasNext = (mNextLine != null);
 		return hasNext;
@@ -69,10 +82,10 @@ public class FileManager {
 
 	public ItemData getItemData(String line) {
 		String[] lineArray = getStringArray(line);
-		//System.out.println(Arrays.toString(lineArray));
 		
 		ItemData item = new ItemData();
 		
+		// TODO error checking
 		// we assume every field is filled up, correctly.
 		for (int i = 0; i < lineArray.length; i++) {
 			switch (i) {
