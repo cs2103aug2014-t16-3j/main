@@ -62,6 +62,7 @@ public class UserInterface implements ActionListener {
 		 */
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
+		mTextField.setOpaque(false);
 		
 		/**
 		 * Sets up textPanel
