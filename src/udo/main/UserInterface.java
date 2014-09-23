@@ -21,6 +21,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import udo.ui.uDoPopup;
+
 public class UserInterface implements ActionListener {
 	
 	private JFrame mFrame = new JFrame("uDo");
@@ -29,13 +31,12 @@ public class UserInterface implements ActionListener {
 	private JTextArea mTextArea = new JTextArea(20,40);
 	private JScrollPane mScrollPane = new JScrollPane(mTextArea);
 	private JFormattedTextField mTextField = new JFormattedTextField();
-	private JLabel mPopup = new JLabel();
+	private uDoPopup mPopup = new uDoPopup();
 	
-	private static final int HEIGHT = 680;
+	private static final int HEIGHT = 600;
 	private static final int WIDTH = 400;
 	
 	private Timer t;
-	private int alpha;
 	
 	public UserInterface(){
 		
@@ -90,12 +91,7 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up popup
 		 */
-		mPopup.setOpaque(true);
-		mPopup.setFont(new Font("Georgia", Font.PLAIN, 14));
-//        mPopup.setBackground(Color.black);
-//        mPopup.setForeground(Color.white);
-//        mPopup.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-        
+		
         mLayer.add(mPopup, new Integer(1));
 		
 		/**
@@ -142,35 +138,31 @@ public class UserInterface implements ActionListener {
 	}
 	
 	public void fadePopup(){
-		alpha = 0;
+		
 		t = new Timer(10, new ActionListener(){
 			int fade = -1;
 			
 			@Override
 			public void actionPerformed(ActionEvent e){
+				float alpha = mPopup.getAlpha();
 				if(fade<0){
-					if(alpha<255){
+					alpha += 0.05f;
+					if(alpha < 1) {
 						System.out.println("in " + alpha);
-						alpha += 5;
-						mPopup.setForeground(new Color(255,255,255,alpha));
-		                mPopup.setBackground(new Color(0,0,0,alpha));
-		                mPopup.setBorder(BorderFactory.createLineBorder(new Color(0,0,0,alpha)));
+						mPopup.setAlpha(alpha);
 					}else{
 						fade++;
 					}
-				}else if(fade == 0){
+				}else if(fade == 0) {
 					System.out.println("in fade == 0");
 					t.setDelay(1500);
 					fade++;
-					alpha = 0;
 				}else{
 					t.setDelay(10);
 					System.out.println("out " + alpha);
-					if(alpha<255){
-						alpha +=5;
-						mPopup.setForeground(new Color(255,255,255,alpha));
-		                mPopup.setBackground(new Color(255,255,255,alpha));
-		                mPopup.setBorder(BorderFactory.createLineBorder(new Color(255,255,255,alpha)));
+					alpha -= 0.05f;
+					if(alpha > 0) {
+						mPopup.setAlpha(alpha);
 					}else{
 	                	t.stop();
 	                }
