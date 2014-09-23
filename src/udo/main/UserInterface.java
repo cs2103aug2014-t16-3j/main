@@ -29,8 +29,7 @@ public class UserInterface implements ActionListener {
 	private JFrame mFrame = new JFrame("uDo");
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
-	private JTextArea mTextArea = new JTextArea(20,40);
-	private JScrollPane mScrollPane = new JScrollPane(mTextArea);
+	private JPanel mTextArea = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
 	
@@ -55,11 +54,8 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up textArea
 		 */
-		mTextArea.setLineWrap(true);
-		mTextArea.setWrapStyleWord(true);
-		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-		mTextArea.setEditable(false);
-		mTextArea.setOpaque(false);
+		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));;
+		mTextArea.setBackground(UDO_BG);
 		
 		/**
 		 * Sets up textField
@@ -80,8 +76,7 @@ public class UserInterface implements ActionListener {
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		
-		mScrollPane.getViewport().add(mTextArea);
-		mTextPanel.add(mScrollPane, c);
+		mTextPanel.add(mTextArea, c);
 		
 		c.gridy = 1;
 		c.weighty = 0;
@@ -116,7 +111,7 @@ public class UserInterface implements ActionListener {
 		
 		String text = mTextField.getText();
 		Entry newEntry = new Entry("17 Sep 2014, 08oo - 09oo", "Eat a healthy breakfast made with love");
-		newEntry.setBounds(20, 100, 300, 50);
+		newEntry.setBounds(20, 150, 300, 50);
 		mLayer.add(newEntry, new Integer(1));
 		showPopup(text);
 		mTextField.setText("");
