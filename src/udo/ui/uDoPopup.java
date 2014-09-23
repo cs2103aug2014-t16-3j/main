@@ -19,8 +19,7 @@ public class uDoPopup extends JLabel {
 		setFont(new Font("Sans", Font.PLAIN, 14));
 		setBackground(Color.BLACK);
 	    setForeground(Color.WHITE);
-	    //setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-	    //setAlpha(0f);
+	    setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 	}
 	
 	 public void setAlpha(float value) {

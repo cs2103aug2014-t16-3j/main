@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import udo.ui.Entry;
 import udo.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
@@ -35,6 +36,7 @@ public class UserInterface implements ActionListener {
 	
 	private static final int HEIGHT = 600;
 	private static final int WIDTH = 400;
+	private static final Color UDO_BG = new Color(255,244,122);
 	
 	private Timer t;
 	
@@ -64,7 +66,7 @@ public class UserInterface implements ActionListener {
 		 */
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
-		mTextField.setOpaque(false);
+		mTextField.setBackground(UDO_BG);
 		
 		/**
 		 * Sets up textPanel
@@ -108,12 +110,15 @@ public class UserInterface implements ActionListener {
 	@Override
 	/**
 	 * actionPerformed when user press enter on textField.
+	 * Instead of the following, it should return input to main.java
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		
 		String text = mTextField.getText();
+		Entry newEntry = new Entry("17 Sep 2014, 08oo - 09oo", "Eat a healthy breakfast made with love");
+		newEntry.setBounds(20, 100, 300, 50);
+		mLayer.add(newEntry, new Integer(1));
 		showPopup(text);
-		mTextArea.append(text + "\n");
 		mTextField.setText("");
 		
 	}
@@ -148,18 +153,15 @@ public class UserInterface implements ActionListener {
 				if(fade<0){
 					alpha += 0.05f;
 					if(alpha < 1) {
-						System.out.println("in " + alpha);
 						mPopup.setAlpha(alpha);
 					}else{
 						fade++;
 					}
 				}else if(fade == 0) {
-					System.out.println("in fade == 0");
 					t.setDelay(1500);
 					fade++;
 				}else{
 					t.setDelay(10);
-					System.out.println("out " + alpha);
 					alpha -= 0.05f;
 					if(alpha > 0) {
 						mPopup.setAlpha(alpha);
