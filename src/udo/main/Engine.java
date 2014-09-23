@@ -34,12 +34,15 @@ public class Engine {
 	}
 
 	public boolean loadFile() {
-		mFileManager.openFile();
+		boolean readOK = mFileManager.startReadMode();
+		if (!readOK) {
+			return false;
+		}
 		try {
-			ItemData id = mFileManager.getNextItem();
-			while (id != null) {
-				mCache.addItem(id);
-				id = mFileManager.getNextItem();
+			
+			while (mFileManager.hasNextItem()) {
+				ItemData item = mFileManager.getNextItem();
+				mCache.addItem(item);
 			}
 		} catch (IOException e) {
 			return false;
@@ -49,28 +52,33 @@ public class Engine {
 	
 	private OutputData runSave() {
 		boolean writeOK = writeCacheToFile();
-		if (writeOK) {
+		if (!writeOK) {
 			return null;
 		}
-		return null;
+		OutputData output = new OutputData(Command.SAVE, Status.SUCCESS);
+		return output;
 	}
 	
 	private boolean writeCacheToFile() {
 		boolean filePrepared = mFileManager.startWriteMode();
-		if (filePrepared) {
-			mCache.lock();
-			
-			
-			mFileManager.closeWriteMode();
+		boolean cacheLocked = mCache.lock();
+		if (!filePrepared || !cacheLocked) {
+			return false;
 		}
-		return false;
+		
+		while (mCache.hasNextItem()) {
+			ItemData item = mCache.getNextItem();
+			mFileManager.write(item);
+		}
+		
+		mFileManager.closeWriteMode();
+		return true;
 	}
 	
 	private OutputData runAddEvent(InputData input) {
 		Command cmd = input.getCommand();
 		
 		ItemData event = new ItemData();
-		
 		// extract data from inputdata to make an event
 		for (String name : input.getNames()) {
 			Object info = input.get(name);

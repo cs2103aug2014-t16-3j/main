@@ -13,7 +13,7 @@ public class ItemData {
 	
 	@Override
 	public String toString() {
-		String info = "{%1$s | %2$s | %3$s | %4$s | %5$s | %6$s}";
+		String info = "%1$s|||%2$s|||%3$s|||%4$s|||%5$s|||%6$s";
 		String result = String.format(info, 
 				mData.get("type"),
 				mData.get("title"),

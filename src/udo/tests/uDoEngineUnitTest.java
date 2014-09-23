@@ -3,6 +3,7 @@ package udo.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -30,8 +31,12 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineExecuteSave() {
 		Engine e = new Engine();
+		boolean loadOK = e.loadFile();
+		if (!loadOK) fail();
 		InputData in = new InputData(Command.SAVE);
 		OutputData out = e.execute(in);
+		assertFalse("out should not be null",
+				null == out);
 		assertEquals("",
 				Status.SUCCESS,
 				out.getStatus());
@@ -89,8 +94,7 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineLoadFileTrue() {
 		Engine e = new Engine();
-		InputData id = new InputData(Command.ADD_EVENT);
-		assertTrue("the adding of an item should give a non-null input data object"
+		assertTrue("the loading of the file should return true"
 				+ "when successful", 
 				e.loadFile());
 	}
@@ -98,19 +102,20 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testFileManagerReadFileOutput() {
 		FileManager fm = new FileManager();
-		fm.openFile();
-		String fileoutput = new String();
-		while (fm.hasNext()) {
+		fm.startReadMode();
+		String items = new String();
+		while (fm.hasNextItem()) {
 			try {
-				fileoutput = fileoutput.concat(fm.getNextLine());
+				items = items.concat(fm.getNextItem().toString());
 			} catch (IOException e) {
-				break;
+				items = "failed";
 			}
 		}
+		fm.closeReadMode();
 		assertEquals("the fileoutput should look like that",
 				"event|||meeting|||23/01/14|||09.23am|||10.30pm|||meeting, boss, work"
 				+ "event|||bowling|||24/01/14|||12.30pm|||3.45pm|||play, fun, date",
-				fileoutput);
+				items);
 	}
 	
 	@Test
@@ -118,7 +123,7 @@ public class uDoEngineUnitTest {
 		FileManager fm = new FileManager();
 		assertTrue("should be true if the file can be opened, "
 				+ "or created first and then opened",
-				fm.openFile());
+				fm.startReadMode());
 	}
 
 }

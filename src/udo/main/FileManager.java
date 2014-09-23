@@ -16,26 +16,45 @@ public class FileManager {
 	
 	private BufferedReader mReader;
 	private String mNextLine;
+	private ItemData mNextItem;
+	private boolean mIsReading;
 	private BufferedWriter mWriter;
 	private boolean mIsWriting;
 	
 	public FileManager() {
 		mNextLine = null;
+		mIsReading = false;
+		mIsWriting = false;
 	}
 	
-	public boolean openFile() {
+	public boolean startReadMode() {
+		if (isWriting()) {
+			return false;
+		}
 		try {
 			mReader = new BufferedReader(new FileReader(FILENAME));
-			mNextLine = mReader.readLine();
+			String nextLine = mReader.readLine();
+			mNextItem = getItemData(nextLine);
 		} catch (FileNotFoundException e) {
 			// if there's no existing file, create the file.
 			// then try opening it again.
 			createNewFile(FILENAME);
-			openFile();
+			startReadMode();
 		} catch (IOException e) {
 			// if unable to read the nextline
 			return false;
 		}
+		setReading(true);
+		return true;
+	}
+	
+	public boolean closeReadMode() {
+		try {
+			mReader.close();
+		} catch (IOException e) {
+			return false;
+		}
+		setReading(false);
 		return true;
 	}
 
@@ -48,28 +67,33 @@ public class FileManager {
 		return true;
 	}
 	
-	public boolean hasNext() {
-		boolean hasNext = (mNextLine != null);
+	public boolean hasNextItem() {
+		boolean hasNext = (mNextItem != null);
 		return hasNext;
 	}
 
 	public ItemData getNextItem() throws IOException {
-		if (hasNext()) {
-			String line = getNextLine();
-			ItemData data = getItemData(line);
-			return data;
+		if (hasNextItem()) {
+			ItemData result = mNextItem;
+			String nextLine = getNextLine();
+			mNextItem = getItemData(nextLine);
+			return result;
 		} else {
 			return null;
 		}
 	}
 	
-	public String getNextLine() throws IOException {
-		String nextLine = mNextLine;
-		mNextLine = mReader.readLine();
-		return nextLine;
+	private String getNextLine() throws IOException {
+		return mReader.readLine();
 	}
 
 	public ItemData getItemData(String line) {
+		if (line == null) {
+			return null;
+		}
+		if (line.equals("")) {
+			return null;
+		}
 		String[] lineArray = getStringArray(line);
 		
 		ItemData item = new ItemData();
@@ -111,24 +135,50 @@ public class FileManager {
 
 	public boolean startWriteMode() {
 		try {
+			// will overwrite the current file with the new data.
 			mWriter = new BufferedWriter(new FileWriter(FILENAME));
-			mIsWriting = true;
-			
 		} catch (IOException e) {
 			return false;
 		}
-		
+		setWriting(true);
 		return true;
 	}
 	
 	public boolean closeWriteMode() {
 		try {
 			mWriter.close();
+			mWriter = null;
 		} catch (IOException e) {
 			return false;
 		}
-		
-		
+		setWriting(true);
 		return true;
+	}
+
+	public boolean write(ItemData item) {
+		String itemString = item.toString();
+		try {
+			mWriter.append(itemString);
+			mWriter.newLine();
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean isWriting() {
+		return mIsWriting;
+	}
+
+	public void setWriting(boolean writing) {
+		mIsWriting = writing;
+	}
+
+	public boolean isReading() {
+		return mIsReading;
+	}
+
+	public void setReading(boolean reading) {
+		mIsReading = reading;
 	}
 }
