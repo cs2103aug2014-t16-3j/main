@@ -17,6 +17,7 @@ public class FileManager {
 	private BufferedReader mReader;
 	private String mNextLine;
 	private BufferedWriter mWriter;
+	private boolean mIsWriting;
 	
 	public FileManager() {
 		mNextLine = null;
@@ -45,18 +46,6 @@ public class FileManager {
 			return false;
 		}
 		return true;
-	}
-	
-	public boolean saveItem(ItemData item, boolean lastItem) {
-		try {
-			mWriter = new BufferedWriter(new FileWriter(FILENAME));
-			
-			
-		} catch (IOException e) {
-			return false;
-		}
-		
-		return false;
 	}
 	
 	public boolean hasNext() {
@@ -118,5 +107,28 @@ public class FileManager {
 	
 	private String[] getStringArray(String str) {
 		return str.split(SEPARATOR_REGEX);
+	}
+
+	public boolean startWriteMode() {
+		try {
+			mWriter = new BufferedWriter(new FileWriter(FILENAME));
+			mIsWriting = true;
+			
+		} catch (IOException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean closeWriteMode() {
+		try {
+			mWriter.close();
+		} catch (IOException e) {
+			return false;
+		}
+		
+		
+		return true;
 	}
 }

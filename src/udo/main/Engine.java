@@ -10,14 +10,14 @@ import udo.util.OutputData;
 import udo.util.Status;
 
 public class Engine {
-	private FileManager fileManager;
-	private Cache cache;
-	private RecycleBin recycleBin;
+	private FileManager mFileManager;
+	private Cache mCache;
+	private RecycleBin mRecycleBin;
 	
 	public Engine() {
-		fileManager = new FileManager();
-		cache = new Cache();
-		recycleBin = new RecycleBin();
+		mFileManager = new FileManager();
+		mCache = new Cache();
+		mRecycleBin = new RecycleBin();
 	}
 	
 	public OutputData execute(InputData input) {
@@ -25,21 +25,21 @@ public class Engine {
 		// decide what function to run.
 		switch (cmd) {
 			case ADD_EVENT :
-				return addEvent(input);
+				return runAddEvent(input);
 			case SAVE :
-				return saveData();
+				return runSave();
 			default:
 				return null;
 		}
 	}
 
 	public boolean loadFile() {
-		fileManager.openFile();
+		mFileManager.openFile();
 		try {
-			ItemData id = fileManager.getNextItem();
+			ItemData id = mFileManager.getNextItem();
 			while (id != null) {
-				cache.addItem(id);
-				id = fileManager.getNextItem();
+				mCache.addItem(id);
+				id = mFileManager.getNextItem();
 			}
 		} catch (IOException e) {
 			return false;
@@ -47,18 +47,26 @@ public class Engine {
 		return true;
 	}
 	
-	private OutputData saveData() {
-		boolean writeOK = writeCache();
+	private OutputData runSave() {
+		boolean writeOK = writeCacheToFile();
+		if (writeOK) {
+			return null;
+		}
 		return null;
 	}
 	
-	private boolean writeCache() {
-		
-		
+	private boolean writeCacheToFile() {
+		boolean filePrepared = mFileManager.startWriteMode();
+		if (filePrepared) {
+			mCache.lock();
+			
+			
+			mFileManager.closeWriteMode();
+		}
 		return false;
 	}
 	
-	private OutputData addEvent(InputData input) {
+	private OutputData runAddEvent(InputData input) {
 		Command cmd = input.getCommand();
 		
 		ItemData event = new ItemData();
@@ -71,7 +79,7 @@ public class Engine {
 		
 		OutputData output;
 		
-		boolean addOK = cache.addItem(event);
+		boolean addOK = mCache.addItem(event);
 		if (addOK) {
 			// if added item successfully
 			// make output object with the event data inside

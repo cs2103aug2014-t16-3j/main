@@ -14,6 +14,8 @@ import udo.main.FileManager;
 import udo.util.Command;
 import udo.util.InputData;
 import udo.util.ItemData;
+import udo.util.OutputData;
+import udo.util.Status;
 
 public class uDoUnitTest {
 	
@@ -29,9 +31,10 @@ public class uDoUnitTest {
 	public void testEngineExecuteSave() {
 		Engine e = new Engine();
 		InputData in = new InputData(Command.SAVE);
-		e.execute(in);
-		assertTrue("",
-				false);
+		OutputData out = e.execute(in);
+		assertEquals("",
+				Status.SUCCESS,
+				out.getStatus());
 	}
 	
 	@Test
