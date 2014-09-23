@@ -31,7 +31,7 @@ public class UserInterface implements ActionListener {
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private JLabel mPopup = new JLabel();
 	
-	private static final int HEIGHT = 400;
+	private static final int HEIGHT = 680;
 	private static final int WIDTH = 400;
 	
 	private Timer t;
