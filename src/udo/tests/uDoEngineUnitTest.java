@@ -17,7 +17,7 @@ import udo.util.ItemData;
 import udo.util.OutputData;
 import udo.util.Status;
 
-public class uDoUnitTest {
+public class uDoEngineUnitTest {
 	
 	@Test
 	public void testEngineExecuteAddEventNotNull() {
