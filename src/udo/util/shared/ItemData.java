@@ -18,14 +18,13 @@ public class ItemData {
 	
 	@Override
 	public String toString() {
-		//TODO needs to revise
-		String info = "%1$s|||%2$s|||%3$s|||%4$s|||%5$s|||%6$s";
-		String result = String.format(info, 
+		//TODO need to revise
+		String eventInfo = "%1$s|||%2$s|||%3$s|||%4$s|||%5$s";
+		String result = String.format(eventInfo, 
 				mData.get("type"),
 				mData.get("title"),
-				mData.get("date"),
-				mData.get("start time"),
-				mData.get("end time"),
+				mData.get("start"),
+				mData.get("end"),
 				mData.get("tags"));
 		return result;
 	}
