@@ -1,33 +1,36 @@
 package udo.util.engine;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import udo.util.shared.ItemData;
 
 public class Cache {
 	
-	private HashMap<String, ItemData> mEvents;
-	private HashMap<String, ItemData> mTasks;
-	private HashMap<String, ItemData> mPlans;
+	private HashSet<ItemData> mEvents;
+	private HashSet<ItemData> mTasks;
+	private HashSet<ItemData> mPlans;
 	private boolean mIsLocked;
 	private Iterator<ItemData> mEventsIterator;
 	private Iterator<ItemData> mTasksIterator;
 	private Iterator<ItemData> mPlansIterator;
 	
 	public Cache() {
-		mEvents = new HashMap<String, ItemData>();
-		mTasks = new HashMap<String, ItemData>();
-		mPlans = new HashMap<String, ItemData>();
+		mEvents = new HashSet<ItemData>();
+		mTasks = new HashSet<ItemData>();
+		mPlans = new HashSet<ItemData>();
 		mIsLocked = false;
 	}
 
 	public boolean addItem(ItemData item) {
+		if (isLocked()) {
+			return false;
+		}
+		
 		String type = (String) item.get("type");
 		
 		if (type != null && type.toLowerCase().equals("event")) {
-			String name = (String) item.get("title");
-			mEvents.put(name, item);
+			mEvents.add(item);
 		} else {
 			return false;
 		}
@@ -49,9 +52,9 @@ public class Cache {
 	
 	public boolean lock() {
 		mIsLocked = true;
-		mEventsIterator = mEvents.values().iterator();
-		mTasksIterator = mTasks.values().iterator();
-		mPlansIterator = mPlans.values().iterator();
+		mEventsIterator = mEvents.iterator();
+		mTasksIterator = mTasks.iterator();
+		mPlansIterator = mPlans.iterator();
 		return true;
 	}
 	
@@ -89,6 +92,9 @@ public class Cache {
 	}
 	
 	public void clear() {
+		if (isLocked()) {
+			return;
+		}
 		mEvents.clear();
 		mTasks.clear();
 		mPlans.clear();

@@ -80,7 +80,7 @@ public class Engine {
 			// if added item successfully
 			// make output object with the event data inside
 			output = new OutputData(cmd, ExecutionStatus.SUCCESS);
-			for (String name : event.getNames()) {
+			for (String name : event.getKeys()) {
 				Object info = event.get(name);
 				output.put(name, info);
 			}

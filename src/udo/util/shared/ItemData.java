@@ -18,6 +18,7 @@ public class ItemData {
 	
 	@Override
 	public String toString() {
+		//TODO needs to revise
 		String info = "%1$s|||%2$s|||%3$s|||%4$s|||%5$s|||%6$s";
 		String result = String.format(info, 
 				mData.get("type"),
@@ -30,17 +31,17 @@ public class ItemData {
 	}
 	
 	/**
-	 * Associates the specified item with the specified name
-	 * An existing item of the same name will be replaced. 
+	 * Associates the specified item with the specified key
+	 * An existing item of the same key will be replaced. 
 	 * The item inserted cannot be {@code null}.
-	 * @param name The name of the item.
+	 * @param key The key of the item.
 	 * @param item The item to be put inside
 	 * @return {@code true} when the operation is successful, 
 	 * or {@code false} when the inserted item is null
 	 */
-	public boolean put(String name, Object item) {
+	public boolean put(String key, Object item) {
 		if (item != null) {
-			mData.put(name, item);
+			mData.put(key, item);
 			return true;
 		} else {
 			return false;
@@ -48,13 +49,13 @@ public class ItemData {
 	}
 	
 	/**
-	 * Retrieves the item that is associated with the name.
-	 * @param name The name of the item to retrieve
-	 * @return The item, or {@code null} if the name is not mapped.
+	 * Retrieves the item that is associated with the key.
+	 * @param key The key of the item to retrieve
+	 * @return The item, or {@code null} if the key is not mapped.
 	 */
-	public Object get(String name) {
-		if (mData.containsKey(name)) {
-			return mData.get(name);
+	public Object get(String key) {
+		if (mData.containsKey(key)) {
+			return mData.get(key);
 		} else {
 			return null;
 		}
@@ -62,14 +63,17 @@ public class ItemData {
 	
 	/**
 	 * Returns a boolean value describing if the named item exists inside.
-	 * @param name The name of the item to check.
+	 * @param key The key of the item to check.
 	 * @return {@code true} if the item exists, or {@code false} otherwise.
 	 */
-	public boolean contains(String name) {
-		return mData.containsKey(name);
+	public boolean contains(String key) {
+		return mData.containsKey(key);
 	}
 	
-	public Set<String> getNames() {
+	/**
+     * Returns a {@link Set} view of the keys contained in this object.
+     */
+	public Set<String> getKeys() {
 		return mData.keySet();
 	}
 	
