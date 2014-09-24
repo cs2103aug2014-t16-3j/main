@@ -7,10 +7,11 @@ import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
 import udo.util.engine.RecycleBin;
 import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
-import udo.util.shared.ExecutionStatus;
 
 public class Engine {
 	
@@ -68,10 +69,12 @@ public class Engine {
 		
 		ItemData event = new ItemData();
 		// extract data from inputdata to make an event
-		for (String name : inputData.getNames()) {
-			Object info = inputData.get(name);
-			event.put(name, info);
-		}
+		// assume all data fields are present
+		event.put(Keys.UID, mCache.generateUID());
+		event.put(Keys.TITLE, inputData.get(Keys.TITLE));
+		event.put(Keys.START, inputData.get(Keys.START));
+		event.put(Keys.END, inputData.get(Keys.END));
+		event.put(Keys.HASHTAGS, inputData.get(Keys.HASHTAGS));
 		
 		OutputData output;
 		
@@ -80,10 +83,7 @@ public class Engine {
 			// if added item successfully
 			// make output object with the event data inside
 			output = new OutputData(cmd, ExecutionStatus.SUCCESS);
-			for (String name : event.getKeys()) {
-				Object info = event.get(name);
-				output.put(name, info);
-			}
+			output.put(Keys.ITEM, event);
 		} else {
 			output = new OutputData(cmd, ExecutionStatus.FAIL);
 		}

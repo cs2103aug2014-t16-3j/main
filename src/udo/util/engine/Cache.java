@@ -99,5 +99,10 @@ public class Cache {
 		mTasks.clear();
 		mPlans.clear();
 	}
+
+	public int generateUID() {
+		// TODO 
+		return 0;
+	}
 	
 }
