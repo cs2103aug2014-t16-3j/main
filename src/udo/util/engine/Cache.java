@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
 
 public class Cache {
 	
@@ -27,15 +28,14 @@ public class Cache {
 			return false;
 		}
 		
-		String type = (String) item.get("type");
-		
-		if (type != null && type.toLowerCase().equals("event")) {
-			mEvents.add(item);
-		} else {
-			return false;
+		ItemType type = item.getItemType();
+		switch (type) {
+			case EVENT :
+				mEvents.add(item);
+				return true;
+			default :
+				return false;
 		}
-		
-		return true;
 	}
 	
 	public int size() {

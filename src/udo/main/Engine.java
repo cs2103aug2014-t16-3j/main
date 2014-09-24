@@ -11,6 +11,7 @@ import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
 import udo.util.shared.OutputData;
 
 public class Engine {
@@ -65,20 +66,28 @@ public class Engine {
 	// ********* methods that execute the commands ******* //
 	
 	private OutputData runAddEvent(InputData inputData) {
-		Command cmd = inputData.getCommand();
-		
-		ItemData event = new ItemData();
+		ItemData event = new ItemData(ItemType.EVENT);
 		// extract data from inputdata to make an event
 		// assume all data fields are present
-		event.put(Keys.UID, mCache.generateUID());
-		event.put(Keys.TITLE, inputData.get(Keys.TITLE));
-		event.put(Keys.START, inputData.get(Keys.START));
-		event.put(Keys.END, inputData.get(Keys.END));
-		event.put(Keys.HASHTAGS, inputData.get(Keys.HASHTAGS));
+		event.put(Keys.UID,
+				mCache.generateUID());
+		
+		event.put(Keys.TITLE,
+				inputData.get(Keys.TITLE));
+		
+		event.put(Keys.START,
+				inputData.get(Keys.START));
+		
+		event.put(Keys.END,
+				inputData.get(Keys.END));
+		
+		event.put(Keys.HASHTAGS,
+				inputData.get(Keys.HASHTAGS));
 		
 		OutputData output;
 		
 		boolean addOK = mCache.addItem(event);
+		Command cmd = inputData.getCommand();
 		if (addOK) {
 			// if added item successfully
 			// make output object with the event data inside

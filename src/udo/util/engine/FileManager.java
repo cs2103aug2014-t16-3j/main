@@ -6,13 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 
+import udo.util.shared.Constants.Indices;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.StorageStrings;
 import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
 
 public class FileManager {
-	
-	private static final String FILENAME = "uDo_data.txt";
-	private static final String SEPARATOR_REGEX = "\\|\\|\\|";
 	
 	private BufferedReader mReader;
 	private String mNextLine;
@@ -32,13 +35,13 @@ public class FileManager {
 			return false;
 		}
 		try {
-			mReader = new BufferedReader(new FileReader(FILENAME));
+			mReader = new BufferedReader(new FileReader(StorageStrings.FILENAME));
 			String nextLine = mReader.readLine();
 			mNextItem = getItemData(nextLine);
 		} catch (FileNotFoundException e) {
 			// if there's no existing file, create the file.
 			// then try opening it again.
-			createNewFile(FILENAME);
+			createNewFile(StorageStrings.FILENAME);
 			startReadMode();
 		} catch (IOException e) {
 			// if unable to read the nextline
@@ -87,7 +90,7 @@ public class FileManager {
 		return mReader.readLine();
 	}
 
-	public ItemData getItemData(String line) {
+	private ItemData getItemData(String line) {
 		if (line == null) {
 			return null;
 		}
@@ -95,48 +98,93 @@ public class FileManager {
 			return null;
 		}
 		String[] lineArray = getStringArray(line);
+		/*
+		 * event
+		 * [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime, 7<tags>]
+		 */
 		
-		ItemData item = new ItemData();
+		ItemType type = getItemType(lineArray[Indices.TYPE]);
 		
-		// TODO error checking
-		// we assume every field is filled up, correctly.
-		for (int i = 0; i < lineArray.length; i++) {
-			switch (i) {
-				case 0 :
-					item.put("type", lineArray[i]);
-					break;
-				case 1 :
-					item.put("title", lineArray[i]);
-					break;
-				case 2 :
-					item.put("date", lineArray[i]);
-					break;
-				case 3 :
-					item.put("start time", lineArray[i]);
-					break;
-				case 4 :
-					item.put("end time", lineArray[i]);
-					break;
-				case 5 :
-					item.put("tags", lineArray[i]);
-					break;
-				default:
-					return null;
-					// but this shudnt happen
-			}
+		ItemData item = new ItemData(type);
+
+		int uid = Integer.parseInt(lineArray[Indices.UID]);
+		item.put(Keys.UID,
+				uid);
+		
+		item.put(Keys.TITLE,
+				lineArray[Indices.TITLE]);
+		
+		if (type.equals(ItemType.EVENT)) {
+			
+			String startDate = lineArray[Indices.START_DATE];
+			String startTime = lineArray[Indices.START_TIME];
+			Calendar startCal = getCalendar(startDate, startTime);
+			item.put(Keys.START,
+					startCal);
+			
+			String endDate = lineArray[Indices.END_DATE];
+			String endTime = lineArray[Indices.END_TIME];
+			Calendar endCal = getCalendar(endDate, endTime);
+			item.put(Keys.END,
+					endCal);
+			
+			String tagsString = lineArray[Indices.HASHTAGS];
+			ArrayList<String> tagsList = getList(tagsString);
+			item.put(Keys.HASHTAGS,
+					tagsList);
+			
+		} else if (type.equals(ItemType.TASK)) {
+			
+		} else if (type.equals(ItemType.PLAN)) {
+			
+		} else {
+			
 		}
 		
 		return item;
 	}
 	
 	private String[] getStringArray(String str) {
-		return str.split(SEPARATOR_REGEX);
+		return str.split(StorageStrings.FIELD_DELIMITER);
+	}
+	
+	private ItemType getItemType(String typeString) {
+		if (typeString == null) {
+			return null;
+		} else if (typeString.equals(StorageStrings.TYPE_EVENT)) {
+			return ItemType.EVENT;
+		} else {
+			return null;
+		}
+	}
+	
+	private Calendar getCalendar(String date, String time) {
+		Calendar cal = Calendar.getInstance();
+		// parse date and time
+		String[] timeArray = time.split(StorageStrings.TIME_DELIMITER);
+		String[] dateArray = date.split(StorageStrings.DATE_DELIMITER);
+		int day = Integer.parseInt(dateArray[0]);
+		int month = Integer.parseInt(dateArray[1]) - 1; // convert from 1-based to 0-based for calendar
+		int year = Integer.parseInt(dateArray[2]);
+		int hour = Integer.parseInt(timeArray[0]);
+		int minute = Integer.parseInt(timeArray[1]);
+		cal.set(year, month, day, hour, minute);
+		return cal;
+	}
+	
+	private ArrayList<String> getList(String tagsString) {
+		ArrayList<String> list = new ArrayList<String>();
+		String[] tagsArray = tagsString.split(",");
+		for (int i = 0; i < tagsArray.length; i++) {
+			list.add(tagsArray[i]);
+		}
+		return list;
 	}
 
 	public boolean startWriteMode() {
 		try {
 			// will overwrite the current file with the new data.
-			mWriter = new BufferedWriter(new FileWriter(FILENAME));
+			mWriter = new BufferedWriter(new FileWriter(StorageStrings.FILENAME));
 		} catch (IOException e) {
 			return false;
 		}

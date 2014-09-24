@@ -20,27 +20,53 @@ import java.util.Set;
 public class InputData {
 	
 	private Command mCommand;
-	private HashMap<String, Object> mInfo;
+	private HashMap<String, Object> mData;
 	
 	public InputData(Command cmd) {
 		mCommand = cmd;
-		mInfo = new HashMap<String, Object>();
+		mData = new HashMap<String, Object>();
 	}
 	
+	/**
+	 * gets the command
+	 * @return the <code>Command</code>
+	 */
 	public Command getCommand() {
 		return mCommand;
 	}
 	
-	public boolean put(String name, Object info) {
-		mInfo.put(name, info);
-		return true;
+	/**
+	 * Associates the specified item with the specified key in the OutputData object.
+	 * An existing item of the same key will be replaced. 
+	 * The item inserted cannot be {@code null}.
+	 * @param key
+	 * @param data
+	 * @return true when successful, false when object is null
+	 */
+	public boolean put(String key, Object data) {
+		if (data != null) {
+			mData.put(key, data);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
-	public Object get(String name) {
-		return mInfo.get(name);
+	/**
+	 * Retrieves the item that is associated with the key.
+	 * @param key The key of the item to retrieve
+	 * @return The item, or {@code null} if the key is not mapped.
+	 */
+	public Object get(String key) {
+		return mData.get(key);
 	}
 	
+	/**
+	 * Returns a boolean value describing if the named item exists inside.
+	 * @param key The key of the item to check.
+	 * @return {@code true} if the item exists, or {@code false} otherwise.
+	 */
 	public Set<String> getNames() {
-		return mInfo.keySet();
+		return mData.keySet();
 	}
 }

@@ -3,6 +3,9 @@ package udo.util.engine;
 import udo.util.shared.Command;
 import udo.util.shared.ItemData;
 
+/**
+ * only for engine to use.
+ */
 public class RecycleBin {
 	ItemData mItem;
 	Command mCommand;
