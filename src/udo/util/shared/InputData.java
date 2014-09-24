@@ -1,4 +1,4 @@
-package udo.util;
+package udo.util.shared;
 
 import java.util.HashMap;
 import java.util.Set;

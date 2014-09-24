@@ -3,11 +3,14 @@ package udo.main;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import udo.util.Command;
-import udo.util.InputData;
-import udo.util.ItemData;
-import udo.util.OutputData;
-import udo.util.Status;
+import udo.util.engine.Cache;
+import udo.util.engine.FileManager;
+import udo.util.engine.RecycleBin;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
+import udo.util.shared.ExecutionStatus;
 
 public class Engine {
 	
@@ -76,19 +79,26 @@ public class Engine {
 		if (addOK) {
 			// if added item successfully
 			// make output object with the event data inside
-			output = new OutputData(cmd, Status.SUCCESS);
+			output = new OutputData(cmd, ExecutionStatus.SUCCESS);
 			for (String name : event.getNames()) {
 				Object info = event.get(name);
 				output.put(name, info);
 			}
 		} else {
-			output = new OutputData(cmd, Status.FAIL);
+			output = new OutputData(cmd, ExecutionStatus.FAIL);
 		}
 		
 		return output;
 	}
 	
 	private OutputData runList(InputData inputData) {
+		/*
+		 * 1. build a list of all items
+		 * 2. select only the items we want.
+		 * 3. sort the items according to date/time
+		 * 4. put the items in the outputdata.
+		 * 5. return output
+		 */
 		mCache.lock();
 		ArrayList<ItemData> listOfAllItems = new ArrayList<ItemData>();
 		while (mCache.hasNextItem()) {
@@ -104,13 +114,13 @@ public class Engine {
 		if (!writeOK) {
 			return null;
 		}
-		OutputData output = new OutputData(Command.SAVE, Status.SUCCESS);
+		OutputData output = new OutputData(Command.SAVE, ExecutionStatus.SUCCESS);
 		return output;
 	}
 	
 	private OutputData runExit(InputData inputData) {
 		runSave(null);
-		OutputData output = new OutputData(Command.EXIT, Status.SUCCESS);
+		OutputData output = new OutputData(Command.EXIT, ExecutionStatus.SUCCESS);
 		return output;
 	}
 	

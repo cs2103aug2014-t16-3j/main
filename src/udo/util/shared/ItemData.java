@@ -1,8 +1,13 @@
-package udo.util;
+package udo.util.shared;
 
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * This class holds the all the data that an item should have,
+ * like title, date, hashtag, so on.
+ *
+ */
 public class ItemData {
 	
 	private HashMap<String, Object> mData;

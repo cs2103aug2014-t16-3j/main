@@ -1,4 +1,4 @@
-package udo.main;
+package udo.util.engine;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import udo.util.ItemData;
+import udo.util.shared.ItemData;
 
 public class FileManager {
 	

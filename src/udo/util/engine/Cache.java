@@ -1,9 +1,9 @@
-package udo.main;
+package udo.util.engine;
 
 import java.util.HashMap;
 import java.util.Iterator;
 
-import udo.util.ItemData;
+import udo.util.shared.ItemData;
 
 public class Cache {
 	

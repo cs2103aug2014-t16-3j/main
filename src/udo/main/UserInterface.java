@@ -21,8 +21,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import udo.ui.Entry;
-import udo.ui.uDoPopup;
+import udo.util.ui.Entry;
+import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
 	

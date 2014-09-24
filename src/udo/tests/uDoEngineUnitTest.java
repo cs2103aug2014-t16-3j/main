@@ -9,14 +9,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import udo.main.Cache;
 import udo.main.Engine;
-import udo.main.FileManager;
-import udo.util.Command;
-import udo.util.InputData;
-import udo.util.ItemData;
-import udo.util.OutputData;
-import udo.util.Status;
+import udo.util.engine.Cache;
+import udo.util.engine.FileManager;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
+import udo.util.shared.ExecutionStatus;
 
 public class uDoEngineUnitTest {
 	
@@ -28,7 +28,7 @@ public class uDoEngineUnitTest {
 		assertFalse("output object cant be null",
 				o == null);
 		assertEquals("the output status shud be success",
-				Status.SUCCESS,
+				ExecutionStatus.SUCCESS,
 				o.getStatus());
 		assertEquals("the output command should be list",
 				Command.LIST,
@@ -42,7 +42,7 @@ public class uDoEngineUnitTest {
 		e.loadFile();
 		OutputData o = e.execute(new InputData(Command.EXIT));
 		assertEquals("the output status shud be success",
-				Status.SUCCESS,
+				ExecutionStatus.SUCCESS,
 				o.getStatus());
 		assertEquals("the output command should be exit",
 				Command.EXIT,
@@ -68,7 +68,7 @@ public class uDoEngineUnitTest {
 		assertFalse("out should not be null",
 				null == out);
 		assertEquals("",
-				Status.SUCCESS,
+				ExecutionStatus.SUCCESS,
 				out.getStatus());
 	}
 	

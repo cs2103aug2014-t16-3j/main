@@ -1,4 +1,4 @@
-package udo.util;
+package udo.util.shared;
 
 import java.util.HashMap;
 
@@ -23,10 +23,10 @@ import java.util.HashMap;
 public class OutputData {
 	
 	Command mCommand;
-	Status mStatus;
+	ExecutionStatus mStatus;
 	HashMap<String, Object> mData;
 	
-	public OutputData(Command cmd, Status status) {
+	public OutputData(Command cmd, ExecutionStatus status) {
 		mCommand = cmd;
 		mStatus = status;
 		mData = new HashMap<String, Object>();
@@ -41,10 +41,10 @@ public class OutputData {
 	}
 
 	/**
-	 * Retrieves the {@code Status} value
-	 * @return the {@code Status} value
+	 * Retrieves the {@code ExecutionStatus} value
+	 * @return the {@code ExecutionStatus} value
 	 */
-	public Status getStatus() {
+	public ExecutionStatus getStatus() {
 		return mStatus;
 	}
 	

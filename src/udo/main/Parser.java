@@ -1,8 +1,9 @@
 package udo.main;
 
 import java.util.ArrayList;
-import udo.util.Command;
-import udo.util.InputData;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
 
 /**
  * (Class description)

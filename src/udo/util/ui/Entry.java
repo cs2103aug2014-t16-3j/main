@@ -1,4 +1,4 @@
-package udo.ui;
+package udo.util.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;

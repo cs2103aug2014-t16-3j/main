@@ -1,4 +1,4 @@
-package udo.util;
+package udo.util.shared;
 
 public enum Command {
 	ADD_EVENT,

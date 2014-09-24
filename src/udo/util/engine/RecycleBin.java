@@ -1,7 +1,7 @@
-package udo.main;
+package udo.util.engine;
 
-import udo.util.Command;
-import udo.util.ItemData;
+import udo.util.shared.Command;
+import udo.util.shared.ItemData;
 
 public class RecycleBin {
 	ItemData mItem;

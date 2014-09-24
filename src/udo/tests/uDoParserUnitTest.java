@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import udo.main.Parser;
-import udo.util.Command;
-import udo.util.InputData;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
 
 public class uDoParserUnitTest {
 

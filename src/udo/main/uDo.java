@@ -1,9 +1,9 @@
 package udo.main;
 
-import udo.util.Command;
-import udo.util.InputData;
-import udo.util.OutputData;
-import udo.util.Status;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.OutputData;
+import udo.util.shared.ExecutionStatus;
 
 /**
  * This is the main class that the user will run.
@@ -63,7 +63,7 @@ public class uDo {
 
 	private void CheckForExitCommand(OutputData outputData) {
 		if (outputData.getCommand() == Command.EXIT) {
-			if (outputData.getStatus() == Status.SUCCESS) {
+			if (outputData.getStatus() == ExecutionStatus.SUCCESS) {
 				isRunning = false;
 			}
 		}
