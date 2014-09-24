@@ -21,8 +21,22 @@ import udo.util.Status;
 public class uDoEngineUnitTest {
 	
 	@Test
+	public void testEngineExecuteExit() {
+		Engine e = new Engine();
+		e.loadFile();
+		OutputData o = e.execute(new InputData(Command.EXIT));
+		assertEquals("the output status shud be success",
+				Status.SUCCESS,
+				o.getStatus());
+		assertEquals("the output command should be exit",
+				Command.EXIT,
+				o.getCommand());
+	}
+	
+	@Test
 	public void testEngineExecuteAddEventNotNull() {
 		Engine e = new Engine();
+		e.loadFile();
 		InputData in = new InputData(Command.ADD_EVENT);
 		assertFalse("",
 				null == e.execute(in));

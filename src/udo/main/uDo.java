@@ -1,7 +1,9 @@
 package udo.main;
 
 import udo.util.Command;
+import udo.util.InputData;
 import udo.util.OutputData;
+import udo.util.Status;
 
 /**
  * This is the main class that the user will run.
@@ -15,9 +17,11 @@ public class uDo {
 		udo.run(args);
 	}
 	
-	UserInterface ui;
-	Parser parser;
-	Engine engine;
+	public static final int EXIT_STATUS = 0;
+	
+	private UserInterface ui;
+	private Parser parser;
+	private Engine engine;
 	
 	boolean isRunning;
 	
@@ -28,24 +32,40 @@ public class uDo {
 		isRunning = true;
 	}
 
-	boolean run(String[] args) {
+	private boolean run(String[] args) {
 		
 		manageArgs(args);
 		
 		engine.loadFile();
 		
 		runMainLoop();
+		
+		return true;
 	}
 	
-	boolean manageArgs(String[] args) {
+	private boolean manageArgs(String[] args) {
 		// in case we decide to handle any arguments 
+		return true;
 	}
 
 	private void runMainLoop() {
 		while (isRunning) {
 			String inputString = ui.getInput();
+			
 			OutputData outputData = parseAndExecute(inputString);
+			
+			CheckForExitCommand(outputData);
+			
 			ui.show(outputData);
+		}
+		System.exit(EXIT_STATUS);
+	}
+
+	private void CheckForExitCommand(OutputData outputData) {
+		if (outputData.getCommand() == Command.EXIT) {
+			if (outputData.getStatus() == Status.SUCCESS) {
+				isRunning = false;
+			}
 		}
 	}
 	

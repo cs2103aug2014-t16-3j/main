@@ -1,7 +1,6 @@
 package udo.main;
 
 import java.io.IOException;
-import java.util.Set;
 
 import udo.util.Command;
 import udo.util.InputData;
@@ -19,6 +18,26 @@ public class Engine {
 		mCache = new Cache();
 		mRecycleBin = new RecycleBin();
 	}
+
+	public boolean loadFile() {
+		boolean readOK = mFileManager.startReadMode();
+		if (!readOK) {
+			return false;
+		}
+		try {
+			mCache.clear();
+			while (mFileManager.hasNextItem()) {
+				ItemData item = mFileManager.getNextItem();
+				mCache.addItem(item);
+			}
+		} catch (IOException e) {
+			mCache.clear();
+			return false;
+		} finally {
+			mFileManager.closeReadMode();
+		}
+		return true;
+	}
 	
 	public OutputData execute(InputData input) {
 		Command cmd = input.getCommand();
@@ -28,27 +47,14 @@ public class Engine {
 				return runAddEvent(input);
 			case SAVE :
 				return runSave();
+			case EXIT :
+				return runExit();
 			default:
 				return null;
 		}
 	}
-
-	public boolean loadFile() {
-		boolean readOK = mFileManager.startReadMode();
-		if (!readOK) {
-			return false;
-		}
-		try {
-			
-			while (mFileManager.hasNextItem()) {
-				ItemData item = mFileManager.getNextItem();
-				mCache.addItem(item);
-			}
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
-	}
+	
+	// ********* methods that execute the commands ******* //
 	
 	private OutputData runSave() {
 		boolean writeOK = writeCacheToFile();
@@ -57,22 +63,6 @@ public class Engine {
 		}
 		OutputData output = new OutputData(Command.SAVE, Status.SUCCESS);
 		return output;
-	}
-	
-	private boolean writeCacheToFile() {
-		boolean filePrepared = mFileManager.startWriteMode();
-		boolean cacheLocked = mCache.lock();
-		if (!filePrepared || !cacheLocked) {
-			return false;
-		}
-		
-		while (mCache.hasNextItem()) {
-			ItemData item = mCache.getNextItem();
-			mFileManager.write(item);
-		}
-		
-		mFileManager.closeWriteMode();
-		return true;
 	}
 	
 	private OutputData runAddEvent(InputData input) {
@@ -101,5 +91,29 @@ public class Engine {
 		}
 		
 		return output;
+	}
+	
+	private OutputData runExit() {
+		runSave();
+		OutputData output = new OutputData(Command.EXIT, Status.SUCCESS);
+		return output;
+	}
+	
+	// ********* private abstracted helper methods ******* // 
+	
+	private boolean writeCacheToFile() {
+		boolean filePrepared = mFileManager.startWriteMode();
+		boolean cacheLocked = mCache.lock();
+		if (!filePrepared || !cacheLocked) {
+			return false;
+		}
+		
+		while (mCache.hasNextItem()) {
+			ItemData item = mCache.getNextItem();
+			mFileManager.write(item);
+		}
+		
+		mFileManager.closeWriteMode();
+		return true;
 	}
 }

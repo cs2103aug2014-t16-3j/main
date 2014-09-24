@@ -88,4 +88,10 @@ public class Cache {
 		return true;
 	}
 	
+	public void clear() {
+		mEvents.clear();
+		mTasks.clear();
+		mPlans.clear();
+	}
+	
 }
