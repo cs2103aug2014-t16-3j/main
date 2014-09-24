@@ -21,6 +21,22 @@ import udo.util.Status;
 public class uDoEngineUnitTest {
 	
 	@Test
+	public void testEngineExecuteListAll() {
+		Engine e = new Engine();
+		if (!e.loadFile()) fail("load fail");
+		OutputData o = e.execute(new InputData(Command.LIST));
+		assertFalse("output object cant be null",
+				o == null);
+		assertEquals("the output status shud be success",
+				Status.SUCCESS,
+				o.getStatus());
+		assertEquals("the output command should be list",
+				Command.LIST,
+				o.getCommand());
+		fail("havent settle the actual item output");
+	}
+	
+	@Test
 	public void testEngineExecuteExit() {
 		Engine e = new Engine();
 		e.loadFile();

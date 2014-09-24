@@ -1,6 +1,7 @@
 package udo.main;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import udo.util.Command;
 import udo.util.InputData;
@@ -46,10 +47,12 @@ public class Engine {
 		switch (cmd) {
 			case ADD_EVENT :
 				return runAddEvent(input);
+			case LIST :
+				return runList(input);
 			case SAVE :
-				return runSave();
+				return runSave(input);
 			case EXIT :
-				return runExit();
+				return runExit(input);
 			default:
 				return null;
 		}
@@ -57,22 +60,13 @@ public class Engine {
 	
 	// ********* methods that execute the commands ******* //
 	
-	private OutputData runSave() {
-		boolean writeOK = writeCacheToFile();
-		if (!writeOK) {
-			return null;
-		}
-		OutputData output = new OutputData(Command.SAVE, Status.SUCCESS);
-		return output;
-	}
-	
-	private OutputData runAddEvent(InputData input) {
-		Command cmd = input.getCommand();
+	private OutputData runAddEvent(InputData inputData) {
+		Command cmd = inputData.getCommand();
 		
 		ItemData event = new ItemData();
 		// extract data from inputdata to make an event
-		for (String name : input.getNames()) {
-			Object info = input.get(name);
+		for (String name : inputData.getNames()) {
+			Object info = inputData.get(name);
 			event.put(name, info);
 		}
 		
@@ -94,8 +88,28 @@ public class Engine {
 		return output;
 	}
 	
-	private OutputData runExit() {
-		runSave();
+	private OutputData runList(InputData inputData) {
+		mCache.lock();
+		ArrayList<ItemData> listOfAllItems = new ArrayList<ItemData>();
+		while (mCache.hasNextItem()) {
+			listOfAllItems.add(mCache.getNextItem());
+		}
+		
+		
+		return null;
+	}
+
+	private OutputData runSave(InputData inputData) {
+		boolean writeOK = writeCacheToFile();
+		if (!writeOK) {
+			return null;
+		}
+		OutputData output = new OutputData(Command.SAVE, Status.SUCCESS);
+		return output;
+	}
+	
+	private OutputData runExit(InputData inputData) {
+		runSave(null);
 		OutputData output = new OutputData(Command.EXIT, Status.SUCCESS);
 		return output;
 	}
