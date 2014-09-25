@@ -2,7 +2,6 @@ package udo.tests;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 
 import udo.util.shared.ItemType;
 
