@@ -18,19 +18,40 @@ import udo.util.shared.ItemType;
 public class FileManager {
 	
 	private BufferedReader mReader;
-	private String mNextLine;
 	private ItemData mNextItem;
 	private boolean mIsReading;
 	private BufferedWriter mWriter;
 	private boolean mIsWriting;
 	
 	public FileManager() {
-		mNextLine = null;
 		mIsReading = false;
 		mIsWriting = false;
 	}
 	
-	public boolean startReadMode() {
+	public ArrayList<ItemData> getFromFile() throws IOException {
+		startReadMode();
+		if (!isReading()) {
+			return null;
+		}
+		ArrayList<ItemData> result = new ArrayList<ItemData>();
+		while (hasNextItem()) {
+			ItemData item = getNextItem();
+			result.add(item);
+		}
+		closeReadMode();
+		return result;
+	}
+	
+	public boolean writeToFile(ArrayList<ItemData> list) {
+		startWriteMode();
+		for (ItemData item : list) {
+			write(item);
+		}
+		closeWriteMode();
+		return true;
+	}
+
+	private boolean startReadMode() {
 		if (isWriting()) {
 			return false;
 		}
@@ -51,7 +72,7 @@ public class FileManager {
 		return true;
 	}
 	
-	public boolean closeReadMode() {
+	private boolean closeReadMode() {
 		try {
 			mReader.close();
 		} catch (IOException e) {
@@ -61,21 +82,12 @@ public class FileManager {
 		return true;
 	}
 
-	private boolean createNewFile(String filename) {
-		try {
-			new FileWriter(filename).close();
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean hasNextItem() {
+	private boolean hasNextItem() {
 		boolean hasNext = (mNextItem != null);
 		return hasNext;
 	}
 
-	public ItemData getNextItem() throws IOException {
+	private ItemData getNextItem() throws IOException {
 		if (hasNextItem()) {
 			ItemData result = mNextItem;
 			String nextLine = getNextLine();
@@ -86,6 +98,15 @@ public class FileManager {
 		}
 	}
 	
+	private boolean createNewFile(String filename) {
+		try {
+			new FileWriter(filename).close();
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+
 	private String getNextLine() throws IOException {
 		return mReader.readLine();
 	}
@@ -102,6 +123,8 @@ public class FileManager {
 		 * event
 		 * [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime, 7<tags>]
 		 */
+		
+		// this method is meant to be wordy
 		
 		ItemType type = getItemType(lineArray[Indices.TYPE]);
 		
@@ -181,7 +204,7 @@ public class FileManager {
 		return list;
 	}
 
-	public boolean startWriteMode() {
+	private boolean startWriteMode() {
 		try {
 			// will overwrite the current file with the new data.
 			mWriter = new BufferedWriter(new FileWriter(StorageStrings.FILENAME));
@@ -192,7 +215,7 @@ public class FileManager {
 		return true;
 	}
 	
-	public boolean closeWriteMode() {
+	private boolean closeWriteMode() {
 		try {
 			mWriter.close();
 			mWriter = null;
@@ -202,8 +225,8 @@ public class FileManager {
 		setWriting(true);
 		return true;
 	}
-
-	public boolean write(ItemData item) {
+	
+	private boolean write(ItemData item) {
 		String itemString = item.toString();
 		try {
 			mWriter.append(itemString);
@@ -214,19 +237,19 @@ public class FileManager {
 		return true;
 	}
 
-	public boolean isWriting() {
+	private boolean isWriting() {
 		return mIsWriting;
 	}
 
-	public void setWriting(boolean writing) {
+	private void setWriting(boolean writing) {
 		mIsWriting = writing;
 	}
 
-	public boolean isReading() {
+	private boolean isReading() {
 		return mIsReading;
 	}
 
-	public void setReading(boolean reading) {
+	private void setReading(boolean reading) {
 		mIsReading = reading;
 	}
 }

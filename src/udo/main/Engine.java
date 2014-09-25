@@ -27,25 +27,18 @@ public class Engine {
 		mCache = new Cache();
 		mRecycleBin = new RecycleBin();
 	}
+	
+	//****** public methods ******//
 
 	public boolean loadFile() {
-		boolean readOK = mFileManager.startReadMode();
-		if (!readOK) {
-			return false;
-		}
+		mCache.clear();
 		try {
-			mCache.clear();
-			while (mFileManager.hasNextItem()) {
-				ItemData item = mFileManager.getNextItem();
-				mCache.addItem(item);
-			}
+			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
+			mCache.addAll(itemsFromFile);
+			return true;
 		} catch (IOException e) {
-			mCache.clear();
 			return false;
-		} finally {
-			mFileManager.closeReadMode();
 		}
-		return true;
 	}
 	
 	public OutputData execute(InputData input) {
@@ -88,7 +81,7 @@ public class Engine {
 		
 		OutputData output;
 		
-		boolean addOK = mCache.addItem(event);
+		boolean addOK = mCache.add(event);
 		Command cmd = inputData.getCommand();
 		if (addOK) {
 			// if added item successfully
@@ -110,12 +103,7 @@ public class Engine {
 		 * 4. put the items in the outputdata.
 		 * 5. return output
 		 */
-		mCache.lock();
-		ArrayList<ItemData> listOfAllItems = new ArrayList<ItemData>();
-		while (mCache.hasNextItem()) {
-			listOfAllItems.add(mCache.getNextItem());
-		}
-		mCache.unlock();
+		ArrayList<ItemData> listOfAllItems = mCache.getAllItems();
 		ArrayList<ItemData> result;
 		
 		ListQuery query = (ListQuery) input.get(Keys.QUERY);
@@ -131,8 +119,6 @@ public class Engine {
 			default :
 				return null;
 		}
-		
-		Collections.sort(result);
 		
 		OutputData output = new OutputData(Command.LIST, ExecutionStatus.SUCCESS);
 		output.put(Keys.ITEMS, result);
@@ -158,7 +144,7 @@ public class Engine {
 	// ********* private abstracted helper methods ******* // 
 	
 	private boolean writeCacheToFile() {
-		boolean filePrepared = mFileManager.startWriteMode();
+		/*boolean filePrepared = mFileManager.startWriteMode();
 		boolean cacheLocked = mCache.lock();
 		if (!filePrepared || !cacheLocked) {
 			return false;
@@ -169,7 +155,8 @@ public class Engine {
 			mFileManager.write(item);
 		}
 		
-		mFileManager.closeWriteMode();
+		mFileManager.closeWriteMode();*/
+		mFileManager.writeToFile(mCache.getAllItems());
 		return true;
 	}
 
@@ -182,6 +169,7 @@ public class Engine {
 				result.add(item);
 			}
 		}
+		Collections.sort(result);
 		return result;
 	}
 }

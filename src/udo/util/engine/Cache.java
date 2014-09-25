@@ -1,5 +1,7 @@
 package udo.util.engine;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -27,8 +29,15 @@ public class Cache {
 		mIsLocked = false;
 		mUIDs = new HashSet<Integer>();
 	}
+	
+	public boolean addAll(ArrayList<ItemData> list) {
+		for (ItemData item : list) {
+			add(item);
+		}
+		return true;
+	}
 
-	public boolean addItem(ItemData item) {
+	public boolean add(ItemData item) {
 		if (isLocked()) {
 			return false;
 		}
@@ -51,49 +60,15 @@ public class Cache {
 		return totalSize;
 	}
 	
-	public boolean isLocked() {
-		return mIsLocked;
-	}
-	
-	public boolean lock() {
-		mIsLocked = true;
-		mEventsIterator = mEvents.iterator();
-		mTasksIterator = mTasks.iterator();
-		mPlansIterator = mPlans.iterator();
-		return true;
-	}
-	
-	public boolean hasNextItem() {
-		if (!mIsLocked) {
-			return false;
-		} else {
-			return mEventsIterator.hasNext() ||
-					mTasksIterator.hasNext() ||
-					mPlansIterator.hasNext();
+	public ArrayList<ItemData> getAllItems() {
+		lock();
+		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
+		while (hasNextItem()) {
+			allItems.add(getNextItem());
 		}
-	}
-	
-	public ItemData getNextItem() {
-		if (!mIsLocked) {
-			return null;
-		}
-		if (mEventsIterator.hasNext()) {
-			return mEventsIterator.next();
-		} else if (mTasksIterator.hasNext()) {
-			return mTasksIterator.next();
-		} else if (mPlansIterator.hasNext()) {
-			return mPlansIterator.next();
-		} else {
-			return null;
-		}
-	}
-	
-	public boolean unlock() {
-		mIsLocked = false;
-		mEventsIterator = null;
-		mTasksIterator = null;
-		mPlansIterator = null;
-		return true;
+		unlock();
+		Collections.sort(allItems);
+		return allItems;
 	}
 	
 	public void clear() {
@@ -116,6 +91,51 @@ public class Cache {
 		}
 	}
 	
+	private boolean isLocked() {
+		return mIsLocked;
+	}
+
+	private boolean lock() {
+		mIsLocked = true;
+		mEventsIterator = mEvents.iterator();
+		mTasksIterator = mTasks.iterator();
+		mPlansIterator = mPlans.iterator();
+		return true;
+	}
+
+	private boolean hasNextItem() {
+		if (!mIsLocked) {
+			return false;
+		} else {
+			return mEventsIterator.hasNext() ||
+					mTasksIterator.hasNext() ||
+					mPlansIterator.hasNext();
+		}
+	}
+
+	private ItemData getNextItem() {
+		if (!mIsLocked) {
+			return null;
+		}
+		if (mEventsIterator.hasNext()) {
+			return mEventsIterator.next();
+		} else if (mTasksIterator.hasNext()) {
+			return mTasksIterator.next();
+		} else if (mPlansIterator.hasNext()) {
+			return mPlansIterator.next();
+		} else {
+			return null;
+		}
+	}
+
+	private boolean unlock() {
+		mIsLocked = false;
+		mEventsIterator = null;
+		mTasksIterator = null;
+		mPlansIterator = null;
+		return true;
+	}
+
 	private void trackUID(ItemData item) {
 		Integer uid = (Integer) item.get(Keys.UID);
 		mUIDs.add(uid);

@@ -99,9 +99,9 @@ public class uDoEngineUnitTest {
 		ItemData ii = new ItemData(ItemType.EVENT);
 		ii.put("title", "asdasd");
 		assertTrue("add success",
-				c.addItem(i));
+				c.add(i));
 		assertTrue("add success",
-				c.addItem(ii));
+				c.add(ii));
 		assertEquals("the new size should be larger than old size by 2",
 				c.size(),
 				oldSize + 2);
@@ -143,28 +143,20 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testFileManagerReadFileOutput() {
 		FileManager fm = new FileManager();
-		fm.startReadMode();
-		String items = new String();
-		while (fm.hasNextItem()) {
-			try {
-				items = items.concat(fm.getNextItem().toString());
-			} catch (IOException e) {
-				items = "failed";
+		String itemString = new String();
+		try {
+			ArrayList<ItemData> items = fm.getFromFile();
+			for (ItemData item : items) {
+					itemString = itemString.concat(item.toString());
+				
 			}
+		} catch (IOException e) {
+			itemString = "failed";
 		}
-		fm.closeReadMode();
 		assertEquals("the fileoutput should look like that",
 				"12346|||EVENT|||bowling|||24/1/14|||13:30|||24/1/14|||15:45|||boss,play,fun,date"
 				+ "12345|||EVENT|||meeting|||23/1/14|||9:23|||23/1/14|||22:30|||meeting,boss,work",
-				items);
-	}
-	
-	@Test
-	public void testFileManagerOpenFileTrue() {
-		FileManager fm = new FileManager();
-		assertTrue("should be true if the file can be opened, "
-				+ "or created first and then opened",
-				fm.startReadMode());
+				itemString);
 	}
 
 }
