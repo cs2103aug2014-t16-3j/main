@@ -38,6 +38,8 @@ public class UserInterface implements ActionListener {
 	private static final Color UDO_BG = new Color(255,244,122);
 	
 	private Timer t;
+	private boolean waiting;
+	private String userInput;
 	
 	public UserInterface(){
 		
@@ -63,6 +65,7 @@ public class UserInterface implements ActionListener {
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
 		mTextField.setBackground(UDO_BG);
+		mTextField.requestFocus();
 		
 		/**
 		 * Sets up textPanel
@@ -115,7 +118,17 @@ public class UserInterface implements ActionListener {
 		mLayer.add(newEntry, new Integer(1));
 		showPopup(text);
 		mTextField.setText("");
-		
+
+		userInput = text;
+		waiting = false;
+	}
+	
+	public String getInput(){
+		waiting = true;
+		while(waiting) {
+			
+		}
+		return userInput;
 	}
 	
 	
