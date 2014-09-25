@@ -21,7 +21,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import udo.util.shared.OutputData;
 import udo.util.ui.Entry;
+import udo.util.ui.Feedback;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
@@ -141,8 +143,10 @@ public class UserInterface implements ActionListener {
 	/**
 	 * ui.show is to show the output sent by engine
 	 */
-	public void show(){
-		
+	public void show(OutputData output){
+		Feedback fb = new Feedback(output);
+		String outputString = fb.getCommand();
+		showPopup(outputString);
 	}
 	
 	
