@@ -37,9 +37,10 @@ public class UserInterface implements ActionListener {
 	private static final int WIDTH = 400;
 	private static final Color UDO_BG = new Color(255,244,122);
 	
-	private Timer t;
-	private boolean waiting;
-	private String userInput;
+	private Timer mTimer;
+	private Timer mExistingTimer;
+	private boolean mWaiting;
+	private String mUserInput;
 	
 	public UserInterface(){
 		
@@ -85,6 +86,7 @@ public class UserInterface implements ActionListener {
 		c.weighty = 0;
 		
 		mTextPanel.add(mTextField, c);
+		mTextPanel.setBackground(UDO_BG);
 		
 		mLayer.add(mTextPanel, new Integer(0));
 		
@@ -99,6 +101,7 @@ public class UserInterface implements ActionListener {
 		 */
 		mFrame.setSize(new Dimension(WIDTH, HEIGHT));
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    //mFrame.setUndecorated(true);
 		mFrame.add(mLayer);
 		mFrame.setLocationRelativeTo(null);
 		mFrame.pack();
@@ -119,16 +122,27 @@ public class UserInterface implements ActionListener {
 		showPopup(text);
 		mTextField.setText("");
 
-		userInput = text;
-		waiting = false;
+		mUserInput = text;
+		mWaiting = false;
 	}
 	
+	/**
+	 * getInput takes the user input and returns it to main
+	 * @return the String userInput
+	 */
 	public String getInput(){
-		waiting = true;
-		while(waiting) {
+		mWaiting = true;
+		while(mWaiting) {
 			
 		}
-		return userInput;
+		return mUserInput;
+	}
+	
+	/**
+	 * ui.show is to show the output sent by engine
+	 */
+	public void show(){
+		
 	}
 	
 	
@@ -151,8 +165,8 @@ public class UserInterface implements ActionListener {
 	}
 	
 	public void fadePopup(){
-		
-		t = new Timer(10, new ActionListener(){
+		if(mExistingTimer != null) mExistingTimer.stop();
+		mTimer = new Timer(10, new ActionListener(){
 			int fade = -1;
 			
 			@Override
@@ -166,22 +180,23 @@ public class UserInterface implements ActionListener {
 						fade++;
 					}
 				}else if(fade == 0) {
-					t.setDelay(1500);
+					mTimer.setDelay(1500);
 					fade++;
 				}else{
-					t.setDelay(10);
+					mTimer.setDelay(10);
 					alpha -= 0.05f;
 					if(alpha > 0) {
 						mPopup.setAlpha(alpha);
 					}else{
-	                	t.stop();
+						mExistingTimer = null;
+	                	mTimer.stop();
 	                }
 				}
 			}
 			
 		});
-		t.stop(); // to stop in-progress fading
-		t.start();
+		mExistingTimer = mTimer;
+		mTimer.start();
 		
 	}
 	
