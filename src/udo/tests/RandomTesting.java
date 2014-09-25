@@ -2,6 +2,7 @@ package udo.tests;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Scanner;
 
 import udo.util.shared.ItemType;
 
@@ -26,6 +27,9 @@ public class RandomTesting {
 		String f = "%1$d";
 		System.out.println(String.format(f, c.get(Calendar.AM_PM)));
 		println(ItemType.EVENT.toString());
+		
+		Scanner sc = new Scanner(System.in);
+		sc.nextLine();
 	}
 	
 	static void println(String s) {

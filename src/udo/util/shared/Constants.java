@@ -1,7 +1,22 @@
 package udo.util.shared;
 
+/**
+ * 
+ * This class holds all constants that the program uses. (the magic numbers)
+ * The constants are further classified in their own subclasses.
+ * Add your own subclass here to store all your strings and values and such.
+ *
+ */
 public class Constants {
 	
+	/**
+	 * 
+	 * This class holds all the keys used for the data storage objects.
+	 * Please reference these values rather than typing your own key.
+	 * This is to standardise across components so that one component can
+	 * retrieve the data that another puts in.
+	 *
+	 */
 	public static class Keys {
 		public static final String UID = "uid";
 		public static final String TITLE = "title";
@@ -16,6 +31,15 @@ public class Constants {
 		public static final String QUERY = "query";
 	}
 	
+	/**
+	 * 
+	 * This class holds the array index values for the file manager.
+	 * If you desire to put your own values inside here, make sure that
+	 * the new variable name doesnt conflict with existing names. If there
+	 * is potential confusion (e.g. your title index is different from the
+	 * existing index) pls sound out first.
+	 *
+	 */
 	public static class Indices {
 		public static final int UID = 0;
 		public static final int TYPE = 1;
@@ -27,6 +51,13 @@ public class Constants {
 		public static final int HASHTAGS = 7;
 	}
 	
+	/**
+	 * 
+	 * This class holds the magic strings for the storage and
+	 * retrieving of data from the storage file. This includes
+	 * the toString method of the ItemData class
+	 *
+	 */
 	public static class StorageStrings {
 		public static final String FILENAME = "uDo_data.txt";
 		public static final String FIELD_DELIMITER = "\\|\\|\\|";
@@ -36,7 +67,5 @@ public class Constants {
 		public static final String TYPE_EVENT = "EVENT";
 		public static final String TYPE_TASK = "TASK";
 		public static final String TYPE_PLAN = "PLAN";
-		public static final String TIME_AM = "AM";
-		public static final String TIME_PM = "PM";
 	}
 }

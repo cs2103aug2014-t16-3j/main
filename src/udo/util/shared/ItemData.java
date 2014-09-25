@@ -11,6 +11,8 @@ import udo.util.shared.Constants.StorageStrings;
 /**
  * This class holds the all the data that an item should have,
  * like title, date, hashtag, so on.
+ * The keys for the put() and get() function must be one of the 
+ * keys from the Constants.Keys class. 
  *
  */
 public class ItemData implements Comparable<ItemData> {
