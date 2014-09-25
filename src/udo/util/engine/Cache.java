@@ -2,7 +2,9 @@ package udo.util.engine;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Random;
 
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
@@ -16,18 +18,21 @@ public class Cache {
 	private Iterator<ItemData> mTasksIterator;
 	private Iterator<ItemData> mPlansIterator;
 	
+	private HashSet<Integer> mUIDs;
+	
 	public Cache() {
 		mEvents = new HashSet<ItemData>();
 		mTasks = new HashSet<ItemData>();
 		mPlans = new HashSet<ItemData>();
 		mIsLocked = false;
+		mUIDs = new HashSet<Integer>();
 	}
 
 	public boolean addItem(ItemData item) {
 		if (isLocked()) {
 			return false;
 		}
-		
+		trackUID(item);
 		ItemType type = item.getItemType();
 		switch (type) {
 			case EVENT :
@@ -102,7 +107,18 @@ public class Cache {
 
 	public int generateUID() {
 		// TODO 
-		return 0;
+		Random r = new Random(System.currentTimeMillis());
+		int uid = 10000 + r.nextInt(90000);
+		if (mUIDs.contains(uid)) {
+			return generateUID();
+		} else {
+			return uid;
+		}
+	}
+	
+	private void trackUID(ItemData item) {
+		Integer uid = (Integer) item.get(Keys.UID);
+		mUIDs.add(uid);
 	}
 	
 }

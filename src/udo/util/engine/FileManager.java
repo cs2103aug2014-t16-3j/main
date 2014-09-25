@@ -134,9 +134,9 @@ public class FileManager {
 					tagsList);
 			
 		} else if (type.equals(ItemType.TASK)) {
-			
+			//TODO
 		} else if (type.equals(ItemType.PLAN)) {
-			
+			//TODO
 		} else {
 			
 		}

@@ -13,7 +13,7 @@ import udo.util.shared.Constants.StorageStrings;
  * like title, date, hashtag, so on.
  *
  */
-public class ItemData {
+public class ItemData implements Comparable<ItemData> {
 	
 	private ItemType mType;
 	private HashMap<String, Object> mData;
@@ -26,6 +26,15 @@ public class ItemData {
 	@Override
 	public String toString() {
 		//TODO need to revise
+		switch (mType) {
+			case EVENT :
+				return makeEventString();
+			default :
+				return null;
+		}
+	}
+
+	private String makeEventString() {
 		Calendar startCal = (Calendar) mData.get(Keys.START);
 		Calendar endCal = (Calendar) mData.get(Keys.END);
 		@SuppressWarnings("unchecked")
@@ -49,7 +58,6 @@ public class ItemData {
 				endCal.get(Calendar.HOUR_OF_DAY),
 				endCal.get(Calendar.MINUTE),
 				tagsString);
-		
 		return result;
 	}
 	
@@ -117,6 +125,10 @@ public class ItemData {
 		return mData.keySet();
 	}
 	
+	public HashMap<String, Object> getData() {
+		return mData;
+	}
+	
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -128,23 +140,65 @@ public class ItemData {
 	
 	@Override
 	public boolean equals(Object other) {
+		if (other == this) {
+			return true;
+		}
 		if (other == null) {
 			return false;
-		} else if (!other.getClass().equals(this.getClass())) {
+		}
+		if (!other.getClass().equals(this.getClass())) {
 			return false;
 		} else {
-			boolean match = true;
-			for (String key : mData.keySet()) {
-				Object otherValue = ((ItemData) other).get(key);
-				Object thisValue = this.get(key);
-				if (otherValue != null && otherValue.equals(thisValue)) {
-					match = true;
-				} else {
-					match = false;
-					break;
-				}
+			ItemData otherItem = (ItemData) other;
+			if (!this.getItemType().equals(otherItem.getItemType())) {
+				return false;
 			}
-			return match;
+			if (!this.getData().equals(otherItem.getData())) {
+				return false;
+			}
+			return true;
+		}
+	}
+
+	@Override
+	public int compareTo(ItemData other) {
+		Calendar thisCal;
+		Calendar otherCal;
+		
+		if (this.contains(Keys.START)) {
+			thisCal = (Calendar) this.get(Keys.START);
+		} else if (this.contains(Keys.DUE)) {
+			thisCal = (Calendar) this.get(Keys.DUE);
+		} else {
+			thisCal = null;
+		}
+		
+		if (other.contains(Keys.START)) {
+			otherCal = (Calendar) other.get(Keys.START);
+		} else if (other.contains(Keys.DUE)) {
+			otherCal = (Calendar) other.get(Keys.DUE);
+		} else {
+			otherCal = null;
+		}
+		
+		if (thisCal == null && otherCal == null) {
+			// they are equal if nothing to compare
+			return 0;
+		} else if (thisCal == null && otherCal != null) {
+			// this object is less than the other
+			// if the other has a date and this doesnt.
+			return -1;
+		} else if (thisCal != null && otherCal == null) {
+			// the other object is less than this object
+			// if this object has a date and the other doesnt.
+			return 1;
+		} else if (thisCal != null && otherCal != null ) {
+			// if both are not null, then can just return
+			// the comparision to the 
+			return thisCal.compareTo(otherCal);
+		} else {
+			// this should not happen
+			return 0;
 		}
 	}
 }

@@ -2,6 +2,7 @@ package udo.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
@@ -12,6 +13,7 @@ import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
+import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 
 public class Engine {
@@ -100,7 +102,7 @@ public class Engine {
 		return output;
 	}
 	
-	private OutputData runList(InputData inputData) {
+	private OutputData runList(InputData input) {
 		/*
 		 * 1. build a list of all items
 		 * 2. select only the items we want.
@@ -113,9 +115,29 @@ public class Engine {
 		while (mCache.hasNextItem()) {
 			listOfAllItems.add(mCache.getNextItem());
 		}
+		mCache.unlock();
+		ArrayList<ItemData> result;
 		
+		ListQuery query = (ListQuery) input.get(Keys.QUERY);
 		
-		return null;
+		switch (query) {
+			case ALL :
+				result = listOfAllItems;
+				break;
+			case SINGLE_HASHTAG :
+				String tag = (String) input.get(Keys.HASHTAG);
+				result = trimList(listOfAllItems, tag);
+				break;
+			default :
+				return null;
+		}
+		
+		Collections.sort(result);
+		
+		OutputData output = new OutputData(Command.LIST, ExecutionStatus.SUCCESS);
+		output.put(Keys.ITEMS, result);
+		
+		return output;
 	}
 
 	private OutputData runSave(InputData inputData) {
@@ -149,5 +171,17 @@ public class Engine {
 		
 		mFileManager.closeWriteMode();
 		return true;
+	}
+
+	private ArrayList<ItemData> trimList(ArrayList<ItemData> list, String tag) {
+		ArrayList<ItemData> result = new ArrayList<ItemData>();
+		for (ItemData item : list) {
+			@SuppressWarnings("unchecked")
+			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
+			if (tags.contains(tag)) {
+				result.add(item);
+			}
+		}
+		return result;
 	}
 }

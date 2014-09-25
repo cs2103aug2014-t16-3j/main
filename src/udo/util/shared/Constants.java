@@ -9,8 +9,11 @@ public class Constants {
 		public static final String DONE = "done";
 		public static final String START = "start";
 		public static final String END = "end";
+		public static final String HASHTAG = "hashtag";
 		public static final String HASHTAGS = "hashtags";
 		public static final String ITEM = "item";
+		public static final String ITEMS = "items";
+		public static final String QUERY = "query";
 	}
 	
 	public static class Indices {

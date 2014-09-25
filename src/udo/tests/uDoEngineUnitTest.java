@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -13,11 +14,13 @@ import udo.main.Engine;
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
 import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
+import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
-import udo.util.shared.ExecutionStatus;
 
 public class uDoEngineUnitTest {
 	
@@ -25,7 +28,9 @@ public class uDoEngineUnitTest {
 	public void testEngineExecuteListAll() {
 		Engine e = new Engine();
 		if (!e.loadFile()) fail("load fail");
-		OutputData o = e.execute(new InputData(Command.LIST));
+		InputData input = new InputData(Command.LIST);
+		input.put(Keys.QUERY, ListQuery.ALL);
+		OutputData o = e.execute(input);
 		assertFalse("output object cant be null",
 				o == null);
 		assertEquals("the output status shud be success",
@@ -34,7 +39,13 @@ public class uDoEngineUnitTest {
 		assertEquals("the output command should be list",
 				Command.LIST,
 				o.getCommand());
-		fail("havent settle the actual item output");
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		assertEquals("",
+				2,
+				s.size());
+		System.out.println(s.get(0).toString());
+		System.out.println(s.get(1).toString());
 	}
 	
 	@Test
@@ -63,7 +74,7 @@ public class uDoEngineUnitTest {
 	public void testEngineExecuteSave() {
 		Engine e = new Engine();
 		boolean loadOK = e.loadFile();
-		if (!loadOK) fail();
+		if (!loadOK) fail("load failed");
 		InputData in = new InputData(Command.SAVE);
 		OutputData out = e.execute(in);
 		assertFalse("out should not be null",
