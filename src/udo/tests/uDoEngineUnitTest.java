@@ -25,6 +25,20 @@ import udo.util.shared.OutputData;
 public class uDoEngineUnitTest {
 	
 	@Test
+	public void testEngineDelete() {
+		Engine e = new Engine();
+		e.loadFile();
+		InputData input = new InputData(Command.DELETE);
+		input.put(Keys.UID, 12345);
+		OutputData o = e.execute(input);
+		assertFalse("cannot be null",
+				null == o);
+		assertEquals("o success",
+				ExecutionStatus.SUCCESS,
+				o.getStatus());
+	}
+	
+	@Test
 	public void testEngineExecuteListAll() {
 		Engine e = new Engine();
 		if (!e.loadFile()) fail("load fail");

@@ -49,6 +49,10 @@ public class Engine {
 				return runAddEvent(input);
 			case LIST :
 				return runList(input);
+			case DELETE :
+				return runDelete(input);
+			case UNDO :
+				return runUndo(input);
 			case SAVE :
 				return runSave(input);
 			case EXIT :
@@ -124,6 +128,24 @@ public class Engine {
 		output.put(Keys.ITEMS, result);
 		
 		return output;
+	}
+	
+	private OutputData runDelete(InputData inputData) {
+		int uid = (int) inputData.get(Keys.UID);
+		boolean deleteOK = mCache.delete(uid);
+		OutputData output;
+		if (deleteOK) {
+			output = new OutputData(Command.DELETE, ExecutionStatus.SUCCESS);
+		} else {
+			output = new OutputData(Command.DELETE, ExecutionStatus.FAIL);
+		}
+		
+		return output;
+	}
+	
+	private OutputData runUndo(InputData inputData) {
+		
+		return null;
 	}
 
 	private OutputData runSave(InputData inputData) {

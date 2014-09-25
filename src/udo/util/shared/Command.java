@@ -5,5 +5,6 @@ public enum Command {
 	LIST,
 	DELETE,
 	SAVE,
-	EXIT
+	EXIT,
+	UNDO
 }

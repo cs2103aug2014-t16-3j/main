@@ -52,6 +52,36 @@ public class Cache {
 		}
 	}
 	
+	public boolean delete(int uid) {
+		// TODO
+		ArrayList<ItemData> items = getAllItems();
+		ItemData toDelete = null;
+		for (ItemData item : items) {
+			int itemUid = (int) item.get(Keys.UID);
+			if (itemUid == uid) {
+				toDelete = item;
+				break;
+			}
+		}
+		if (toDelete != null) {
+			ItemType type = toDelete.getItemType();
+			switch (type) {
+				case EVENT:
+					mEvents.remove(toDelete);
+					break;
+				case TASK:
+					mTasks.remove(toDelete);
+					break;
+				case PLAN:
+					mPlans.remove(toDelete);
+					break;
+				default:
+					return false;
+			}
+		}
+		return true;
+	}
+	
 	public int size() {
 		int eventSize = mEvents.size();
 		int taskSize = mTasks.size();
