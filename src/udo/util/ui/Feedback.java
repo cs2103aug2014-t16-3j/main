@@ -1,5 +1,7 @@
 package udo.util.ui;
 
+import javax.swing.JPanel;
+
 import udo.util.shared.Command;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.ItemData;
@@ -10,8 +12,10 @@ public class Feedback {
 	
 	private String mCommand;
 	private String mStatus;
-	private String mStart;
-	private String mEnd;
+
+	private JPanel mDayView;
+	private JPanel mListView;
+	
 	public Feedback(OutputData output){
 		if(output.getStatus().equals(ExecutionStatus.SUCCESS)) {
 			switch(output.getCommand()){
