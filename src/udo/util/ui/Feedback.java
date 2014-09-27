@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
-import udo.util.shared.Constants.Keys;
+
+import udo.util.ui.ListView;
 
 public class Feedback {
 	
@@ -23,9 +24,11 @@ public class Feedback {
 	
 	public Feedback(){
 		mListView = new ListView();
+		mListView.setOpaque(false);
 		mDayView = new DayView();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void process(OutputData output){
 		if(output.getStatus().equals(ExecutionStatus.SUCCESS)) {
 			switch(output.getCommand()){
@@ -37,12 +40,13 @@ public class Feedback {
 				break;
 			case EXIT: mCommand = "Exit";
 				break;
-			case LIST: mCommand = "Listing ";
-			mData = output.get(Keys.ITEMS);
-			mListView.removeAll();
-			mListView.init((ArrayList<ItemData>) mData);
-			
-				break;
+			case LIST: 	mCommand = "Listing ";
+						mData = output.get(Keys.ITEMS);
+						mListView.removeAll();
+						mListView.init((ArrayList<ItemData>) mData);
+						mListView.setBounds(20,20,350,500);
+						finalView = mListView;
+						break;
 			case SAVE: mCommand = "Saved ";
 				break;
 			default:
@@ -58,5 +62,9 @@ public class Feedback {
 	
 	public String getStatus(){
 		return mStatus;
+	}
+
+	public JPanel getFinalView() {
+		return finalView;
 	}
 }

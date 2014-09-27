@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -21,9 +22,12 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.ui.Entry;
 import udo.util.ui.Feedback;
+import udo.util.ui.ListView;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
@@ -99,7 +103,7 @@ public class UserInterface implements ActionListener {
 		 * Sets up popup
 		 */
 		
-        mLayer.add(mPopup, new Integer(1));
+        mLayer.add(mPopup, new Integer(2));
 		
 		/**
 		 * Sets up the frame
@@ -121,9 +125,9 @@ public class UserInterface implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		
 		String text = mTextField.getText();
-		Entry newEntry = new Entry("17 Sep 2014, 08oo - 09oo", "Eat a healthy breakfast made with love");
-		newEntry.setBounds(20, 150, 300, 50);
-		mLayer.add(newEntry, new Integer(1));
+		//Entry newEntry = new Entry("17 Sep 2014, 08oo - 09oo", "Eat a healthy breakfast made with love");
+		//newEntry.setBounds(20, 150, 300, 50);
+		//mLayer.add(newEntry, new Integer(1));
 		showPopup(text);
 		mTextField.setText("");
 
@@ -148,6 +152,7 @@ public class UserInterface implements ActionListener {
 	 */
 	public void show(OutputData output){
 		fb.process(output);
+		mLayer.add(fb.getFinalView(), new Integer(1));
 		String outputString = fb.getCommand();
 		showPopup(outputString);
 	}
