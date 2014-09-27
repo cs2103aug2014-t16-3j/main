@@ -44,9 +44,12 @@ public class UserInterface implements ActionListener {
 	private boolean mWaiting;
 	private String mUserInput;
 	
+	private Feedback fb;
+	
 	public UserInterface(){
 		
 		initUI();
+		fb = new Feedback();
 	}
 	
 	public void initUI(){
@@ -144,7 +147,7 @@ public class UserInterface implements ActionListener {
 	 * ui.show is to show the output sent by engine
 	 */
 	public void show(OutputData output){
-		Feedback fb = new Feedback(output);
+		fb.process(output);
 		String outputString = fb.getCommand();
 		showPopup(outputString);
 	}

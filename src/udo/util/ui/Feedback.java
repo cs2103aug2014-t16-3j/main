@@ -1,5 +1,7 @@
 package udo.util.ui;
 
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
 
 import udo.util.shared.Command;
@@ -12,11 +14,19 @@ public class Feedback {
 	
 	private String mCommand;
 	private String mStatus;
+	private Object mData;
 
-	private JPanel mDayView;
-	private JPanel mListView;
+	private DayView mDayView;
+	private ListView mListView;
 	
-	public Feedback(OutputData output){
+	private JPanel finalView;
+	
+	public Feedback(){
+		mListView = new ListView();
+		mDayView = new DayView();
+	}
+	
+	public void process(OutputData output){
 		if(output.getStatus().equals(ExecutionStatus.SUCCESS)) {
 			switch(output.getCommand()){
 			case ADD_EVENT: mCommand = "Added ";
@@ -28,6 +38,10 @@ public class Feedback {
 			case EXIT: mCommand = "Exit";
 				break;
 			case LIST: mCommand = "Listing ";
+			mData = output.get(Keys.ITEMS);
+			mListView.removeAll();
+			mListView.init((ArrayList<ItemData>) mData);
+			
 				break;
 			case SAVE: mCommand = "Saved ";
 				break;
@@ -38,7 +52,6 @@ public class Feedback {
 			mCommand = "Failed to do specified task. Please try again";
 		}
 	}
-	
 	public String getCommand(){
 		return mCommand;
 	}

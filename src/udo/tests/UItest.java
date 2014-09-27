@@ -15,7 +15,7 @@ public class UItest {
 	
 	public static void main (String[] args){
 
-		// UserInterface ui = new UserInterface();
+		//UserInterface ui = new UserInterface();
 		Engine engine = new Engine();
 		engine.loadFile();
 		InputData input = new InputData(Command.LIST);
@@ -23,9 +23,10 @@ public class UItest {
 		OutputData output = engine.execute(input);
 		@SuppressWarnings("unchecked")
 		ArrayList<ItemData> arr = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		System.out.println(output.get(Keys.ITEMS));
 		System.out.println(arr.get(0).get(Keys.TITLE));
 		System.out.println(arr.get(1));
-		// ui.show(output);
+		//ui.show(output);
 		
 	}
 	
