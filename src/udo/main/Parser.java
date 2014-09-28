@@ -1,6 +1,10 @@
 package udo.main;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
@@ -15,13 +19,11 @@ public class Parser {
 	
 	private String mType; //event or task
 	private String mTitle;
-	private int[] mDateFormat;
-	private String mDate;
+	private Calendar mDate;
 	private String mStartTime;
 	private String mEndTime;
 	private ArrayList<String> mTags; // null or an ArrayList of tags, including "#" character in it
 	private int mDeleteIndex;
-	private String mDetails;
 
 	public Parser() {
 		
@@ -73,6 +75,7 @@ public class Parser {
 	//whether it is an event or a task
 	public InputData add(Command type, String details) {
 		if (isValidAdd(details)) { 				//to do: check whether it is an event or a task
+			//smType
 			mTitle = getTitle(details);
 			mDate = getDate(details);
 			mStartTime = getStartTime(details);
@@ -96,8 +99,7 @@ public class Parser {
 	public boolean isValidAdd(String input) {
 		if (input.substring(4).isEmpty()) {
 			return false;
-		} else if (getTitle(input).isEmpty() ||
-					getDate(input).isEmpty()) {
+		} else if (getTitle(input).isEmpty()) {
 			return false;
 		} else {
 			return true;
@@ -112,11 +114,75 @@ public class Parser {
 		int endPoint = input.lastIndexOf("on") - 1; 
 		return input.substring(4, endPoint); 
 	}
+	
+	
 
-	public String getDate(String input) {
-		int startingPoint = input.lastIndexOf("on") + 3;
-		int endPoint = input.lastIndexOf("from") - 1;
-		return input.substring(startingPoint, endPoint);
+	//add <title> <hashTags, if any> on <date> 
+	//from <start date and/or time> to <end date and/or time>
+	//date format: dd/mm/yyyy
+	//time format: HH:mm (24 hours)
+	
+	//on 12/12/2014
+	
+	// returns a calendar object with current date and time if no date is found
+	// returns a calendar object with the set date and time
+	public Calendar getDate(String input) {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		format.setLenient(false);
+		Date date;
+		
+		int onStringIndex = input.indexOf("on");
+		int fromStringIndex = input.indexOf("from");
+		int dayMonthSlashIndex;
+		int monthYearSlashIndex;
+		String dateSubstring;
+		
+		if (input.contains("on")) {
+			while (onStringIndex != -1) {
+				dayMonthSlashIndex = onStringIndex + 5;
+				monthYearSlashIndex = input.indexOf("/", dayMonthSlashIndex + 1);
+				
+				if (input.indexOf("/") == dayMonthSlashIndex &&
+					dayMonthSlashIndex + 3 == monthYearSlashIndex) {
+					
+					dateSubstring = input.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
+					try {
+						date = format.parse(dateSubstring);
+					} catch (ParseException pe) {
+						 throw new IllegalArgumentException("The date entered, " + dateSubstring + " is invalid.", pe);
+					}
+					cal.setTime(date);
+					return cal;
+				} else {
+					onStringIndex = input.indexOf("on", onStringIndex + 1);
+				}
+			}
+
+		} 
+		
+		if (input.contains("from")) {
+			while (fromStringIndex != -1) {
+				dayMonthSlashIndex = fromStringIndex + 7;
+				monthYearSlashIndex = input.indexOf("/", dayMonthSlashIndex + 1);
+				
+				if (input.indexOf("/") == dayMonthSlashIndex &&
+					dayMonthSlashIndex + 3 == monthYearSlashIndex) {
+					
+					dateSubstring = input.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
+					try {
+						date = format.parse(dateSubstring);
+					} catch (ParseException pe) {
+						 throw new IllegalArgumentException("The date entered, " + dateSubstring + " is invalid.", pe);
+					}
+					cal.setTime(date);
+					return cal;
+				} else {
+					fromStringIndex = input.indexOf("from", fromStringIndex + 1);
+				}
+			}
+		} 
+		return cal;
 	}
 	
 	public ArrayList<String> getTags(String input) {

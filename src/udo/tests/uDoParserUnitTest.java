@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
+
 import org.junit.Test;
 
 import udo.main.Parser;
@@ -13,8 +15,8 @@ import udo.util.shared.InputData;
 public class uDoParserUnitTest {
 
 	Parser p = new Parser();
-	String input = "add activity on 3/4/14 from 9:24pm to 10:30pm";
-	String inputTag = "add activity #2103 on 3/4/14 from 9:24pm to 10:30pm";
+	String input = "add activity on 03/01/2014 from 9:24pm to 10:30pm";
+	String inputTag = "add activity #2103 on 03/01/2014 from 9:24pm to 10:30pm";
 	String deleteLine = "delete 2";
 	//add <title> <hashTags, if any> on <date> from <start time> to <end time>
 	
@@ -35,10 +37,12 @@ public class uDoParserUnitTest {
 		assertTrue(title.equals("activity"));
 	}
 	
-	@Test
+	@Test 
 	public void testGetDate() {
-		String date = p.getDate(input);
-		assertTrue(date.equals("3/4/14"));
+		Calendar date = p.getDate(input);
+		Calendar testDate = Calendar.getInstance();
+		testDate.set(2014, 1, 3);
+		assertEquals(date, testDate);
 	}
 	
 	@Test
