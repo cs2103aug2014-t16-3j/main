@@ -52,7 +52,20 @@ public class Cache {
 		}
 	}
 	
-	public boolean delete(int uid) {
+	public ItemData getItem(int uid) {
+		ArrayList<ItemData> items = getAllItems();
+		ItemData result = null;
+		for (ItemData item : items) {
+			int itemUid = (int) item.get(Keys.UID);
+			if (itemUid == uid) {
+				result = item;
+				break;
+			}
+		}
+		return result;
+	}
+	
+	public boolean deleteItem(int uid) {
 		// TODO
 		ArrayList<ItemData> items = getAllItems();
 		ItemData toDelete = null;

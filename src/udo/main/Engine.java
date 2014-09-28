@@ -6,7 +6,7 @@ import java.util.Collections;
 
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
-import udo.util.engine.RecycleBin;
+import udo.util.engine.UndoBin;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
@@ -20,12 +20,12 @@ public class Engine {
 	
 	private FileManager mFileManager;
 	private Cache mCache;
-	private RecycleBin mRecycleBin;
+	private UndoBin mUndoBin;
 	
 	public Engine() {
 		mFileManager = new FileManager();
 		mCache = new Cache();
-		mRecycleBin = new RecycleBin();
+		mUndoBin = new UndoBin();
 	}
 	
 	//****** public methods ******//
@@ -92,6 +92,7 @@ public class Engine {
 			// make output object with the event data inside
 			output = new OutputData(cmd, ExecutionStatus.SUCCESS);
 			output.put(Keys.ITEM, event);
+			storeUndo(Command.ADD_EVENT, event);
 		} else {
 			output = new OutputData(cmd, ExecutionStatus.FAIL);
 		}
@@ -132,10 +133,12 @@ public class Engine {
 	
 	private OutputData runDelete(InputData inputData) {
 		int uid = (int) inputData.get(Keys.UID);
-		boolean deleteOK = mCache.delete(uid);
+		ItemData deletedItem = mCache.getItem(uid);
+		boolean deleteOK = mCache.deleteItem(uid);
 		OutputData output;
 		if (deleteOK) {
 			output = new OutputData(Command.DELETE, ExecutionStatus.SUCCESS);
+			storeUndo(Command.DELETE, deletedItem);
 		} else {
 			output = new OutputData(Command.DELETE, ExecutionStatus.FAIL);
 		}
@@ -143,9 +146,18 @@ public class Engine {
 		return output;
 	}
 	
-	private OutputData runUndo(InputData inputData) {
+	private OutputData runEdit(InputData inputData) {
 		
 		return null;
+	}
+	
+	private OutputData runUndo(InputData inputData) {
+		/*
+		 * store the inputdata to be executed.
+		 * so here just execute that inputdata.
+		 */
+		InputData undoInput = mUndoBin.getInputData();
+		return execute(undoInput);
 	}
 
 	private OutputData runSave(InputData inputData) {
@@ -164,6 +176,52 @@ public class Engine {
 	}
 	
 	// ********* private abstracted helper methods ******* // 
+	
+	private void storeUndo(Command previousCommand, ItemData previousItem) {
+		InputData undoInput;
+		switch (previousCommand) {
+			case ADD_EVENT :
+				undoInput = new InputData(Command.DELETE);
+				undoInput.put(Keys.UID, previousItem.get(Keys.UID));
+				break;
+			case DELETE :
+				ItemType previousItemType = previousItem.getItemType();
+				// decide which kind of command based on the kind of item deleted.
+				switch (previousItemType) {
+					case EVENT:
+						undoInput = new InputData(Command.ADD_EVENT);
+						break;
+					case TASK:
+						//TODO
+						undoInput = new InputData(Command.ADD_TASK);
+						break;
+					case PLAN:
+						//TODO
+						undoInput = new InputData(Command.ADD_PLAN);
+						break;
+					default:
+						// should not
+						return;
+				}
+				// copy the data in the item to the inputdata.
+				// so that the add command can add like it came from the parser
+				// it will also copy the uid field
+				// but it will be ignored in the add execution.
+				for (String key : previousItem.getKeys()) {
+					undoInput.put(key, previousItem.get(key));
+				}
+				break;
+			case EDIT :
+				//TODO
+				undoInput = null;
+				break;
+			default:
+				// do nothing. this shouldnt happen
+				return;
+			
+		}
+		mUndoBin.putInputData(undoInput);
+	}
 	
 	private boolean writeCacheToFile() {
 		/*boolean filePrepared = mFileManager.startWriteMode();

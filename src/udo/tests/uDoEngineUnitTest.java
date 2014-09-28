@@ -25,6 +25,15 @@ import udo.util.shared.OutputData;
 public class uDoEngineUnitTest {
 	
 	@Test
+	public void testEngineUndoDelete() {
+		Engine e = new Engine();
+		e.loadFile();
+		InputData input = new InputData(Command.DELETE);
+		input.put(Keys.UID, 12345);
+		e.execute(input);
+	}
+	
+	@Test
 	public void testEngineDelete() {
 		Engine e = new Engine();
 		e.loadFile();
