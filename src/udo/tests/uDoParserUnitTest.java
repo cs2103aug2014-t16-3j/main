@@ -39,26 +39,11 @@ public class uDoParserUnitTest {
 	
 	@Test 
 	public void testGetDate() {
-		Calendar date = p.getDate(input);
-		Calendar testDate = Calendar.getInstance();
-		testDate.set(2014, 1, 3);
-		assertEquals(date, testDate);
+		
 	}
 	
 	@Test
 	public void testGetTags() {
 		
-	}
-	
-	@Test
-	public void testGetStartTime() {
-		String startTime = p.getStartTime(input);
-		assertEquals(startTime, "9:24pm");
-	}
-	
-	@Test
-	public void testGetEndTime() {
-		String endTime = p.getEndTime(input);
-		assertEquals(endTime, "10:30pm");
 	}
 }

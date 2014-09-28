@@ -20,8 +20,12 @@ public class Parser {
 	private String mType; //event or task
 	private String mTitle;
 	private Calendar mDate;
-	private String mStartTime;
-	private String mEndTime;
+	private Calendar mStartDate;
+	private Calendar mEndDate;
+	private Calendar mStartTime;
+	private Calendar mEndTime;
+	private ArrayList<Calendar> mListOfDates;
+	private ArrayList<Calendar> mListOfTime;
 	private ArrayList<String> mTags; // null or an ArrayList of tags, including "#" character in it
 	private int mDeleteIndex;
 
@@ -75,13 +79,14 @@ public class Parser {
 	//whether it is an event or a task
 	public InputData add(Command type, String details) {
 		if (isValidAdd(details)) { 				//to do: check whether it is an event or a task
-			//smType
+			//mType
+			/*
 			mTitle = getTitle(details);
 			mDate = getDate(details);
 			mStartTime = getStartTime(details);
 			mEndTime = getEndTime(details);
 			mTags = getTags(details);
-			
+			*/
 			InputData addInputData = new InputData(type);
 			addInputData.put("type", mType);
 			addInputData.put("title", mTitle);
@@ -114,80 +119,117 @@ public class Parser {
 		int endPoint = input.lastIndexOf("on") - 1; 
 		return input.substring(4, endPoint); 
 	}
-	
-	
 
 	//add <title> <hashTags, if any> on <date> 
 	//from <start date and/or time> to <end date and/or time>
 	//date format: dd/mm/yyyy
-	//time format: HH:mm (24 hours)
-	
-	//on 12/12/2014
-	
-	// returns a calendar object with current date and time if no date is found
-	// returns a calendar object with the set date and time
-	public Calendar getDate(String input) {
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		format.setLenient(false);
-		Date date;
-		
-		int onStringIndex = input.indexOf("on");
-		int fromStringIndex = input.indexOf("from");
-		int dayMonthSlashIndex;
-		int monthYearSlashIndex;
-		String dateSubstring;
-		
-		if (input.contains("on")) {
-			while (onStringIndex != -1) {
-				dayMonthSlashIndex = onStringIndex + 5;
-				monthYearSlashIndex = input.indexOf("/", dayMonthSlashIndex + 1);
-				
-				if (input.indexOf("/") == dayMonthSlashIndex &&
-					dayMonthSlashIndex + 3 == monthYearSlashIndex) {
-					
-					dateSubstring = input.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
-					try {
-						date = format.parse(dateSubstring);
-					} catch (ParseException pe) {
-						 throw new IllegalArgumentException("The date entered, " + dateSubstring + " is invalid.", pe);
-					}
-					cal.setTime(date);
-					return cal;
-				} else {
-					onStringIndex = input.indexOf("on", onStringIndex + 1);
-				}
-			}
 
-		} 
-		
-		if (input.contains("from")) {
-			while (fromStringIndex != -1) {
-				dayMonthSlashIndex = fromStringIndex + 7;
-				monthYearSlashIndex = input.indexOf("/", dayMonthSlashIndex + 1);
+	// returns an empty ArrayList id no date is found
+	// returns an ArrayList of dates according to first occurance in input string
+	// focus on getting the right date format from input
+	
+	// does this catch 3/4/14 ?
+	public ArrayList<Calendar> getDates(String input) {
+		ArrayList<Calendar> listOfDates = new ArrayList<Calendar>();
+		Calendar cal = Calendar.getInstance();
+		if (input.contains("/")) {
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			format.setLenient(false);
+			Date date;
+	
+			int dayMonthSlashIndex;
+			int monthYearSlashIndex;
+			String dateSubstring = input;
+			
+			while (dateSubstring.contains("/")) {
+				dayMonthSlashIndex = dateSubstring.indexOf("/");
+				monthYearSlashIndex = dateSubstring.indexOf("/", dayMonthSlashIndex + 1);
 				
-				if (input.indexOf("/") == dayMonthSlashIndex &&
+				if (dateSubstring.indexOf("/") == dayMonthSlashIndex &&
 					dayMonthSlashIndex + 3 == monthYearSlashIndex) {
-					
-					dateSubstring = input.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
+					// problematic area
+					dateSubstring = dateSubstring.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
+					dateSubstring = formatDateSubstring(dateSubstring);
 					try {
 						date = format.parse(dateSubstring);
+						date.setMonth(date.getMonth() - 1);
 					} catch (ParseException pe) {
+						// Should I throw exception for this? If I shouldn't what should I do instead?
 						 throw new IllegalArgumentException("The date entered, " + dateSubstring + " is invalid.", pe);
 					}
 					cal.setTime(date);
-					return cal;
-				} else {
-					fromStringIndex = input.indexOf("from", fromStringIndex + 1);
-				}
+					listOfDates.add(cal);
+				} 
+				dateSubstring = dateSubstring.substring(dayMonthSlashIndex + 1);
 			}
-		} 
-		return cal;
+		}
+		return listOfDates;
 	}
 	
+	public String formatDateSubstring(String input) {
+		String date = input.trim();
+		int lastLetterIndex = date.length() - 1;
+		String lastLetter = date.substring(lastLetterIndex);
+		
+		while (!isInteger(lastLetter)) {
+			date = date.substring(0, lastLetterIndex);
+			lastLetterIndex = lastLetterIndex - 1;
+			lastLetter = date.substring(lastLetterIndex);
+		}
+		date.concat(" ");
+		return date;
+	}
+	
+	public boolean isInteger(String input) {
+	    try {
+	        Integer.parseInt( input );
+	        return true;
+	    }
+	    catch( Exception e ) {
+	        return false;
+	    }
+	}
+	
+	//time format: hh:mm a(12 hours)	
+	// does it catch 9:00 AM
+	// does it catch 9 AM / 9am?
+	public ArrayList<Calendar> getTime(String input) {
+		ArrayList<Calendar> listOfTime = new ArrayList<Calendar>();
+		Calendar time = Calendar.getInstance();
+		if (input.contains(":")) {
+			SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
+			format.setLenient(false);
+			Date date;
+			
+			int colonIndex;
+			String timeSubstring = input;
+			
+			while (timeSubstring.contains(":")) {
+				colonIndex = timeSubstring.indexOf(":");
+				
+				/*
+				if (dateSubstring.indexOf("/") == dayMonthSlashIndex &&
+					dayMonthSlashIndex + 3 == monthYearSlashIndex) {
+					dateSubstring = dateSubstring.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
+					try {
+						date = format.parse(dateSubstring);
+						date.setMonth(date.getMonth() + 1);
+					} catch (ParseException pe) {
+						// Should I throw exception for this? If I shouldn't what should I do instead?
+						 throw new IllegalArgumentException("The date entered, " + dateSubstring + " is invalid.", pe);
+					}
+					cal.setTime(date);
+					listOfDates.add(cal);
+				} 
+				dateSubstring = dateSubstring.substring(dayMonthSlashIndex + 1);
+				*/
+			}
+		}
+		return listOfTime;
+	}
+
 	public ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
-		
 		if (input.contains("#")) {
 			int indexOfSeparator;
 			String tag;
@@ -199,23 +241,8 @@ public class Parser {
 				tagArrayList.add(tag);
 				indexOfHash = input.indexOf("#", indexOfSeparator);
 			}
-			
-			return tagArrayList;
-		
-		} else {
-			return null;
-		}
-	}
-
-	public String getStartTime(String input) {
-		int startingPoint = input.lastIndexOf("from") + 5;
-		int endPoint = input.lastIndexOf("to") - 1;
-		return input.substring(startingPoint, endPoint);
-	}
-
-	public String getEndTime(String input) {
-		int startingPoint = input.lastIndexOf("to") + 3;
-		return input.substring(startingPoint);
+		} 
+		return tagArrayList;
 	}
 	
 	public InputData list(Command type, String details) {
@@ -245,16 +272,6 @@ public class Parser {
 		} else {
 			return true;
 		}
-	}
-	
-	public boolean isInteger( String input ) {
-	    try {
-	        Integer.parseInt( input );
-	        return true;
-	    }
-	    catch( Exception e ) {
-	        return false;
-	    }
 	}
 	
 	public InputData save(Command type, String details) {
