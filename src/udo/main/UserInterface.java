@@ -129,7 +129,7 @@ public class UserInterface implements ActionListener {
 		//Entry newEntry = new Entry("17 Sep 2014, 08oo - 09oo", "Eat a healthy breakfast made with love");
 		//newEntry.setBounds(20, 150, 300, 50);
 		//mLayer.add(newEntry, new Integer(1));
-		showPopup(text);
+		//showPopup(text);
 		mTextField.setText("");
 
 		mUserInput = text;

@@ -20,7 +20,7 @@ public class Feedback {
 	private DayView mDayView;
 	private ListView mListView;
 	
-	private JPanel finalView;
+	private JPanel mFinalView;
 	
 	public Feedback(){
 		mListView = new ListView();
@@ -45,7 +45,7 @@ public class Feedback {
 						mListView.removeAll();
 						mListView.init((ArrayList<ItemData>) mData);
 						mListView.setBounds(20,20,350,500);
-						finalView = mListView;
+						mFinalView = mListView;
 						break;
 			case SAVE: mCommand = "Saved ";
 				break;
@@ -65,6 +65,6 @@ public class Feedback {
 	}
 
 	public JPanel getFinalView() {
-		return finalView;
+		return mFinalView;
 	}
 }
