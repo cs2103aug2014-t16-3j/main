@@ -20,12 +20,12 @@ public class Constants {
 	public static class Keys {
 		public static final String UID = "uid";
 		public static final String TITLE = "title";
-		public static final String DUE = "due";
-		public static final String DONE = "done";
-		public static final String START = "start";
-		public static final String END = "end";
-		public static final String HASHTAG = "hashtag";
-		public static final String HASHTAGS = "hashtags";
+		public static final String DUE = "due"; // for task
+		public static final String DONE = "done"; // for task
+		public static final String START = "start"; // events
+		public static final String END = "end";  // event
+		public static final String HASHTAG = "hashtag"; // for list
+		public static final String HASHTAGS = "hashtags"; // for parser add
 		public static final String ITEM = "item";
 		public static final String ITEMS = "items";
 		public static final String QUERY = "query";

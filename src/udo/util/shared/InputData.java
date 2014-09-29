@@ -20,6 +20,7 @@ import java.util.Set;
 public class InputData {
 	
 	private Command mCommand;
+	// ExecutionStatus mStatus;
 	private HashMap<String, Object> mData;
 	
 	public InputData(Command cmd) {

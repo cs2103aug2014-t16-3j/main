@@ -93,7 +93,7 @@ public class Parser {
 			}
 			
 			InputData addInputData = new InputData(type);
-			addInputData.put("type", mType);
+			addInputData.put("type", mType); // put command
 			addInputData.put("title", mTitle);
 			addInputData.put("startDate", mStartDate);
 			addInputData.put("endDate", mEndDate);
@@ -104,7 +104,7 @@ public class Parser {
 			return addInputData;
 		} else {
 			return null;
-		}
+		} 
 	}
 	
 	public boolean isValidAdd(String input) {
