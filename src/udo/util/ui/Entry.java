@@ -68,7 +68,7 @@ public class Entry extends JPanel{
 	private String calToString(Calendar startCal, Calendar endCal) {
 		String calString = "";
 		SimpleDateFormat sdf, sdf2; 
-		sdf = new SimpleDateFormat("EEE dd/MM/yyyy kk:mm");
+		sdf = new SimpleDateFormat("EEE dd/MM/yy kk:mm");
 		sdf2 = new SimpleDateFormat("kk:mm");
 		calString += sdf.format(startCal.getTime());
 		calString += " - ";
