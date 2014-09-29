@@ -1,8 +1,6 @@
 package udo.util.ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,11 +32,8 @@ public class Entry extends JPanel{
 	private static final Color ENTRY_BORDER = new Color(45,215,105);
 	
 	public Entry(ItemData item) {
-		//super(new FlowLayout());
         setBorder(BorderFactory.createLineBorder(ENTRY_BORDER));
         setBackground(ENTRY_COLOR);
-       
-        //mTextArea.setPreferredSize(new Dimension(280, 50));
         mTextArea.setLineWrap(true);
 		mTextArea.setWrapStyleWord(true);
 		mTextArea.setEditable(false);
