@@ -19,13 +19,10 @@ public class Parser {
 	
 	private String mType; //event or task
 	private String mTitle;
-	private Calendar mDate;
 	private Calendar mStartDate;
 	private Calendar mEndDate;
 	private Calendar mStartTime;
 	private Calendar mEndTime;
-	private ArrayList<Calendar> mListOfDates;
-	private ArrayList<Calendar> mListOfTime;
 	private ArrayList<String> mTags; // null or an ArrayList of tags, including "#" character in it
 	private int mDeleteIndex;
 
@@ -79,18 +76,27 @@ public class Parser {
 	//whether it is an event or a task
 	public InputData add(Command type, String details) {
 		if (isValidAdd(details)) { 				//to do: check whether it is an event or a task
-			//mType
-			/*
+			
+			ArrayList<Calendar> listOfDates = getDate(details);
+			ArrayList<Calendar> listOfTime = getTime(details);
+			mType = "event"; // for now
 			mTitle = getTitle(details);
-			mDate = getDate(details);
-			mStartTime = getStartTime(details);
-			mEndTime = getEndTime(details);
+			mStartTime = listOfTime.get(0);
+			mEndTime = listOfTime.get(1);
 			mTags = getTags(details);
-			*/
+			
+			if (listOfDates.size() > 1) {
+				mStartDate = listOfDates.get(0);
+				mEndDate = listOfDates.get(1);
+			} else {
+				mEndDate = listOfDates.get(0);
+			}
+			
 			InputData addInputData = new InputData(type);
 			addInputData.put("type", mType);
 			addInputData.put("title", mTitle);
-			addInputData.put("date", mDate);
+			addInputData.put("startDate", mStartDate);
+			addInputData.put("endDate", mEndDate);
 			addInputData.put("startTime", mStartTime);
 			addInputData.put("endTime", mEndTime);
 			addInputData.put("tags", mTags);
@@ -102,7 +108,7 @@ public class Parser {
 	}
 	
 	public boolean isValidAdd(String input) {
-		if (input.substring(4).isEmpty()) {
+		if (input.length() < 4) {
 			return false;
 		} else if (getTitle(input).isEmpty()) {
 			return false;
@@ -115,9 +121,30 @@ public class Parser {
 		return false;
 	}
 
-	public String getTitle(String input) { // includes hashtag for now
-		int endPoint = input.lastIndexOf("on") - 1; 
-		return input.substring(4, endPoint); 
+	public String getTitle(String input) {
+		String title = input;
+		if (input.contains("#")) {
+			int hashtagIndex = input.indexOf("#");
+			title = input.substring(0, hashtagIndex);
+		} else {
+			ArrayList<Calendar> listOfDates = getDate(input);
+			ArrayList<Calendar> listOfTime = getTime(input);
+			if (listOfDates.size() > 0 || listOfTime.size() > 0) {
+				//keywords
+				int fromStringIndex = input.lastIndexOf("from");
+				int byStringIndex = input.lastIndexOf("by");
+				int onStringIndex = input.lastIndexOf("on");
+				
+				if (fromStringIndex != -1) {
+					title = input.substring(0, fromStringIndex);
+				} else if (byStringIndex != -1) {
+					title = input.substring(0, byStringIndex);
+				} else if (onStringIndex != -1) {
+					title = input.substring(0, onStringIndex);
+				}
+			} 
+		}
+		return title;
 	}
 
 	//add <title> <hashTags, if any> on <date> 
@@ -129,7 +156,7 @@ public class Parser {
 	// focus on getting the right date format from input
 	
 	// does this catch 3/4/14 ?
-	public ArrayList<Calendar> getDates(String input) {
+	public ArrayList<Calendar> getDate(String input) {
 		ArrayList<Calendar> listOfDates = new ArrayList<Calendar>();
 		Calendar cal = Calendar.getInstance();
 		if (input.contains("/")) {
@@ -176,7 +203,6 @@ public class Parser {
 			lastLetterIndex = lastLetterIndex - 1;
 			lastLetter = date.substring(lastLetterIndex);
 		}
-		//date.concat(" "); 	// does this help?
 		return date;
 	}
 	
@@ -299,6 +325,10 @@ public class Parser {
 		} else {
 			return true;
 		}
+	}
+	
+	public InputData undo(Command type, String details) {
+		return new InputData(type);
 	}
 	
 	public InputData save(Command type, String details) {
