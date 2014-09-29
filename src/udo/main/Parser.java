@@ -176,7 +176,7 @@ public class Parser {
 			lastLetterIndex = lastLetterIndex - 1;
 			lastLetter = date.substring(lastLetterIndex);
 		}
-		date.concat(" ");
+		//date.concat(" "); 	// does this help?
 		return date;
 	}
 	
@@ -195,37 +195,64 @@ public class Parser {
 	// does it catch 9 AM / 9am?
 	public ArrayList<Calendar> getTime(String input) {
 		ArrayList<Calendar> listOfTime = new ArrayList<Calendar>();
-		Calendar time = Calendar.getInstance();
-		if (input.contains(":")) {
-			SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
-			format.setLenient(false);
-			Date date;
-			
-			int colonIndex;
-			String timeSubstring = input;
-			
-			while (timeSubstring.contains(":")) {
-				colonIndex = timeSubstring.indexOf(":");
-				
-				/*
-				if (dateSubstring.indexOf("/") == dayMonthSlashIndex &&
-					dayMonthSlashIndex + 3 == monthYearSlashIndex) {
-					dateSubstring = dateSubstring.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("hh:mma");
+		format.setLenient(false);
+		Date time;
+		
+		int timeSessionIndex;
+		int colonIndex;
+		String timeInt;
+		String timeSubstring = input.toUpperCase();
+		
+		while (timeSubstring.contains("AM") || timeSubstring.contains("PM")) {
+			timeSessionIndex = timeSubstring.indexOf("M");
+			colonIndex = timeSubstring.indexOf(":");
+			if (colonIndex != -1) {
+				if (timeSessionIndex - 4 == colonIndex) {
+					timeInt = timeSubstring.substring(colonIndex - 2, timeSessionIndex + 1);
+					timeInt = formatTimeSubstring(timeInt);
 					try {
-						date = format.parse(dateSubstring);
-						date.setMonth(date.getMonth() + 1);
+						time = format.parse(timeInt);
 					} catch (ParseException pe) {
-						// Should I throw exception for this? If I shouldn't what should I do instead?
-						 throw new IllegalArgumentException("The date entered, " + dateSubstring + " is invalid.", pe);
+						throw new IllegalArgumentException("The date entered, " + timeInt + " is invalid.", pe);
 					}
-					cal.setTime(date);
-					listOfDates.add(cal);
-				} 
-				dateSubstring = dateSubstring.substring(dayMonthSlashIndex + 1);
-				*/
+					cal.setTime(time);
+					listOfTime.add(cal);
+				}
+			} else {
+				// check whether this is the right "M" by checking whether there is an "A"
+				// or "P" in front of it
+				// 12AM etc
+				if (timeSessionIndex - 2 > -1) {
+					timeInt = timeSubstring.substring(timeSessionIndex - 2, timeSessionIndex - 1);
+					if (isInteger(timeInt)) {
+						timeInt = timeSubstring.substring(timeSessionIndex - 3, timeSessionIndex + 1);
+						timeInt = formatTimeSubstring(timeInt);
+						try {
+							time = format.parse(timeInt);
+						} catch (ParseException pe) {
+							throw new IllegalArgumentException("The date entered, " + timeInt + " is invalid.", pe);
+						}
+						cal.setTime(time);
+						listOfTime.add(cal);
+					}
+				}
 			}
+			timeSubstring = timeSubstring.substring(timeSessionIndex + 1);
 		}
 		return listOfTime;
+	}
+	
+	public String formatTimeSubstring(String input) {
+		if (input.contains(":")) {
+			return input.trim();
+		} else {
+			String amPmHolder = input.substring(2);
+			String timeHolder = input.substring(0, 2);
+			String formatedTimeString = timeHolder.concat(":").concat(amPmHolder);
+			return formatedTimeString.trim();
+		}
 	}
 
 	public ArrayList<String> getTags(String input) {
