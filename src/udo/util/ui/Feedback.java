@@ -45,6 +45,8 @@ public class Feedback {
 						mListView.removeAll();
 						mListView.init((ArrayList<ItemData>) mData);
 						mListView.setBounds(20,20,350,500);
+						mListView.validate();
+						mListView.repaint();
 						mFinalView = mListView;
 						break;
 			case SAVE: mCommand = "Saved ";

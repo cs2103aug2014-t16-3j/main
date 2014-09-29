@@ -1,7 +1,10 @@
 package udo.util.ui;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import udo.util.shared.ItemData;
@@ -15,7 +18,8 @@ public class ListView extends JPanel {
 
 	public ListView() {
 		
-		super();
+		// super.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		super(new FlowLayout());
 		setOpaque(false);
 	}
 	
@@ -23,7 +27,7 @@ public class ListView extends JPanel {
 		for (int i = 0; i < data.size(); i++){
 			Entry entry = new Entry(data.get(i));
 			
-			entry.setBounds(20, i, 300, 100);
+			//entry.setPreferredSize(new Dimension(300,50));
 			add(entry);
 		}
 	}
