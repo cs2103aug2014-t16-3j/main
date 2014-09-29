@@ -5,26 +5,27 @@ import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+/*
 import javax.swing.JTextPane;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-
+*/
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ItemData;
 
 public class Entry extends JPanel{
 	
-	private int x;
-	private int y;
-	private String date; // date may be a Date object instead, or other data structures
-	private String desc;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private JTextArea textArea = new JTextArea();
 	
 	private static final Color ENTRY_COLOR = new Color(50,255,125);
@@ -81,7 +82,7 @@ public class Entry extends JPanel{
 		
 	}
 	
-	private void appendToPane(JTextPane tp, String msg, Color c)
+	/*private void appendToPane(JTextPane tp, String msg, Color c)
     {
         StyleContext sc = StyleContext.getDefaultStyleContext();
         AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
@@ -93,6 +94,6 @@ public class Entry extends JPanel{
         tp.setCaretPosition(len);
         tp.setCharacterAttributes(aset, false);
         tp.replaceSelection(msg);
-    }
+    }*/
 
 }

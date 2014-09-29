@@ -41,7 +41,8 @@ public class UserInterface implements ActionListener {
 	
 	private static final int HEIGHT = 600;
 	private static final int WIDTH = 400;
-	private static final Color UDO_BG = new Color(255,244,122);
+	//private static final Color UDO_BG = new Color(255,244,122);
+	private static final Color UDO_BG = new Color(255,255,255);
 	
 	private Timer mTimer;
 	private Timer mExistingTimer;
