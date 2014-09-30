@@ -83,4 +83,13 @@ public class InputData {
 	public void setStatus(ParsingStatus status) {
 		mStatus = status;
 	}
+	
+	/**
+	 * Returns the {@code ParsingStatus} value
+	 * 
+	 * @return the {@code ParsingStatus} value
+	 */
+	public ParsingStatus getStatus() {
+		return mStatus;
+	}
 }

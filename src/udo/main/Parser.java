@@ -26,7 +26,6 @@ public class Parser {
 	private Calendar mStartTime;
 	private Calendar mEndTime;
 	private ArrayList<String> mTags;
-	private int mDeleteIndex;
 
 	public Parser() {
 
@@ -334,25 +333,29 @@ public class Parser {
 			ArrayList<String> tags = getTags(details);
 			if (tags.size() == 0) {
 				listInputData.setStatus(ParsingStatus.FAIL);
+				return listInputData;
 			} else {
-				listInputData.setStatus(ParsingStatus.SUCCESS);
 				listInputData.put(Keys.HASHTAG, tags.get(0));
+				listInputData.setStatus(ParsingStatus.SUCCESS);
+				return listInputData;
 			}
-		} 
-		listInputData.setStatus(ParsingStatus.SUCCESS);
-		return listInputData;
+		} else {
+			listInputData.setStatus(ParsingStatus.SUCCESS);
+			return listInputData;
+		}
 	}
 
-	// settle key standards
 	public InputData delete(Command type, String details) {
+		InputData deleteInputData = new InputData(type);
 		if (isValidDelete(details)) {
 			String deleteIndexString = details.substring(7);
 			int deleteIndex = Integer.parseInt(deleteIndexString);
-			InputData deleteInputData = new InputData(type);
-			deleteInputData.put("deleteIndex", mDeleteIndex);
+			deleteInputData.put(Keys.DELETE, deleteIndex);
+			deleteInputData.setStatus(ParsingStatus.SUCCESS);
 			return deleteInputData;
 		} else {
-			return null;
+			deleteInputData.setStatus(ParsingStatus.FAIL);
+			return deleteInputData;
 		}
 	}
 
