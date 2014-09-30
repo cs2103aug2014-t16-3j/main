@@ -65,11 +65,10 @@ public class Feedback {
 		mListView.revalidate();
 		mListView.repaint();
 		// testing dayview
-		mDayView.testFont();
-		mDayView.setBounds(20,20,350,500);
-		//uncomment below after testing
-		//mFinalView = mListView;
-		mFinalView = mDayView;
+		//mDayView.testFont();
+		//mDayView.setBounds(20,20,350,500);
+		//mFinalView = mDayView;
+		mFinalView = mListView;
 	}
 
 	public String getCommand() {
