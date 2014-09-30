@@ -74,4 +74,13 @@ public class InputData {
 	public Set<String> getNames() {
 		return mData.keySet();
 	}
+	
+	/**
+	 * Sets the {@code ParsingStatus} value
+	 * 
+	 * @return the {@code ParsingStatus} value
+	 */
+	public void setStatus(ParsingStatus status) {
+		mStatus = status;
+	}
 }

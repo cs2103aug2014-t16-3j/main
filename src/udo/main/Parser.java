@@ -9,6 +9,7 @@ import java.util.Date;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.ParsingStatus;
 
 /**
  * (Class description)
@@ -328,19 +329,25 @@ public class Parser {
 	}
 
 	public InputData list(Command type, String details) {
+		InputData listInputData = new InputData(type);
 		if (details.contains("#")) {
 			ArrayList<String> tags = getTags(details);
-			InputData listInputData = new InputData(type);
-			listInputData.put(Keys.HASHTAG, tags.get(0));
-			return listInputData;
-		} else {
-			return new InputData(type);
-		}
+			if (tags.size() == 0) {
+				listInputData.setStatus(ParsingStatus.FAIL);
+			} else {
+				listInputData.setStatus(ParsingStatus.SUCCESS);
+				listInputData.put(Keys.HASHTAG, tags.get(0));
+			}
+		} 
+		listInputData.setStatus(ParsingStatus.SUCCESS);
+		return listInputData;
 	}
 
+	// settle key standards
 	public InputData delete(Command type, String details) {
 		if (isValidDelete(details)) {
-			mDeleteIndex = Integer.parseInt(details);
+			String deleteIndexString = details.substring(7);
+			int deleteIndex = Integer.parseInt(deleteIndexString);
 			InputData deleteInputData = new InputData(type);
 			deleteInputData.put("deleteIndex", mDeleteIndex);
 			return deleteInputData;
@@ -350,11 +357,13 @@ public class Parser {
 	}
 
 	public boolean isValidDelete(String input) {
-		if (!input.isEmpty() || !isInteger(input)) {
-			return false;
-		} else {
-			return true;
+		if (input.length() >= 8) {
+			String deleteIndexString = input.substring(7);
+			if (isInteger(deleteIndexString)) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	public InputData undo(Command type, String details) {
