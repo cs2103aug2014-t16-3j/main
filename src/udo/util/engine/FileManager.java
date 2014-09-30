@@ -16,18 +16,18 @@ import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
 public class FileManager {
-	
+
 	private BufferedReader mReader;
 	private ItemData mNextItem;
 	private boolean mIsReading;
 	private BufferedWriter mWriter;
 	private boolean mIsWriting;
-	
+
 	public FileManager() {
 		mIsReading = false;
 		mIsWriting = false;
 	}
-	
+
 	public ArrayList<ItemData> getFromFile() throws IOException {
 		startReadMode();
 		if (!isReading()) {
@@ -41,7 +41,7 @@ public class FileManager {
 		closeReadMode();
 		return result;
 	}
-	
+
 	public boolean writeToFile(ArrayList<ItemData> list) {
 		startWriteMode();
 		for (ItemData item : list) {
@@ -56,7 +56,8 @@ public class FileManager {
 			return false;
 		}
 		try {
-			mReader = new BufferedReader(new FileReader(StorageStrings.FILENAME));
+			mReader = new BufferedReader(
+					new FileReader(StorageStrings.FILENAME));
 			String nextLine = mReader.readLine();
 			mNextItem = getItemData(nextLine);
 		} catch (FileNotFoundException e) {
@@ -71,7 +72,7 @@ public class FileManager {
 		setReading(true);
 		return true;
 	}
-	
+
 	private boolean closeReadMode() {
 		try {
 			mReader.close();
@@ -97,7 +98,7 @@ public class FileManager {
 			return null;
 		}
 	}
-	
+
 	private boolean createNewFile(String filename) {
 		try {
 			new FileWriter(filename).close();
@@ -120,57 +121,52 @@ public class FileManager {
 		}
 		String[] lineArray = getStringArray(line);
 		/*
-		 * event
-		 * [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime, 7<tags>]
+		 * event [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime,
+		 * 7<tags>]
 		 */
-		
+
 		// this method is meant to be wordy
-		
+
 		ItemType type = getItemType(lineArray[Indices.TYPE]);
-		
+
 		ItemData item = new ItemData(type);
 
 		int uid = Integer.parseInt(lineArray[Indices.UID]);
-		item.put(Keys.UID,
-				uid);
-		
-		item.put(Keys.TITLE,
-				lineArray[Indices.TITLE]);
-		
+		item.put(Keys.UID, uid);
+
+		item.put(Keys.TITLE, lineArray[Indices.TITLE]);
+
 		if (type.equals(ItemType.EVENT)) {
-			
+
 			String startDate = lineArray[Indices.START_DATE];
 			String startTime = lineArray[Indices.START_TIME];
 			Calendar startCal = getCalendar(startDate, startTime);
-			item.put(Keys.START,
-					startCal);
-			
+			item.put(Keys.START, startCal);
+
 			String endDate = lineArray[Indices.END_DATE];
 			String endTime = lineArray[Indices.END_TIME];
 			Calendar endCal = getCalendar(endDate, endTime);
-			item.put(Keys.END,
-					endCal);
-			
+			item.put(Keys.END, endCal);
+
 			String tagsString = lineArray[Indices.HASHTAGS];
 			ArrayList<String> tagsList = getList(tagsString);
-			item.put(Keys.HASHTAGS,
-					tagsList);
-			
+			item.put(Keys.HASHTAGS, tagsList);
+
 		} else if (type.equals(ItemType.TASK)) {
-			//TODO
+			// TODO
 		} else if (type.equals(ItemType.PLAN)) {
-			//TODO
+			// TODO
 		} else {
-			
+
 		}
-		
+
 		return item;
 	}
-	
+
 	private String[] getStringArray(String str) {
 		return str.split(StorageStrings.FIELD_DELIMITER);
 	}
-	
+
 	private ItemType getItemType(String typeString) {
 		if (typeString == null) {
 			return null;
@@ -180,21 +176,23 @@ public class FileManager {
 			return null;
 		}
 	}
-	
+
 	private Calendar getCalendar(String date, String time) {
 		Calendar cal = Calendar.getInstance();
 		// parse date and time
 		String[] timeArray = time.split(StorageStrings.TIME_DELIMITER);
 		String[] dateArray = date.split(StorageStrings.DATE_DELIMITER);
 		int day = Integer.parseInt(dateArray[0]);
-		int month = Integer.parseInt(dateArray[1]) - 1; // convert from 1-based to 0-based for calendar
+		int month = Integer.parseInt(dateArray[1]) - 1; // convert from 1-based
+														// to 0-based for
+														// calendar
 		int year = Integer.parseInt(dateArray[2]);
 		int hour = Integer.parseInt(timeArray[0]);
 		int minute = Integer.parseInt(timeArray[1]);
 		cal.set(year, month, day, hour, minute);
 		return cal;
 	}
-	
+
 	private ArrayList<String> getList(String tagsString) {
 		ArrayList<String> list = new ArrayList<String>();
 		String[] tagsArray = tagsString.split(",");
@@ -207,14 +205,15 @@ public class FileManager {
 	private boolean startWriteMode() {
 		try {
 			// will overwrite the current file with the new data.
-			mWriter = new BufferedWriter(new FileWriter(StorageStrings.FILENAME));
+			mWriter = new BufferedWriter(
+					new FileWriter(StorageStrings.FILENAME));
 		} catch (IOException e) {
 			return false;
 		}
 		setWriting(true);
 		return true;
 	}
-	
+
 	private boolean closeWriteMode() {
 		try {
 			mWriter.close();
@@ -225,7 +224,7 @@ public class FileManager {
 		setWriting(true);
 		return true;
 	}
-	
+
 	private boolean write(ItemData item) {
 		String itemString = item.toString();
 		try {

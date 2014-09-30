@@ -1,5 +1,5 @@
 package udo.util.shared;
 
-public enum ExecutionStatus {
+public enum ParsingStatus {
 	SUCCESS, FAIL
 }
