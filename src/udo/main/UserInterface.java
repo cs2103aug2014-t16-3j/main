@@ -3,11 +3,15 @@ package udo.main;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -58,7 +62,17 @@ public class UserInterface implements ActionListener {
 	}
 
 	public void initUI() {
-
+		/**
+		 * Sets up font
+		 */
+		try {
+		     GraphicsEnvironment ge = 
+		         GraphicsEnvironment.getLocalGraphicsEnvironment();
+		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("COPRGTB.TTF")));
+		} catch (IOException|FontFormatException e) {
+		     //Handle exception
+		}
+		
 		/**
 		 * Sets up layer
 		 */
