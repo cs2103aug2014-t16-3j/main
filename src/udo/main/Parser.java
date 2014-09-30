@@ -8,6 +8,7 @@ import java.util.Date;
 
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
+import udo.util.shared.Constants.Keys;
 
 /**
  * (Class description)
@@ -83,24 +84,31 @@ public class Parser {
 			ArrayList<Calendar> listOfTime = getTime(details);
 			
 			mTitle = getTitle(details);
-			mStartTime = listOfTime.get(0);
-			mEndTime = listOfTime.get(1);
 			mTags = getTags(details);
 
-			if (listOfDates.size() > 1) {
-				mStartDate = listOfDates.get(0);
-				mEndDate = listOfDates.get(1);
-			} else {
-				mEndDate = listOfDates.get(0);
+			//will be refactored to event, task, plan
+			int hour, mins;
+			if (listOfDates.size() == 1 && listOfTime.size() == 1) {
+				hour = listOfTime.get(0).HOUR;
+				mins = listOfTime.get(0).MINUTE;
+				listOfDates.get(0).set(Calendar.HOUR, hour);
+				listOfDates.get(0).set(Calendar.MINUTE, mins);
+			} else if (listOfDates.size() == 1 && listOfTime.size() == 2) {
+				hour = listOfTime.get(0).HOUR;
+				mins = listOfTime.get(0).MINUTE;
+				listOfDates.get(0).set(Calendar.HOUR, hour);
+				listOfDates.get(0).set(Calendar.MINUTE, mins);
+				hour = listOfTime.get(1).HOUR;
+				mins = listOfTime.get(1).MINUTE;
+				listOfDates.get(0).set(Calendar.HOUR, hour);
+				listOfDates.get(0).set(Calendar.MINUTE, mins);
 			}
 
 			InputData addInputData = new InputData(type);
-			addInputData.put("title", mTitle);
-			addInputData.put("startDate", mStartDate);
-			addInputData.put("endDate", mEndDate);
-			addInputData.put("startTime", mStartTime);
-			addInputData.put("endTime", mEndTime);
-			addInputData.put("tags", mTags);
+			addInputData.put(Keys.TITLE, mTitle);
+			// addInputData.put(Keys.START, mStartDate);
+			// addInputData.put(Keys.END, mEndDate);
+			addInputData.put(Keys.HASHTAGS, mTags);
 
 			return addInputData;
 		} else {
@@ -298,6 +306,7 @@ public class Parser {
 	/**
 	 * Returns an ArrayList of tags. Tags do not contain "#"
 	 * If no tags are found, retun an empty ArrayList
+	 * Tags require a space after them. Eg. #2013<space>
 	 * @param input that is directly retrieved from user
 	 * @return an ArrayList<String> of tags
 	 */
@@ -319,12 +328,13 @@ public class Parser {
 	}
 
 	public InputData list(Command type, String details) {
-		if (!details.isEmpty()) {
-			return new InputData(type);
-		} else if (details.contains("#")) { // prepare for hashtag intake
-			return null;
+		if (details.contains("#")) {
+			ArrayList<String> tags = getTags(details);
+			InputData listInputData = new InputData(type);
+			listInputData.put(Keys.HASHTAG, tags.get(0));
+			return listInputData;
 		} else {
-			return null;
+			return new InputData(type);
 		}
 	}
 
