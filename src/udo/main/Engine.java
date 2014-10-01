@@ -17,18 +17,18 @@ import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 
 public class Engine {
-	
+
 	private FileManager mFileManager;
 	private Cache mCache;
 	private UndoBin mUndoBin;
-	
+
 	public Engine() {
 		mFileManager = new FileManager();
 		mCache = new Cache();
 		mUndoBin = new UndoBin();
 	}
-	
-	//****** public methods ******//
+
+	// ****** public methods ******//
 
 	public boolean loadFile() {
 		mCache.clear();
@@ -40,51 +40,46 @@ public class Engine {
 			return false;
 		}
 	}
-	
+
 	public OutputData execute(InputData input) {
 		Command cmd = input.getCommand();
 		// decide what function to run.
 		switch (cmd) {
-			case ADD_EVENT :
-				return runAddEvent(input);
-			case LIST :
-				return runList(input);
-			case DELETE :
-				return runDelete(input);
-			case UNDO :
-				return runUndo(input);
-			case SAVE :
-				return runSave(input);
-			case EXIT :
-				return runExit(input);
-			default:
-				return null;
+		case ADD_EVENT:
+			return runAddEvent(input);
+		case LIST:
+			return runList(input);
+		case DELETE:
+			return runDelete(input);
+		case UNDO:
+			return runUndo(input);
+		case SAVE:
+			return runSave(input);
+		case EXIT:
+			return runExit(input);
+		default:
+			return null;
 		}
 	}
-	
+
 	// ********* methods that execute the commands ******* //
-	
+
 	private OutputData runAddEvent(InputData inputData) {
 		ItemData event = new ItemData(ItemType.EVENT);
 		// extract data from inputdata to make an event
 		// assume all data fields are present
-		event.put(Keys.UID,
-				mCache.generateUID());
-		
-		event.put(Keys.TITLE,
-				inputData.get(Keys.TITLE));
-		
-		event.put(Keys.START,
-				inputData.get(Keys.START));
-		
-		event.put(Keys.END,
-				inputData.get(Keys.END));
-		
-		event.put(Keys.HASHTAGS,
-				inputData.get(Keys.HASHTAGS));
-		
+		event.put(Keys.UID, mCache.generateUID());
+
+		event.put(Keys.TITLE, inputData.get(Keys.TITLE));
+
+		event.put(Keys.START, inputData.get(Keys.START));
+
+		event.put(Keys.END, inputData.get(Keys.END));
+
+		event.put(Keys.HASHTAGS, inputData.get(Keys.HASHTAGS));
+
 		OutputData output;
-		
+
 		boolean addOK = mCache.add(event);
 		Command cmd = inputData.getCommand();
 		if (addOK) {
@@ -96,41 +91,40 @@ public class Engine {
 		} else {
 			output = new OutputData(cmd, ExecutionStatus.FAIL);
 		}
-		
+
 		return output;
 	}
-	
+
 	private OutputData runList(InputData input) {
 		/*
-		 * 1. build a list of all items
-		 * 2. select only the items we want.
-		 * 3. sort the items according to date/time
-		 * 4. put the items in the outputdata.
-		 * 5. return output
+		 * 1. build a list of all items 2. select only the items we want. 3.
+		 * sort the items according to date/time 4. put the items in the
+		 * outputdata. 5. return output
 		 */
 		ArrayList<ItemData> listOfAllItems = mCache.getAllItems();
 		ArrayList<ItemData> result;
-		
+
 		ListQuery query = (ListQuery) input.get(Keys.QUERY);
-		
+
 		switch (query) {
-			case ALL :
-				result = listOfAllItems;
-				break;
-			case SINGLE_HASHTAG :
-				String tag = (String) input.get(Keys.HASHTAG);
-				result = trimList(listOfAllItems, tag);
-				break;
-			default :
-				return null;
+		case ALL:
+			result = listOfAllItems;
+			break;
+		case SINGLE_HASHTAG:
+			String tag = (String) input.get(Keys.HASHTAG);
+			result = trimList(listOfAllItems, tag);
+			break;
+		default:
+			return null;
 		}
-		
-		OutputData output = new OutputData(Command.LIST, ExecutionStatus.SUCCESS);
+
+		OutputData output = new OutputData(Command.LIST,
+				ExecutionStatus.SUCCESS);
 		output.put(Keys.ITEMS, result);
-		
+
 		return output;
 	}
-	
+
 	private OutputData runDelete(InputData inputData) {
 		int uid = (int) inputData.get(Keys.UID);
 		ItemData deletedItem = mCache.getItem(uid);
@@ -142,19 +136,19 @@ public class Engine {
 		} else {
 			output = new OutputData(Command.DELETE, ExecutionStatus.FAIL);
 		}
-		
+
 		return output;
 	}
-	
+
 	private OutputData runEdit(InputData inputData) {
-		
+
 		return null;
 	}
-	
+
 	private OutputData runUndo(InputData inputData) {
 		/*
-		 * store the inputdata to be executed.
-		 * so here just execute that inputdata.
+		 * store the inputdata to be executed. so here just execute that
+		 * inputdata.
 		 */
 		InputData undoInput = mUndoBin.getInputData();
 		return execute(undoInput);
@@ -165,77 +159,77 @@ public class Engine {
 		if (!writeOK) {
 			return null;
 		}
-		OutputData output = new OutputData(Command.SAVE, ExecutionStatus.SUCCESS);
+		OutputData output = new OutputData(Command.SAVE,
+				ExecutionStatus.SUCCESS);
 		return output;
 	}
-	
+
 	private OutputData runExit(InputData inputData) {
 		runSave(null);
-		OutputData output = new OutputData(Command.EXIT, ExecutionStatus.SUCCESS);
+		OutputData output = new OutputData(Command.EXIT,
+				ExecutionStatus.SUCCESS);
 		return output;
 	}
-	
-	// ********* private abstracted helper methods ******* // 
-	
+
+	// ********* private abstracted helper methods ******* //
+
 	private void storeUndo(Command previousCommand, ItemData previousItem) {
 		InputData undoInput;
 		switch (previousCommand) {
-			case ADD_EVENT :
-				undoInput = new InputData(Command.DELETE);
-				undoInput.put(Keys.UID, previousItem.get(Keys.UID));
+		case ADD_EVENT:
+			undoInput = new InputData(Command.DELETE);
+			undoInput.put(Keys.UID, previousItem.get(Keys.UID));
+			break;
+		case DELETE:
+			ItemType previousItemType = previousItem.getItemType();
+			// decide which kind of command based on the kind of item deleted.
+			switch (previousItemType) {
+			case EVENT:
+				undoInput = new InputData(Command.ADD_EVENT);
 				break;
-			case DELETE :
-				ItemType previousItemType = previousItem.getItemType();
-				// decide which kind of command based on the kind of item deleted.
-				switch (previousItemType) {
-					case EVENT:
-						undoInput = new InputData(Command.ADD_EVENT);
-						break;
-					case TASK:
-						//TODO
-						undoInput = new InputData(Command.ADD_TASK);
-						break;
-					case PLAN:
-						//TODO
-						undoInput = new InputData(Command.ADD_PLAN);
-						break;
-					default:
-						// should not
-						return;
-				}
-				// copy the data in the item to the inputdata.
-				// so that the add command can add like it came from the parser
-				// it will also copy the uid field
-				// but it will be ignored in the add execution.
-				for (String key : previousItem.getKeys()) {
-					undoInput.put(key, previousItem.get(key));
-				}
+			case TASK:
+				// TODO
+				undoInput = new InputData(Command.ADD_TASK);
 				break;
-			case EDIT :
-				//TODO
-				undoInput = null;
+			case PLAN:
+				// TODO
+				undoInput = new InputData(Command.ADD_PLAN);
 				break;
 			default:
-				// do nothing. this shouldnt happen
+				// should not
 				return;
-			
+			}
+			// copy the data in the item to the inputdata.
+			// so that the add command can add like it came from the parser
+			// it will also copy the uid field
+			// but it will be ignored in the add execution.
+			for (String key : previousItem.getKeys()) {
+				undoInput.put(key, previousItem.get(key));
+			}
+			break;
+		case EDIT:
+			// TODO
+			undoInput = null;
+			break;
+		default:
+			// do nothing. this shouldnt happen
+			return;
+
 		}
 		mUndoBin.putInputData(undoInput);
 	}
-	
+
 	private boolean writeCacheToFile() {
-		/*boolean filePrepared = mFileManager.startWriteMode();
-		boolean cacheLocked = mCache.lock();
-		if (!filePrepared || !cacheLocked) {
-			return false;
-		}
-		
-		while (mCache.hasNextItem()) {
-			ItemData item = mCache.getNextItem();
-			mFileManager.write(item);
-		}
-		
-		mFileManager.closeWriteMode();*/
+		/*
+		 * boolean filePrepared = mFileManager.startWriteMode(); boolean
+		 * cacheLocked = mCache.lock(); if (!filePrepared || !cacheLocked) {
+		 * return false; }
+		 * 
+		 * while (mCache.hasNextItem()) { ItemData item = mCache.getNextItem();
+		 * mFileManager.write(item); }
+		 * 
+		 * mFileManager.closeWriteMode();
+		 */
 		mFileManager.writeToFile(mCache.getAllItems());
 		return true;
 	}
@@ -244,7 +238,8 @@ public class Engine {
 		ArrayList<ItemData> result = new ArrayList<ItemData>();
 		for (ItemData item : list) {
 			@SuppressWarnings("unchecked")
-			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
+			ArrayList<String> tags = (ArrayList<String>) item
+					.get(Keys.HASHTAGS);
 			if (tags.contains(tag)) {
 				result.add(item);
 			}

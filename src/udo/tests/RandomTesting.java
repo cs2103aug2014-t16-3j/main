@@ -16,12 +16,11 @@ public class RandomTesting {
 		String s = "/a/d/f/|s";
 		String ss = "a:d:f:s";
 		String sss = "a, b, d, f, qweqw/:eqwe";
-		String[] sa = s.split("\\"
-				+ "|");
+		String[] sa = s.split("\\" + "|");
 		String[] ssa = ss.split(":");
 		String[] sssa = sss.split(", ");
 		System.out.println(Arrays.toString(sa));
-		
+
 		c.set(Calendar.YEAR, 2001);
 		System.out.println(c.toString());
 		c.set(Calendar.YEAR, 01);
@@ -30,11 +29,11 @@ public class RandomTesting {
 		String f = "%1$d";
 		System.out.println(String.format(f, c.get(Calendar.AM_PM)));
 		println(ItemType.EVENT.toString());
-		
+
 		Scanner sc = new Scanner(System.in);
 		sc.nextLine();
 	}
-	
+
 	static void println(String s) {
 		System.out.println(s);
 	}

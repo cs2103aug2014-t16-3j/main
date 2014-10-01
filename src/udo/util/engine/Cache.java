@@ -11,7 +11,7 @@ import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
 public class Cache {
-	
+
 	private HashSet<ItemData> mEvents;
 	private HashSet<ItemData> mTasks;
 	private HashSet<ItemData> mPlans;
@@ -19,9 +19,9 @@ public class Cache {
 	private Iterator<ItemData> mEventsIterator;
 	private Iterator<ItemData> mTasksIterator;
 	private Iterator<ItemData> mPlansIterator;
-	
+
 	private HashSet<Integer> mUIDs;
-	
+
 	public Cache() {
 		mEvents = new HashSet<ItemData>();
 		mTasks = new HashSet<ItemData>();
@@ -29,7 +29,7 @@ public class Cache {
 		mIsLocked = false;
 		mUIDs = new HashSet<Integer>();
 	}
-	
+
 	public boolean addAll(ArrayList<ItemData> list) {
 		for (ItemData item : list) {
 			add(item);
@@ -44,14 +44,14 @@ public class Cache {
 		trackUID(item);
 		ItemType type = item.getItemType();
 		switch (type) {
-			case EVENT :
-				mEvents.add(item);
-				return true;
-			default :
-				return false;
+		case EVENT:
+			mEvents.add(item);
+			return true;
+		default:
+			return false;
 		}
 	}
-	
+
 	public ItemData getItem(int uid) {
 		ArrayList<ItemData> items = getAllItems();
 		ItemData result = null;
@@ -64,7 +64,7 @@ public class Cache {
 		}
 		return result;
 	}
-	
+
 	public boolean deleteItem(int uid) {
 		// TODO
 		ArrayList<ItemData> items = getAllItems();
@@ -79,22 +79,22 @@ public class Cache {
 		if (toDelete != null) {
 			ItemType type = toDelete.getItemType();
 			switch (type) {
-				case EVENT:
-					mEvents.remove(toDelete);
-					break;
-				case TASK:
-					mTasks.remove(toDelete);
-					break;
-				case PLAN:
-					mPlans.remove(toDelete);
-					break;
-				default:
-					return false;
+			case EVENT:
+				mEvents.remove(toDelete);
+				break;
+			case TASK:
+				mTasks.remove(toDelete);
+				break;
+			case PLAN:
+				mPlans.remove(toDelete);
+				break;
+			default:
+				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	public int size() {
 		int eventSize = mEvents.size();
 		int taskSize = mTasks.size();
@@ -102,7 +102,7 @@ public class Cache {
 		int totalSize = eventSize + taskSize + planSize;
 		return totalSize;
 	}
-	
+
 	public ArrayList<ItemData> getAllItems() {
 		lock();
 		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
@@ -113,7 +113,7 @@ public class Cache {
 		Collections.sort(allItems);
 		return allItems;
 	}
-	
+
 	public void clear() {
 		if (isLocked()) {
 			return;
@@ -124,7 +124,7 @@ public class Cache {
 	}
 
 	public int generateUID() {
-		// TODO 
+		// TODO
 		Random r = new Random(System.currentTimeMillis());
 		int uid = 10000 + r.nextInt(90000);
 		if (mUIDs.contains(uid)) {
@@ -133,7 +133,7 @@ public class Cache {
 			return uid;
 		}
 	}
-	
+
 	private boolean isLocked() {
 		return mIsLocked;
 	}
@@ -150,9 +150,8 @@ public class Cache {
 		if (!mIsLocked) {
 			return false;
 		} else {
-			return mEventsIterator.hasNext() ||
-					mTasksIterator.hasNext() ||
-					mPlansIterator.hasNext();
+			return mEventsIterator.hasNext() || mTasksIterator.hasNext()
+					|| mPlansIterator.hasNext();
 		}
 	}
 
@@ -183,5 +182,5 @@ public class Cache {
 		Integer uid = (Integer) item.get(Keys.UID);
 		mUIDs.add(uid);
 	}
-	
+
 }

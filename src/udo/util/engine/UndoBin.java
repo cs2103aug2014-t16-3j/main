@@ -9,15 +9,15 @@ import udo.util.shared.ItemData;
  */
 public class UndoBin {
 	InputData mInputData;
-	
+
 	public UndoBin() {
 		mInputData = null;
 	}
-	
+
 	public void putInputData(InputData input) {
 		mInputData = input;
 	}
-	
+
 	public InputData getInputData() {
 		return mInputData;
 	}
