@@ -125,6 +125,7 @@ public class FileManager {
 		 */
 		
 		// this method is meant to be wordy
+		// should extract to separate class
 		
 		ItemType type = getItemType(lineArray[Indices.TYPE]);
 		
@@ -133,12 +134,10 @@ public class FileManager {
 		int uid = Integer.parseInt(lineArray[Indices.UID]);
 		item.put(Keys.UID,
 				uid);
-		
 		item.put(Keys.TITLE,
 				lineArray[Indices.TITLE]);
 		
 		if (type.equals(ItemType.EVENT)) {
-			
 			String startDate = lineArray[Indices.START_DATE];
 			String startTime = lineArray[Indices.START_TIME];
 			Calendar startCal = getCalendar(startDate, startTime);
