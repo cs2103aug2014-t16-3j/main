@@ -61,14 +61,12 @@ public class Feedback {
 		mData = output.get(Keys.ITEMS);
 		mListView.removeAll();
 		mListView.init((ArrayList<ItemData>) mData);
-		mListView.setBounds(20, 20, 350, 500);
 		mListView.revalidate();
 		mListView.repaint();
 		// testing dayview
-		//mDayView.testFont();
-		//mDayView.setBounds(20,20,350,500);
-		//mFinalView = mDayView;
-		mFinalView = mListView;
+		mDayView.init();
+		mFinalView = mDayView;
+		//mFinalView = mListView;
 	}
 
 	public String getCommand() {
