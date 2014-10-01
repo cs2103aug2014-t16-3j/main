@@ -17,7 +17,7 @@ public class ListView extends JPanel {
 
 		super();
 		setOpaque(false);
-		setBounds(20, 20, 350, 500);
+		setBounds(20, 20, 360, 550);
 	}
 
 	public void init(ArrayList<ItemData> data) {

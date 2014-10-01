@@ -1,7 +1,5 @@
 package udo.tests;
 
-import java.awt.GraphicsEnvironment;
-
 import udo.main.Engine;
 import udo.main.UserInterface;
 import udo.util.shared.Command;

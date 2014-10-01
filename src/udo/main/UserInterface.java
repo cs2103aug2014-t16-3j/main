@@ -12,26 +12,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
-import udo.util.ui.Entry;
 import udo.util.ui.Feedback;
-import udo.util.ui.ListView;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {

@@ -1,7 +1,5 @@
 package udo.util.ui;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -10,15 +8,15 @@ import java.awt.Graphics2D;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import udo.main.UserInterface;
 
 public class DayView extends JPanel{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1690972274647306472L;
 	private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd MMMM yyyy");
 	private SimpleDateFormat mDayFormat = new SimpleDateFormat("EEEE");  
 	
