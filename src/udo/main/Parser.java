@@ -308,7 +308,18 @@ public class Parser {
 	}
 
 	public Calendar formatTimeSubstring(String input) {
-		return Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("hh:mma");
+		Date date;
+		
+		try {
+			date = format.parse(input);
+			cal.setTime(date);
+		} catch (ParseException parserException) {
+			// inputData status fail
+			return cal;
+		}
+		return cal;
 	}
 
 	/**
