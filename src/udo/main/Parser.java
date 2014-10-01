@@ -158,67 +158,83 @@ public class Parser {
 	}
 
 	// does this catch 3/4/14 ?
-	/**
-	 * Stores all dates from user input in an ArrayList<Calendar>
-	 * returns an empty ArrayList<Calendar> if no dates are found
-	 * requires users to use "/" instead of "-" when typing in dates
-	 * requires user to type in year in dates. 
-	 * For instance, 9/10 will not be accepted. Instead, it should be 9/10/14
-	 * @param input directly from user
-	 * @return an ArrayList of Calendar object
-	 */
-	public ArrayList<Calendar> getDate(String input) {
-		ArrayList<Calendar> listOfDates = new ArrayList<Calendar>();
-		Calendar cal = Calendar.getInstance();
-		if (input.contains("/")) {
-			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-			format.setLenient(false);
-			Date date;
-
-			int dayMonthSlashIndex;
-			int monthYearSlashIndex;
-			String dateSubstring = input;
-
-			while (dateSubstring.contains("/")) {
-				dayMonthSlashIndex = dateSubstring.indexOf("/");
-				monthYearSlashIndex = dateSubstring.indexOf("/",
-						dayMonthSlashIndex + 1);
-
-				if (dateSubstring.indexOf("/") == dayMonthSlashIndex
-						&& dayMonthSlashIndex + 3 == monthYearSlashIndex) {
-					// problematic area
-					dateSubstring = dateSubstring.substring(
-							dayMonthSlashIndex - 2, monthYearSlashIndex + 5);
-					dateSubstring = formatDateSubstring(dateSubstring);
-					try {
-						date = format.parse(dateSubstring);
-						date.setMonth(date.getMonth() - 1);
-					} catch (ParseException pe) {
-						// Should I throw exception for this? If I shouldn't
-						// what should I do instead?
-						throw new IllegalArgumentException("The date entered, "
-								+ dateSubstring + " is invalid.", pe);
-					}
-					cal.setTime(date);
-					listOfDates.add(cal);
-				}
-				dateSubstring = dateSubstring.substring(dayMonthSlashIndex + 1);
+	public Calendar getDate(String input) {
+		String dateString = getDateString(input);
+		Calendar cal = formatDateSubstring(dateString);
+		return cal;
+	}
+	
+	// returns the first date it reads
+	public String getDateString(String input) {
+		int dayMonthSlashIndex;
+		int monthYearSlashIndex;
+		String dateSubstring = input;
+		String ERROR_MESSAGE = "DateString does not exist or it was not detected";
+		while (dateSubstring.contains("/")) {
+			dayMonthSlashIndex = dateSubstring.indexOf("/");
+			monthYearSlashIndex = dateSubstring.indexOf("/", dayMonthSlashIndex + 1);
+			
+			if (isValidDateString(dateSubstring, dayMonthSlashIndex, monthYearSlashIndex)) {
+				dateSubstring = dateSubstring.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 3);
+				return dateSubstring.trim();
 			}
+			dateSubstring = dateSubstring.substring(dayMonthSlashIndex + 1);
 		}
-		return listOfDates;
+		return ERROR_MESSAGE;
+	}
+	
+	public boolean isValidDateString(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
+		if (isSingleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex) ||
+			isDoubleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex)) {
+			try {
+				String day = input.substring(dayMonthSlashIndex - 2, dayMonthSlashIndex);
+				String month = input.substring(dayMonthSlashIndex + 1, monthYearSlashIndex);
+				String year = input.substring(monthYearSlashIndex + 1, monthYearSlashIndex + 3);
+				
+				int dayInt = Integer.parseInt(day.trim());
+				int monthInt = Integer.parseInt(month);
+				int yearInt = Integer.parseInt(year);
+			} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+				return false;
+			} catch (NumberFormatException numberFormatException) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isSingleDigitMonth(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
+		if (input.indexOf("/") == dayMonthSlashIndex && 
+			dayMonthSlashIndex + 2 == monthYearSlashIndex) { // for 1 digit month
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isDoubleDigitMonth(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
+		if (input.indexOf("/") == dayMonthSlashIndex && 
+			dayMonthSlashIndex + 3 == monthYearSlashIndex) { // for 2 digit month
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public String formatDateSubstring(String input) {
-		String date = input.trim();
-		int lastLetterIndex = date.length() - 1;
-		String lastLetter = date.substring(lastLetterIndex);
+	public Calendar formatDateSubstring(String input) {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
+		Date date;
 
-		while (!isInteger(lastLetter)) {
-			date = date.substring(0, lastLetterIndex);
-			lastLetterIndex = lastLetterIndex - 1;
-			lastLetter = date.substring(lastLetterIndex);
+		try {
+			date = format.parse(input);
+			cal.setTime(date);
+		} catch (ParseException parserException) {
+			// inputData status fail
+			return cal;
 		}
-		return date;
+		return cal;
 	}
 
 	public boolean isInteger(String input) {
@@ -230,77 +246,69 @@ public class Parser {
 		}
 	}
 
-	// time format: hh:mm a(12 hours)
-	// does it catch 9:00 AM
-	// does it catch 9 AM / 9am?
-	public ArrayList<Calendar> getTime(String input) {
-		ArrayList<Calendar> listOfTime = new ArrayList<Calendar>();
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("hh:mma");
-		format.setLenient(false);
-		Date time;
-
+	// returns first timing it reads in input
+	public Calendar getTime(String input) {
+		String timeString = getTimeString(input);
+		Calendar cal = formatTimeSubstring(timeString);
+		return cal;
+	}
+	
+	//returns the first time it reads
+	public String getTimeString(String input) {
 		int timeSessionIndex;
 		int colonIndex;
-		String timeInt;
 		String timeSubstring = input.toUpperCase();
-
-		while (timeSubstring.contains("AM") || timeSubstring.contains("PM")) {
-			timeSessionIndex = timeSubstring.indexOf("M");
+		boolean amString = timeSubstring.contains("AM");
+		boolean pmString = timeSubstring.contains("PM");
+		String ERROR_MESSAGE = "timeSubstring does not exist or it was not detected";
+		while (timeSubstring.contains(":") && (amString || pmString) ) {
 			colonIndex = timeSubstring.indexOf(":");
-			if (colonIndex != -1) {
-				if (timeSessionIndex - 4 == colonIndex) {
-					timeInt = timeSubstring.substring(colonIndex - 2,
-							timeSessionIndex + 1);
-					timeInt = formatTimeSubstring(timeInt);
-					try {
-						time = format.parse(timeInt);
-					} catch (ParseException pe) {
-						throw new IllegalArgumentException("The date entered, "
-								+ timeInt + " is invalid.", pe);
-					}
-					cal.setTime(time);
-					listOfTime.add(cal);
-				}
-			} else {
-				// check whether this is the right "M" by checking whether there
-				// is an "A"
-				// or "P" in front of it
-				// 12AM etc
-				if (timeSessionIndex - 2 > -1) {
-					timeInt = timeSubstring.substring(timeSessionIndex - 2,
-							timeSessionIndex - 1);
-					if (isInteger(timeInt)) {
-						timeInt = timeSubstring.substring(timeSessionIndex - 3,
-								timeSessionIndex + 1);
-						timeInt = formatTimeSubstring(timeInt);
-						try {
-							time = format.parse(timeInt);
-						} catch (ParseException pe) {
-							throw new IllegalArgumentException(
-									"The date entered, " + timeInt
-											+ " is invalid.", pe);
-						}
-						cal.setTime(time);
-						listOfTime.add(cal);
-					}
-				}
+			timeSessionIndex = timeSubstring.indexOf("M");
+			
+			if (isVerifiedTimeString(timeSubstring, colonIndex, timeSessionIndex)) {
+				timeSubstring = timeSubstring.substring(colonIndex - 2, timeSessionIndex + 1);
+				return timeSubstring.trim();
 			}
-			timeSubstring = timeSubstring.substring(timeSessionIndex + 1);
+			timeSubstring = timeSubstring.substring(colonIndex + 1);
 		}
-		return listOfTime;
+		return ERROR_MESSAGE;
+	}
+	
+	public boolean isVerifiedTimeString(String timeSubstring, int colonIndex, int timeSessionIndex) {
+		if (colonIndex + 4 == timeSessionIndex &&
+			containsTimeSession(timeSubstring, colonIndex, timeSessionIndex)) {
+			try {
+				//check for integers
+				String hourString = timeSubstring.substring(colonIndex - 2, colonIndex);
+				String minString = timeSubstring.substring(colonIndex + 1, colonIndex + 3);
+				
+				int hours = Integer.parseInt(hourString.trim());
+				int mins = Integer.parseInt(minString);				
+			} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+				return false;
+			} catch (NumberFormatException numberFormatException) {
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
-	public String formatTimeSubstring(String input) {
-		if (input.contains(":")) {
-			return input.trim();
+	// checks if it contains "AM" and "PM" strings
+	public boolean containsTimeSession(String timeSubstring, int colonIndex, int timeSessionIndex) {
+		int amStringIndex = timeSubstring.indexOf("AM", colonIndex);
+		int pmStringIndex = timeSubstring.indexOf("PM", colonIndex);
+		
+		if ((amStringIndex > 0 && timeSessionIndex - 1 == amStringIndex) ||
+			(pmStringIndex > 0 && timeSessionIndex - 1 == pmStringIndex)) {
+			return true;
 		} else {
-			String amPmHolder = input.substring(2);
-			String timeHolder = input.substring(0, 2);
-			String formatedTimeString = timeHolder.concat(":").concat(
-					amPmHolder);
-			return formatedTimeString.trim();
+			return false;
 		}
+	}
+
+	public Calendar formatTimeSubstring(String input) {
+		return Calendar.getInstance();
 	}
 
 	/**

@@ -32,19 +32,65 @@ public class uDoParserUnitTest {
 		assertTrue(p.isValidAdd(input));
 	}
 
-	@Test
-	public void testGetTitle() {
-		String title = p.getTitle(input);
-		assertTrue(title.equals("activity"));
-	}
+	String getDateTest1 = "add activity on 1/9/33 from 9:24pm to 10:30pm";
+	String getDateTest2 = "add activity on 13/12/33 from 9:24pm to 10:30pm";
 
 	@Test
 	public void testGetDate() {
-
+		Calendar cal1 = p.getDate(getDateTest1);
+		Calendar cal2 = p.getDate(getDateTest2);
+		
+		assertEquals(cal1.get(Calendar.DAY_OF_MONTH), 1);
+		assertEquals(cal1.get(Calendar.MONTH), 8);
+		assertEquals(cal1.get(Calendar.YEAR), 2033);
+		
+		assertEquals(cal2.get(Calendar.DAY_OF_MONTH), 13);
+		assertEquals(cal2.get(Calendar.MONTH), 11);
+		assertEquals(cal2.get(Calendar.YEAR), 2033);
 	}
+	
+	String dateTest1 = "add activity on 3/1/15 from 9:24pm to 10:30pm";
+	String dateTest2 = "add activity on 13/10/14 from 9:24pm to 10:30pm";
+	String dateTest3 = "add activity on 3/10/14 from 9:24pm to 10:30pm";
+	String dateTest4 = "add activity on 13/10/34 from 9:24pm to 10:30pm";
+	String dateTest5 = "add activity on 13/ 1/ 14 from 9:24pm to 10:30pm";
 
 	@Test
-	public void testGetTags() {
-
+	public void testGetDateString() {
+		String dateString1 = p.getDateString(dateTest1);
+		String dateString2 = p.getDateString(dateTest2);
+		String dateString3 = p.getDateString(dateTest3);
+		String dateString4 = p.getDateString(dateTest4);
+		//corner case:
+		String dateString5 = p.getDateString(dateTest5);
+		
+		assertEquals(dateString1, "3/1/15");
+		assertEquals(dateString2, "13/10/14");
+		assertEquals(dateString3, "3/10/14");
+		assertEquals(dateString4, "13/10/34");
+		//assertEquals(dateString5, "13/1/14");
+	}
+	
+	String formatDateTest1 = "3/1/14";
+	String formatDateTest2 = "13/5/34";
+	String formatDateTest3 = "3/11/14";
+	
+	@Test
+	public void testfFormatDateSubstring() {
+		Calendar cal1 = p.formatDateSubstring(formatDateTest1);
+		Calendar cal2 = p.formatDateSubstring(formatDateTest2);
+		Calendar cal3 = p.formatDateSubstring(formatDateTest3);
+		
+		assertEquals(cal1.get(Calendar.DAY_OF_MONTH), 3);
+		assertEquals(cal1.get(Calendar.MONTH), 0);
+		assertEquals(cal1.get(Calendar.YEAR), 2014);
+		
+		assertEquals(cal2.get(Calendar.DAY_OF_MONTH), 13);
+		assertEquals(cal2.get(Calendar.MONTH), 4);
+		assertEquals(cal2.get(Calendar.YEAR), 2034);
+		
+		assertEquals(cal3.get(Calendar.DAY_OF_MONTH), 3);
+		assertEquals(cal3.get(Calendar.MONTH), 10);
+		assertEquals(cal3.get(Calendar.YEAR), 2014);
 	}
 }
