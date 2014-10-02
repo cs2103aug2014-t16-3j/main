@@ -9,6 +9,7 @@ import java.util.Date;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.ListQuery;
 import udo.util.shared.ParsingStatus;
 
 /**
@@ -374,10 +375,12 @@ public class Parser {
 				return listInputData;
 			} else {
 				listInputData.put(Keys.HASHTAG, tags.get(0));
+				listInputData.put(Keys.QUERY, ListQuery.SINGLE_HASHTAG);
 				listInputData.setStatus(ParsingStatus.SUCCESS);
 				return listInputData;
 			}
 		} else {
+			listInputData.put(Keys.QUERY, ListQuery.ALL);
 			listInputData.setStatus(ParsingStatus.SUCCESS);
 			return listInputData;
 		}
