@@ -12,7 +12,11 @@ import udo.util.shared.Constants.Keys;
 import udo.util.shared.ParsingStatus;
 
 /**
- * (Class description)
+ * This class parses information from the input string and package it 
+ * as an InputData object. Aside from LIST, DELETE, EDIT, SAVE, EXIT, 
+ * UNDO commands, Parser also identifies events, tasks and plans from 
+ * input string. <Explain critera for event, task and plan> The 
+ * information is stored using Keys class constants. 
  * 
  * @author chongjiawei
  * 
@@ -23,7 +27,12 @@ public class Parser {
 	public Parser() {
 
 	}
-
+	/**
+	 * Parses input string received and returns it as an InputData object.
+	 * Depending on what the Command is, necessary fields are filled.
+	 * @param input string 
+	 * @return InputData object
+	 */
 	public InputData getInputData(String input) {
 		Command type = determineCommandType(input);
 		InputData data = processCommandType(type, input);
@@ -66,8 +75,6 @@ public class Parser {
 		}
 	}
 
-	// add <title> <hashTags, if any> on <date> from <start time> to <end time>
-	// whether it is an event or a task
 	public InputData addEvent(Command type, String details) {
 		InputData addInputData = new InputData(type);
 		if (isValidAdd(details)) { 
