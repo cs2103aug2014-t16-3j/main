@@ -19,7 +19,7 @@ public class Feedback {
 	private DayView mDayView;
 	private ListView mListView;
 
-	private JPanel mFinalView;
+	private JPanel mFinalView = new JPanel();
 
 	public Feedback() {
 		mListView = new ListView();
@@ -31,10 +31,8 @@ public class Feedback {
 		if (output.getStatus().equals(ExecutionStatus.SUCCESS)) {
 			switch (output.getCommand()) {
 			case ADD_EVENT:
-				mCommand = "Added ";
-				mFinalView = mListView;
-				//ItemData item = (ItemData) output.get(Keys.ITEM);
-				//item.get(Keys.START);
+				ItemData item = (ItemData) output.get(Keys.ITEM);
+				mCommand = "Added " + item.get(Keys.TITLE);
 				break;
 			case DELETE:
 				mCommand = "Deleted ";
@@ -62,12 +60,12 @@ public class Feedback {
 		mData = output.get(Keys.ITEMS);
 		mListView.removeAll();
 		mListView.init((ArrayList<ItemData>) mData);
-		mListView.revalidate();
-		mListView.repaint();
 		// testing dayview
 		mDayView.init();
 		//mFinalView = mDayView;
 		mFinalView = mListView;
+		mFinalView.revalidate();
+		mFinalView.repaint();
 	}
 
 	public String getCommand() {

@@ -8,6 +8,7 @@ import java.awt.FontMetrics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -49,8 +50,9 @@ public class UserInterface implements ActionListener {
 
 	public UserInterface() {
 
-		initUI();
+
 		fb = new Feedback();
+		initUI();
 	}
 
 	public void initUI() {
@@ -60,7 +62,7 @@ public class UserInterface implements ActionListener {
 		try {
 		     GraphicsEnvironment ge = 
 		         GraphicsEnvironment.getLocalGraphicsEnvironment();
-		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("COPRGTB.TTF")));
+		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("COPRGTL.TTF")));
 		} catch (IOException|FontFormatException e) {
 		     //Handle exception
 		}
@@ -74,7 +76,6 @@ public class UserInterface implements ActionListener {
 		 * Sets up textArea
 		 */
 		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-		;
 		mTextArea.setBackground(UDO_BG);
 
 		/**
@@ -114,6 +115,12 @@ public class UserInterface implements ActionListener {
 		mLayer.add(mPopup, new Integer(2));
 
 		/**
+		 * Sets up finalView
+		 */
+
+		mLayer.add(fb.getFinalView(), new Integer(1));
+		
+		/**
 		 * Sets up the frame
 		 */
 		mFrame.setSize(new Dimension(WIDTH, HEIGHT));
@@ -133,11 +140,6 @@ public class UserInterface implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 
 		String text = mTextField.getText();
-		// Entry newEntry = new Entry("17 Sep 2014, 08oo - 09oo",
-		// "Eat a healthy breakfast made with love");
-		// newEntry.setBounds(20, 150, 300, 50);
-		// mLayer.add(newEntry, new Integer(1));
-		// showPopup(text);
 		mTextField.setText("");
 
 		mUserInput = text;
@@ -162,8 +164,12 @@ public class UserInterface implements ActionListener {
 	 */
 	public void show(OutputData output) {
 		fb.process(output);
-		mLayer.add(fb.getFinalView(), new Integer(1));
 		String outputString = fb.getCommand();
+		System.out.println(fb.getFinalView().getComponentCount());
+		fb.getFinalView().revalidate();
+		fb.getFinalView().repaint();
+		mLayer.revalidate();
+		mLayer.repaint();
 		showPopup(outputString);
 	}
 
@@ -229,13 +235,13 @@ public class UserInterface implements ActionListener {
 	 * commented out when the uDo main method is run.
 	 */
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				UserInterface newUI = new UserInterface();
 			}
 		});
-	}
+	}*/
 
 }
