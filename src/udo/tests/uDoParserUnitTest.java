@@ -93,4 +93,22 @@ public class uDoParserUnitTest {
 		assertEquals(cal3.get(Calendar.MONTH), 10);
 		assertEquals(cal3.get(Calendar.YEAR), 2014);
 	}
+	
+	String timeTest1 = "add activity on 3/1/15 from 9:24am to 10:30pm";
+	String timeTest2 = "add activity on 13/10/14 from 10:00pm to 10:30pm";
+	String timeTest3 = "add activity on 3/10/14 from 12:59am to 10:30pm";
+	String timeTest4 = "add activity on 13/10/34 from 2:00am to 10:30pm";
+	
+	@Test
+	public void testGetTimeString() {
+		String timeString1 = p.getTimeString(timeTest1);
+		String timeString2 = p.getTimeString(timeTest2);
+		String timeString3 = p.getTimeString(timeTest3);
+		String timeString4 = p.getTimeString(timeTest4);
+		
+		assertEquals(timeString1, "9:24AM");
+		assertEquals(timeString2, "10:00PM");
+		assertEquals(timeString3, "12:59AM");
+		assertEquals(timeString4, "2:00AM");
+	}
 }

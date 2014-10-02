@@ -258,10 +258,10 @@ public class Parser {
 		int timeSessionIndex;
 		int colonIndex;
 		String timeSubstring = input.toUpperCase();
-		boolean amString = timeSubstring.contains("AM");
-		boolean pmString = timeSubstring.contains("PM");
+		//boolean amString = timeSubstring.contains("AM");
+		//boolean pmString = timeSubstring.contains("PM");
 		String ERROR_MESSAGE = "timeSubstring does not exist or it was not detected";
-		while (timeSubstring.contains(":") && (amString || pmString) ) {
+		while (timeSubstring.contains(":")) {
 			colonIndex = timeSubstring.indexOf(":");
 			timeSessionIndex = timeSubstring.indexOf("M");
 			
@@ -269,7 +269,7 @@ public class Parser {
 				timeSubstring = timeSubstring.substring(colonIndex - 2, timeSessionIndex + 1);
 				return timeSubstring.trim();
 			}
-			timeSubstring = timeSubstring.substring(colonIndex + 1);
+			timeSubstring = timeSubstring.substring(timeSessionIndex + 1);
 		}
 		return ERROR_MESSAGE;
 	}
