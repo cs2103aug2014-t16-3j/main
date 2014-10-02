@@ -32,8 +32,9 @@ public class Feedback {
 			switch (output.getCommand()) {
 			case ADD_EVENT:
 				mCommand = "Added ";
-				ItemData item = (ItemData) output.get(Keys.ITEM);
-				item.get(Keys.START);
+				mFinalView = mListView;
+				//ItemData item = (ItemData) output.get(Keys.ITEM);
+				//item.get(Keys.START);
 				break;
 			case DELETE:
 				mCommand = "Deleted ";
@@ -65,8 +66,8 @@ public class Feedback {
 		mListView.repaint();
 		// testing dayview
 		mDayView.init();
-		mFinalView = mDayView;
-		//mFinalView = mListView;
+		//mFinalView = mDayView;
+		mFinalView = mListView;
 	}
 
 	public String getCommand() {
