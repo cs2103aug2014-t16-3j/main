@@ -19,20 +19,12 @@ import udo.util.shared.ParsingStatus;
  */
 
 public class Parser {
-
-	private String mTitle;
-	private Calendar mStartDate;
-	private Calendar mEndDate;
-	private Calendar mStartTime;
-	private Calendar mEndTime;
-	private ArrayList<String> mTags;
-
+	
 	public Parser() {
 
 	}
 
-	public InputData getInputData(String input) { // InputData inputData =
-													// parser.getInputData(input);
+	public InputData getInputData(String input) {
 		Command type = determineCommandType(input);
 		InputData data = processCommandType(type, input);
 		return data;
@@ -60,7 +52,7 @@ public class Parser {
 	public InputData processCommandType(Command commandType, String details) {
 		switch (commandType) {
 		case ADD_EVENT:
-			return add(commandType, details);
+			return addEvent(commandType, details);
 		case LIST:
 			return list(commandType, details);
 		case DELETE:
@@ -76,58 +68,71 @@ public class Parser {
 
 	// add <title> <hashTags, if any> on <date> from <start time> to <end time>
 	// whether it is an event or a task
-	public InputData add(Command type, String details) {
-		if (isValidAdd(details)) { // to do: check whether it is an event or a
-									// task
-			// to do: make date and time into 1 calendar object
-			ArrayList<Calendar> listOfDates = getDate(details);
-			ArrayList<Calendar> listOfTime = getTime(details);
-			
-			mTitle = getTitle(details);
-			mTags = getTags(details);
-
-			//will be refactored to event, task, plan
-			int hour, mins;
-			if (listOfDates.size() == 1 && listOfTime.size() == 1) {
-				hour = listOfTime.get(0).HOUR;
-				mins = listOfTime.get(0).MINUTE;
-				listOfDates.get(0).set(Calendar.HOUR, hour);
-				listOfDates.get(0).set(Calendar.MINUTE, mins);
-			} else if (listOfDates.size() == 1 && listOfTime.size() == 2) {
-				hour = listOfTime.get(0).HOUR;
-				mins = listOfTime.get(0).MINUTE;
-				listOfDates.get(0).set(Calendar.HOUR, hour);
-				listOfDates.get(0).set(Calendar.MINUTE, mins);
-				hour = listOfTime.get(1).HOUR;
-				mins = listOfTime.get(1).MINUTE;
-				listOfDates.get(0).set(Calendar.HOUR, hour);
-				listOfDates.get(0).set(Calendar.MINUTE, mins);
+	public InputData addEvent(Command type, String details) {
+		InputData addInputData = new InputData(type);
+		if (isValidAdd(details)) { 
+			String title = getTitle(details);
+			ArrayList<String> tags = getTags(details);
+			Calendar date = getDate(details);
+			Calendar start = setEventStartTime(date, details);
+			Calendar end = setEventEndTime(date, details);
+			//put into inputdata
+			if (hasUnfilledField(title, tags, date, start, end)) {
+				// have yet to check for fail status for each field
+				addInputData.setStatus(ParsingStatus.FAIL);
+			} else {
+				addInputData.put(Keys.TITLE, title);
+				addInputData.put(Keys.HASHTAGS, tags);
+				addInputData.put(Keys.START, start);
+				addInputData.put(Keys.END, end);
+				addInputData.setStatus(ParsingStatus.SUCCESS);
 			}
-
-			InputData addInputData = new InputData(type);
-			addInputData.put(Keys.TITLE, mTitle);
-			// addInputData.put(Keys.START, mStartDate);
-			// addInputData.put(Keys.END, mEndDate);
-			addInputData.put(Keys.HASHTAGS, mTags);
-
-			return addInputData;
 		} else {
-			return null;
+			addInputData.setStatus(ParsingStatus.FAIL);
 		}
+		return addInputData;
 	}
 
+	public boolean hasUnfilledField(String title, ArrayList<String> tags,
+			Calendar date, Calendar start, Calendar end) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	public Calendar setEventStartTime(Calendar date, String details) {
+		Calendar start = getTime(details);
+		start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+		start.set(Calendar.MONTH, date.get(Calendar.MONTH));
+		start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+		return start;
+	}
+	
+	public Calendar setEventEndTime(Calendar date, String details) {
+		int colonIndex = details.indexOf(":");
+		String containsEndTime = details.substring(colonIndex + 1);
+		Calendar end = getTime(containsEndTime);
+		
+		end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+		end.set(Calendar.MONTH, date.get(Calendar.MONTH));
+		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+		return end;
+	}
+	
 	public boolean isValidAdd(String input) {
 		if (input.length() < 4) {
-			return false;
-		} else if (getTitle(input).isEmpty()) {
 			return false;
 		} else {
 			return true;
 		}
 	}
+	
+	public boolean isEvent(String input) {
+		// TODO Auto-generated method stub
+		return true;
+	}
 
 	public boolean isValidEvent(String input) { // checks for events. Otherwise,
-												// we tag it as task
+		// TODO Auto-generated method stub			// we tag it as task
 		return false;
 	}
 
@@ -135,26 +140,33 @@ public class Parser {
 		String title = input;
 		if (input.contains("#")) {
 			int hashtagIndex = input.indexOf("#");
-			title = input.substring(0, hashtagIndex);
+			title = input.substring(4, hashtagIndex);
 		} else {
-			ArrayList<Calendar> listOfDates = getDate(input);
-			ArrayList<Calendar> listOfTime = getTime(input);
-			if (listOfDates.size() > 0 || listOfTime.size() > 0) {
-				// keywords
-				int fromStringIndex = input.lastIndexOf("from");
-				int byStringIndex = input.lastIndexOf("by");
-				int onStringIndex = input.lastIndexOf("on");
-
-				if (fromStringIndex != -1) {
-					title = input.substring(0, fromStringIndex);
-				} else if (byStringIndex != -1) {
-					title = input.substring(0, byStringIndex);
-				} else if (onStringIndex != -1) {
-					title = input.substring(0, onStringIndex);
-				}
+			int keywordIndex = getSmallestIndex(input);
+			if (keywordIndex != 100000000) {
+				title = input.substring(4, keywordIndex);
 			}
 		}
 		return title;
+	}
+	
+	public int getSmallestIndex(String input) {
+		int fromStringIndex = input.lastIndexOf("from");
+		int byStringIndex = input.lastIndexOf("by");
+		int onStringIndex = input.lastIndexOf("on");
+		int min = -1;
+		int keywordIndex = 100000000; // a large positive contant
+		
+		if (fromStringIndex > min && fromStringIndex < keywordIndex) {
+			keywordIndex = fromStringIndex;
+		}
+		if (byStringIndex > min && byStringIndex < keywordIndex) {
+			keywordIndex = byStringIndex;
+		}
+		if (onStringIndex > min && onStringIndex < keywordIndex) {
+			keywordIndex = onStringIndex;
+		}
+		return keywordIndex;
 	}
 
 	// does this catch 3/4/14 ?

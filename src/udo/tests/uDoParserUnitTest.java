@@ -11,6 +11,7 @@ import org.junit.Test;
 import udo.main.Parser;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
 
 public class uDoParserUnitTest {
 
@@ -110,5 +111,33 @@ public class uDoParserUnitTest {
 		assertEquals(timeString2, "10:00PM");
 		assertEquals(timeString3, "12:59AM");
 		assertEquals(timeString4, "2:00AM");
+	}
+	
+	String titleTest1 = "add finish cs2103 class diagram on 3/1/15 from 9:24am to 10:30pm";
+	String titleTest2 = "add date with leo #date on 30/9/14 from 12:30pm to 6:45pm";
+	String titleTest3 = "add complete ps4 by 30/9/14 from 9:24am to 10:30pm";
+	
+	@Test
+	public void testGetTitle() {
+		String title1 = p.getTitle(titleTest1);
+		String title2 = p.getTitle(titleTest2);
+		String title3 = p.getTitle(titleTest3);
+		
+		assertEquals(title1, "finish cs2103 class diagram ");
+		assertEquals(title2, "date with leo ");
+		assertEquals(title3, "complete ps4 ");
+	}
+	
+	String addEventTest1 = "add date with leo #date on 30/9/14 from 12:30pm to 6:45pm";
+	String addEventTest2 = "add complete ps4 by 30/9/14 from 9:24am to 10:30pm";
+
+	@Test
+	public void testAddEvent() {
+		Command type = Command.ADD_EVENT;
+		InputData inputData1 = p.addEvent(type, addEventTest1);
+		InputData inputData2 = p.addEvent(type, addEventTest1);
+		
+		assertEquals(inputData1.getStatus(), ParsingStatus.SUCCESS);
+		assertEquals(inputData2.getStatus(), ParsingStatus.SUCCESS);
 	}
 }
