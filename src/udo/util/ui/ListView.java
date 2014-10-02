@@ -1,5 +1,6 @@
 package udo.util.ui;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -17,7 +18,8 @@ public class ListView extends JPanel {
 
 		super();
 		setOpaque(false);
-		setBounds(20, 20, 360, 550);
+		setBounds(20,20,260,550);
+		// setPreferredSize(new Dimension(360, 550));
 	}
 
 	public void init(ArrayList<ItemData> data) {
