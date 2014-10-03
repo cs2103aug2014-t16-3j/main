@@ -163,10 +163,6 @@ public class UserInterface implements ActionListener {
 	public void show(OutputData output) {
 		fb.process(output);
 		String outputString = fb.getCommand();
-		System.out.println(fb.getFinalView().getComponentCount());
-//		fb.getFinalView().revalidate();
-//		fb.getFinalView().repaint();
-		
 		
 		if(! (mTextArea.equals(fb.getFinalView()))) {
 			mLayer.remove(mTextArea);
@@ -174,8 +170,6 @@ public class UserInterface implements ActionListener {
 			mLayer.add(mTextArea, new Integer(1));
 		}
 		
-		mLayer.revalidate();
-		mLayer.repaint();
 		showPopup(outputString);
 	}
 

@@ -31,8 +31,7 @@ public class Feedback {
 		if (output.getStatus().equals(ExecutionStatus.SUCCESS)) {
 			switch (output.getCommand()) {
 			case ADD_EVENT:
-				ItemData item = (ItemData) output.get(Keys.ITEM);
-				mCommand = "Added " + item.get(Keys.TITLE);
+				add_entry(output);
 				break;
 			case DELETE:
 				mCommand = "Deleted ";
@@ -41,7 +40,7 @@ public class Feedback {
 				mCommand = "Exit";
 				break;
 			case LIST:
-				list(output);
+				list_entry(output);
 				break;
 			case SAVE:
 				mCommand = "Saved ";
@@ -54,18 +53,26 @@ public class Feedback {
 		}
 	}
 
+	
+	public void add_entry(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mCommand = "Added " + item.get(Keys.TITLE);
+	}
+	
 	@SuppressWarnings("unchecked")
-	public void list(OutputData output) {
+	public void list_entry(OutputData output) {
 		mCommand = "Listing ";
 		mData = output.get(Keys.ITEMS);
 		mListView.removeAll();
 		mListView.init((ArrayList<ItemData>) mData);
 		// testing dayview
-		mDayView.init();
-		//mFinalView = mDayView;
-		mFinalView = mListView;
-		mFinalView.revalidate();
-		mFinalView.repaint();
+		mDayView.removeAllButTicker();
+		mDayView.init((ArrayList<ItemData>) mData);
+		if(mFinalView.equals(mDayView)) {
+			mFinalView = mListView;
+		} else {
+			mFinalView = mDayView;
+		}
 	}
 
 	public String getCommand() {

@@ -5,20 +5,30 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import udo.util.shared.ItemData;
+
 public class DayView extends JPanel{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1690972274647306472L;
 	private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd MMMM yyyy");
 	private SimpleDateFormat mDayFormat = new SimpleDateFormat("EEEE");  
+	private BufferedImage mTickerImg;
+	private JLabel mTicker;
+	private ArrayList<Point> mTickerCoordsX;
+	private ArrayList<Point> mTickerCoordsY;
 	
 	private final static int VIEW_HEIGHT = 550;
 	private final static int VIEW_WIDTH = 360;
@@ -28,18 +38,38 @@ public class DayView extends JPanel{
 
 		setBounds(20,20,VIEW_WIDTH,VIEW_HEIGHT);
 		setOpaque(false);
+		loadTicker();
 	}
 
-	public void init(Date newDate) {
-		initHeader(newDate);
-	}
-	
-	public void init() {
+	public void init(ArrayList<ItemData> data) {
 		Date date = new Date();
-		initHeader(date);
+		init(date, data);
 	}
 	
-	public void initHeader(Date newDate) {
+	public void init(Date newDate, ArrayList<ItemData> data) {
+		initHeader(newDate);
+		fillTicker();
+		populateView(data);
+	}
+	
+	private void loadTicker() {
+		try {                
+			mTickerImg = ImageIO.read(new File("dayViewTicker.png"));
+		} catch (IOException ex) {
+			// handle exception...
+		}
+		mTicker = new JLabel(new ImageIcon(mTickerImg));
+	}
+	
+	private void fillTicker() {
+		add(mTicker);
+	}
+	
+	private void populateView(ArrayList<ItemData> data) {
+		
+	}
+	
+	private void initHeader(Date newDate) {
 		String dateString = mDateFormat.format(newDate);
 		JLabel date = new JLabel(dateString);
 		date.setFont(new Font("Copperplate Gothic Light", Font.PLAIN, 24));
@@ -56,6 +86,11 @@ public class DayView extends JPanel{
 		day.setPreferredSize(new Dimension(VIEW_WIDTH, height));
 		day.setHorizontalAlignment(JLabel.RIGHT);;
 		add(day);
+	}
+	
+	public void removeAllButTicker() {
+		super.removeAll();
+		add(mTicker);
 	}
 	
 	/**
