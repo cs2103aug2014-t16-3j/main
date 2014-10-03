@@ -8,7 +8,6 @@ import java.awt.FontMetrics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -20,7 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import udo.util.shared.OutputData;
@@ -118,7 +116,7 @@ public class UserInterface implements ActionListener {
 		 * Sets up finalView
 		 */
 
-		mLayer.add(fb.getFinalView(), new Integer(1));
+//		mLayer.add(fb.getFinalView(), new Integer(1));
 		
 		/**
 		 * Sets up the frame
@@ -166,8 +164,16 @@ public class UserInterface implements ActionListener {
 		fb.process(output);
 		String outputString = fb.getCommand();
 		System.out.println(fb.getFinalView().getComponentCount());
-		fb.getFinalView().revalidate();
-		fb.getFinalView().repaint();
+//		fb.getFinalView().revalidate();
+//		fb.getFinalView().repaint();
+		
+		
+		if(! (mTextArea.equals(fb.getFinalView()))) {
+			mLayer.remove(mTextArea);
+			mTextArea = fb.getFinalView();	
+			mLayer.add(mTextArea, new Integer(1));
+		}
+		
 		mLayer.revalidate();
 		mLayer.repaint();
 		showPopup(outputString);
