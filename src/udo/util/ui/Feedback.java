@@ -66,7 +66,7 @@ public class Feedback {
 		mListView.removeAll();
 		mListView.init((ArrayList<ItemData>) mData);
 		// testing dayview
-		mDayView.removeAllButTicker();
+		mDayView.removeAll();
 		mDayView.init((ArrayList<ItemData>) mData);
 		if(mFinalView.equals(mDayView)) {
 			mFinalView = mListView;
