@@ -63,7 +63,7 @@ public class uDo {
 
 	private void CheckForExitCommand(OutputData outputData) {
 		if (outputData.getCommand() == Command.EXIT) {
-			if (outputData.getStatus() == ExecutionStatus.SUCCESS) {
+			if (outputData.getExecutionStatus() == ExecutionStatus.SUCCESS) {
 				isRunning = false;
 			}
 		}

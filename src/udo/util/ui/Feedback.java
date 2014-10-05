@@ -28,7 +28,7 @@ public class Feedback {
 	}
 
 	public void process(OutputData output) {
-		if (output.getStatus().equals(ExecutionStatus.SUCCESS)) {
+		if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
 			switch (output.getCommand()) {
 			case ADD_EVENT:
 				add_entry(output);

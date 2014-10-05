@@ -19,12 +19,14 @@ import java.util.HashMap;
 public class OutputData {
 
 	Command mCommand;
-	ExecutionStatus mStatus;
+	ParsingStatus mParsingStatus;
+	ExecutionStatus mExecutionStatus;
 	HashMap<String, Object> mData;
 
-	public OutputData(Command cmd, ExecutionStatus status) {
+	public OutputData(Command cmd, ParsingStatus pStatus, ExecutionStatus eStatus) {
 		mCommand = cmd;
-		mStatus = status;
+		mParsingStatus = pStatus;
+		mExecutionStatus = eStatus;
 		mData = new HashMap<String, Object>();
 	}
 
@@ -36,14 +38,23 @@ public class OutputData {
 	public Command getCommand() {
 		return mCommand;
 	}
+	
+	/**
+	 * Retrieves the {@code ExecutionStatus} value
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public ParsingStatus getParsingStatus() {
+		return mParsingStatus;
+	}
 
 	/**
 	 * Retrieves the {@code ExecutionStatus} value
 	 * 
 	 * @return the {@code ExecutionStatus} value
 	 */
-	public ExecutionStatus getStatus() {
-		return mStatus;
+	public ExecutionStatus getExecutionStatus() {
+		return mExecutionStatus;
 	}
 
 	/**

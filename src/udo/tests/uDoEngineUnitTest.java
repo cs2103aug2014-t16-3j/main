@@ -41,7 +41,7 @@ public class uDoEngineUnitTest {
 		input.put(Keys.UID, 12345);
 		OutputData o = e.execute(input);
 		assertFalse("cannot be null", null == o);
-		assertEquals("o success", ExecutionStatus.SUCCESS, o.getStatus());
+		assertEquals("o success", ExecutionStatus.SUCCESS, o.getExecutionStatus());
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class uDoEngineUnitTest {
 		OutputData o = e.execute(input);
 		assertFalse("output object cant be null", o == null);
 		assertEquals("the output status shud be success",
-				ExecutionStatus.SUCCESS, o.getStatus());
+				ExecutionStatus.SUCCESS, o.getExecutionStatus());
 		assertEquals("the output command should be list", Command.LIST,
 				o.getCommand());
 		@SuppressWarnings("unchecked")
@@ -70,7 +70,7 @@ public class uDoEngineUnitTest {
 		e.loadFile();
 		OutputData o = e.execute(new InputData(Command.EXIT));
 		assertEquals("the output status shud be success",
-				ExecutionStatus.SUCCESS, o.getStatus());
+				ExecutionStatus.SUCCESS, o.getExecutionStatus());
 		assertEquals("the output command should be exit", Command.EXIT,
 				o.getCommand());
 	}
@@ -92,7 +92,7 @@ public class uDoEngineUnitTest {
 		InputData in = new InputData(Command.SAVE);
 		OutputData out = e.execute(in);
 		assertFalse("out should not be null", null == out);
-		assertEquals("", ExecutionStatus.SUCCESS, out.getStatus());
+		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
 	}
 
 	@Test

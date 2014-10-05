@@ -15,6 +15,7 @@ import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
 
 public class Engine {
 
@@ -85,11 +86,11 @@ public class Engine {
 		if (addOK) {
 			// if added item successfully
 			// make output object with the event data inside
-			output = new OutputData(cmd, ExecutionStatus.SUCCESS);
+			output = new OutputData(cmd, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
 			output.put(Keys.ITEM, event);
 			storeUndo(Command.ADD_EVENT, event);
 		} else {
-			output = new OutputData(cmd, ExecutionStatus.FAIL);
+			output = new OutputData(cmd, ParsingStatus.SUCCESS, ExecutionStatus.FAIL);
 		}
 
 		return output;
@@ -119,6 +120,7 @@ public class Engine {
 		}
 
 		OutputData output = new OutputData(Command.LIST,
+				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.ITEMS, result);
 
@@ -131,10 +133,14 @@ public class Engine {
 		boolean deleteOK = mCache.deleteItem(uid);
 		OutputData output;
 		if (deleteOK) {
-			output = new OutputData(Command.DELETE, ExecutionStatus.SUCCESS);
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.SUCCESS);
 			storeUndo(Command.DELETE, deletedItem);
 		} else {
-			output = new OutputData(Command.DELETE, ExecutionStatus.FAIL);
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.FAIL);
 		}
 
 		return output;
@@ -160,6 +166,7 @@ public class Engine {
 			return null;
 		}
 		OutputData output = new OutputData(Command.SAVE,
+				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
 		return output;
 	}
@@ -167,6 +174,7 @@ public class Engine {
 	private OutputData runExit(InputData inputData) {
 		runSave(null);
 		OutputData output = new OutputData(Command.EXIT,
+				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
 		return output;
 	}
