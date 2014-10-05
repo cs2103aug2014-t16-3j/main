@@ -21,16 +21,40 @@ import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
 
 public class uDoEngineUnitTest {
-
+	
 	@Test
 	public void testEngineUndoDelete() {
 		Engine e = new Engine();
 		e.loadFile();
-		InputData input = new InputData(Command.DELETE);
-		input.put(Keys.UID, 12345);
-		e.execute(input);
+		
+		InputData input1 = new InputData(Command.DELETE);
+		input1.setParsingStatus(ParsingStatus.SUCCESS);
+		input1.put(Keys.UID, 12345);
+		e.execute(input1);
+		
+		InputData listInput = new InputData(Command.LIST);
+		listInput.put(Keys.QUERY, ListQuery.ALL);
+		listInput.setParsingStatus(ParsingStatus.SUCCESS);
+		OutputData o = e.execute(listInput);
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> a = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		assertEquals("num of items should be 1 after delete",
+				1,
+				a.size());
+		
+		InputData input2 = new InputData(Command.UNDO);
+		input2.setParsingStatus(ParsingStatus.SUCCESS);
+		e.execute(input2);
+		
+		OutputData o2 = e.execute(listInput);
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> a2 = (ArrayList<ItemData>) o2.get(Keys.ITEMS);
+		assertEquals("num of items should still be 2 after undo",
+				2,
+				a2.size());
 	}
 
 	@Test
@@ -38,6 +62,7 @@ public class uDoEngineUnitTest {
 		Engine e = new Engine();
 		e.loadFile();
 		InputData input = new InputData(Command.DELETE);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.UID, 12345);
 		OutputData o = e.execute(input);
 		assertFalse("cannot be null", null == o);
@@ -50,6 +75,7 @@ public class uDoEngineUnitTest {
 		if (!e.loadFile())
 			fail("load fail");
 		InputData input = new InputData(Command.LIST);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY, ListQuery.ALL);
 		OutputData o = e.execute(input);
 		assertFalse("output object cant be null", o == null);
@@ -68,7 +94,7 @@ public class uDoEngineUnitTest {
 	public void testEngineExecuteExit() {
 		Engine e = new Engine();
 		e.loadFile();
-		OutputData o = e.execute(new InputData(Command.EXIT));
+		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
 		assertEquals("the output status shud be success",
 				ExecutionStatus.SUCCESS, o.getExecutionStatus());
 		assertEquals("the output command should be exit", Command.EXIT,
@@ -80,6 +106,7 @@ public class uDoEngineUnitTest {
 		Engine e = new Engine();
 		e.loadFile();
 		InputData in = new InputData(Command.ADD_EVENT);
+		in.setParsingStatus(ParsingStatus.SUCCESS);
 		assertFalse("", null == e.execute(in));
 	}
 
@@ -90,6 +117,7 @@ public class uDoEngineUnitTest {
 		if (!loadOK)
 			fail("load failed");
 		InputData in = new InputData(Command.SAVE);
+		in.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData out = e.execute(in);
 		assertFalse("out should not be null", null == out);
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());

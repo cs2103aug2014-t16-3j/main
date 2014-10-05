@@ -44,23 +44,42 @@ public class Engine {
 
 	public OutputData execute(InputData input) {
 		Command cmd = input.getCommand();
+		ParsingStatus parsingStatus = input.getStatus();
+		OutputData output;
+		
+		// check if parsing success or not
+		if (parsingStatus.equals(ParsingStatus.FAIL)) {
+			output = new OutputData(cmd, 
+					ParsingStatus.FAIL,
+					ExecutionStatus.NULL);
+			return output;
+		}
+		
 		// decide what function to run.
 		switch (cmd) {
-		case ADD_EVENT:
-			return runAddEvent(input);
-		case LIST:
-			return runList(input);
-		case DELETE:
-			return runDelete(input);
-		case UNDO:
-			return runUndo(input);
-		case SAVE:
-			return runSave(input);
-		case EXIT:
-			return runExit(input);
-		default:
-			return null;
+			case ADD_EVENT:
+				output = runAddEvent(input);
+				break;
+			case LIST:
+				output = runList(input);
+				break;
+			case DELETE:
+				output = runDelete(input);
+				break;
+			case UNDO:
+				output = runUndo(input);
+				break;
+			case SAVE:
+				output = runSave(input);
+				break;
+			case EXIT:
+				output = runExit(input);
+				break;
+			default:
+				output = null;
 		}
+		output.setParsingStatus(ParsingStatus.SUCCESS);
+		return output;
 	}
 
 	// ********* methods that execute the commands ******* //
@@ -79,18 +98,18 @@ public class Engine {
 
 		event.put(Keys.HASHTAGS, inputData.get(Keys.HASHTAGS));
 
-		OutputData output;
-
 		boolean addOK = mCache.add(event);
 		Command cmd = inputData.getCommand();
+		OutputData output = new OutputData(cmd);
+		
 		if (addOK) {
 			// if added item successfully
 			// make output object with the event data inside
-			output = new OutputData(cmd, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+			output.setExecutionStatus(ExecutionStatus.SUCCESS);
 			output.put(Keys.ITEM, event);
 			storeUndo(Command.ADD_EVENT, event);
 		} else {
-			output = new OutputData(cmd, ParsingStatus.SUCCESS, ExecutionStatus.FAIL);
+			output.setExecutionStatus(ExecutionStatus.FAIL);
 		}
 
 		return output;
@@ -122,6 +141,7 @@ public class Engine {
 		OutputData output = new OutputData(Command.LIST,
 				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
+		output.put(Keys.QUERY, query);
 		output.put(Keys.ITEMS, result);
 
 		return output;
@@ -184,46 +204,47 @@ public class Engine {
 	private void storeUndo(Command previousCommand, ItemData previousItem) {
 		InputData undoInput;
 		switch (previousCommand) {
-		case ADD_EVENT:
-			undoInput = new InputData(Command.DELETE);
-			undoInput.put(Keys.UID, previousItem.get(Keys.UID));
-			break;
-		case DELETE:
-			ItemType previousItemType = previousItem.getItemType();
-			// decide which kind of command based on the kind of item deleted.
-			switch (previousItemType) {
-			case EVENT:
-				undoInput = new InputData(Command.ADD_EVENT);
+			case ADD_EVENT:
+				undoInput = new InputData(Command.DELETE);
+				undoInput.put(Keys.UID, previousItem.get(Keys.UID));
 				break;
-			case TASK:
-				// TODO
-				undoInput = new InputData(Command.ADD_TASK);
+			case DELETE:
+				ItemType previousItemType = previousItem.getItemType();
+				// decide which kind of command based on the kind of item deleted.
+				switch (previousItemType) {
+					case EVENT:
+						undoInput = new InputData(Command.ADD_EVENT);
+						break;
+					case TASK:
+						// TODO
+						undoInput = new InputData(Command.ADD_TASK);
+						break;
+					case PLAN:
+						// TODO
+						undoInput = new InputData(Command.ADD_PLAN);
+						break;
+					default:
+						// should not
+						return;
+				}
+				// copy the data in the item to the inputdata.
+				// so that the add command can add like it came from the parser
+				// it will also copy the uid field
+				// but it will be ignored in the add execution.
+				for (String key : previousItem.getKeys()) {
+					undoInput.put(key, previousItem.get(key));
+				}
 				break;
-			case PLAN:
+			case EDIT:
 				// TODO
-				undoInput = new InputData(Command.ADD_PLAN);
+				undoInput = null;
 				break;
 			default:
-				// should not
+				// do nothing. this shouldnt happen
 				return;
-			}
-			// copy the data in the item to the inputdata.
-			// so that the add command can add like it came from the parser
-			// it will also copy the uid field
-			// but it will be ignored in the add execution.
-			for (String key : previousItem.getKeys()) {
-				undoInput.put(key, previousItem.get(key));
-			}
-			break;
-		case EDIT:
-			// TODO
-			undoInput = null;
-			break;
-		default:
-			// do nothing. this shouldnt happen
-			return;
 
 		}
+		undoInput.setParsingStatus(ParsingStatus.SUCCESS);
 		mUndoBin.putInputData(undoInput);
 	}
 

@@ -26,7 +26,7 @@ public class uDo {
 	boolean isRunning;
 
 	public uDo() {
-		ui = new UserInterface();
+		ui = new UserInterface(); // the UI is shown when init-ed
 		parser = new Parser();
 		engine = new Engine();
 		isRunning = true;

@@ -22,12 +22,23 @@ public class OutputData {
 	ParsingStatus mParsingStatus;
 	ExecutionStatus mExecutionStatus;
 	HashMap<String, Object> mData;
+	
+	public OutputData(Command cmd) {
+		mCommand = cmd;
+		mData = new HashMap<String, Object>();
+	}
+	
+	public OutputData(Command cmd, ParsingStatus pStatus) {
+		mCommand = cmd;
+		mData = new HashMap<String, Object>();
+		mParsingStatus = pStatus;
+	}
 
 	public OutputData(Command cmd, ParsingStatus pStatus, ExecutionStatus eStatus) {
 		mCommand = cmd;
+		mData = new HashMap<String, Object>();
 		mParsingStatus = pStatus;
 		mExecutionStatus = eStatus;
-		mData = new HashMap<String, Object>();
 	}
 
 	/**
@@ -37,6 +48,24 @@ public class OutputData {
 	 */
 	public Command getCommand() {
 		return mCommand;
+	}
+	
+	/**
+	 * Retrieves the {@code ExecutionStatus} value
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public void setParsingStatus(ParsingStatus status) {
+		mParsingStatus = status;
+	}
+	
+	/**
+	 * Retrieves the {@code ExecutionStatus} value
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public void setExecutionStatus(ExecutionStatus status) {
+		mExecutionStatus = status;
 	}
 	
 	/**

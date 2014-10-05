@@ -18,11 +18,17 @@ import java.util.Set;
 public class InputData {
 
 	private Command mCommand;
-	ParsingStatus mStatus;
+	private ParsingStatus mParsingStatus;
 	private HashMap<String, Object> mData;
 
 	public InputData(Command cmd) {
 		mCommand = cmd;
+		mData = new HashMap<String, Object>();
+	}
+	
+	public InputData(Command cmd, ParsingStatus status) {
+		mCommand = cmd;
+		mParsingStatus = status;
 		mData = new HashMap<String, Object>();
 	}
 
@@ -80,8 +86,8 @@ public class InputData {
 	 * 
 	 * @return the {@code ParsingStatus} value
 	 */
-	public void setStatus(ParsingStatus status) {
-		mStatus = status;
+	public void setParsingStatus(ParsingStatus status) {
+		mParsingStatus = status;
 	}
 	
 	/**
@@ -90,6 +96,6 @@ public class InputData {
 	 * @return the {@code ParsingStatus} value
 	 */
 	public ParsingStatus getStatus() {
-		return mStatus;
+		return mParsingStatus;
 	}
 }

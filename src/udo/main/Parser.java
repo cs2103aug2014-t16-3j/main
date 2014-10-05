@@ -87,16 +87,16 @@ public class Parser {
 			//put into inputdata
 			if (hasUnfilledField(title, tags, date, start, end)) {
 				// have yet to check for fail status for each field
-				addInputData.setStatus(ParsingStatus.FAIL);
+				addInputData.setParsingStatus(ParsingStatus.FAIL);
 			} else {
 				addInputData.put(Keys.TITLE, title);
 				addInputData.put(Keys.HASHTAGS, tags);
 				addInputData.put(Keys.START, start);
 				addInputData.put(Keys.END, end);
-				addInputData.setStatus(ParsingStatus.SUCCESS);
+				addInputData.setParsingStatus(ParsingStatus.SUCCESS);
 			}
 		} else {
-			addInputData.setStatus(ParsingStatus.FAIL);
+			addInputData.setParsingStatus(ParsingStatus.FAIL);
 		}
 		return addInputData;
 	}
@@ -371,17 +371,17 @@ public class Parser {
 		if (details.contains("#")) {
 			ArrayList<String> tags = getTags(details);
 			if (tags.size() == 0) {
-				listInputData.setStatus(ParsingStatus.FAIL);
+				listInputData.setParsingStatus(ParsingStatus.FAIL);
 				return listInputData;
 			} else {
 				listInputData.put(Keys.HASHTAG, tags.get(0));
 				listInputData.put(Keys.QUERY, ListQuery.SINGLE_HASHTAG);
-				listInputData.setStatus(ParsingStatus.SUCCESS);
+				listInputData.setParsingStatus(ParsingStatus.SUCCESS);
 				return listInputData;
 			}
 		} else {
 			listInputData.put(Keys.QUERY, ListQuery.ALL);
-			listInputData.setStatus(ParsingStatus.SUCCESS);
+			listInputData.setParsingStatus(ParsingStatus.SUCCESS);
 			return listInputData;
 		}
 	}
@@ -392,10 +392,10 @@ public class Parser {
 			String deleteIndexString = details.substring(7);
 			int deleteIndex = Integer.parseInt(deleteIndexString);
 			deleteInputData.put(Keys.DELETE, deleteIndex);
-			deleteInputData.setStatus(ParsingStatus.SUCCESS);
+			deleteInputData.setParsingStatus(ParsingStatus.SUCCESS);
 			return deleteInputData;
 		} else {
-			deleteInputData.setStatus(ParsingStatus.FAIL);
+			deleteInputData.setParsingStatus(ParsingStatus.FAIL);
 			return deleteInputData;
 		}
 	}
