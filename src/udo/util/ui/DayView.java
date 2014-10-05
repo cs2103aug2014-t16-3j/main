@@ -1,5 +1,6 @@
 package udo.util.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -18,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.ItemData;
 
 public class DayView extends JPanel{
@@ -27,8 +30,8 @@ public class DayView extends JPanel{
 	private SimpleDateFormat mDayFormat = new SimpleDateFormat("EEEE");  
 	private BufferedImage mTickerImg;
 	private JLabel mTicker;
-	private ArrayList<Point> mTickerCoordsX;
-	private ArrayList<Point> mTickerCoordsY;
+	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
+	private ArrayList<Point> mTickerCoordsWH; //stores width and height of each ticker
 	
 	private final static int VIEW_HEIGHT = 550;
 	private final static int VIEW_WIDTH = 360;
@@ -36,6 +39,8 @@ public class DayView extends JPanel{
 	
 	public DayView(){
 
+		mTickerCoordsXY = new ArrayList<Point>();
+		mTickerCoordsWH = new ArrayList<Point>();
 		setBounds(20,20,VIEW_WIDTH,VIEW_HEIGHT);
 		setOpaque(false);
 		loadTicker();
@@ -48,7 +53,7 @@ public class DayView extends JPanel{
 	
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		initHeader(newDate);
-		fillTicker();
+		add(mTicker);
 		populateView(data);
 	}
 	
@@ -61,12 +66,24 @@ public class DayView extends JPanel{
 		mTicker = new JLabel(new ImageIcon(mTickerImg));
 	}
 	
-	private void fillTicker() {
-		add(mTicker);
-	}
-	
 	private void populateView(ArrayList<ItemData> data) {
-		
+		int hour, min, total;
+		Point xy;
+		Point wh = new Point();
+		for (int i = 0; i < data.size(); i++) {
+			hour = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
+			min = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.MINUTE);
+			total = hour+min;
+			xy = new Point((int) Math.floor(total/4), 81);
+			mTickerCoordsXY.add(xy);
+			hour = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
+			min = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.MINUTE);
+			total = hour+min;
+			wh = new Point((int) Math.floor(total/4)-xy.x, 10);
+			mTickerCoordsWH.add(wh);
+			Entry entry = new Entry(data.get(i));
+			add(entry);
+		}
 	}
 	
 	private void initHeader(Date newDate) {
@@ -88,9 +105,10 @@ public class DayView extends JPanel{
 		add(day);
 	}
 	
-	public void removeAllButTicker() {
+	public void removeAll() {
 		super.removeAll();
-		add(mTicker);
+		mTickerCoordsXY.clear();
+		mTickerCoordsWH.clear();
 	}
 	
 	/**
@@ -102,6 +120,10 @@ public class DayView extends JPanel{
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawLine(VIEW_WIDTH/4, LINE_Y, VIEW_WIDTH, LINE_Y);
+		g.setColor(Color.GREEN);
+		for(int i=0; i < mTickerCoordsXY.size(); i++) {
+			g.fillRect(mTickerCoordsXY.get(i).x, mTickerCoordsXY.get(i).y, mTickerCoordsWH.get(i).x, mTickerCoordsWH.get(i).y);
+		}
 	}
 	
 }
