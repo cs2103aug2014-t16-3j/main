@@ -74,12 +74,12 @@ public class DayView extends JPanel{
 			hour = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
 			min = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.MINUTE);
 			total = hour+min;
-			xy = new Point((int) Math.floor(total/4), 81);
+			xy = new Point((int) Math.floor(total/4d), 81);
 			mTickerCoordsXY.add(xy);
 			hour = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
 			min = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.MINUTE);
 			total = hour+min;
-			wh = new Point((int) Math.floor(total/4)-xy.x, 10);
+			wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
 			mTickerCoordsWH.add(wh);
 			Entry entry = new Entry(data.get(i));
 			add(entry);
