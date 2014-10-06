@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import udo.util.parser.ParserDate;
+import udo.util.parser.ParserTime;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 import udo.util.shared.Constants.Keys;
@@ -76,14 +78,16 @@ public class Parser {
 		}
 	}
 
+	// add <title> <hashTags, if any> on <date> from <start time> to <end time>
+	// whether it is an event or a task
 	public InputData addEvent(Command type, String details) {
 		InputData addInputData = new InputData(type);
 		if (isValidAdd(details)) { 
 			String title = getTitle(details);
 			ArrayList<String> tags = getTags(details);
 			Calendar date = getDate(details);
-			Calendar start = setEventStartTime(date, details);
-			Calendar end = setEventEndTime(date, details);
+			Calendar start = setEventStartTime(details);
+			Calendar end = setEventEndTime(details);
 			//put into inputdata
 			if (hasUnfilledField(title, tags, date, start, end)) {
 				// have yet to check for fail status for each field
@@ -107,19 +111,21 @@ public class Parser {
 		return false;
 	}
 	
-	public Calendar setEventStartTime(Calendar date, String details) {
+	public Calendar setEventStartTime(String details) {
 		Calendar start = getTime(details);
+		Calendar date = getDate(details);
 		start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
 		start.set(Calendar.MONTH, date.get(Calendar.MONTH));
 		start.set(Calendar.YEAR, date.get(Calendar.YEAR));
 		return start;
 	}
-	
-	public Calendar setEventEndTime(Calendar date, String details) {
+
+	public Calendar setEventEndTime(String details) {
 		int colonIndex = details.indexOf(":");
 		String containsEndTime = details.substring(colonIndex + 1);
 		Calendar end = getTime(containsEndTime);
-		
+		int toStringIndex = details.indexOf("to");
+		Calendar date = getDate(details.substring(toStringIndex));
 		end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
 		end.set(Calendar.MONTH, date.get(Calendar.MONTH));
 		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
@@ -179,167 +185,16 @@ public class Parser {
 
 	// does this catch 3/4/14 ?
 	public Calendar getDate(String input) {
-		String dateString = getDateString(input);
-		Calendar cal = formatDateSubstring(dateString);
-		return cal;
-	}
-	
-	// returns the first date it reads
-	public String getDateString(String input) {
-		int dayMonthSlashIndex;
-		int monthYearSlashIndex;
-		String dateSubstring = input;
-		String ERROR_MESSAGE = "DateString does not exist or it was not detected";
-		while (dateSubstring.contains("/")) {
-			dayMonthSlashIndex = dateSubstring.indexOf("/");
-			monthYearSlashIndex = dateSubstring.indexOf("/", dayMonthSlashIndex + 1);
-			
-			if (isValidDateString(dateSubstring, dayMonthSlashIndex, monthYearSlashIndex)) {
-				dateSubstring = dateSubstring.substring(dayMonthSlashIndex - 2, monthYearSlashIndex + 3);
-				return dateSubstring.trim();
-			}
-			dateSubstring = dateSubstring.substring(dayMonthSlashIndex + 1);
-		}
-		return ERROR_MESSAGE;
-	}
-	
-	public boolean isValidDateString(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
-		if (isSingleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex) ||
-			isDoubleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex)) {
-			try {
-				String day = input.substring(dayMonthSlashIndex - 2, dayMonthSlashIndex);
-				String month = input.substring(dayMonthSlashIndex + 1, monthYearSlashIndex);
-				String year = input.substring(monthYearSlashIndex + 1, monthYearSlashIndex + 3);
-				
-				int dayInt = Integer.parseInt(day.trim());
-				int monthInt = Integer.parseInt(month);
-				int yearInt = Integer.parseInt(year);
-			} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-				return false;
-			} catch (NumberFormatException numberFormatException) {
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isSingleDigitMonth(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
-		if (input.indexOf("/") == dayMonthSlashIndex && 
-			dayMonthSlashIndex + 2 == monthYearSlashIndex) { // for 1 digit month
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean isDoubleDigitMonth(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
-		if (input.indexOf("/") == dayMonthSlashIndex && 
-			dayMonthSlashIndex + 3 == monthYearSlashIndex) { // for 2 digit month
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public Calendar formatDateSubstring(String input) {
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
-		Date date;
-
-		try {
-			date = format.parse(input);
-			cal.setTime(date);
-		} catch (ParseException parserException) {
-			// inputData status fail
-			return cal;
-		}
-		return cal;
-	}
-
-	public boolean isInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+		ParserDate date = new ParserDate();
+		date.decipherText(input);
+		return date.getDate();
 	}
 
 	// returns first timing it reads in input
 	public Calendar getTime(String input) {
-		String timeString = getTimeString(input);
-		Calendar cal = formatTimeSubstring(timeString);
-		return cal;
-	}
-	
-	//returns the first time it reads
-	public String getTimeString(String input) {
-		int timeSessionIndex;
-		int colonIndex;
-		String timeSubstring = input.toUpperCase();
-		//boolean amString = timeSubstring.contains("AM");
-		//boolean pmString = timeSubstring.contains("PM");
-		String ERROR_MESSAGE = "timeSubstring does not exist or it was not detected";
-		while (timeSubstring.contains(":")) {
-			colonIndex = timeSubstring.indexOf(":");
-			timeSessionIndex = timeSubstring.indexOf("M");
-			
-			if (isVerifiedTimeString(timeSubstring, colonIndex, timeSessionIndex)) {
-				timeSubstring = timeSubstring.substring(colonIndex - 2, timeSessionIndex + 1);
-				return timeSubstring.trim();
-			}
-			timeSubstring = timeSubstring.substring(timeSessionIndex + 1);
-		}
-		return ERROR_MESSAGE;
-	}
-	
-	public boolean isVerifiedTimeString(String timeSubstring, int colonIndex, int timeSessionIndex) {
-		if (colonIndex + 4 == timeSessionIndex &&
-			containsTimeSession(timeSubstring, colonIndex, timeSessionIndex)) {
-			try {
-				//check for integers
-				String hourString = timeSubstring.substring(colonIndex - 2, colonIndex);
-				String minString = timeSubstring.substring(colonIndex + 1, colonIndex + 3);
-				
-				int hours = Integer.parseInt(hourString.trim());
-				int mins = Integer.parseInt(minString);				
-			} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-				return false;
-			} catch (NumberFormatException numberFormatException) {
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-
-	// checks if it contains "AM" and "PM" strings
-	public boolean containsTimeSession(String timeSubstring, int colonIndex, int timeSessionIndex) {
-		int amStringIndex = timeSubstring.indexOf("AM", colonIndex);
-		int pmStringIndex = timeSubstring.indexOf("PM", colonIndex);
-		
-		if ((amStringIndex > 0 && timeSessionIndex - 1 == amStringIndex) ||
-			(pmStringIndex > 0 && timeSessionIndex - 1 == pmStringIndex)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public Calendar formatTimeSubstring(String input) {
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("hh:mma");
-		Date date;
-		
-		try {
-			date = format.parse(input);
-			cal.setTime(date);
-		} catch (ParseException parserException) {
-			// inputData status fail
-			return cal;
-		}
-		return cal;
+		ParserTime time = new ParserTime();
+		time.decipherText(input);
+		return time.getTime();
 	}
 
 	/**
@@ -408,6 +263,15 @@ public class Parser {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public InputData undo(Command type, String details) {
