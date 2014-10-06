@@ -41,6 +41,7 @@ public class DayView extends JPanel{
 
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
+		setPreferredSize(new Dimension(VIEW_WIDTH,VIEW_HEIGHT));
 		setBounds(20,20,VIEW_WIDTH,VIEW_HEIGHT);
 		setOpaque(false);
 		loadTicker();
@@ -49,6 +50,12 @@ public class DayView extends JPanel{
 	public void init(ArrayList<ItemData> data) {
 		Date date = new Date();
 		init(date, data);
+	}
+	
+	public void init() {
+		Date date = new Date();
+		ArrayList<ItemData> data = new ArrayList<ItemData>();
+		init(date,data);
 	}
 	
 	public void init(Date newDate, ArrayList<ItemData> data) {
@@ -64,25 +71,31 @@ public class DayView extends JPanel{
 			// handle exception...
 		}
 		mTicker = new JLabel(new ImageIcon(mTickerImg));
+		mTicker.setPreferredSize(new Dimension(mTickerImg.getWidth(),mTickerImg.getHeight()));
 	}
 	
 	private void populateView(ArrayList<ItemData> data) {
-		int hour, min, total;
-		Point xy;
-		Point wh = new Point();
-		for (int i = 0; i < data.size(); i++) {
-			hour = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
-			min = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.MINUTE);
-			total = hour+min;
-			xy = new Point((int) Math.floor(total/4d), 81);
-			mTickerCoordsXY.add(xy);
-			hour = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
-			min = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.MINUTE);
-			total = hour+min;
-			wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
-			mTickerCoordsWH.add(wh);
-			Entry entry = new Entry(data.get(i));
-			add(entry);
+		
+		if (data.size() == 0) {
+			JLabel noItems = new JLabel("You are free today!");
+			add(noItems);
+		} else {
+			int hour, min, total;
+			Point xy,wh;
+			for (int i = 0; i < data.size(); i++) {
+				hour = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
+				min = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.MINUTE);
+				total = hour+min;
+				xy = new Point((int) Math.floor(total/4d), 81);
+				mTickerCoordsXY.add(xy);
+				hour = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
+				min = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.MINUTE);
+				total = hour+min;
+				wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
+				mTickerCoordsWH.add(wh);
+				Entry entry = new Entry(data.get(i), false);
+				add(entry);
+			}
 		}
 	}
 	

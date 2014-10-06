@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+
 /*
  import javax.swing.JTextPane;
  import javax.swing.text.AttributeSet;
@@ -31,14 +32,18 @@ public class Entry extends JPanel {
 	private static final Color ENTRY_COLOR = new Color(50, 255, 125);
 	private static final Color ENTRY_BORDER = new Color(45, 215, 105);
 
-	public Entry(ItemData item) {
+	public Entry(ItemData item, boolean needDate) {
 		setBorder(BorderFactory.createLineBorder(ENTRY_BORDER));
 		setBackground(ENTRY_COLOR);
 		mTextArea.setLineWrap(true);
 		mTextArea.setWrapStyleWord(true);
 		mTextArea.setEditable(false);
 		mTextArea.setOpaque(false);
-		initText(item);
+		if (needDate) {
+			initText(item);
+		} else {
+			initTextNoDate(item);
+		}
 		mTextArea.setSize(300, 1); // to make sure the width is fixed at 300
 		add(mTextArea);
 	}
@@ -65,6 +70,20 @@ public class Entry extends JPanel {
 			mTextArea.append("#" + hashtags.get(i) + " ");
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void initTextNoDate(ItemData item) {
+		mTextArea.append("[" + item.get(Keys.UID) + "] ");
+		mTextArea.append(calToStringHoursOnly((Calendar) item.get(Keys.START),
+				(Calendar) item.get(Keys.END)));
+		mTextArea.append(item.get(Keys.TITLE) + "\n");
+		ArrayList<String> hashtags = ((ArrayList<String>) item
+				.get(Keys.HASHTAGS));
+		for (int i = 0; i < hashtags.size(); i++) {
+			mTextArea.append("#" + hashtags.get(i) + " ");
+		}
+		
+	}
 
 	private String calToString(Calendar startCal, Calendar endCal) {
 		String calString = "";
@@ -81,7 +100,23 @@ public class Entry extends JPanel {
 		}
 		calString += "\n";
 		return calString;
-
+	}
+	
+	private String calToStringHoursOnly(Calendar startCal, Calendar endCal) {
+		String calString = "";
+		SimpleDateFormat sdf, sdf2;
+		sdf = new SimpleDateFormat("EEE dd/MM/yy kk:mm");
+		sdf2 = new SimpleDateFormat("kk:mm");
+		calString += sdf2.format(startCal.getTime());
+		calString += " - ";
+		if (startCal.get(Calendar.DAY_OF_YEAR) == endCal
+				.get(Calendar.DAY_OF_YEAR)) {
+			calString += sdf2.format(endCal.getTime());
+		} else {
+			calString += sdf.format(endCal.getTime());
+		}
+		calString += "\n";
+		return calString;
 	}
 
 	/*
