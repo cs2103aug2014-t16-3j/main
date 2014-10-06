@@ -93,7 +93,7 @@ public class DayView extends JPanel{
 				total = hour+min;
 				wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
 				mTickerCoordsWH.add(wh);
-				Entry entry = new Entry(data.get(i), false);
+				Entry entry = new Entry(data.get(i), "day");
 				add(entry);
 			}
 		}

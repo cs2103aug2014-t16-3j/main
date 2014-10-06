@@ -22,7 +22,7 @@ public class ListView extends JPanel {
 
 	public void init(ArrayList<ItemData> data) {
 		for (int i = 0; i < data.size(); i++) {
-			Entry entry = new Entry(data.get(i), true);
+			Entry entry = new Entry(data.get(i), "list");
 			add(entry);
 		}
 	}

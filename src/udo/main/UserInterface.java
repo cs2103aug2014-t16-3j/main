@@ -28,6 +28,7 @@ import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.ui.DayView;
 import udo.util.ui.Feedback;
+import udo.util.ui.ToDoView;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
@@ -37,6 +38,7 @@ public class UserInterface implements ActionListener {
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
 	private JPanel mTextArea = new JPanel();
 	private DayView mTodayView = new DayView();
+	private ToDoView mToDoView = new ToDoView();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
 
@@ -117,6 +119,14 @@ public class UserInterface implements ActionListener {
 		 */
 
 		mLayer.add(mPopup, new Integer(2));
+		
+
+		/**
+		 * Sets up ToDoView
+		 */
+		
+		mToDoView.init();
+		mToDoView.setPreferredSize(new Dimension(370,550));
 
 		/**
 		 * Sets up todayView
@@ -130,6 +140,7 @@ public class UserInterface implements ActionListener {
 		 */
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// mFrame.setUndecorated(true);
+		mFrame.add(mToDoView, BorderLayout.WEST);
 		mFrame.add(mLayer, BorderLayout.CENTER);
 		mFrame.add(mTodayView, BorderLayout.EAST);
 		mFrame.pack();
@@ -179,6 +190,8 @@ public class UserInterface implements ActionListener {
 		/**
 		 * testing side views
 		 */
+		mToDoView.removeAll();
+		mToDoView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
 		mTodayView.removeAll();
 		mTodayView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
 		/**
