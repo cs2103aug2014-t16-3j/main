@@ -46,42 +46,42 @@ public class Parser {
 		String parts[] = input.split(" ");
 		String command = parts[0];
 		switch (command) {
-		case "add":
-			return Command.ADD_EVENT;
-		case "list":
-			return Command.LIST;
-		case "delete":
-			return Command.DELETE;
-		case "save":
-			return Command.SAVE;
-		case "exit":
-			return Command.EXIT;
-		case "undo":
-			return Command.UNDO;
-		default:
-			return Command.NULL; // parsing status fail, need to tell engine
-		}
+			case "add":
+				return Command.ADD_EVENT;
+			case "list":
+				return Command.LIST;
+			case "delete":
+				return Command.DELETE;
+			case "save":
+				return Command.SAVE;
+			case "exit":
+				return Command.EXIT;
+			case "undo":
+				return Command.UNDO;
+			default:
+				return Command.NULL; // parsing status fail, need to tell engine
+			}
 	}
 
 	public InputData processCommandType(Command commandType, String details) {
 		switch (commandType) {
-		case ADD_EVENT:
-			return addEvent(commandType, details);
-		case LIST:
-			return list(commandType, details);
-		case DELETE:
-			return delete(commandType, details);
-		case SAVE:
-			return save(commandType, details);
-		case EXIT:
-			return exit(commandType, details);
-		case UNDO:
-			return undo(commandType, details);
-		case NULL:
-			return parsingTrash(commandType, details);
-		default:
-			return null; // parsing status fail
-		}
+			case ADD_EVENT:
+				return addEvent(commandType, details);
+			case LIST:
+				return list(commandType, details);
+			case DELETE:
+				return delete(commandType, details);
+			case SAVE:
+				return save(commandType, details);
+			case EXIT:
+				return exit(commandType, details);
+			case UNDO:
+				return undo(commandType, details);
+			case NULL:
+				return parsingTrash(commandType, details);
+			default:
+				return null; // parsing status fail
+			}
 	}
 
 	// add <title> <hashTags, if any> on <date> from <start time> to <end time>
