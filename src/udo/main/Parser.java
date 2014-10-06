@@ -59,7 +59,7 @@ public class Parser {
 		case "undo":
 			return Command.UNDO;
 		default:
-			return null; // parsing status fail
+			return Command.NULL; // parsing status fail, need to tell engine
 		}
 	}
 
@@ -77,6 +77,8 @@ public class Parser {
 			return exit(commandType, details);
 		case UNDO:
 			return undo(commandType, details);
+		case NULL:
+			return parsingTrash(commandType, details);
 		default:
 			return null; // parsing status fail
 		}
@@ -272,6 +274,12 @@ public class Parser {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	public InputData parsingTrash(Command type, String details) {
+		InputData trashInputData = new InputData(type);
+		trashInputData.setParsingStatus(ParsingStatus.FAIL);
+		return trashInputData;
 	}
 
 	public InputData undo(Command type, String details) {
