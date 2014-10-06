@@ -56,8 +56,10 @@ public class Parser {
 			return Command.SAVE;
 		case "exit":
 			return Command.EXIT;
+		case "undo":
+			return Command.UNDO;
 		default:
-			return null;
+			return null; // parsing status fail
 		}
 	}
 
@@ -73,8 +75,10 @@ public class Parser {
 			return save(commandType, details);
 		case EXIT:
 			return exit(commandType, details);
+		case UNDO:
+			return undo(commandType, details);
 		default:
-			return null;
+			return null; // parsing status fail
 		}
 	}
 
