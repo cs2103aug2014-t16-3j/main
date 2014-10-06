@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -41,7 +42,7 @@ public class UserInterface implements ActionListener {
 
 	private Timer mTimer;
 	private Timer mExistingTimer;
-	private boolean mWaiting;
+	private volatile boolean mWaiting;
 	private String mUserInput;
 
 	private Feedback fb;
@@ -152,7 +153,7 @@ public class UserInterface implements ActionListener {
 	public String getInput() {
 		mWaiting = true;
 		while (mWaiting) {
-
+			
 		}
 		return mUserInput;
 	}
