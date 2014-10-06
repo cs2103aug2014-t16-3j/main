@@ -189,7 +189,7 @@ public class UserInterface implements ActionListener {
 		}
 		/**
 		 * testing side views
-		 */
+		 *
 		mToDoView.removeAll();
 		mToDoView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
 		mTodayView.removeAll();

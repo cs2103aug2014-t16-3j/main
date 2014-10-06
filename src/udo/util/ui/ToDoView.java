@@ -47,9 +47,14 @@ public class ToDoView extends JPanel {
 	}
 	
 	public void populateView(ArrayList<ItemData> data) {
-		for (int i = 0; i < data.size(); i++) {
-			Entry entry = new Entry(data.get(i), "todo");
-			add(entry);
+		if (data.size() == 0) {
+			JLabel noItems = new JLabel("You have no upcoming tasks!");
+			add(noItems);
+		} else {
+			for (int i = 0; i < data.size(); i++) {
+				Entry entry = new Entry(data.get(i), "todo");
+				add(entry);
+			}
 		}
 	}
 	
