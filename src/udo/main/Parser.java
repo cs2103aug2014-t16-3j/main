@@ -242,7 +242,7 @@ public class Parser {
 		if (isValidDelete(details)) {
 			String deleteIndexString = details.substring(7);
 			int deleteIndex = Integer.parseInt(deleteIndexString);
-			deleteInputData.put(Keys.DELETE, deleteIndex);
+			deleteInputData.put(Keys.UID, deleteIndex);
 			deleteInputData.setParsingStatus(ParsingStatus.SUCCESS);
 			return deleteInputData;
 		} else {
@@ -271,14 +271,20 @@ public class Parser {
 	}
 
 	public InputData undo(Command type, String details) {
-		return new InputData(type);
+		InputData undoInputData = new InputData(type);
+		undoInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return undoInputData;
 	}
 
 	public InputData save(Command type, String details) {
-		return new InputData(type);
+		InputData saveInputData = new InputData(type);
+		saveInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return saveInputData;
 	}
 
 	public InputData exit(Command type, String details) {
-		return new InputData(type);
+		InputData exitInputData = new InputData(type);
+		exitInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return exitInputData;
 	}
 }
