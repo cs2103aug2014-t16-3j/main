@@ -16,15 +16,15 @@ import udo.util.shared.ParsingStatus;
 public class uDoParserUnitTest {
 
 	Parser p = new Parser();
-	String test1 = "add #date with #leo from 30/9/14 12:30pm to 30/9/14 6:45pm";
+	String test1 = "add #date with #jiawei from 30/9/14 12:30pm to 30/9/14 6:45pm";
 	String test2 = "add #cs2010 #homework finish it! from 12/12/13 11:30am to 11/3/14 5:45am";
 	
 	@Test
 	public void testGetTitle() {
 		String title1 = p.getTitle(test1);
 		String title2 = p.getTitle(test2);
-		assertEquals(title1, "date with leo");
-		assertEquals(title2, "cs2010 homework finish it!");
+		assertEquals("date with jiawei", title1);
+		assertEquals("cs2010 homework finish it!", title2);
 	}
 	
 	@Test 

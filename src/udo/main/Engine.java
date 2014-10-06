@@ -47,6 +47,7 @@ public class Engine {
 		ParsingStatus parsingStatus = input.getStatus();
 		OutputData output;
 		
+		
 		// check if parsing success or not
 		if (parsingStatus.equals(ParsingStatus.FAIL)) {
 			output = new OutputData(cmd, 
@@ -54,6 +55,7 @@ public class Engine {
 					ExecutionStatus.NULL);
 			return output;
 		}
+		
 		
 		// decide what function to run.
 		switch (cmd) {

@@ -8,6 +8,7 @@ import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
 import udo.util.ui.ListView;
 
 public class Feedback {
@@ -28,28 +29,32 @@ public class Feedback {
 	}
 
 	public void process(OutputData output) {
-		if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
-			switch (output.getCommand()) {
-			case ADD_EVENT:
-				add_entry(output);
-				break;
-			case DELETE:
-				mCommand = "Deleted ";
-				break;
-			case EXIT:
-				mCommand = "Exit";
-				break;
-			case LIST:
-				list_entry(output);
-				break;
-			case SAVE:
-				mCommand = "Saved ";
-				break;
-			default:
-				break;
+		if (output.getParsingStatus().equals(ParsingStatus.SUCCESS)) {
+			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
+				switch (output.getCommand()) {
+				case ADD_EVENT:
+					add_entry(output);
+					break;
+				case DELETE:
+					mCommand = "Deleted ";
+					break;
+				case EXIT:
+					mCommand = "Exit";
+					break;
+				case LIST:
+					list_entry(output);
+					break;
+				case SAVE:
+					mCommand = "Saved ";
+					break;
+				default:
+					break;
+				}
+			} else {
+				mCommand = "Command cannot be executed. Please try again";
 			}
 		} else {
-			mCommand = "Failed to do specified task. Please try again";
+			mCommand = "Command not recognised. Please try again";
 		}
 	}
 
@@ -68,11 +73,12 @@ public class Feedback {
 		// testing dayview
 		mDayView.removeAll();
 		mDayView.init((ArrayList<ItemData>) mData);
-		if(mFinalView.equals(mDayView)) {
-			mFinalView = mListView;
-		} else {
-			mFinalView = mDayView;
-		}
+//		if(mFinalView.equals(mDayView)) { //if listquery is a date
+//			mFinalView = mListView;
+//		} else {
+//			mFinalView = mDayView;
+//		}
+		mFinalView = mDayView;
 	}
 
 	public String getCommand() {

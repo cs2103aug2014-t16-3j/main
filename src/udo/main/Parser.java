@@ -46,36 +46,42 @@ public class Parser {
 		String parts[] = input.split(" ");
 		String command = parts[0];
 		switch (command) {
-		case "add":
-			return Command.ADD_EVENT;
-		case "list":
-			return Command.LIST;
-		case "delete":
-			return Command.DELETE;
-		case "save":
-			return Command.SAVE;
-		case "exit":
-			return Command.EXIT;
-		default:
-			return null;
-		}
+			case "add":
+				return Command.ADD_EVENT;
+			case "list":
+				return Command.LIST;
+			case "delete":
+				return Command.DELETE;
+			case "save":
+				return Command.SAVE;
+			case "exit":
+				return Command.EXIT;
+			case "undo":
+				return Command.UNDO;
+			default:
+				return Command.NULL; // parsing status fail, need to tell engine
+			}
 	}
 
 	public InputData processCommandType(Command commandType, String details) {
 		switch (commandType) {
-		case ADD_EVENT:
-			return addEvent(commandType, details);
-		case LIST:
-			return list(commandType, details);
-		case DELETE:
-			return delete(commandType, details);
-		case SAVE:
-			return save(commandType, details);
-		case EXIT:
-			return exit(commandType, details);
-		default:
-			return null;
-		}
+			case ADD_EVENT:
+				return addEvent(commandType, details);
+			case LIST:
+				return list(commandType, details);
+			case DELETE:
+				return delete(commandType, details);
+			case SAVE:
+				return save(commandType, details);
+			case EXIT:
+				return exit(commandType, details);
+			case UNDO:
+				return undo(commandType, details);
+			case NULL:
+				return parsingTrash(commandType, details);
+			default:
+				return null; // parsing status fail
+			}
 	}
 
 	// add <title> <hashTags, if any> on <date> from <start time> to <end time>
@@ -151,17 +157,13 @@ public class Parser {
 	}
 
 	public String getTitle(String input) {
-		String title = input;
-		if (input.contains("#")) {
-			int hashtagIndex = input.indexOf("#");
-			title = input.substring(4, hashtagIndex);
-		} else {
-			int keywordIndex = getSmallestIndex(input);
-			if (keywordIndex != 100000000) {
-				title = input.substring(4, keywordIndex);
-			}
+		int keywordIndex = getSmallestIndex(input);
+		if (keywordIndex != 100000000) {
+			String title = input.substring(4, keywordIndex - 1);
+			title = title.replaceAll("#", "");
+			return title;
 		}
-		return title;
+		return input;
 	}
 	
 	public int getSmallestIndex(String input) {
@@ -246,7 +248,7 @@ public class Parser {
 		if (isValidDelete(details)) {
 			String deleteIndexString = details.substring(7);
 			int deleteIndex = Integer.parseInt(deleteIndexString);
-			deleteInputData.put(Keys.DELETE, deleteIndex);
+			deleteInputData.put(Keys.UID, deleteIndex);
 			deleteInputData.setParsingStatus(ParsingStatus.SUCCESS);
 			return deleteInputData;
 		} else {
@@ -273,16 +275,28 @@ public class Parser {
 			return false;
 		}
 	}
+	
+	public InputData parsingTrash(Command type, String details) {
+		InputData trashInputData = new InputData(type);
+		trashInputData.setParsingStatus(ParsingStatus.FAIL);
+		return trashInputData;
+	}
 
 	public InputData undo(Command type, String details) {
-		return new InputData(type);
+		InputData undoInputData = new InputData(type);
+		undoInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return undoInputData;
 	}
 
 	public InputData save(Command type, String details) {
-		return new InputData(type);
+		InputData saveInputData = new InputData(type);
+		saveInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return saveInputData;
 	}
 
 	public InputData exit(Command type, String details) {
-		return new InputData(type);
+		InputData exitInputData = new InputData(type);
+		exitInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return exitInputData;
 	}
 }
