@@ -151,17 +151,13 @@ public class Parser {
 	}
 
 	public String getTitle(String input) {
-		String title = input;
-		if (input.contains("#")) {
-			int hashtagIndex = input.indexOf("#");
-			title = input.substring(4, hashtagIndex);
-		} else {
-			int keywordIndex = getSmallestIndex(input);
-			if (keywordIndex != 100000000) {
-				title = input.substring(4, keywordIndex);
-			}
+		int keywordIndex = getSmallestIndex(input);
+		if (keywordIndex != 100000000) {
+			String title = input.substring(4, keywordIndex - 1);
+			title = title.replaceAll("#", "");
+			return title;
 		}
-		return title;
+		return input;
 	}
 	
 	public int getSmallestIndex(String input) {
