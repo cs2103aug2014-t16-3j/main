@@ -78,7 +78,7 @@ public class Feedback {
 //		} else {
 //			mFinalView = mDayView;
 //		}
-		mFinalView = mDayView;
+		mFinalView = mListView;
 	}
 
 	public String getCommand() {

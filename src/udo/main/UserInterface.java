@@ -1,5 +1,6 @@
 package udo.main;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -12,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
@@ -21,7 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
+import udo.util.ui.DayView;
 import udo.util.ui.Feedback;
 import udo.util.ui.uDoPopup;
 
@@ -31,11 +36,12 @@ public class UserInterface implements ActionListener {
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
 	private JPanel mTextArea = new JPanel();
+	private DayView mTodayView = new DayView();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
 
-	private static final int HEIGHT = 600;
-	private static final int WIDTH = 400;
+	private static final int MAIN_HEIGHT = 600;
+	private static final int MAIN_WIDTH = 400;
 	// private static final Color UDO_BG = new Color(255,244,122);
 	private static final Color UDO_BG = new Color(255, 255, 255);
 
@@ -68,7 +74,7 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up layer
 		 */
-		mLayer.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		mLayer.setPreferredSize(new Dimension(MAIN_WIDTH, MAIN_HEIGHT));
 
 		/**
 		 * Sets up textArea
@@ -87,7 +93,7 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up textPanel
 		 */
-		mTextPanel.setBounds(0, 0, WIDTH, HEIGHT);
+		mTextPanel.setBounds(0, 0, MAIN_WIDTH, MAIN_HEIGHT);
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -113,20 +119,21 @@ public class UserInterface implements ActionListener {
 		mLayer.add(mPopup, new Integer(2));
 
 		/**
-		 * Sets up finalView
+		 * Sets up todayView
 		 */
 
-//		mLayer.add(fb.getFinalView(), new Integer(1));
+		mTodayView.init();
+		mTodayView.setPreferredSize(new Dimension(370,550));
 		
 		/**
 		 * Sets up the frame
 		 */
-		mFrame.setSize(new Dimension(WIDTH, HEIGHT));
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// mFrame.setUndecorated(true);
-		mFrame.add(mLayer);
-		mFrame.setLocationRelativeTo(null);
+		mFrame.add(mLayer, BorderLayout.CENTER);
+		mFrame.add(mTodayView, BorderLayout.EAST);
 		mFrame.pack();
+		mFrame.setLocationRelativeTo(null);
 		mFrame.setVisible(true);
 	}
 
@@ -169,7 +176,15 @@ public class UserInterface implements ActionListener {
 			mTextArea = fb.getFinalView();	
 			mLayer.add(mTextArea, new Integer(1));
 		}
-		
+		/**
+		 * testing side views
+		 */
+		mTodayView.removeAll();
+		mTodayView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
+		/**
+		 * testing ends
+		 */
+
 		showPopup(outputString);
 	}
 
@@ -185,8 +200,8 @@ public class UserInterface implements ActionListener {
 		int padding = 5;
 		int height = fm.getHeight() + padding;
 		int width = fm.stringWidth(text) + padding;
-		int x = WIDTH / 2 - width / 2;
-		int y = HEIGHT - mTextField.getHeight() - height - padding;
+		int x = MAIN_WIDTH / 2 - width / 2;
+		int y = MAIN_HEIGHT - mTextField.getHeight() - height - padding;
 		mPopup.setText(text);
 		mPopup.setHorizontalAlignment(SwingConstants.CENTER);
 		mPopup.setBounds(x, y, width, height);
