@@ -1,12 +1,9 @@
 package udo.tests;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Scanner;
 
+import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
 public class RandomTesting {
@@ -29,9 +26,14 @@ public class RandomTesting {
 		String f = "%1$d";
 		System.out.println(String.format(f, c.get(Calendar.AM_PM)));
 		println(ItemType.EVENT.toString());
-
-		Scanner sc = new Scanner(System.in);
-		sc.nextLine();
+		ItemData i = new ItemData(ItemType.TASK);
+		println(i.getItemType().toString());
+		ItemData d = i;
+		println(d.getItemType().toString());
+		d.put("", sss);
+		println(d.get("").toString());
+		println(i.get("").toString());
+		
 	}
 
 	static void println(String s) {

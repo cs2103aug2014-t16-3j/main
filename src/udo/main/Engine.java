@@ -76,7 +76,7 @@ public class Engine {
 				output = runExit(input);
 				break;
 			default:
-				output = null;
+				return null;
 		}
 		output.setParsingStatus(ParsingStatus.SUCCESS);
 		return output;
