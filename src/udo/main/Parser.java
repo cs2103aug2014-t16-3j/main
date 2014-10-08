@@ -202,6 +202,7 @@ public class Parser {
 	/**
 	 * Returns an ArrayList of tags. Tags do not contain "#"
 	 * If no tags are found, retun an empty ArrayList
+	 * 
 	 * Tags require a space after them. Eg. #2013<space>
 	 * @param input that is directly retrieved from user
 	 * @return an ArrayList<String> of tags
@@ -231,6 +232,9 @@ public class Parser {
 				listInputData.setParsingStatus(ParsingStatus.FAIL);
 				return listInputData;
 			} else {
+				assert(tags.size() > 0);
+				assert(!tags.get(0).isEmpty());
+				
 				listInputData.put(Keys.HASHTAG, tags.get(0));
 				listInputData.put(Keys.QUERY, ListQuery.SINGLE_HASHTAG);
 				listInputData.setParsingStatus(ParsingStatus.SUCCESS);
