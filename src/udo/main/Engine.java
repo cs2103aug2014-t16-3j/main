@@ -158,6 +158,7 @@ public class Engine {
 			output = new OutputData(Command.DELETE, 
 					ParsingStatus.SUCCESS, 
 					ExecutionStatus.SUCCESS);
+			output.put(Keys.ITEM, deletedItem);
 			storeUndo(Command.DELETE, deletedItem);
 		} else {
 			output = new OutputData(Command.DELETE, 
