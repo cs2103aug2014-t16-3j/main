@@ -184,11 +184,10 @@ public class UserInterface implements ActionListener {
 		fb.process(output);
 		String outputString = fb.getCommand();
 		
-		if(! (mTextArea.equals(fb.getFinalView()))) {
-			mLayer.remove(mTextArea);
-			mTextArea = fb.getFinalView();	
-			mLayer.add(mTextArea, new Integer(1));
-		}
+		mLayer.remove(mTextArea);
+		mTextArea = fb.getFinalView();	
+		mLayer.add(mTextArea, new Integer(1));
+		
 		/**
 		 * testing side views
 		 *

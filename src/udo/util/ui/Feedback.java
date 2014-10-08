@@ -19,13 +19,16 @@ public class Feedback {
 
 	private DayView mDayView;
 	private ListView mListView;
+	private ToDoView mToDoView;
+	private SingleView mSingleView;
 
 	private JPanel mFinalView = new JPanel();
 
 	public Feedback() {
 		mListView = new ListView();
-		mListView.setOpaque(false);
 		mDayView = new DayView();
+		mToDoView = new ToDoView();
+		mSingleView = new SingleView();
 	}
 
 	public void process(OutputData output) {
@@ -33,16 +36,24 @@ public class Feedback {
 			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
 				switch (output.getCommand()) {
 				case ADD_EVENT:
-					add_entry(output);
+					add_entry(output, "addEvent");
+					break;
+				case ADD_TASK:
+					break;
+				case ADD_PLAN:
 					break;
 				case DELETE:
-					mCommand = "Deleted ";
+					delete_entry(output);
 					break;
 				case EXIT:
 					mCommand = "Exit";
 					break;
 				case LIST:
 					list_entry(output);
+					break;
+				case UNDO:
+					break;
+				case EDIT:
 					break;
 				case SAVE:
 					mCommand = "Saved ";
@@ -59,13 +70,25 @@ public class Feedback {
 	}
 
 	
-	public void add_entry(OutputData output) {
+	public void add_entry(OutputData output, String type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(item, type);
+		mFinalView = mSingleView;
 		mCommand = "Added " + item.get(Keys.TITLE);
+	}
+	
+	public void delete_entry(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(item, "delete");
+		mFinalView = mSingleView;
+		mCommand = "Deleted " + item.get(Keys.TITLE);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void list_entry(OutputData output) {
+		// TODO check if query is specified to 1 day, is a todo, or general list view
 		mCommand = "Listing ";
 		mData = output.get(Keys.ITEMS);
 		mListView.removeAll();
