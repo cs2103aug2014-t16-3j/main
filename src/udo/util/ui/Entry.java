@@ -41,13 +41,13 @@ public class Entry extends JPanel {
 		mTextArea.setEditable(false);
 		mTextArea.setOpaque(false);
 		switch(type) {
-		case "list":
+		case "allDetails":
 			initText(item);
 			break;
-		case "day":
+		case "noDate":
 			initTextNoDate(item);
 			break;
-		case "todo":
+		case "endDate":
 			initTextToDo(item);
 			break;
 		default:

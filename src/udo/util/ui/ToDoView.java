@@ -52,7 +52,7 @@ public class ToDoView extends JPanel {
 			add(noItems);
 		} else {
 			for (int i = 0; i < data.size(); i++) {
-				Entry entry = new Entry(data.get(i), "todo");
+				Entry entry = new Entry(data.get(i), "endDate");
 				add(entry);
 			}
 		}
