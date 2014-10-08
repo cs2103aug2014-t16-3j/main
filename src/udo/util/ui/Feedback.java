@@ -93,9 +93,9 @@ public class Feedback {
 		mData = output.get(Keys.ITEMS);
 		mListView.removeAll();
 		mListView.init((ArrayList<ItemData>) mData);
-		// testing dayview
+		/* testing dayview
 		mDayView.removeAll();
-		mDayView.init((ArrayList<ItemData>) mData);
+		mDayView.init((ArrayList<ItemData>) mData);*/
 //		if(mFinalView.equals(mDayView)) { //if listquery is a date
 //			mFinalView = mListView;
 //		} else {
