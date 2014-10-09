@@ -144,7 +144,7 @@ public class Engine {
 				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.QUERY_TYPE, query);
-		output.put(Keys.QUERY_STRING, queryString);
+		output.put(Keys.QUERY, queryString);
 		output.put(Keys.ITEMS, result);
 
 		return output;

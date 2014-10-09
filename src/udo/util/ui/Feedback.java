@@ -93,9 +93,22 @@ public class Feedback {
 		// TODO check if query is specified to 1 day, is a todo, or general list view
 		mData = output.get(Keys.ITEMS);
 		if(((ArrayList<ItemData>) mData).size() == 0) {
-			mCommand = "Does not exist!";
+			mCommand = "No items found";
 		} else {
-			ListQuery query = (ListQuery) output.get(Keys.QUERY_TYPE);
+			// TODO make a method that can take in string/ calendar etc to build the popup string
+			ListQuery queryType = (ListQuery) output.get(Keys.QUERY_TYPE);
+			String query = "";
+			switch(queryType) {
+			case ALL :
+				query = "All";
+				break;
+			case SINGLE_HASHTAG:
+				query = "#" + (String) output.get(Keys.QUERY);
+				break;
+			default:
+				break;
+				
+			}
 			mCommand = "Listing " + query;
 		}
 		mListView.removeAll();
