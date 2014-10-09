@@ -1,3 +1,4 @@
+//@author Nicholas
 package udo.util.engine;
 
 import java.util.ArrayList;
@@ -64,6 +65,61 @@ public class Cache {
 		}
 		return result;
 	}
+	
+	public ArrayList<ItemData> getAllEvents() {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.EVENT)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+	
+	public ArrayList<ItemData> getAllTasksAndPlans() {
+		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
+		allTasksAndPlans.addAll(getAllTasks());
+		allTasksAndPlans.addAll(getAllPlans());
+		Collections.sort(allTasksAndPlans);
+		return allTasksAndPlans;
+	}
+	
+	public ArrayList<ItemData> getAllTasks() {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.TASK)) {
+				allTasks.add(item);
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+	
+	public ArrayList<ItemData> getAllPlans() {
+		ArrayList<ItemData> allPlans = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.PLAN)) {
+				allPlans.add(item);
+			}
+		}
+		Collections.sort(allPlans);
+		return allPlans;
+	}
+
+	public ArrayList<ItemData> getAllItems() {
+		lock();
+		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
+		while (hasNextItem()) {
+			allItems.add(getNextItem());
+		}
+		unlock();
+		Collections.sort(allItems);
+		return allItems;
+	}
 
 	public boolean deleteItem(int uid) {
 		// TODO
@@ -101,17 +157,6 @@ public class Cache {
 		int planSize = mPlans.size();
 		int totalSize = eventSize + taskSize + planSize;
 		return totalSize;
-	}
-
-	public ArrayList<ItemData> getAllItems() {
-		lock();
-		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
-		while (hasNextItem()) {
-			allItems.add(getNextItem());
-		}
-		unlock();
-		Collections.sort(allItems);
-		return allItems;
 	}
 
 	public void clear() {

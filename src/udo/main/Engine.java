@@ -2,6 +2,7 @@ package udo.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 import udo.util.engine.Cache;
@@ -41,6 +42,15 @@ public class Engine {
 			return false;
 		}
 	}
+	
+	public ArrayList<ItemData> getDayViewItems(Calendar todayCal) {
+		ArrayList<ItemData> itemList = new ArrayList<ItemData>();
+		ArrayList<ItemData> allItems = mCache.getAllItems();
+		for (ItemData item : allItems) {
+			//itemCal = item.get
+		}
+		return itemList;
+	}
 
 	public OutputData execute(InputData input) {
 		Command cmd = input.getCommand();
@@ -78,7 +88,9 @@ public class Engine {
 				output = runExit(input);
 				break;
 			default:
-				return null;
+				output = new OutputData(cmd, 
+						ParsingStatus.SUCCESS,
+						ExecutionStatus.NULL);
 		}
 		output.setParsingStatus(ParsingStatus.SUCCESS);
 		return output;
