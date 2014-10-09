@@ -1,5 +1,6 @@
 package udo.util.ui;
 
+import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -7,6 +8,7 @@ import javax.swing.JPanel;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.ItemData;
+import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
 import udo.util.ui.ListView;
@@ -89,10 +91,15 @@ public class Feedback {
 	@SuppressWarnings("unchecked")
 	public void list_entry(OutputData output) {
 		// TODO check if query is specified to 1 day, is a todo, or general list view
-		mCommand = "Listing ";
 		mData = output.get(Keys.ITEMS);
+		if(((ArrayList<ItemData>) mData).size() == 0) {
+			mCommand = "Does not exist!";
+		} else {
+			ListQuery query = (ListQuery) output.get(Keys.QUERY);
+			mCommand = "Listing " + query;
+		}
 		mListView.removeAll();
-		mListView.init((ArrayList<ItemData>) mData);
+		mListView.init( (ArrayList<ItemData>) mData);
 		/* testing dayview
 		mDayView.removeAll();
 		mDayView.init((ArrayList<ItemData>) mData);*/
