@@ -126,12 +126,12 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up ToDoView
 		 */
-		mToDoView.setPreferredSize(new Dimension(370,550));
+		mToDoView.setPreferredSize(new Dimension(MAIN_WIDTH - 30, MAIN_HEIGHT));
 
 		/**
 		 * Sets up todayView
 		 */
-		mTodayView.setPreferredSize(new Dimension(370,550));
+		mTodayView.setPreferredSize(new Dimension(MAIN_WIDTH - 30, MAIN_HEIGHT));
 		
 		/**
 		 * Sets up the frame
@@ -175,14 +175,14 @@ public class UserInterface implements ActionListener {
 
 	public void updateTodayScreen(ArrayList<ItemData> data) {
 		mFrame.remove(mTodayView);
-		mTodayView = fb.initTodayView(data);
+		mTodayView.add(fb.initTodayView(data), BorderLayout.CENTER);
 		mFrame.add(mTodayView, BorderLayout.EAST);
 		mFrame.revalidate();
 	}
 	
 	public void updateTodoScreen(ArrayList<ItemData> data) {
 		mFrame.remove(mToDoView);
-		mToDoView = fb.initToDoView(data);
+		mToDoView.add(fb.initToDoView(data), BorderLayout.CENTER);
 		mFrame.add(mToDoView, BorderLayout.WEST);
 		mFrame.revalidate();
 	}
