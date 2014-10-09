@@ -37,6 +37,8 @@ public class uDo {
 		manageArgs(args);
 
 		engine.loadFile();
+		
+		
 
 		runMainLoop();
 
@@ -50,6 +52,12 @@ public class uDo {
 
 	private void runMainLoop() {
 		while (isRunning) {
+			// eng.getTodayiems4updte
+			// eng.getyodoupdate
+			
+			// ui.updateday(arraylist)
+			// ui.updatetodos
+			
 			String inputString = ui.getInput();
 
 			OutputData outputData = parseAndExecute(inputString);
