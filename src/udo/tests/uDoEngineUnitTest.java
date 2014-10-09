@@ -36,7 +36,7 @@ public class uDoEngineUnitTest {
 		e.execute(input1);
 		
 		InputData listInput = new InputData(Command.LIST);
-		listInput.put(Keys.QUERY, ListQuery.ALL);
+		listInput.put(Keys.QUERY_TYPE, ListQuery.ALL);
 		listInput.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData o = e.execute(listInput);
 		@SuppressWarnings("unchecked")
@@ -76,7 +76,7 @@ public class uDoEngineUnitTest {
 			fail("load fail");
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY, ListQuery.ALL);
+		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
 		OutputData o = e.execute(input);
 		assertFalse("output object cant be null", o == null);
 		assertEquals("the output status shud be success",

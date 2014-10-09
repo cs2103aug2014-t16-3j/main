@@ -95,7 +95,7 @@ public class Feedback {
 		if(((ArrayList<ItemData>) mData).size() == 0) {
 			mCommand = "Does not exist!";
 		} else {
-			ListQuery query = (ListQuery) output.get(Keys.QUERY);
+			ListQuery query = (ListQuery) output.get(Keys.QUERY_TYPE);
 			mCommand = "Listing " + query;
 		}
 		mListView.removeAll();

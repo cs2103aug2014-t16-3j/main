@@ -236,12 +236,12 @@ public class Parser {
 				assert(!tags.get(0).isEmpty());
 				
 				listInputData.put(Keys.HASHTAG, tags.get(0));
-				listInputData.put(Keys.QUERY, ListQuery.SINGLE_HASHTAG);
+				listInputData.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
 				listInputData.setParsingStatus(ParsingStatus.SUCCESS);
 				return listInputData;
 			}
 		} else {
-			listInputData.put(Keys.QUERY, ListQuery.ALL);
+			listInputData.put(Keys.QUERY_TYPE, ListQuery.ALL);
 			listInputData.setParsingStatus(ParsingStatus.SUCCESS);
 			return listInputData;
 		}

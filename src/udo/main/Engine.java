@@ -126,7 +126,7 @@ public class Engine {
 		ArrayList<ItemData> listOfAllItems = mCache.getAllItems();
 		ArrayList<ItemData> result;
 
-		ListQuery query = (ListQuery) input.get(Keys.QUERY);
+		ListQuery query = (ListQuery) input.get(Keys.QUERY_TYPE);
 		String queryString = "";
 		switch (query) {
 		case ALL:
@@ -143,7 +143,7 @@ public class Engine {
 		OutputData output = new OutputData(Command.LIST,
 				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
-		output.put(Keys.QUERY, query);
+		output.put(Keys.QUERY_TYPE, query);
 		output.put(Keys.QUERY_STRING, queryString);
 		output.put(Keys.ITEMS, result);
 

@@ -16,7 +16,7 @@ public class UItest {
 		Engine engine = new Engine();
 		engine.loadFile();
 		InputData input = new InputData(Command.LIST);
-		input.put(Keys.QUERY, ListQuery.ALL);
+		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
 		OutputData output = engine.execute(input);
 		ui.show(output);
 	}
