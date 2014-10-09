@@ -1,7 +1,11 @@
 package udo.main;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.shared.ExecutionStatus;
 
@@ -17,26 +21,27 @@ public class uDo {
 		udo.run(args);
 	}
 
-	public static final int EXIT_STATUS = 0;
+	public static final int EXIT_STATUS_OK = 0;
+	public static final int DAYS_IN_ADVANCE = 3;
 
-	private UserInterface ui;
-	private Parser parser;
-	private Engine engine;
+	private UserInterface mUI;
+	private Parser mParser;
+	private Engine mEngine;
 
-	boolean isRunning;
+	boolean mIsRunning;
 
 	public uDo() {
-		ui = new UserInterface(); // the UI is shown when init-ed
-		parser = new Parser();
-		engine = new Engine();
-		isRunning = true;
+		mUI = new UserInterface(); // the UI is shown when init-ed
+		mParser = new Parser();
+		mEngine = new Engine();
+		mIsRunning = true;
 	}
 
 	private boolean run(String[] args) {
 
 		manageArgs(args);
 
-		engine.loadFile();
+		mEngine.loadFile();
 		
 		
 
@@ -51,35 +56,53 @@ public class uDo {
 	}
 
 	private void runMainLoop() {
-		while (isRunning) {
+		while (mIsRunning) {
 			// eng.getTodayiems4updte
 			// eng.getyodoupdate
 			
-			// ui.updateday(arraylist)
-			// ui.updatetodos
+			// mUI.updateday(arraylist)
+			// mUI.updatetodos
 			
-			String inputString = ui.getInput();
+			updateTodayScreen();
+			updateTodoScreen();
+			
+			String inputString = mUI.getInput();
 
 			OutputData outputData = parseAndExecute(inputString);
 
 			CheckForExitCommand(outputData);
 
-			ui.show(outputData);
+			mUI.show(outputData);
 		}
-		System.exit(EXIT_STATUS);
+		System.exit(EXIT_STATUS_OK);
+	}
+
+	private void updateTodoScreen() {
+		Calendar from = Calendar.getInstance();
+		from.setLenient(true);
+		Calendar to = Calendar.getInstance();
+		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + DAYS_IN_ADVANCE);
+		ArrayList<ItemData> itemsToShow = mEngine.getTodoScreenItems(from, to);
+		//mUI.updateTodoScreen(itemsToShow);
+	}
+
+	private void updateTodayScreen() {
+		Calendar today = Calendar.getInstance();
+		ArrayList<ItemData> itemsToShow = mEngine.getTodayScreenItems(today);
+		//mUI.updateTodayScreen(itemsToShow);
 	}
 
 	private void CheckForExitCommand(OutputData outputData) {
 		if (outputData.getCommand() == Command.EXIT) {
 			if (outputData.getExecutionStatus() == ExecutionStatus.SUCCESS) {
-				isRunning = false;
+				mIsRunning = false;
 			}
 		}
 	}
 
 	OutputData parseAndExecute(String input) {
-		InputData inputData = parser.getInputData(input);
-		OutputData outputData = engine.execute(inputData);
+		InputData inputData = mParser.getInputData(input);
+		OutputData outputData = mEngine.execute(inputData);
 		return outputData;
 	}
 

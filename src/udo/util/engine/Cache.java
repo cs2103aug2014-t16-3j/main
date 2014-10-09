@@ -2,6 +2,7 @@
 package udo.util.engine;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -78,12 +79,60 @@ public class Cache {
 		return allEvents;
 	}
 	
-	public ArrayList<ItemData> getAllTasksAndPlans() {
+	public ArrayList<ItemData> getAllEventsOn(Calendar date) {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllEvents()) {
+			if (sameDate(item, date)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+	
+	private boolean sameDate(ItemData item, Calendar date) {
+		Calendar itemCal;
+		ItemType itemType = item.getItemType();
+		if (itemType.equals(ItemType.EVENT)) {
+			itemCal = (Calendar) item.get(Keys.START);
+		} else if (itemType.equals(ItemType.TASK)) {
+			itemCal = (Calendar) item.get(Keys.DUE);
+		} else {
+			return false;
+		}
+		return sameDate(itemCal, date);
+	}
+	
+	private boolean sameDate(Calendar c1, Calendar c2) {
+		int c1Day = c1.get(Calendar.DAY_OF_MONTH);
+		int c1Month = c1.get(Calendar.MONTH);
+		int c1Year = c1.get(Calendar.YEAR);
+		int c2Day = c2.get(Calendar.DAY_OF_MONTH);
+		int c2Month = c2.get(Calendar.MONTH);
+		int c2Year = c2.get(Calendar.YEAR);
+		if (c1Day != c2Day) {
+			return false;
+		}
+		if (c1Month != c2Month) {
+			return false;
+		}
+		if (c1Year != c2Year) {
+			return false;
+		}
+		return true;
+	}
+	
+	public ArrayList<ItemData> getAllTodo() {
 		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
 		allTasksAndPlans.addAll(getAllTasks());
 		allTasksAndPlans.addAll(getAllPlans());
 		Collections.sort(allTasksAndPlans);
 		return allTasksAndPlans;
+	}
+	
+	public ArrayList<ItemData> getAllTodoBetween(Calendar from, Calendar to) {
+		
+		return null;
 	}
 	
 	public ArrayList<ItemData> getAllTasks() {
@@ -135,17 +184,17 @@ public class Cache {
 		if (toDelete != null) {
 			ItemType type = toDelete.getItemType();
 			switch (type) {
-			case EVENT:
-				mEvents.remove(toDelete);
-				break;
-			case TASK:
-				mTasks.remove(toDelete);
-				break;
-			case PLAN:
-				mPlans.remove(toDelete);
-				break;
-			default:
-				return false;
+				case EVENT:
+					mEvents.remove(toDelete);
+					break;
+				case TASK:
+					mTasks.remove(toDelete);
+					break;
+				case PLAN:
+					mPlans.remove(toDelete);
+					break;
+				default:
+					return false;
 			}
 		}
 		return true;
@@ -169,7 +218,6 @@ public class Cache {
 	}
 
 	public int generateUID() {
-		// TODO
 		Random r = new Random(System.currentTimeMillis());
 		int uid = 10000 + r.nextInt(90000);
 		if (mUIDs.contains(uid)) {

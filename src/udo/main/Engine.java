@@ -43,13 +43,12 @@ public class Engine {
 		}
 	}
 	
-	public ArrayList<ItemData> getDayViewItems(Calendar todayCal) {
-		ArrayList<ItemData> itemList = new ArrayList<ItemData>();
-		ArrayList<ItemData> allItems = mCache.getAllItems();
-		for (ItemData item : allItems) {
-			//itemCal = item.get
-		}
-		return itemList;
+	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
+		return mCache.getAllEventsOn(todayCal);
+	}
+	
+	public ArrayList<ItemData> getTodoScreenItems(Calendar fromCal, Calendar toCal) {
+		return mCache.getAllTodoBetween(fromCal, toCal);
 	}
 
 	public OutputData execute(InputData input) {
