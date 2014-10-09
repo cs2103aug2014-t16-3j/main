@@ -17,7 +17,7 @@ public class Constants {
 	 * that another puts in.
 	 * 
 	 */
-	public static class Keys {
+	public static final class Keys {
 		public static final String UID = "uid";
 		public static final String TITLE = "title";
 		public static final String DUE = "due"; 			// for task
@@ -34,14 +34,14 @@ public class Constants {
 
 	/**
 	 * 
-	 * This class holds the array index values for the file manager. If you
+	 * This class holds the array index values for the file manager usage. If you
 	 * desire to put your own values inside here, make sure that the new
 	 * variable name doesnt conflict with existing names. If there is potential
 	 * confusion (e.g. your title index is different from the existing index)
 	 * pls sound out first.
 	 * 
 	 */
-	public static class Indices {
+	public static final class StorageIndices {
 		public static final int UID = 0;
 		public static final int TYPE = 1;
 		public static final int TITLE = 2;
@@ -59,7 +59,7 @@ public class Constants {
 	 * class
 	 * 
 	 */
-	public static class StorageStrings {
+	public static final class StorageStrings {
 		public static final String FILENAME = "uDo_data.txt";
 		public static final String FIELD_DELIMITER = "\\|\\|\\|";
 		public static final String DATE_DELIMITER = "/";
