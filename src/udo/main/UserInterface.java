@@ -37,8 +37,8 @@ public class UserInterface implements ActionListener {
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
 	private JPanel mTextArea = new JPanel();
-	private DayView mTodayView = new DayView();
-	private ToDoView mToDoView = new ToDoView();
+	private JPanel mTodayView = new JPanel();
+	private JPanel mToDoView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
 
@@ -126,15 +126,11 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up ToDoView
 		 */
-		
-		mToDoView.init();
 		mToDoView.setPreferredSize(new Dimension(370,550));
 
 		/**
 		 * Sets up todayView
 		 */
-
-		mTodayView.init();
 		mTodayView.setPreferredSize(new Dimension(370,550));
 		
 		/**
@@ -177,6 +173,20 @@ public class UserInterface implements ActionListener {
 		return mUserInput;
 	}
 
+	public void updateTodayScreen(ArrayList<ItemData> data) {
+		mFrame.remove(mTodayView);
+		mTodayView = fb.initTodayView(data);
+		mFrame.add(mTodayView, BorderLayout.EAST);
+		mFrame.revalidate();
+	}
+	
+	public void updateTodoScreen(ArrayList<ItemData> data) {
+		mFrame.remove(mToDoView);
+		mToDoView = fb.initToDoView(data);
+		mFrame.add(mToDoView, BorderLayout.WEST);
+		mFrame.revalidate();
+	}
+	
 	/**
 	 * ui.show is to show the output sent by engine
 	 */

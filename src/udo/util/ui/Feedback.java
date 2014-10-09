@@ -23,6 +23,8 @@ public class Feedback {
 	private ListView mListView;
 	private ToDoView mToDoView;
 	private SingleView mSingleView;
+	private DayView mMainTodayView;
+	private ToDoView mMainToDoView;
 
 	private JPanel mFinalView = new JPanel();
 
@@ -31,8 +33,22 @@ public class Feedback {
 		mDayView = new DayView();
 		mToDoView = new ToDoView();
 		mSingleView = new SingleView();
+		mMainTodayView = new DayView();
+		mMainToDoView = new ToDoView();
 	}
 
+	public JPanel initTodayView(ArrayList<ItemData> data) {
+		mMainTodayView.removeAll();
+		mMainTodayView.init(data);
+		return mMainTodayView;
+	}
+	
+	public JPanel initToDoView(ArrayList<ItemData> data) {
+		mMainToDoView.removeAll();
+		mMainToDoView.init(data);
+		return mMainToDoView;
+	}
+	
 	public void process(OutputData output) {
 		if (output.getParsingStatus().equals(ParsingStatus.SUCCESS)) {
 			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {

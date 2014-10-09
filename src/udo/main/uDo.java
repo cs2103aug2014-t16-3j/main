@@ -73,13 +73,13 @@ public class uDo {
 		Calendar to = Calendar.getInstance();
 		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + DAYS_IN_ADVANCE);
 		ArrayList<ItemData> itemsToShow = mEngine.getTodoScreenItems(from, to);
-		//mUI.updateTodoScreen(itemsToShow);
+		mUI.updateTodoScreen(itemsToShow);
 	}
 
 	private void updateTodayScreen() {
 		Calendar today = Calendar.getInstance();
 		ArrayList<ItemData> itemsToShow = mEngine.getTodayScreenItems(today);
-		//mUI.updateTodayScreen(itemsToShow);
+		mUI.updateTodayScreen(itemsToShow);
 	}
 
 	private void checkForExitCommand(OutputData outputData) {
