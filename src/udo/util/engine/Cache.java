@@ -67,6 +67,28 @@ public class Cache {
 		return result;
 	}
 	
+	public ArrayList<ItemData> getAllEventsOn(Calendar date) {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllEvents()) {
+			if (isSameDateAs(item, date)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+
+	public ArrayList<ItemData> getAllTasksBetween(Calendar from, Calendar to) {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllTasks()) {
+			if (isBetweenDates(item, from, to)) {
+				allTasks.add(item);
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+
 	public ArrayList<ItemData> getAllEvents() {
 		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
 		for (ItemData item : getAllItems()) {
@@ -78,63 +100,7 @@ public class Cache {
 		Collections.sort(allEvents);
 		return allEvents;
 	}
-	
-	public ArrayList<ItemData> getAllEventsOn(Calendar date) {
-		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
-		for (ItemData item : getAllEvents()) {
-			if (sameDate(item, date)) {
-				allEvents.add(item);
-			}
-		}
-		Collections.sort(allEvents);
-		return allEvents;
-	}
-	
-	private boolean sameDate(ItemData item, Calendar date) {
-		Calendar itemCal;
-		ItemType itemType = item.getItemType();
-		if (itemType.equals(ItemType.EVENT)) {
-			itemCal = (Calendar) item.get(Keys.START);
-		} else if (itemType.equals(ItemType.TASK)) {
-			itemCal = (Calendar) item.get(Keys.DUE);
-		} else {
-			return false;
-		}
-		return sameDate(itemCal, date);
-	}
-	
-	private boolean sameDate(Calendar c1, Calendar c2) {
-		int c1Day = c1.get(Calendar.DAY_OF_MONTH);
-		int c1Month = c1.get(Calendar.MONTH);
-		int c1Year = c1.get(Calendar.YEAR);
-		int c2Day = c2.get(Calendar.DAY_OF_MONTH);
-		int c2Month = c2.get(Calendar.MONTH);
-		int c2Year = c2.get(Calendar.YEAR);
-		if (c1Day != c2Day) {
-			return false;
-		}
-		if (c1Month != c2Month) {
-			return false;
-		}
-		if (c1Year != c2Year) {
-			return false;
-		}
-		return true;
-	}
-	
-	public ArrayList<ItemData> getAllTodo() {
-		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
-		allTasksAndPlans.addAll(getAllTasks());
-		allTasksAndPlans.addAll(getAllPlans());
-		Collections.sort(allTasksAndPlans);
-		return allTasksAndPlans;
-	}
-	
-	public ArrayList<ItemData> getAllTodoBetween(Calendar from, Calendar to) {
-		
-		return null;
-	}
-	
+
 	public ArrayList<ItemData> getAllTasks() {
 		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
 		for (ItemData item : getAllItems()) {
@@ -157,6 +123,14 @@ public class Cache {
 		}
 		Collections.sort(allPlans);
 		return allPlans;
+	}
+
+	public ArrayList<ItemData> getAllTodo() {
+		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
+		allTasksAndPlans.addAll(getAllTasks());
+		allTasksAndPlans.addAll(getAllPlans());
+		Collections.sort(allTasksAndPlans);
+		return allTasksAndPlans;
 	}
 
 	public ArrayList<ItemData> getAllItems() {
@@ -224,6 +198,67 @@ public class Cache {
 			return generateUID();
 		} else {
 			return uid;
+		}
+	}
+
+	private boolean isSameDateAs(ItemData item, Calendar date) {
+		Calendar itemCal;
+		ItemType itemType = item.getItemType();
+		if (itemType.equals(ItemType.EVENT)) {
+			itemCal = (Calendar) item.get(Keys.START);
+		} else if (itemType.equals(ItemType.TASK)) {
+			itemCal = (Calendar) item.get(Keys.DUE);
+		} else {
+			return false;
+		}
+		return isSameDateAs(itemCal, date);
+	}
+
+	private boolean isSameDateAs(Calendar c1, Calendar c2) {
+		int c1Day = c1.get(Calendar.DAY_OF_MONTH);
+		int c1Month = c1.get(Calendar.MONTH);
+		int c1Year = c1.get(Calendar.YEAR);
+		int c2Day = c2.get(Calendar.DAY_OF_MONTH);
+		int c2Month = c2.get(Calendar.MONTH);
+		int c2Year = c2.get(Calendar.YEAR);
+		if (c1Day != c2Day) {
+			return false;
+		}
+		if (c1Month != c2Month) {
+			return false;
+		}
+		if (c1Year != c2Year) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean isBetweenDates(ItemData item, Calendar from, Calendar to) {
+		Calendar itemCal;
+		ItemType itemType = item.getItemType();
+		if (itemType.equals(ItemType.EVENT)) {
+			itemCal = (Calendar) item.get(Keys.START);
+		} else if (itemType.equals(ItemType.TASK)) {
+			itemCal = (Calendar) item.get(Keys.DUE);
+		} else {
+			return false;
+		}
+		return isBetweenDates(itemCal, from, to);
+	}
+
+	private boolean isBetweenDates(Calendar itemCal, Calendar from, Calendar to) {
+		// compare from 0:00 to 23:59 of the date range
+		from.set(Calendar.HOUR, 0);
+		from.set(Calendar.MINUTE, 0);
+		from.set(Calendar.SECOND, 0);
+		to.set(Calendar.HOUR_OF_DAY, 23);
+		to.set(Calendar.MINUTE, 59);
+		to.set(Calendar.SECOND, 59);
+		
+		if (itemCal.after(from) && itemCal.before(to)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

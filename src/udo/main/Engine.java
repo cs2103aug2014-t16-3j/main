@@ -48,7 +48,7 @@ public class Engine {
 	}
 	
 	public ArrayList<ItemData> getTodoScreenItems(Calendar fromCal, Calendar toCal) {
-		return mCache.getAllTodoBetween(fromCal, toCal);
+		return mCache.getAllTasksBetween(fromCal, toCal);
 	}
 
 	public OutputData execute(InputData input) {
