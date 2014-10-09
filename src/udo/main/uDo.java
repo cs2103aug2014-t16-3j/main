@@ -43,8 +43,6 @@ public class uDo {
 
 		mEngine.loadFile();
 		
-		
-
 		runMainLoop();
 
 		return true;

@@ -11,12 +11,12 @@ public class RandomTesting {
 	public static void main(String[] args) {
 		Calendar c = Calendar.getInstance();
 		String s = "/a/d/f/|s";
-		String ss = "a:d:f:s";
+		String ss = "a:d:::::f:s";
 		String sss = "a, b, d, f, qweqw/:eqwe";
 		String[] sa = s.split("\\" + "|");
 		String[] ssa = ss.split(":");
 		String[] sssa = sss.split(", ");
-		System.out.println(Arrays.toString(sa));
+		System.out.println(Arrays.toString(ssa));
 
 		c.set(Calendar.YEAR, 2001);
 		System.out.println(c.toString());

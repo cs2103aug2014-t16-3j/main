@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.util.shared.Constants.Indices;
+import udo.util.shared.Constants.StorageIndices;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.StorageStrings;
 import udo.util.shared.ItemData;
@@ -128,28 +128,28 @@ public class FileManager {
 		// this method is meant to be wordy
 		// should extract to separate class
 		
-		ItemType type = getItemType(lineArray[Indices.TYPE]);
+		ItemType type = getItemType(lineArray[StorageIndices.TYPE]);
 
 		ItemData item = new ItemData(type);
 
-		int uid = Integer.parseInt(lineArray[Indices.UID]);
+		int uid = Integer.parseInt(lineArray[StorageIndices.UID]);
 		item.put(Keys.UID,
 				uid);
 		item.put(Keys.TITLE,
-				lineArray[Indices.TITLE]);
+				lineArray[StorageIndices.TITLE]);
 		
 		if (type.equals(ItemType.EVENT)) {
-			String startDate = lineArray[Indices.START_DATE];
-			String startTime = lineArray[Indices.START_TIME];
+			String startDate = lineArray[StorageIndices.START_DATE];
+			String startTime = lineArray[StorageIndices.START_TIME];
 			Calendar startCal = getCalendar(startDate, startTime);
 			item.put(Keys.START, startCal);
 
-			String endDate = lineArray[Indices.END_DATE];
-			String endTime = lineArray[Indices.END_TIME];
+			String endDate = lineArray[StorageIndices.END_DATE];
+			String endTime = lineArray[StorageIndices.END_TIME];
 			Calendar endCal = getCalendar(endDate, endTime);
 			item.put(Keys.END, endCal);
 
-			String tagsString = lineArray[Indices.HASHTAGS];
+			String tagsString = lineArray[StorageIndices.HASHTAGS];
 			ArrayList<String> tagsList = getList(tagsString);
 			item.put(Keys.HASHTAGS, tagsList);
 
