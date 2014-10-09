@@ -57,21 +57,13 @@ public class uDo {
 
 	private void runMainLoop() {
 		while (mIsRunning) {
-			// eng.getTodayiems4updte
-			// eng.getyodoupdate
-			
-			// mUI.updateday(arraylist)
-			// mUI.updatetodos
 			
 			updateTodayScreen();
 			updateTodoScreen();
 			
 			String inputString = mUI.getInput();
-
 			OutputData outputData = parseAndExecute(inputString);
-
-			CheckForExitCommand(outputData);
-
+			checkForExitCommand(outputData);
 			mUI.show(outputData);
 		}
 		System.exit(EXIT_STATUS_OK);
@@ -92,7 +84,7 @@ public class uDo {
 		//mUI.updateTodayScreen(itemsToShow);
 	}
 
-	private void CheckForExitCommand(OutputData outputData) {
+	private void checkForExitCommand(OutputData outputData) {
 		if (outputData.getCommand() == Command.EXIT) {
 			if (outputData.getExecutionStatus() == ExecutionStatus.SUCCESS) {
 				mIsRunning = false;

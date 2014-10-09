@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.junit.Test;
 
@@ -24,6 +25,16 @@ import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
 
 public class uDoEngineUnitTest {
+	
+	@Test
+	public void testEngineGetTodayItems() {
+		Engine e = new Engine();
+		e.loadFile();
+		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
+		assertEquals("length of todayList is currently 2",
+				2,
+				todayList.size());
+	}
 	
 	@Test
 	public void testEngineUndoDelete() {
@@ -72,22 +83,31 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineExecuteListAll() {
 		Engine e = new Engine();
-		if (!e.loadFile())
+		if (!e.loadFile()) {
 			fail("load fail");
+		}
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
 		OutputData o = e.execute(input);
-		assertFalse("output object cant be null", o == null);
+		
+		assertFalse("output object cant be null",
+				o == null);
+		
 		assertEquals("the output status shud be success",
-				ExecutionStatus.SUCCESS, o.getExecutionStatus());
-		assertEquals("the output command should be list", Command.LIST,
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be list",
+				Command.LIST,
 				o.getCommand());
+		
 		@SuppressWarnings("unchecked")
 		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
-		assertEquals("", 2, s.size());
-		System.out.println(s.get(0).toString());
-		System.out.println(s.get(1).toString());
+		
+		assertEquals("list size should be 2",
+				2,
+				s.size());
 	}
 
 	@Test
@@ -96,8 +116,10 @@ public class uDoEngineUnitTest {
 		e.loadFile();
 		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
 		assertEquals("the output status shud be success",
-				ExecutionStatus.SUCCESS, o.getExecutionStatus());
-		assertEquals("the output command should be exit", Command.EXIT,
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		assertEquals("the output command should be exit",
+				Command.EXIT,
 				o.getCommand());
 	}
 
@@ -167,11 +189,11 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineLoadFileTrue() {
 		Engine e = new Engine();
-		assertTrue("the loading of the file should return true"
-				+ "when successful", e.loadFile());
+		assertTrue("the loading of the file should return true when successful",
+				e.loadFile());
 	}
 
-	@Test
+	/*@Test
 	public void testFileManagerReadFileOutput() {
 		FileManager fm = new FileManager();
 		String itemString = new String();
@@ -189,6 +211,6 @@ public class uDoEngineUnitTest {
 				"12345|||EVENT|||meeting|||23/1/14|||9:23|||23/1/14|||22:30|||meeting,boss,work"
 						+ "12346|||EVENT|||bowling|||24/1/14|||13:30|||24/1/14|||15:45|||boss,play,fun,date",
 				itemString);
-	}
+	}*/
 
 }
