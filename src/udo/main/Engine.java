@@ -127,14 +127,14 @@ public class Engine {
 		ArrayList<ItemData> result;
 
 		ListQuery query = (ListQuery) input.get(Keys.QUERY);
-
+		String queryString = "";
 		switch (query) {
 		case ALL:
 			result = listOfAllItems;
 			break;
 		case SINGLE_HASHTAG:
-			String tag = (String) input.get(Keys.HASHTAG);
-			result = trimList(listOfAllItems, tag);
+			queryString = (String) input.get(Keys.HASHTAG);
+			result = trimList(listOfAllItems, queryString);
 			break;
 		default:
 			return null;
@@ -144,6 +144,7 @@ public class Engine {
 				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.QUERY, query);
+		output.put(Keys.QUERY_STRING, queryString);
 		output.put(Keys.ITEMS, result);
 
 		return output;
