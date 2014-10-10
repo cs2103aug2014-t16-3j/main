@@ -1,6 +1,5 @@
 package udo.util.ui;
 
-import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;

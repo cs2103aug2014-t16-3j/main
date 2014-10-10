@@ -1,7 +1,6 @@
 package udo.util.ui;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,19 +9,16 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
 public class ToDoView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final static int VIEW_HEIGHT = 550;
-	private final static int VIEW_WIDTH = 360;
-	private final static int LINE_Y = 33;
-	
 	public ToDoView() {
-		setPreferredSize(new Dimension(VIEW_WIDTH,VIEW_HEIGHT));
-		setBounds(20,20,VIEW_WIDTH,VIEW_HEIGHT);
+		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT));
+		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
 		setOpaque(false);
 	}
 	
@@ -38,10 +34,10 @@ public class ToDoView extends JPanel {
 	
 	public void initHeader() {
 		JLabel title = new JLabel("To Do");
-		title.setFont(new Font("Copperplate Gothic Light", Font.PLAIN, 24));
+		title.setFont(UI.HEADER_FONT);
 		FontMetrics fm = title.getFontMetrics(title.getFont());
 		int height = fm.getHeight();
-		title.setPreferredSize(new Dimension(VIEW_WIDTH, height));
+		title.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
 		title.setHorizontalAlignment(JLabel.RIGHT);
 		add(title);
 	}
@@ -62,6 +58,6 @@ public class ToDoView extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawLine(VIEW_WIDTH/4, LINE_Y, VIEW_WIDTH, LINE_Y);
+		g2.drawLine(UI.SUBVIEW_WIDTH/4, UI.SUBVIEW_HEADER_LINEY, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
 	}
 }

@@ -1,5 +1,8 @@
 package udo.util.shared;
 
+import java.awt.Color;
+import java.awt.Font;
+
 /**
  * 
  * This class holds all constants that the program uses. (the magic numbers) The
@@ -68,5 +71,25 @@ public class Constants {
 		public static final String TYPE_EVENT = "EVENT";
 		public static final String TYPE_TASK = "TASK";
 		public static final String TYPE_PLAN = "PLAN";
+	}
+	
+	/**
+	 * 
+	 * This class holds UI-related attributes such as fonts, measurements and colours.
+	 *
+	 */
+	public static final class UI {
+		public static final Font HEADER_FONT = new Font("Ubuntu", Font.PLAIN, 24);
+		public static final Font SUBHEADER_FONT = new Font("Ubuntu", Font.PLAIN, 18);
+		
+		public static final int MAIN_WIDTH = 400;
+		public static final int MAIN_HEIGHT = 600;
+		public static final int SUBVIEW_WIDTH = 360;
+		public static final int SUBVIEW_HEIGHT = 550;
+		public static final int SUBVIEW_HEADER_LINEY = 33;
+		public static final int SIDEVIEW_PADDING = 30;
+		
+		public static final Color MAIN_COLOR = new Color(255,255,255);
+		//public static final Color SUBVIEW_COLOR = new Color();
 	}
 }

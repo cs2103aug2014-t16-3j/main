@@ -2,7 +2,6 @@ package udo.util.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
 public class DayView extends JPanel{
@@ -33,16 +33,12 @@ public class DayView extends JPanel{
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
 	private ArrayList<Point> mTickerCoordsWH; //stores width and height of each ticker
 	
-	private final static int VIEW_HEIGHT = 550;
-	private final static int VIEW_WIDTH = 360;
-	private final static int LINE_Y = 33;
-	
 	public DayView(){
 
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
-		setPreferredSize(new Dimension(VIEW_WIDTH,VIEW_HEIGHT));
-		setBounds(20,20,VIEW_WIDTH,VIEW_HEIGHT);
+		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT));
+		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
 		setOpaque(false);
 		loadTicker();
 	}
@@ -102,18 +98,18 @@ public class DayView extends JPanel{
 	private void initHeader(Date newDate) {
 		String dateString = mDateFormat.format(newDate);
 		JLabel date = new JLabel(dateString);
-		date.setFont(new Font("Copperplate Gothic Light", Font.PLAIN, 24));
+		date.setFont(UI.HEADER_FONT);
 		FontMetrics fm = date.getFontMetrics(date.getFont());
 		int height = fm.getHeight();
-		date.setPreferredSize(new Dimension(VIEW_WIDTH, height));
+		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
 		date.setHorizontalAlignment(JLabel.LEFT);
 		add(date);
 		String dayString = mDayFormat.format(newDate);
 		JLabel day = new JLabel(dayString);
-		day.setFont(new Font("Copperplate Gothic Bold", Font.PLAIN, 18));
+		day.setFont(UI.SUBHEADER_FONT);
 		fm = day.getFontMetrics(day.getFont());
 		height = fm.getHeight();
-		day.setPreferredSize(new Dimension(VIEW_WIDTH, height));
+		day.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
 		day.setHorizontalAlignment(JLabel.RIGHT);;
 		add(day);
 	}
@@ -132,7 +128,7 @@ public class DayView extends JPanel{
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawLine(VIEW_WIDTH/4, LINE_Y, VIEW_WIDTH, LINE_Y);
+		g2.drawLine(UI.SUBVIEW_WIDTH/4, UI.SUBVIEW_HEADER_LINEY, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
 		g.setColor(Color.GREEN);
 		for(int i=0; i < mTickerCoordsXY.size(); i++) {
 			g.fillRect(mTickerCoordsXY.get(i).x, mTickerCoordsXY.get(i).y, mTickerCoordsWH.get(i).x, mTickerCoordsWH.get(i).y);

@@ -1,7 +1,6 @@
 package udo.main;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -23,12 +22,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
-import udo.util.ui.DayView;
 import udo.util.ui.Feedback;
-import udo.util.ui.ToDoView;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
@@ -41,11 +38,6 @@ public class UserInterface implements ActionListener {
 	private JPanel mToDoView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
-
-	private static final int MAIN_HEIGHT = 600;
-	private static final int MAIN_WIDTH = 400;
-	// private static final Color UDO_BG = new Color(255,244,122);
-	private static final Color UDO_BG = new Color(255, 255, 255);
 
 	private Timer mTimer;
 	private Timer mExistingTimer;
@@ -68,7 +60,7 @@ public class UserInterface implements ActionListener {
 		try {
 		     GraphicsEnvironment ge = 
 		         GraphicsEnvironment.getLocalGraphicsEnvironment();
-		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("COPRGTL.TTF")));
+		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Ubuntu-R.TTF")));
 		} catch (IOException|FontFormatException e) {
 		     //Handle exception
 		}
@@ -76,20 +68,20 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up layer
 		 */
-		mLayer.setPreferredSize(new Dimension(MAIN_WIDTH, MAIN_HEIGHT));
+		mLayer.setPreferredSize(new Dimension(UI.MAIN_WIDTH, UI.MAIN_HEIGHT));
 
 		/**
 		 * Sets up textArea
 		 */
 		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-		mTextArea.setBackground(UDO_BG);
+		mTextArea.setBackground(UI.MAIN_COLOR);
 
 		/**
 		 * Sets up textField
 		 */
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
-		mTextField.setBackground(UDO_BG);
+		mTextField.setBackground(UI.MAIN_COLOR);
 		Font newFont = mTextField.getFont().deriveFont(Font.PLAIN, 16f);
 		mTextField.setFont(newFont);
 		mTextField.requestFocus();
@@ -97,7 +89,7 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up textPanel
 		 */
-		mTextPanel.setBounds(0, 0, MAIN_WIDTH, MAIN_HEIGHT);
+		mTextPanel.setBounds(0, 0, UI.MAIN_WIDTH, UI.MAIN_HEIGHT);
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -112,7 +104,7 @@ public class UserInterface implements ActionListener {
 		c.weighty = 0;
 
 		mTextPanel.add(mTextField, c);
-		mTextPanel.setBackground(UDO_BG);
+		mTextPanel.setBackground(UI.MAIN_COLOR);
 
 		mLayer.add(mTextPanel, new Integer(0));
 
@@ -126,12 +118,12 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up ToDoView
 		 */
-		mToDoView.setPreferredSize(new Dimension(MAIN_WIDTH - 30, MAIN_HEIGHT));
+		mToDoView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
 
 		/**
 		 * Sets up todayView
 		 */
-		mTodayView.setPreferredSize(new Dimension(MAIN_WIDTH - 30, MAIN_HEIGHT));
+		mTodayView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
 		
 		/**
 		 * Sets up the frame
@@ -224,8 +216,8 @@ public class UserInterface implements ActionListener {
 		int padding = 5;
 		int height = fm.getHeight() + padding;
 		int width = fm.stringWidth(text) + padding;
-		int x = MAIN_WIDTH / 2 - width / 2;
-		int y = MAIN_HEIGHT - mTextField.getHeight() - height - padding;
+		int x = UI.MAIN_WIDTH / 2 - width / 2;
+		int y = UI.MAIN_HEIGHT - mTextField.getHeight() - height - padding;
 		mPopup.setText(text);
 		mPopup.setHorizontalAlignment(SwingConstants.CENTER);
 		mPopup.setBounds(x, y, width, height);
@@ -268,19 +260,5 @@ public class UserInterface implements ActionListener {
 		mTimer.start();
 
 	}
-
-	/**
-	 * The following main method is to test and see the UI. It will be deleted/
-	 * commented out when the uDo main method is run.
-	 */
-
-	/*public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				UserInterface newUI = new UserInterface();
-			}
-		});
-	}*/
 
 }
