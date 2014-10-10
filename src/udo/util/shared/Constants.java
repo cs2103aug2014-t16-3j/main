@@ -75,12 +75,18 @@ public class Constants {
 	
 	/**
 	 * 
-	 * This class holds UI-related attributes such as fonts, measurements and colours.
+	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
 	 *
 	 */
 	public static final class UI {
-		public static final Font HEADER_FONT = new Font("Ubuntu", Font.PLAIN, 24);
-		public static final Font SUBHEADER_FONT = new Font("Ubuntu", Font.PLAIN, 18);
+		public static final int FONT_LARGE = 24;
+		public static final int FONT_MEDIUM = 18;
+		public static final int FONT_SMALL = 12;
+		public static final int FONTSIZE_14 = 14;
+		public static final Font HEADER_FONT = new Font("Ubuntu", Font.PLAIN, FONT_LARGE);
+		public static final Font SUBHEADER_FONT = new Font("Ubuntu", Font.PLAIN, FONT_MEDIUM);
+		public static final Font UID_FONT = new Font("Ubuntu", Font.PLAIN, FONT_SMALL);
+		public static final Font POPUP_FONT = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
 		
 		public static final int MAIN_WIDTH = 400;
 		public static final int MAIN_HEIGHT = 600;
@@ -89,7 +95,20 @@ public class Constants {
 		public static final int SUBVIEW_HEADER_LINEY = 33;
 		public static final int SIDEVIEW_PADDING = 30;
 		
+		public static final String ENTRY_ALL = "ALL";
+		public static final String ENTRY_EVENT = "ALL";
+		public static final String ENTRY_TASK = "TASK";
+		public static final String ENTRY_PLAN = "PLAN";
+		
 		public static final Color MAIN_COLOR = new Color(255,255,255);
 		//public static final Color SUBVIEW_COLOR = new Color();
+		public static final Color ENTRY_BGCOLOR = new Color(255,255,255);
+		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
+		
+		public static final Color UID_COLOR = new Color(238,238,238);
+		
+		public static final Color POPUP_BGCOLOR = new Color(0,0,0);
+		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
+		
 	}
 }

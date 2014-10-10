@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
+import udo.util.shared.Constants.UI;
+
 public class uDoPopup extends JLabel {
 
 	private float alpha;
@@ -16,9 +18,9 @@ public class uDoPopup extends JLabel {
 	public uDoPopup() {
 
 		setOpaque(false);
-		setFont(new Font("Sans", Font.PLAIN, 14));
-		setBackground(Color.BLACK);
-		setForeground(Color.WHITE);
+		setFont(UI.POPUP_FONT);
+		setBackground(UI.POPUP_BGCOLOR);
+		setForeground(UI.POPUP_FGCOLOR);
 		setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 	}
 

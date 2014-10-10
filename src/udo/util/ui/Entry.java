@@ -1,14 +1,30 @@
 package udo.util.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.FontMetrics;
+import java.awt.Insets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+
+
+
+
+
+
+
+
+
+import javax.swing.border.EmptyBorder;
 
 
 /*
@@ -19,6 +35,7 @@ import javax.swing.JTextArea;
  import javax.swing.text.StyleContext;
  */
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
 public class Entry extends JPanel {
@@ -29,32 +46,75 @@ public class Entry extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private JTextArea mTextArea = new JTextArea();
+	private JPanel mDetailPanel = new JPanel();
+	// TODO maybe put a JTextPane here
+	private JLabel mUid = new JLabel();
+	private JPanel mTimePanel = new JPanel();
+	private JPanel mSeparator = new JPanel();
 
-	private static final Color ENTRY_COLOR = new Color(50, 255, 125);
-	private static final Color ENTRY_BORDER = new Color(45, 215, 105);
+	//private static final Color ENTRY_COLOR = new Color(50, 255, 125);
 
 	public Entry(ItemData item, String type) {
-		setBorder(BorderFactory.createLineBorder(ENTRY_BORDER));
-		setBackground(ENTRY_COLOR);
+		setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
+		setBackground(UI.ENTRY_BGCOLOR);
+		
+		mUid.setFont(UI.UID_FONT);
+		//mUid.setOpaque(true);
+		//mUid.setBackground(UI.UID_COLOR);
+		
+		//mTimePanel.setBackground(UI.ENTRY_BGCOLOR);
+		mTimePanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+		
 		mTextArea.setLineWrap(true);
 		mTextArea.setWrapStyleWord(true);
 		mTextArea.setEditable(false);
 		mTextArea.setOpaque(false);
 		switch(type) {
-		case "allDetails":
-			initText(item);
-			break;
-		case "noDate":
-			initTextNoDate(item);
-			break;
-		case "endDate":
-			initTextToDo(item);
-			break;
-		default:
-			break;
+			case UI.ENTRY_EVENT:
+				initEvent(item);
+				break;
+			case UI.ENTRY_TASK:
+				initTask(item);
+				break;
+			case UI.ENTRY_PLAN:
+				initPlan(item);
+				break;
+			default:
+				break;
 		}
 		mTextArea.setSize(300, 1); // to make sure the width is fixed at 300
 		add(mTextArea);
+	}
+
+	private void initPlan(ItemData item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void initTask(ItemData item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void initEvent(ItemData item) {
+		// TODO Auto-generated method stub
+		initUid( (Integer) item.get(Keys.UID));
+		initTime((Calendar) item.get(Keys.START), (Calendar) item.get(Keys.END)); 
+		add(mTimePanel, BorderLayout.WEST);
+	}
+	
+	private void initUid(Integer uid) {
+		mUid.setText(uid.toString());
+		FontMetrics fm = mUid.getFontMetrics(mUid.getFont());
+		int padding = 2;
+		int height = fm.getHeight() + padding;
+		int width = fm.stringWidth(mUid.getText()) + padding;
+		mUid.setPreferredSize(new Dimension(width, height));
+		mTimePanel.add(mUid);
+	}
+	
+	private void initTime(Calendar start, Calendar end) {
+		
 	}
 
 	@SuppressWarnings("unchecked")
