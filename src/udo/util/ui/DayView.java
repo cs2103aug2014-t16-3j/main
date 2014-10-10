@@ -98,7 +98,7 @@ public class DayView extends JPanel{
 	private void initHeader(Date newDate) {
 		String dateString = mDateFormat.format(newDate);
 		JLabel date = new JLabel(dateString);
-		date.setFont(UI.HEADER_FONT);
+		date.setFont(UI.FONT_24);
 		FontMetrics fm = date.getFontMetrics(date.getFont());
 		int height = fm.getHeight();
 		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
@@ -106,7 +106,7 @@ public class DayView extends JPanel{
 		add(date);
 		String dayString = mDayFormat.format(newDate);
 		JLabel day = new JLabel(dayString);
-		day.setFont(UI.SUBHEADER_FONT);
+		day.setFont(UI.FONT_18);
 		fm = day.getFontMetrics(day.getFont());
 		height = fm.getHeight();
 		day.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));

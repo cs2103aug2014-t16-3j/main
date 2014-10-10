@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -24,7 +25,10 @@ import javax.swing.JTextArea;
 
 
 
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+
 
 
 /*
@@ -58,12 +62,12 @@ public class Entry extends JPanel {
 		setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
 		setBackground(UI.ENTRY_BGCOLOR);
 		
-		mUid.setFont(UI.UID_FONT);
-		//mUid.setOpaque(true);
-		//mUid.setBackground(UI.UID_COLOR);
+		mUid.setFont(UI.FONT_12);
+		mUid.setOpaque(true);
+		mUid.setBackground(UI.UID_COLOR);
 		
-		//mTimePanel.setBackground(UI.ENTRY_BGCOLOR);
-		mTimePanel.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+		mTimePanel.setBackground(UI.ENTRY_BGCOLOR);
+		mTimePanel.setLayout(new BorderLayout());
 		
 		mTextArea.setLineWrap(true);
 		mTextArea.setWrapStyleWord(true);
@@ -83,7 +87,7 @@ public class Entry extends JPanel {
 				break;
 		}
 		mTextArea.setSize(300, 1); // to make sure the width is fixed at 300
-		add(mTextArea);
+		//add(mTextArea);
 	}
 
 	private void initPlan(ItemData item) {
@@ -98,8 +102,14 @@ public class Entry extends JPanel {
 
 	private void initEvent(ItemData item) {
 		// TODO Auto-generated method stub
+		
+		JPanel time = initTime((Calendar) item.get(Keys.START));
+		mTimePanel.add(time, BorderLayout.WEST);
+		JLabel dash = new JLabel("-");
+		dash.setFont(UI.FONT_14);
+		mTimePanel.add(dash, BorderLayout.CENTER);
+		mTimePanel.add(initTime((Calendar) item.get(Keys.END)), BorderLayout.EAST);
 		initUid( (Integer) item.get(Keys.UID));
-		initTime((Calendar) item.get(Keys.START), (Calendar) item.get(Keys.END)); 
 		add(mTimePanel, BorderLayout.WEST);
 	}
 	
@@ -110,11 +120,23 @@ public class Entry extends JPanel {
 		int height = fm.getHeight() + padding;
 		int width = fm.stringWidth(mUid.getText()) + padding;
 		mUid.setPreferredSize(new Dimension(width, height));
-		mTimePanel.add(mUid);
+		mUid.setHorizontalAlignment(SwingConstants.CENTER);
+		mTimePanel.add(mUid, BorderLayout.NORTH);
 	}
 	
-	private void initTime(Calendar start, Calendar end) {
-		
+	private JPanel initTime(Calendar cal) {
+		JPanel time = new JPanel();
+		time.setOpaque(false);
+		time.setLayout(new BoxLayout(time, BoxLayout.PAGE_AXIS));
+		SimpleDateFormat dfHour = new SimpleDateFormat("kk");
+		JLabel hour = new JLabel(dfHour.format(cal.getTime()));
+		SimpleDateFormat dfMin = new SimpleDateFormat("mm");
+		JLabel minute = new JLabel(dfMin.format(cal.getTime()));
+		hour.setFont(UI.FONT_20);
+		minute.setFont(UI.FONT_16);
+		time.add(hour);
+		time.add(minute);
+		return time;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -34,7 +34,7 @@ public class ToDoView extends JPanel {
 	
 	public void initHeader() {
 		JLabel title = new JLabel("To Do");
-		title.setFont(UI.HEADER_FONT);
+		title.setFont(UI.FONT_24);
 		FontMetrics fm = title.getFontMetrics(title.getFont());
 		int height = fm.getHeight();
 		title.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));

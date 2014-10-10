@@ -79,14 +79,18 @@ public class Constants {
 	 *
 	 */
 	public static final class UI {
-		public static final int FONT_LARGE = 24;
-		public static final int FONT_MEDIUM = 18;
-		public static final int FONT_SMALL = 12;
+		public static final int FONTSIZE_24 = 24;
+		public static final int FONTSIZE_20 = 20;
+		public static final int FONTSIZE_18 = 18;
+		public static final int FONTSIZE_16 = 16;
 		public static final int FONTSIZE_14 = 14;
-		public static final Font HEADER_FONT = new Font("Ubuntu", Font.PLAIN, FONT_LARGE);
-		public static final Font SUBHEADER_FONT = new Font("Ubuntu", Font.PLAIN, FONT_MEDIUM);
-		public static final Font UID_FONT = new Font("Ubuntu", Font.PLAIN, FONT_SMALL);
-		public static final Font POPUP_FONT = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
+		public static final int FONTSIZE_12 = 12;
+		public static final Font FONT_24 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_24);
+		public static final Font FONT_20 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_20);
+		public static final Font FONT_18 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_18);
+		public static final Font FONT_16 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_16);
+		public static final Font FONT_14 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
+		public static final Font FONT_12 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_12);
 		
 		public static final int MAIN_WIDTH = 400;
 		public static final int MAIN_HEIGHT = 600;

@@ -18,7 +18,7 @@ public class uDoPopup extends JLabel {
 	public uDoPopup() {
 
 		setOpaque(false);
-		setFont(UI.POPUP_FONT);
+		setFont(UI.FONT_14);
 		setBackground(UI.POPUP_BGCOLOR);
 		setForeground(UI.POPUP_FGCOLOR);
 		setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
