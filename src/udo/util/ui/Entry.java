@@ -1,14 +1,6 @@
 package udo.util.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.FontMetrics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,25 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-
-
-
-
-
-
-
-
-
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-
-
-
-
-
-
-
-
 
 /*
  import javax.swing.JTextPane;
@@ -56,8 +30,6 @@ public class Entry extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private GridBagConstraints mConstraints = new GridBagConstraints();
 	
 	private JPanel mDetailPanel = new JPanel();
 	private JTextArea mDescription = new JTextArea();
@@ -69,10 +41,8 @@ public class Entry extends JPanel {
 	private JPanel mSeparator = new JPanel();
 
 	public Entry(ItemData item, String type) {
-		setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
+		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
 		setBackground(UI.ENTRY_BGCOLOR);
-
-		setLayout(new GridBagLayout());
 		
 		mUid.setFont(UI.FONT_12);
 		mUid.setOpaque(true);
@@ -119,20 +89,15 @@ public class Entry extends JPanel {
 		mTimePanel.add(initDash(), BorderLayout.CENTER);
 		mTimePanel.add(initTime((Calendar) item.get(Keys.END)), BorderLayout.EAST);
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
-		mConstraints.insets = new Insets(2,2,2,2);
-		mConstraints.weightx = 0;
-		add(mTimePanel, mConstraints);
-		add(initSeparator(), mConstraints);
-		mConstraints.weightx = 0.5;
-		mConstraints.fill = GridBagConstraints.HORIZONTAL;
-		mConstraints.anchor = GridBagConstraints.LINE_START;
-		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)), mConstraints);
+		add(mTimePanel);
+		add(initSeparator());
+		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 	
 	private JPanel initDetails(String title, ArrayList<String> hashtags) {
 		mDescription.setWrapStyleWord(true);
 		mDescription.setLineWrap(true);
-		mDescription.setSize(300,1);
+		mDescription.setSize(UI.SUBVIEW_WIDTH,1);
 		mDescription.append(title);
 		for(int i = 0; i< hashtags.size(); i++) {
 			mHashtags.append("#" + hashtags.get(i) + " ");
