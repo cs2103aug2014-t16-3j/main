@@ -1,6 +1,9 @@
 package udo.util.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -15,19 +18,26 @@ public class ListView extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final static int VIEW_HEIGHT = 550;
-	private final static int VIEW_WIDTH = 360;
+	
+	private GridBagConstraints mConstraints = new GridBagConstraints();
 	
 	public ListView() {
 
 		setOpaque(false);
-		setBounds(20,20,VIEW_WIDTH,VIEW_HEIGHT);
+		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
+		//setLayout(new GridBagLayout());
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 	}
 
 	public void init(ArrayList<ItemData> data) {
+		mConstraints.fill = GridBagConstraints.HORIZONTAL;
+		mConstraints.weightx = 1;
+		mConstraints.weighty = 0;
+		mConstraints.anchor = GridBagConstraints.PAGE_START;
 		for (int i = 0; i < data.size(); i++) {
+			mConstraints.gridy = i;
 			Entry entry = new Entry(data.get(i), UI.ENTRY_EVENT);
+			//add(entry, mConstraints);
 			add(entry);
 		}
 	}

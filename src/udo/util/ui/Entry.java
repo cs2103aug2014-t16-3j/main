@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +35,10 @@ import javax.swing.border.EmptyBorder;
 
 
 
+
+
+
+
 /*
  import javax.swing.JTextPane;
  import javax.swing.text.AttributeSet;
@@ -51,7 +57,11 @@ public class Entry extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private GridBagConstraints mConstraints = new GridBagConstraints();
+	
 	private JPanel mDetailPanel = new JPanel();
+	private JTextArea mDescription = new JTextArea();
+	private JTextArea mHashtags = new JTextArea();
 	// TODO maybe put a JTextPane here
 	private JLabel mUid = new JLabel();
 	private JLabel mDash = new JLabel("-");
@@ -61,8 +71,9 @@ public class Entry extends JPanel {
 	public Entry(ItemData item, String type) {
 		setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
 		setBackground(UI.ENTRY_BGCOLOR);
-		
-		setLayout(new FlowLayout(FlowLayout.LEADING,4,2));
+
+		//setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, 60));
+		setLayout(new GridBagLayout());
 		
 		mUid.setFont(UI.FONT_12);
 		mUid.setOpaque(true);
@@ -70,6 +81,13 @@ public class Entry extends JPanel {
 		
 		mTimePanel.setBackground(UI.ENTRY_BGCOLOR);
 		mTimePanel.setLayout(new BorderLayout());
+		
+		mDetailPanel.setLayout(new BoxLayout(mDetailPanel, BoxLayout.PAGE_AXIS));
+		mDetailPanel.setOpaque(false);
+		
+		mDescription.setFont(UI.FONT_20);
+		
+		mHashtags.setFont(UI.FONT_16);
 		
 		switch(type) {
 			case UI.ENTRY_EVENT:
@@ -96,19 +114,31 @@ public class Entry extends JPanel {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initEvent(ItemData item) {
 		mTimePanel.add(initTime((Calendar) item.get(Keys.START)), BorderLayout.WEST);
 		mTimePanel.add(initDash(), BorderLayout.CENTER);
 		mTimePanel.add(initTime((Calendar) item.get(Keys.END)), BorderLayout.EAST);
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
-		add(mTimePanel);
-		add(initSeparator());
-		//add(initDetails(item.get(Keys.TITLE), item.get(Keys.HASHTAGS)));
+		mConstraints.insets = new Insets(2,2,2,2);
+		mConstraints.weightx = 0;
+		add(mTimePanel, mConstraints);
+		add(initSeparator(), mConstraints);
+		mConstraints.weightx = 0.5;
+		mConstraints.fill = GridBagConstraints.REMAINDER;
+		mConstraints.anchor = GridBagConstraints.LINE_START;
+		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)), mConstraints);
 	}
 	
-	private JPanel initDetails(Object object, Object object2) {
-		
-		return null;
+	private JPanel initDetails(String title, ArrayList<String> hashtags) {
+		mDescription.setSize(300,1);
+		mDescription.append(title);
+		for(int i = 0; i< hashtags.size(); i++) {
+			mHashtags.append("#" + hashtags.get(i) + " ");
+		}
+		mDetailPanel.add(mDescription);
+		mDetailPanel.add(mHashtags);
+		return mDetailPanel;
 	}
 
 	private JLabel initUid(Integer uid) {
@@ -131,7 +161,7 @@ public class Entry extends JPanel {
 		JLabel hour = new JLabel(dfHour.format(cal.getTime()));
 		SimpleDateFormat dfMin = new SimpleDateFormat("mm");
 		JLabel minute = new JLabel(dfMin.format(cal.getTime()));
-		hour.setFont(UI.FONT_20);
+		hour.setFont(UI.FONT_18);
 		minute.setFont(UI.FONT_16);
 		time.add(hour);
 		time.add(minute);

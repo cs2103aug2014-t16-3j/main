@@ -99,6 +99,9 @@ public class Constants {
 		public static final int SUBVIEW_HEADER_LINEY = 33;
 		public static final int SIDEVIEW_PADDING = 30;
 		
+		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
+		public static final int ENTRY_SEPARATOR_WIDTH = -5;
+		
 		public static final String ENTRY_ALL = "ALL";
 		public static final String ENTRY_EVENT = "ALL";
 		public static final String ENTRY_TASK = "TASK";
@@ -110,6 +113,7 @@ public class Constants {
 		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
 		
 		public static final Color UID_COLOR = new Color(238,238,238);
+		public static final Color SEPARATOR_COLOR = new Color(100,100,100);
 		
 		public static final Color POPUP_BGCOLOR = new Color(0,0,0);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
