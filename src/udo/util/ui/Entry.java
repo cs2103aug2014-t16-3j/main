@@ -72,7 +72,6 @@ public class Entry extends JPanel {
 		setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
 		setBackground(UI.ENTRY_BGCOLOR);
 
-		//setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, 60));
 		setLayout(new GridBagLayout());
 		
 		mUid.setFont(UI.FONT_12);
@@ -125,12 +124,14 @@ public class Entry extends JPanel {
 		add(mTimePanel, mConstraints);
 		add(initSeparator(), mConstraints);
 		mConstraints.weightx = 0.5;
-		mConstraints.fill = GridBagConstraints.REMAINDER;
+		mConstraints.fill = GridBagConstraints.HORIZONTAL;
 		mConstraints.anchor = GridBagConstraints.LINE_START;
 		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)), mConstraints);
 	}
 	
 	private JPanel initDetails(String title, ArrayList<String> hashtags) {
+		mDescription.setWrapStyleWord(true);
+		mDescription.setLineWrap(true);
 		mDescription.setSize(300,1);
 		mDescription.append(title);
 		for(int i = 0; i< hashtags.size(); i++) {

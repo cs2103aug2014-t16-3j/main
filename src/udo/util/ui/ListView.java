@@ -20,13 +20,14 @@ public class ListView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private GridBagConstraints mConstraints = new GridBagConstraints();
+	private JPanel mList = new JPanel();
 	
 	public ListView() {
 
 		setOpaque(false);
 		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
-		//setLayout(new GridBagLayout());
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		mList.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT));
+		mList.setLayout(new GridBagLayout());
 	}
 
 	public void init(ArrayList<ItemData> data) {
