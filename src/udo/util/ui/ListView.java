@@ -29,7 +29,7 @@ public class ListView extends JPanel {
 
 	public void init(ArrayList<ItemData> data) {
 		for (int i = 0; i < data.size(); i++) {
-			Entry entry = new Entry(data.get(i), UI.ENTRY_PLAN);
+			Entry entry = new Entry(data.get(i), UI.ENTRY_EVENT);
 			add(entry);
 		}
 	}
