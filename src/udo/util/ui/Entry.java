@@ -10,8 +10,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-
 import javax.swing.SwingConstants;
+
+
 
 /*
  import javax.swing.JTextPane;
@@ -36,6 +37,8 @@ public class Entry extends JPanel {
 	private JTextArea mHashtags = new JTextArea();
 	// TODO maybe put a JTextPane here
 	private JLabel mUid = new JLabel();
+	private JLabel mPrimaryTime; // can be hour or date
+	private JLabel mSecondaryTime = new JLabel(); // can be minute or month
 	private JLabel mDash = new JLabel("-");
 	private JPanel mTimePanel = new JPanel();
 	private JPanel mSeparator = new JPanel();
@@ -49,7 +52,7 @@ public class Entry extends JPanel {
 		mUid.setOpaque(true);
 		mUid.setBackground(UI.UID_COLOR);
 		
-		mTimePanel.setBackground(UI.ENTRY_BGCOLOR);
+		mTimePanel.setOpaque(false);
 		mTimePanel.setLayout(new BorderLayout());
 		
 		mDetailPanel.setLayout(new BoxLayout(mDetailPanel, BoxLayout.PAGE_AXIS));
@@ -74,14 +77,22 @@ public class Entry extends JPanel {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initPlan(ItemData item) {
-		// TODO Auto-generated method stub
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.CENTER);
+		add(mTimePanel);
+		add(initSeparator());
+		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initTask(ItemData item) {
-		// TODO Auto-generated method stub
-		
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
+		mTimePanel.add(initDate((Calendar) item.get(Keys.END)), BorderLayout.CENTER);
+		add(mTimePanel);
+		add(initSeparator());
+		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -92,11 +103,11 @@ public class Entry extends JPanel {
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
 		add(mTimePanel);
 		add(initSeparator());
-		mHorizontalRemainder = UI.SUBVIEW_WIDTH - (int) getPreferredSize().getWidth();
 		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 	
 	private JPanel initDetails(String title, ArrayList<String> hashtags) {
+		mHorizontalRemainder = UI.SUBVIEW_WIDTH - (int) getPreferredSize().getWidth();
 		mDescription.setWrapStyleWord(true);
 		mDescription.setLineWrap(true);
 		mDescription.setSize(mHorizontalRemainder ,1);
@@ -126,13 +137,28 @@ public class Entry extends JPanel {
 		time.setOpaque(false);
 		time.setLayout(new BoxLayout(time, BoxLayout.PAGE_AXIS));
 		SimpleDateFormat dfHour = new SimpleDateFormat("kk");
-		JLabel hour = new JLabel(dfHour.format(cal.getTime()));
+		mPrimaryTime = new JLabel(dfHour.format(cal.getTime()));
 		SimpleDateFormat dfMin = new SimpleDateFormat("mm");
-		JLabel minute = new JLabel(dfMin.format(cal.getTime()));
-		hour.setFont(UI.FONT_18);
-		minute.setFont(UI.FONT_16);
-		time.add(hour);
-		time.add(minute);
+		mSecondaryTime = new JLabel(dfMin.format(cal.getTime()));
+		mPrimaryTime.setFont(UI.FONT_18);
+		mSecondaryTime.setFont(UI.FONT_16);
+		time.add(mPrimaryTime);
+		time.add(mSecondaryTime);
+		return time;
+	}
+	
+	private JPanel initDate(Calendar cal) {
+		JPanel time = new JPanel();
+		time.setOpaque(false);
+		time.setLayout(new BoxLayout(time, BoxLayout.PAGE_AXIS));
+		SimpleDateFormat dfDate = new SimpleDateFormat("dd");
+		mPrimaryTime = new JLabel(dfDate.format(cal.getTime()));
+		SimpleDateFormat dfMonth = new SimpleDateFormat("MMM");
+		mSecondaryTime = new JLabel(dfMonth.format(cal.getTime()));
+		mPrimaryTime.setFont(UI.FONT_20);
+		mSecondaryTime.setFont(UI.FONT_16);
+		time.add(mPrimaryTime);
+		time.add(mSecondaryTime);
 		return time;
 	}
 	

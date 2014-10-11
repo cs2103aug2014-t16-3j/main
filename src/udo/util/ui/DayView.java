@@ -80,6 +80,10 @@ public class DayView extends JPanel{
 		
 		if (data.size() == 0) {
 			JLabel noItems = new JLabel("You are free today!");
+			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
+			int height = fm.getHeight();
+			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+			noItems.setHorizontalAlignment(JLabel.CENTER);
 			add(noItems);
 		} else {
 			int hour, min, total;
