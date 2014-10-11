@@ -39,6 +39,7 @@ public class Entry extends JPanel {
 	private JLabel mDash = new JLabel("-");
 	private JPanel mTimePanel = new JPanel();
 	private JPanel mSeparator = new JPanel();
+	private int mHorizontalRemainder;
 
 	public Entry(ItemData item, String type) {
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
@@ -91,13 +92,14 @@ public class Entry extends JPanel {
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
 		add(mTimePanel);
 		add(initSeparator());
+		mHorizontalRemainder = UI.SUBVIEW_WIDTH - (int) getPreferredSize().getWidth();
 		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 	
 	private JPanel initDetails(String title, ArrayList<String> hashtags) {
 		mDescription.setWrapStyleWord(true);
 		mDescription.setLineWrap(true);
-		mDescription.setSize(UI.SUBVIEW_WIDTH,1);
+		mDescription.setSize(mHorizontalRemainder ,1);
 		mDescription.append(title);
 		for(int i = 0; i< hashtags.size(); i++) {
 			mHashtags.append("#" + hashtags.get(i) + " ");

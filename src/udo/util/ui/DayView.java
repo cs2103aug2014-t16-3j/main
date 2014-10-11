@@ -2,6 +2,7 @@ package udo.util.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,9 +16,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
@@ -26,6 +30,7 @@ import udo.util.shared.ItemData;
 public class DayView extends JPanel{
 
 	private static final long serialVersionUID = -1690972274647306472L;
+	private JPanel mHeader = new JPanel();
 	private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd MMMM yyyy");
 	private SimpleDateFormat mDayFormat = new SimpleDateFormat("EEEE");  
 	private BufferedImage mTickerImg;
@@ -39,6 +44,7 @@ public class DayView extends JPanel{
 		mTickerCoordsWH = new ArrayList<Point>();
 		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT));
 		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
+		setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
 		setOpaque(false);
 		loadTicker();
 	}
@@ -56,7 +62,7 @@ public class DayView extends JPanel{
 	
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		initHeader(newDate);
-		add(mTicker);
+		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.DAYVIEW_HEADER_HEIGHT));
 		populateView(data);
 	}
 	
@@ -89,7 +95,7 @@ public class DayView extends JPanel{
 				total = hour+min;
 				wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
 				mTickerCoordsWH.add(wh);
-				Entry entry = new Entry(data.get(i), "noDate");
+				Entry entry = new Entry(data.get(i), UI.ENTRY_EVENT);
 				add(entry);
 			}
 		}
@@ -101,21 +107,29 @@ public class DayView extends JPanel{
 		date.setFont(UI.FONT_24);
 		FontMetrics fm = date.getFontMetrics(date.getFont());
 		int height = fm.getHeight();
-		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH , height));
 		date.setHorizontalAlignment(JLabel.LEFT);
-		add(date);
+
 		String dayString = mDayFormat.format(newDate);
 		JLabel day = new JLabel(dayString);
 		day.setFont(UI.FONT_18);
 		fm = day.getFontMetrics(day.getFont());
 		height = fm.getHeight();
 		day.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
-		day.setHorizontalAlignment(JLabel.RIGHT);;
-		add(day);
+		day.setHorizontalAlignment(SwingConstants.RIGHT);
+		day.setOpaque(true);
+		
+		mHeader.add(date);
+		mHeader.add(day);
+		mHeader.add(mTicker);
+		
+		add(mHeader);
 	}
 	
+	@Override
 	public void removeAll() {
 		super.removeAll();
+		mHeader.removeAll();
 		mTickerCoordsXY.clear();
 		mTickerCoordsWH.clear();
 	}

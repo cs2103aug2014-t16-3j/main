@@ -99,6 +99,8 @@ public class Constants {
 		public static final int SUBVIEW_HEADER_LINEY = 33;
 		public static final int SIDEVIEW_PADDING = 30;
 		
+		public static final int DAYVIEW_HEADER_HEIGHT = 100;
+		
 		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
 		public static final int ENTRY_SEPARATOR_WIDTH = -5;
 		
