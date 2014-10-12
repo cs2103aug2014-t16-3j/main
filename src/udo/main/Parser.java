@@ -34,13 +34,38 @@ import udo.util.shared.ParsingStatus;
 
 public class Parser {
 	
+	private int largePositiveInt = 100000000;
+	private int indexDoesNotExist = -1;
+	private int empty = 0;
+	// these numbers are constants
+	
+	private int determineCommandTypeCommandPart = 0;
+	// retrives the first word of input. Assumes first word of input is command word
+	
+	private int isValidAddint = 4;
+	// checks if there is input after "add "
+	
+	private int getTitleStartingIndex = 4;
+	// assume title starts after add command, e.g. "add <title>"
+	private int getTitleOffset = -1;
+	// removes "#" in title
+	
+	private int getTagsOffsetIndex = 1; 
+	// removes the "#" character from input
+	
+	private int deleteStartingIndex = 7; 
+	// get input after "delete "
+	private int isValidDeleteInt = 8; 
+	// checks if there is input after "delete "
 	
 	public Parser() {
 
 	}
+	
 	/**
 	 * Parses input string received and returns it as an InputData object.
 	 * Depending on what the Command is, necessary fields are filled.
+	 * 
 	 * @param input string 
 	 * @return InputData object
 	 */
@@ -49,8 +74,6 @@ public class Parser {
 		InputData data = processCommandType(type, input);
 		return data;
 	}
-
-	private int determineCommandTypeCommandPart = 0;
 	
 	public Command determineCommandType(String input) {
 		String parts[] = input.split(" ");
@@ -148,8 +171,6 @@ public class Parser {
 		return end;
 	}
 	
-	private int isValidAddint = 4;
-	
 	public boolean isValidAdd(String input) {
 		if (input.length() < isValidAddint) {
 			return false;
@@ -167,21 +188,16 @@ public class Parser {
 		// TODO Auto-generated method stub			// we tag it as task
 		return false;
 	}
-	
-	private int getTitleStartingIndex = 4;
-	private int getTitleOffset = -1;
 
 	public String getTitle(String input) {
 		int keywordIndex = getSmallestIndex(input);
 		if (keywordIndex != largePositiveInt) {
-			String title = input.substring(getTitleStartingIndex, keywordIndex + getTitleStartingIndex);
+			String title = input.substring(getTitleStartingIndex, keywordIndex + getTitleOffset);
 			title = title.replaceAll("#", "");
 			return title;
 		}
 		return input;
 	}
-	
-	private int largePositiveInt = 100000000;
 	
 	public int getSmallestIndex(String input) {
 		int fromStringIndex = input.lastIndexOf("from");
@@ -240,9 +256,6 @@ public class Parser {
 		}
 		return tagArrayList;
 	}
-	private int indexDoesNotExist = -1; 
-	private int getTagsOffsetIndex = 1; // this is to remove the "#" character from input
-	private int empty = 0;
 
 	public InputData list(Command type, String details) {
 		InputData listInputData = new InputData(type);
@@ -253,9 +266,9 @@ public class Parser {
 				return listInputData;
 			} else {
 				assert(tags.size() > empty);
-				assert(!tags.get(listFirstItem).isEmpty());
+				assert(!tags.get(0).isEmpty());
 				
-				listInputData.put(Keys.HASHTAG, tags.get(listFirstItem));
+				listInputData.put(Keys.HASHTAG, tags.get(0));
 				listInputData.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
 				listInputData.setParsingStatus(ParsingStatus.SUCCESS);
 				return listInputData;
@@ -266,8 +279,6 @@ public class Parser {
 			return listInputData;
 		}
 	}
-	
-	private int listFirstItem = 0;
 
 	public InputData delete(Command type, String details) {
 		InputData deleteInputData = new InputData(type);
@@ -282,8 +293,6 @@ public class Parser {
 			return deleteInputData;
 		}
 	}
-
-	private int deleteStartingIndex = 7; // get input after "delete "
 	
 	public boolean isValidDelete(String input) {
 		if (input.length() >= isValidDeleteInt) {
@@ -294,8 +303,6 @@ public class Parser {
 		}
 		return false;
 	}
-	
-	private int isValidDeleteInt = 8; // checks if there is input after "delete "
 	
 	public boolean isInteger(String input) {
 		try {
