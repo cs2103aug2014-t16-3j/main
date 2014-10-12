@@ -3,9 +3,7 @@ package udo.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -13,7 +11,6 @@ import org.junit.Test;
 
 import udo.main.Engine;
 import udo.util.engine.Cache;
-import udo.util.engine.FileManager;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
@@ -79,11 +76,34 @@ public class uDoEngineUnitTest {
 		assertFalse("cannot be null", null == o);
 		assertEquals("o success", ExecutionStatus.SUCCESS, o.getExecutionStatus());
 	}
+	
+	@Test
+	public void testEngineExecuteListHash() {
+		Engine e = new Engine();
+		InputData input = new InputData(Command.LIST);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+		input.put(Keys.HASHTAG, "meeting");
+		OutputData o = e.execute(input);
+		
+		assertFalse("output object cant be null",
+				o == null);
+		
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be list",
+				Command.LIST,
+				o.getCommand());
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		System.out.println(s.toString());
+	}
 
 	@Test
 	public void testEngineExecuteListAll() {
 		Engine e = new Engine();
-		
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY_TYPE, ListQuery.ALL);

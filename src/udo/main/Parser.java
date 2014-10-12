@@ -247,6 +247,7 @@ public class Parser {
 				tag = input.substring(indexOfHash + getTagsOffsetIndex, indexOfSeparator);
 				tagArrayList.add(tag);
 				indexOfHash = input.indexOf("#", indexOfSeparator);
+				hashIndexExist = (indexOfHash != indexDoesNotExist);
 			}
 		}
 		return tagArrayList;
