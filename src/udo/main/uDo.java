@@ -40,8 +40,6 @@ public class uDo {
 	private boolean run(String[] args) {
 
 		manageArgs(args);
-
-		mEngine.loadFile();
 		
 		runMainLoop();
 

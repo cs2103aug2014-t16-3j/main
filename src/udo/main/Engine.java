@@ -28,21 +28,9 @@ public class Engine {
 		mFileManager = new FileManager();
 		mCache = new Cache();
 		mUndoBin = new UndoBin();
+		loadFile();
 	}
 
-	// ****** public methods ******//
-
-	public boolean loadFile() {
-		mCache.clear();
-		try {
-			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
-			mCache.addAll(itemsFromFile);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
 	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
 		return mCache.getAllEventsOn(todayCal);
 	}
@@ -93,6 +81,19 @@ public class Engine {
 		}
 		output.setParsingStatus(ParsingStatus.SUCCESS);
 		return output;
+	}
+
+	// ****** public methods ******//
+	
+	private boolean loadFile() {
+		mCache.clear();
+		try {
+			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
+			mCache.addAll(itemsFromFile);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 
 	// ********* methods that execute the commands ******* //
