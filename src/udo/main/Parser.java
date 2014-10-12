@@ -91,6 +91,8 @@ public class Parser {
 				return Command.EXIT;
 			case "undo":
 				return Command.UNDO;
+			case "edit":
+				return Command.EDIT;
 			default:
 				return Command.NULL;
 			}
@@ -110,6 +112,8 @@ public class Parser {
 				return exit(commandType, details);
 			case UNDO:
 				return undo(commandType, details);
+			case EDIT:
+				return edit(commandType, details);
 			case NULL:
 				return parsingTrash(commandType, details);
 			default:
@@ -230,6 +234,14 @@ public class Parser {
 		ParserTime time = new ParserTime();
 		time.decipherText(input);
 		return time.getTime();
+	}
+	
+	/*
+	 * edit <uid> <field> <newinfo>
+	 */
+	private InputData edit(Command commandType, String details) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

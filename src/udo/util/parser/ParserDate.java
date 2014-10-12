@@ -49,7 +49,7 @@ Calendar mDate;
 				dateSubstring = dateSubstring.substring(dateStringStartingindex, dateStringEndingIndex);
 				return dateSubstring.trim();
 			}
-			dateSubstring = dateSubstring.substring(dayMonthSlashIndex + 1);
+			dateSubstring = dateSubstring.substring(dateStringIndexOffset);
 		}
 		return ERROR_MESSAGE;
 	}
