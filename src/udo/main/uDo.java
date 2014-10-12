@@ -90,7 +90,7 @@ public class uDo {
 		}
 	}
 
-	OutputData parseAndExecute(String input) {
+	private OutputData parseAndExecute(String input) {
 		InputData inputData = mParser.getInputData(input);
 		OutputData outputData = mEngine.execute(inputData);
 		return outputData;

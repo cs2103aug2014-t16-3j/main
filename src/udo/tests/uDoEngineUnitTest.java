@@ -159,8 +159,8 @@ public class uDoEngineUnitTest {
 		i.put("title", "asd");
 		ItemData ii = new ItemData(ItemType.EVENT);
 		ii.put("title", "asdasd");
-		assertTrue("add success", c.add(i));
-		assertTrue("add success", c.add(ii));
+		assertTrue("add success", c.addItem(i));
+		assertTrue("add success", c.addItem(ii));
 		assertEquals("the new size should be larger than old size by 2",
 				c.size(), oldSize + 2);
 	}
