@@ -1,12 +1,10 @@
 package udo.main;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import udo.util.parser.ParserDate;
+import udo.util.parser.ParserEdit;
 import udo.util.parser.ParserTime;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
@@ -18,14 +16,7 @@ import udo.util.shared.ParsingStatus;
  * This class parses information from the input string and package it 
  * as an InputData object. 
  * <p>
- * Aside from LIST, DELETE, EDIT, SAVE, EXIT and UNDO commands, 
- * Parser also identifies events, tasks and plans from 
- * input string.
- * <p>
- * ADD_EVENT command is for events. Events contain a starting time and an ending time.
- * ADD_TASK command is for tasks. Tasks contain 1 deadline.
- * ADD_PLAN command is for plans. Plans have no deadlines nor starting and ending time.
- * <p>
+ * It reads in ADD, LIST, DELETE, EDIT, SAVE, EXIT and UNDO commands.
  * Parser stores the keys using Keys class constants. 
  * 
  * @author chongjiawei
@@ -235,14 +226,6 @@ public class Parser {
 		time.decipherText(input);
 		return time.getTime();
 	}
-	
-	/*
-	 * edit <uid> <field> <newinfo>
-	 */
-	private InputData edit(Command commandType, String details) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/**
 	 * Returns an ArrayList of tags. Tags do not contain "#"
@@ -323,6 +306,15 @@ public class Parser {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	// edit <uid> <field> <newinfo>
+	private InputData edit(Command type, String details) {
+		ParserEdit data = new ParserEdit();
+		InputData editInputData = new InputData(type);
+		// put tags
+		editInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return editInputData;
 	}
 	
 	public InputData parsingTrash(Command type, String details) {
