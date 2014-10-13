@@ -38,7 +38,7 @@ public class ToDoView extends JPanel {
 		populateView(data);
 	}
 	
-	public void initHeader() {
+	private void initHeader() {
 		JLabel title = new JLabel("To Do");
 		title.setFont(UI.FONT_24);
 		FontMetrics fm = title.getFontMetrics(title.getFont());
@@ -50,9 +50,10 @@ public class ToDoView extends JPanel {
 		add(mHeader);
 	}
 	
-	public void populateView(ArrayList<ItemData> data) {
+	private void populateView(ArrayList<ItemData> data) {
 		if (data.size() == 0) {
 			JLabel noItems = new JLabel("You have no upcoming tasks!");
+			noItems.setFont(UI.FONT_14);
 			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
 			int height = fm.getHeight();
 			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));

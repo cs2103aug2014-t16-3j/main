@@ -39,12 +39,14 @@ public class Feedback {
 	public JPanel initTodayView(ArrayList<ItemData> data) {
 		mMainTodayView.removeAll();
 		mMainTodayView.init(data);
+		mMainTodayView.revalidate();
 		return mMainTodayView;
 	}
 
 	public JPanel initToDoView(ArrayList<ItemData> data) {
 		mMainToDoView.removeAll();
 		mMainToDoView.init(data);
+		mMainToDoView.revalidate();
 		return mMainToDoView;
 	}
 
@@ -86,7 +88,7 @@ public class Feedback {
 		}
 	}
 
-	public void add_entry(OutputData output, String type) {
+	private void add_entry(OutputData output, String type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
 		mSingleView.init(item, type);
@@ -94,7 +96,7 @@ public class Feedback {
 		mCommand = "Added " + item.get(Keys.TITLE);
 	}
 
-	public void delete_entry(OutputData output) {
+	private void delete_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
 		mSingleView.init(item, "delete");
@@ -103,7 +105,7 @@ public class Feedback {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void list_entry(OutputData output) {
+	private void list_entry(OutputData output) {
 		// TODO check if query is specified to 1 day, is a todo, or general list
 		// view
 		mData = output.get(Keys.ITEMS);
@@ -134,10 +136,6 @@ public class Feedback {
 
 	public String getCommand() {
 		return mCommand;
-	}
-
-	public String getStatus() {
-		return mStatus;
 	}
 
 	public JPanel getFinalView() {

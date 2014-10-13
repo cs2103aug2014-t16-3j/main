@@ -53,7 +53,7 @@ public class UserInterface implements ActionListener {
 		initUI();
 	}
 
-	public void initUI() {
+	private void initUI() {
 		/**
 		 * Sets up font
 		 */
@@ -210,7 +210,7 @@ public class UserInterface implements ActionListener {
 	 * @param text
 	 *            it is the text to be shown to user (from FeedBack class)
 	 */
-	public void showPopup(String text) {
+	private void showPopup(String text) {
 
 		FontMetrics fm = mPopup.getFontMetrics(mPopup.getFont());
 		int padding = 5;
@@ -224,7 +224,7 @@ public class UserInterface implements ActionListener {
 		fadePopup();
 	}
 
-	public void fadePopup() {
+	private void fadePopup() {
 		if (mExistingTimer != null)
 			mExistingTimer.stop();
 		mTimer = new Timer(10, new ActionListener() {

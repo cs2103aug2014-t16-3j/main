@@ -3,20 +3,20 @@ package udo.util.ui;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
 public class SingleView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private final static int VIEW_HEIGHT = 550;
-	private final static int VIEW_WIDTH = 360;
 	
 	private JLabel mMessage = new JLabel();
 	
 	public SingleView() {
 		
 		setOpaque(false);
-		setBounds(20,20,VIEW_WIDTH,VIEW_HEIGHT);
+		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
+		mMessage.setFont(UI.FONT_14);
 	}
 	
 	public void init(ItemData item, String cmdType) {
@@ -61,7 +61,7 @@ public class SingleView extends JPanel {
 	}
 	
 	private void addEntry(ItemData item) {
-		Entry entry = new Entry(item, "allDetails");
+		Entry entry = new Entry(item, UI.ENTRY_EVENT);
 		add(entry);
 	}
 }

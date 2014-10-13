@@ -80,6 +80,7 @@ public class DayView extends JPanel{
 		
 		if (data.size() == 0) {
 			JLabel noItems = new JLabel("You are free today!");
+			noItems.setFont(UI.FONT_14);
 			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
 			int height = fm.getHeight();
 			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));

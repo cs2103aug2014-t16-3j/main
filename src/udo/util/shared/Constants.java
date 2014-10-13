@@ -119,7 +119,7 @@ public class Constants {
 		public static final Color UID_COLOR = new Color(238,238,238);
 		public static final Color SEPARATOR_COLOR = new Color(100,100,100);
 		
-		public static final Color POPUP_BGCOLOR = new Color(0,0,0);
+		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
 		
 	}
