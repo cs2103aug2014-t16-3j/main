@@ -1,5 +1,7 @@
 package udo.util.ui;
 
+import java.awt.Dimension;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -15,7 +17,7 @@ public class SingleView extends JPanel {
 	public SingleView() {
 		
 		setOpaque(false);
-		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
+		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT));
 		mMessage.setFont(UI.FONT_14);
 	}
 	

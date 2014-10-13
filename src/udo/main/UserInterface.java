@@ -19,6 +19,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -33,6 +34,7 @@ public class UserInterface implements ActionListener {
 	private JFrame mFrame = new JFrame("uDo");
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
+	private JScrollPane mScrollPane = new JScrollPane();
 	private JPanel mTextArea = new JPanel();
 	private JPanel mTodayView = new JPanel();
 	private JPanel mToDoView = new JPanel();
@@ -73,8 +75,9 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up textArea
 		 */
-		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-		mTextArea.setBackground(UI.MAIN_COLOR);
+		mTextArea.setOpaque(false);
+		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
+		mScrollPane.getViewport().add(mTextArea);
 
 		/**
 		 * Sets up textField
@@ -94,10 +97,10 @@ public class UserInterface implements ActionListener {
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0.5;
+		c.weightx = 1;
 		c.weighty = 0.5;
 
-		mTextPanel.add(mTextArea, c);
+		mTextPanel.add(mScrollPane, c);
 
 		c.gridy = 1;
 		c.weighty = 0;
@@ -185,20 +188,10 @@ public class UserInterface implements ActionListener {
 		fb.process(output);
 		String outputString = fb.getCommand();
 		
-		mLayer.remove(mTextArea);
-		mTextArea = fb.getFinalView();	
-		mLayer.add(mTextArea, new Integer(1));
-		
-		/**
-		 * testing side views
-		 *
-		mToDoView.removeAll();
-		mToDoView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
-		mTodayView.removeAll();
-		mTodayView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
-		/**
-		 * testing ends
-		 */
+		mScrollPane.getViewport().removeAll();
+		mTextArea = fb.getFinalView();
+		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+		mScrollPane.getViewport().add(mTextArea);
 
 		showPopup(outputString);
 	}

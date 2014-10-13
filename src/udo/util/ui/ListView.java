@@ -23,14 +23,15 @@ public class ListView extends JPanel {
 	public ListView() {
 
 		setOpaque(false);
-		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
-		setLayout(new FlowLayout(FlowLayout.LEADING, 0 ,0));
+		//setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
+		setLayout(new WrapLayout(WrapLayout.LEADING, 0 ,0));
 	}
 
 	public void init(ArrayList<ItemData> data) {
 		for (int i = 0; i < data.size(); i++) {
 			Entry entry = new Entry(data.get(i), UI.ENTRY_EVENT);
 			add(entry);
+			revalidate();
 		}
 	}
 

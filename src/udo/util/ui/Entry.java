@@ -59,8 +59,12 @@ public class Entry extends JPanel {
 		mDetailPanel.setOpaque(false);
 		
 		mDescription.setFont(UI.FONT_20);
+		mDescription.setWrapStyleWord(true);
+		mDescription.setLineWrap(true);
+		mDescription.setEditable(false);
 		
 		mHashtags.setFont(UI.FONT_16);
+		mHashtags.setEditable(false);
 		
 		switch(type) {
 			case UI.ENTRY_EVENT:
@@ -108,8 +112,6 @@ public class Entry extends JPanel {
 	
 	private JPanel initDetails(String title, ArrayList<String> hashtags) {
 		mHorizontalRemainder = UI.SUBVIEW_WIDTH - (int) getPreferredSize().getWidth();
-		mDescription.setWrapStyleWord(true);
-		mDescription.setLineWrap(true);
 		mDescription.setSize(mHorizontalRemainder ,1);
 		mDescription.append(title);
 		for(int i = 0; i< hashtags.size(); i++) {
