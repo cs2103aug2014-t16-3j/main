@@ -34,12 +34,12 @@ public class Cache {
 
 	public boolean addAll(ArrayList<ItemData> list) {
 		for (ItemData item : list) {
-			add(item);
+			addItem(item);
 		}
 		return true;
 	}
 
-	public boolean add(ItemData item) {
+	public boolean addItem(ItemData item) {
 		if (isLocked()) {
 			return false;
 		}

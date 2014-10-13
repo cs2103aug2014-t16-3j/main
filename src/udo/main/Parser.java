@@ -1,12 +1,10 @@
 package udo.main;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import udo.util.parser.ParserDate;
+import udo.util.parser.ParserEdit;
 import udo.util.parser.ParserTime;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
@@ -16,10 +14,10 @@ import udo.util.shared.ParsingStatus;
 
 /**
  * This class parses information from the input string and package it 
- * as an InputData object. Aside from LIST, DELETE, EDIT, SAVE, EXIT, 
- * UNDO commands, Parser also identifies events, tasks and plans from 
- * input string. <Explain critera for event, task and plan> The 
- * information is stored using Keys class constants. 
+ * as an InputData object. 
+ * <p>
+ * It reads in ADD, LIST, DELETE, EDIT, SAVE, EXIT and UNDO commands.
+ * Parser stores the keys using Keys class constants. 
  * 
  * @author chongjiawei
  * 
@@ -27,12 +25,38 @@ import udo.util.shared.ParsingStatus;
 
 public class Parser {
 	
+	private int largePositiveInt = 100000000;
+	private int indexDoesNotExist = -1;
+	private int empty = 0;
+	// these numbers are constants
+	
+	private int determineCommandTypeCommandPart = 0;
+	// retrives the first word of input. Assumes first word of input is command word
+	
+	private int isValidAddint = 4;
+	// checks if there is input after "add "
+	
+	private int getTitleStartingIndex = 4;
+	// assume title starts after add command, e.g. "add <title>"
+	private int getTitleOffset = -1;
+	// removes "#" in title
+	
+	private int getTagsOffsetIndex = 1; 
+	// removes the "#" character from input
+	
+	private int deleteStartingIndex = 7; 
+	// get input after "delete "
+	private int isValidDeleteInt = 8; 
+	// checks if there is input after "delete "
+	
 	public Parser() {
 
 	}
+	
 	/**
 	 * Parses input string received and returns it as an InputData object.
 	 * Depending on what the Command is, necessary fields are filled.
+	 * 
 	 * @param input string 
 	 * @return InputData object
 	 */
@@ -41,10 +65,10 @@ public class Parser {
 		InputData data = processCommandType(type, input);
 		return data;
 	}
-
+	
 	public Command determineCommandType(String input) {
 		String parts[] = input.split(" ");
-		String command = parts[0];
+		String command = parts[determineCommandTypeCommandPart];
 		switch (command) {
 			case "add":
 				return Command.ADD_EVENT;
@@ -58,8 +82,10 @@ public class Parser {
 				return Command.EXIT;
 			case "undo":
 				return Command.UNDO;
+			case "edit":
+				return Command.EDIT;
 			default:
-				return Command.NULL; // parsing status fail, need to tell engine
+				return Command.NULL;
 			}
 	}
 
@@ -77,6 +103,8 @@ public class Parser {
 				return exit(commandType, details);
 			case UNDO:
 				return undo(commandType, details);
+			case EDIT:
+				return edit(commandType, details);
 			case NULL:
 				return parsingTrash(commandType, details);
 			default:
@@ -139,7 +167,7 @@ public class Parser {
 	}
 	
 	public boolean isValidAdd(String input) {
-		if (input.length() < 4) {
+		if (input.length() < isValidAddint) {
 			return false;
 		} else {
 			return true;
@@ -158,8 +186,8 @@ public class Parser {
 
 	public String getTitle(String input) {
 		int keywordIndex = getSmallestIndex(input);
-		if (keywordIndex != 100000000) {
-			String title = input.substring(4, keywordIndex - 1);
+		if (keywordIndex != largePositiveInt) {
+			String title = input.substring(getTitleStartingIndex, keywordIndex + getTitleOffset);
 			title = title.replaceAll("#", "");
 			return title;
 		}
@@ -171,7 +199,7 @@ public class Parser {
 		int byStringIndex = input.lastIndexOf("by");
 		int onStringIndex = input.lastIndexOf("on");
 		int min = -1;
-		int keywordIndex = 100000000; // a large positive contant
+		int keywordIndex = largePositiveInt; 
 		
 		if (fromStringIndex > min && fromStringIndex < keywordIndex) {
 			keywordIndex = fromStringIndex;
@@ -202,8 +230,8 @@ public class Parser {
 	/**
 	 * Returns an ArrayList of tags. Tags do not contain "#"
 	 * If no tags are found, retun an empty ArrayList
-	 * 
-	 * Tags require a space after them. Eg. #2013<space>
+	 * <p>
+	 * Tags require a space after them. Eg. "#2013 "
 	 * @param input that is directly retrieved from user
 	 * @return an ArrayList<String> of tags
 	 */
@@ -213,12 +241,13 @@ public class Parser {
 			int indexOfSeparator;
 			String tag;
 			int indexOfHash = input.indexOf("#");
-
-			while (indexOfHash != -1) {
+			boolean hashIndexExist = (indexOfHash != indexDoesNotExist);
+			while (hashIndexExist) {
 				indexOfSeparator = input.indexOf(" ", indexOfHash);
-				tag = input.substring(indexOfHash + 1, indexOfSeparator);
+				tag = input.substring(indexOfHash + getTagsOffsetIndex, indexOfSeparator);
 				tagArrayList.add(tag);
 				indexOfHash = input.indexOf("#", indexOfSeparator);
+				hashIndexExist = (indexOfHash != indexDoesNotExist);
 			}
 		}
 		return tagArrayList;
@@ -228,11 +257,11 @@ public class Parser {
 		InputData listInputData = new InputData(type);
 		if (details.contains("#")) {
 			ArrayList<String> tags = getTags(details);
-			if (tags.size() == 0) {
+			if (tags.size() == empty) {
 				listInputData.setParsingStatus(ParsingStatus.FAIL);
 				return listInputData;
 			} else {
-				assert(tags.size() > 0);
+				assert(tags.size() > empty);
 				assert(!tags.get(0).isEmpty());
 				
 				listInputData.put(Keys.HASHTAG, tags.get(0));
@@ -250,7 +279,7 @@ public class Parser {
 	public InputData delete(Command type, String details) {
 		InputData deleteInputData = new InputData(type);
 		if (isValidDelete(details)) {
-			String deleteIndexString = details.substring(7);
+			String deleteIndexString = details.substring(deleteStartingIndex);
 			int deleteIndex = Integer.parseInt(deleteIndexString);
 			deleteInputData.put(Keys.UID, deleteIndex);
 			deleteInputData.setParsingStatus(ParsingStatus.SUCCESS);
@@ -260,10 +289,10 @@ public class Parser {
 			return deleteInputData;
 		}
 	}
-
+	
 	public boolean isValidDelete(String input) {
-		if (input.length() >= 8) {
-			String deleteIndexString = input.substring(7);
+		if (input.length() >= isValidDeleteInt) {
+			String deleteIndexString = input.substring(deleteStartingIndex);
 			if (isInteger(deleteIndexString)) {
 				return true;
 			}
@@ -278,6 +307,15 @@ public class Parser {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	// edit <uid> <field> <newinfo>
+	private InputData edit(Command type, String details) {
+		ParserEdit data = new ParserEdit();
+		InputData editInputData = new InputData(type);
+		// put tags
+		editInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return editInputData;
 	}
 	
 	public InputData parsingTrash(Command type, String details) {

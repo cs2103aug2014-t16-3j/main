@@ -28,21 +28,9 @@ public class Engine {
 		mFileManager = new FileManager();
 		mCache = new Cache();
 		mUndoBin = new UndoBin();
+		loadFile();
 	}
 
-	// ****** public methods ******//
-
-	public boolean loadFile() {
-		mCache.clear();
-		try {
-			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
-			mCache.addAll(itemsFromFile);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
 	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
 		return mCache.getAllEventsOn(todayCal);
 	}
@@ -95,6 +83,19 @@ public class Engine {
 		return output;
 	}
 
+	// ****** public methods ******//
+	
+	private boolean loadFile() {
+		mCache.clear();
+		try {
+			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
+			mCache.addAll(itemsFromFile);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
 	// ********* methods that execute the commands ******* //
 
 	private OutputData runAddEvent(InputData inputData) {
@@ -111,7 +112,7 @@ public class Engine {
 
 		event.put(Keys.HASHTAGS, inputData.get(Keys.HASHTAGS));
 
-		boolean addOK = mCache.add(event);
+		boolean addOK = mCache.addItem(event);
 		Command cmd = inputData.getCommand();
 		OutputData output = new OutputData(cmd);
 		
@@ -252,7 +253,7 @@ public class Engine {
 				break;
 			case EDIT:
 				// TODO
-				undoInput = null;
+				undoInput = new InputData(Command.EDIT);
 				break;
 			default:
 				// do nothing. this shouldnt happen
@@ -264,17 +265,8 @@ public class Engine {
 	}
 
 	private boolean writeCacheToFile() {
-		/*
-		 * boolean filePrepared = mFileManager.startWriteMode(); boolean
-		 * cacheLocked = mCache.lock(); if (!filePrepared || !cacheLocked) {
-		 * return false; }
-		 * 
-		 * while (mCache.hasNextItem()) { ItemData item = mCache.getNextItem();
-		 * mFileManager.write(item); }
-		 * 
-		 * mFileManager.closeWriteMode();
-		 */
-		mFileManager.writeToFile(mCache.getAllItems());
+		ArrayList<ItemData> itemsToWrite = mCache.getAllItems(); 
+		mFileManager.writeToFile(itemsToWrite);
 		return true;
 	}
 
@@ -282,8 +274,7 @@ public class Engine {
 		ArrayList<ItemData> result = new ArrayList<ItemData>();
 		for (ItemData item : list) {
 			@SuppressWarnings("unchecked")
-			ArrayList<String> tags = (ArrayList<String>) item
-					.get(Keys.HASHTAGS);
+			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
 			if (tags.contains(tag)) {
 				result.add(item);
 			}

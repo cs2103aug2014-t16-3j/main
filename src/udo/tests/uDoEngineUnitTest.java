@@ -3,9 +3,7 @@ package udo.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -13,7 +11,6 @@ import org.junit.Test;
 
 import udo.main.Engine;
 import udo.util.engine.Cache;
-import udo.util.engine.FileManager;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
@@ -29,7 +26,7 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineGetTodayItems() {
 		Engine e = new Engine();
-		e.loadFile();
+		 
 		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
 		assertEquals("length of todayList is currently 2",
 				2,
@@ -39,7 +36,7 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineUndoDelete() {
 		Engine e = new Engine();
-		e.loadFile();
+		 
 		
 		InputData input1 = new InputData(Command.DELETE);
 		input1.setParsingStatus(ParsingStatus.SUCCESS);
@@ -71,7 +68,7 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineDelete() {
 		Engine e = new Engine();
-		e.loadFile();
+		 
 		InputData input = new InputData(Command.DELETE);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.UID, 12345);
@@ -79,13 +76,34 @@ public class uDoEngineUnitTest {
 		assertFalse("cannot be null", null == o);
 		assertEquals("o success", ExecutionStatus.SUCCESS, o.getExecutionStatus());
 	}
+	
+	@Test
+	public void testEngineExecuteListHash() {
+		Engine e = new Engine();
+		InputData input = new InputData(Command.LIST);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+		input.put(Keys.HASHTAG, "meeting");
+		OutputData o = e.execute(input);
+		
+		assertFalse("output object cant be null",
+				o == null);
+		
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be list",
+				Command.LIST,
+				o.getCommand());
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		System.out.println(s.toString());
+	}
 
 	@Test
 	public void testEngineExecuteListAll() {
 		Engine e = new Engine();
-		if (!e.loadFile()) {
-			fail("load fail");
-		}
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
@@ -113,7 +131,7 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineExecuteExit() {
 		Engine e = new Engine();
-		e.loadFile();
+		 
 		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
 		assertEquals("the output status shud be success",
 				ExecutionStatus.SUCCESS,
@@ -126,7 +144,7 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineExecuteAddEventNotNull() {
 		Engine e = new Engine();
-		e.loadFile();
+		 
 		InputData in = new InputData(Command.ADD_EVENT);
 		in.setParsingStatus(ParsingStatus.SUCCESS);
 		assertFalse("", null == e.execute(in));
@@ -135,9 +153,6 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineExecuteSave() {
 		Engine e = new Engine();
-		boolean loadOK = e.loadFile();
-		if (!loadOK)
-			fail("load failed");
 		InputData in = new InputData(Command.SAVE);
 		in.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData out = e.execute(in);
@@ -145,11 +160,11 @@ public class uDoEngineUnitTest {
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
 	}
 
-	@Test
+	/*@Test
 	public void testEngineLoadFile() {
 		assertTrue("the loading of the file should return true if successful",
 				new Engine().loadFile());
-	}
+	}*/
 
 	@Test
 	public void testCacheAddItemSizeIncrease() {
@@ -159,8 +174,8 @@ public class uDoEngineUnitTest {
 		i.put("title", "asd");
 		ItemData ii = new ItemData(ItemType.EVENT);
 		ii.put("title", "asdasd");
-		assertTrue("add success", c.add(i));
-		assertTrue("add success", c.add(ii));
+		assertTrue("add success", c.addItem(i));
+		assertTrue("add success", c.addItem(ii));
 		assertEquals("the new size should be larger than old size by 2",
 				c.size(), oldSize + 2);
 	}
@@ -186,12 +201,12 @@ public class uDoEngineUnitTest {
 	 * assertTrue("same item", iExp.equals(i)); }
 	 */
 
-	@Test
+	/*@Test
 	public void testEngineLoadFileTrue() {
 		Engine e = new Engine();
 		assertTrue("the loading of the file should return true when successful",
 				e.loadFile());
-	}
+	}*/
 
 	/*@Test
 	public void testFileManagerReadFileOutput() {
