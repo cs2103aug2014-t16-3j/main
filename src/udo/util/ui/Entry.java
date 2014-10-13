@@ -128,7 +128,7 @@ public class Entry extends JPanel {
 	
 	private JLabel initDash() {
 		mDash.setFont(UI.FONT_16);
-		mDash.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+		mDash.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
 		return mDash;
 	}
 	
@@ -141,7 +141,7 @@ public class Entry extends JPanel {
 		SimpleDateFormat dfMin = new SimpleDateFormat("mm");
 		mSecondaryTime = new JLabel(dfMin.format(cal.getTime()));
 		mPrimaryTime.setFont(UI.FONT_18);
-		mSecondaryTime.setFont(UI.FONT_16);
+		mSecondaryTime.setFont(UI.FONT_14);
 		time.add(mPrimaryTime);
 		time.add(mSecondaryTime);
 		return time;
