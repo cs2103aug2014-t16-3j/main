@@ -82,8 +82,7 @@ public class UserInterface implements ActionListener {
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
 		mTextField.setBackground(UI.MAIN_COLOR);
-		Font newFont = mTextField.getFont().deriveFont(Font.PLAIN, 16f);
-		mTextField.setFont(newFont);
+		mTextField.setFont(UI.FONT_16);
 		mTextField.requestFocus();
 
 		/**
