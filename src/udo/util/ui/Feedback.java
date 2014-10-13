@@ -3,7 +3,6 @@ package udo.util.ui;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
@@ -26,7 +25,7 @@ public class Feedback {
 	private DayView mMainTodayView;
 	private ToDoView mMainToDoView;
 
-	private JScrollPane mFinalView = new JScrollPane();
+	private JPanel mFinalView = new JPanel();
 
 	public Feedback() {
 		mListView = new ListView();
@@ -93,7 +92,7 @@ public class Feedback {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
 		mSingleView.init(item, type);
-		mFinalView.setViewportView(mSingleView);
+		mFinalView = mSingleView;
 		mCommand = "Added " + item.get(Keys.TITLE);
 	}
 
@@ -101,7 +100,7 @@ public class Feedback {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
 		mSingleView.init(item, "delete");
-		mFinalView.setViewportView(mSingleView);
+		mFinalView = mSingleView;
 		mCommand = "Deleted " + item.get(Keys.TITLE);
 	}
 
@@ -132,14 +131,14 @@ public class Feedback {
 		}
 		mListView.removeAll();
 		mListView.init((ArrayList<ItemData>) mData);
-		mFinalView.setViewportView(mListView);
+		mFinalView = mListView;
 	}
 
 	public String getCommand() {
 		return mCommand;
 	}
 
-	public JScrollPane getFinalView() {
+	public JPanel getFinalView() {
 		return mFinalView;
 	}
 }

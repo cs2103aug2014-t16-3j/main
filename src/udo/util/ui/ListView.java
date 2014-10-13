@@ -31,7 +31,6 @@ public class ListView extends JPanel {
 		for (int i = 0; i < data.size(); i++) {
 			Entry entry = new Entry(data.get(i), UI.ENTRY_EVENT);
 			add(entry);
-			System.out.println(getPreferredSize());
 		}
 	}
 
