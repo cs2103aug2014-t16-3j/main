@@ -19,6 +19,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -33,7 +34,7 @@ public class UserInterface implements ActionListener {
 	private JFrame mFrame = new JFrame("uDo");
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
-	private JPanel mTextArea = new JPanel();
+	private JScrollPane mTextArea = new JScrollPane();
 	private JPanel mTodayView = new JPanel();
 	private JPanel mToDoView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
@@ -82,8 +83,7 @@ public class UserInterface implements ActionListener {
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
 		mTextField.setBackground(UI.MAIN_COLOR);
-		Font newFont = mTextField.getFont().deriveFont(Font.PLAIN, 16f);
-		mTextField.setFont(newFont);
+		mTextField.setFont(UI.FONT_16);
 		mTextField.requestFocus();
 
 		/**
