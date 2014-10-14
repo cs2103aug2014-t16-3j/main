@@ -61,7 +61,7 @@ public class ToDoView extends JPanel {
 			add(noItems);
 		} else {
 			for (int i = 0; i < data.size(); i++) {
-				Entry entry = new Entry(data.get(i), UI.ENTRY_TASK);
+				Entry entry = new Entry(data.get(i), data.get(i).getItemType());
 				add(entry);
 			}
 		}
