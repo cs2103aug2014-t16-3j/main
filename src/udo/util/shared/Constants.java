@@ -107,7 +107,7 @@ public class Constants {
 		public static final int ENTRY_SEPARATOR_WIDTH = -5;
 		
 		public static final String ENTRY_ALL = "ALL";
-		public static final String ENTRY_EVENT = "ALL";
+		public static final String ENTRY_EVENT = "EVENT";
 		public static final String ENTRY_TASK = "TASK";
 		public static final String ENTRY_PLAN = "PLAN";
 		
