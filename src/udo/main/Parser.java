@@ -3,6 +3,7 @@ package udo.main;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import udo.util.parser.ParserAdd;
 import udo.util.parser.ParserDate;
 import udo.util.parser.ParserEdit;
 import udo.util.parser.ParserTime;
@@ -18,9 +19,6 @@ import udo.util.shared.ParsingStatus;
  * <p>
  * It reads in ADD, LIST, DELETE, EDIT, SAVE, EXIT and UNDO commands.
  * Parser stores the keys using Keys class constants. 
- * 
- * @author chongjiawei
- * 
  */
 
 public class Parser {
@@ -72,7 +70,7 @@ public class Parser {
 		String command = parts[determineCommandTypeCommandPart];
 		switch (command) {
 			case "add":
-				return Command.ADD_EVENT;
+				return Command.ADD;
 			case "list":
 				return Command.LIST;
 			case "delete":
@@ -92,8 +90,9 @@ public class Parser {
 
 	public InputData processCommandType(Command commandType, String details) {
 		switch (commandType) {
-			case ADD_EVENT:
-				return addEvent(commandType, details);
+			case ADD:
+				ParserAdd activity = new ParserAdd();
+				return activity.add(commandType, details);
 			case LIST:
 				return list(commandType, details);
 			case DELETE:
@@ -112,119 +111,9 @@ public class Parser {
 				return null; // parsing status fail
 			}
 	}
-
-	// add <title> <hashTags, if any> on <date> from <start time> to <end time>
-	// whether it is an event or a task
-	public InputData addEvent(Command type, String details) {
-		InputData addInputData = new InputData(type);
-		if (isValidAdd(details)) { 
-			String title = getTitle(details);
-			ArrayList<String> tags = getTags(details);
-			Calendar date = getDate(details);
-			Calendar start = setEventStartTime(details);
-			Calendar end = setEventEndTime(details);
-			//put into inputdata
-			if (hasUnfilledField(title, tags, date, start, end)) {
-				// have yet to check for fail status for each field
-				addInputData.setParsingStatus(ParsingStatus.FAIL);
-			} else {
-				addInputData.put(Keys.TITLE, title);
-				addInputData.put(Keys.HASHTAGS, tags);
-				addInputData.put(Keys.START, start);
-				addInputData.put(Keys.END, end);
-				addInputData.setParsingStatus(ParsingStatus.SUCCESS);
-			}
-		} else {
-			addInputData.setParsingStatus(ParsingStatus.FAIL);
-		}
-		return addInputData;
-	}
-
-	public boolean hasUnfilledField(String title, ArrayList<String> tags,
-			Calendar date, Calendar start, Calendar end) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
-	public Calendar setEventStartTime(String details) {
-		Calendar start = getTime(details);
-		Calendar date = getDate(details);
-		start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-		start.set(Calendar.MONTH, date.get(Calendar.MONTH));
-		start.set(Calendar.YEAR, date.get(Calendar.YEAR));
-		return start;
-	}
-
-	public Calendar setEventEndTime(String details) {
-		int colonIndex = details.indexOf(":");
-		String containsEndTime = details.substring(colonIndex + 1);
-		Calendar end = getTime(containsEndTime);
-		int toStringIndex = details.indexOf("to");
-		Calendar date = getDate(details.substring(toStringIndex));
-		end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-		end.set(Calendar.MONTH, date.get(Calendar.MONTH));
-		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
-		return end;
-	}
-	
-	public boolean isValidAdd(String input) {
-		if (input.length() < isValidAddint) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-
-	public String getTitle(String input) {
-		int keywordIndex = getSmallestIndex(input);
-		if (keywordIndex != largePositiveInt) {
-			String title = input.substring(getTitleStartingIndex, keywordIndex + getTitleOffset);
-			title = title.replaceAll("#", "");
-			return title;
-		}
-		return input;
-	}
-	
-	public int getSmallestIndex(String input) {
-		int fromStringIndex = input.lastIndexOf("from");
-		int byStringIndex = input.lastIndexOf("by");
-		int onStringIndex = input.lastIndexOf("on");
-		int min = -1;
-		int keywordIndex = largePositiveInt; 
-		
-		if (fromStringIndex > min && fromStringIndex < keywordIndex) {
-			keywordIndex = fromStringIndex;
-		}
-		if (byStringIndex > min && byStringIndex < keywordIndex) {
-			keywordIndex = byStringIndex;
-		}
-		if (onStringIndex > min && onStringIndex < keywordIndex) {
-			keywordIndex = onStringIndex;
-		}
-		return keywordIndex;
-	}
-
-	// does this catch 3/4/14 ?
-	public Calendar getDate(String input) {
-		ParserDate date = new ParserDate();
-		date.decipherText(input);
-		return date.getDate();
-	}
-
-	// returns first timing it reads in input
-	public Calendar getTime(String input) {
-		ParserTime time = new ParserTime();
-		time.decipherText(input);
-		return time.getTime();
-	}
-
-	/**
-	 * Returns an ArrayList of tags. Tags do not contain "#"
-	 * If no tags are found, retun an empty ArrayList
-	 * @param input that is directly retrieved from user
-	 * @return an ArrayList<String> of tags
-	 */
+	// Returns an ArrayList of tags. Tags do not contain "#"
+	// If no tags are found, retun an empty ArrayList
 	public ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
 		String tag;

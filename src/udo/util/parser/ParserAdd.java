@@ -5,6 +5,8 @@ import java.util.Calendar;
 
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
 
 /** 
  * This class takes in ADD commands and break them into the following:
@@ -13,15 +15,12 @@ import udo.util.shared.InputData;
  * ADD_EVENT command is for events. Events contain a starting time and an ending time.
  * ADD_TASK command is for tasks. Tasks contain 1 deadline.
  * ADD_PLAN command is for plans. Plans have no deadlines nor starting and ending time.
- * 
- * @author chongjiawei
- *
  */
+
 public class ParserAdd {
 	
-	private int largePositiveInt = 100000000;
-	private int indexDoesNotExist = -1;
-	private int empty = 0;
+	private int startingIndex = 4;
+	// assume title starts after add command, e.g. "add <title>"
 	
 	public ParserAdd() {
 		
@@ -40,76 +39,115 @@ public class ParserAdd {
 		InputData add = null;
 		if (isEvent(details)) {
 			add = addEvent(Command.ADD_EVENT, details);
-			// tags
 		} else if (isTask(details)) {
 			add = addTask(Command.ADD_TASK, details);
-			// tags
-			// check if valid task
 		} else if (isPlan(details)) {
 			add = addPlan(Command.ADD_PLAN, details);
-			// a plan is the title itself, no need to get title
-			// tags
-			// check if valid plan
 		} else {
-			// Parsing Status failed
+			add = new InputData(Command.NULL);
 		}
 		return add;
 	}
 
-	public InputData addEvent(Command addEvent, String details) {
-		// TODO Auto-generated method stub
-		return null;
+	public InputData addEvent(Command type, String details) {
+		InputData eventInputData = new InputData(type);
+		String title = getEventTitle(details);
+		ArrayList<String> tags = getTags(details);
+		Calendar start = setFirstTimeAndDate(details);
+		Calendar end = setSecondTimeAndDate(details);
+		if (title.isEmpty()) {
+			eventInputData.setParsingStatus(ParsingStatus.FAIL);
+		} else {
+			assert(start != null);
+			assert(end != null);
+			eventInputData.put(Keys.TITLE, title);
+			eventInputData.put(Keys.HASHTAGS, tags);
+			eventInputData.put(Keys.START, start);
+			eventInputData.put(Keys.END, end);
+			eventInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		}
+		return eventInputData;
 	}
 
-	public InputData addTask(Command addTask, String details) {
-		// TODO Auto-generated method stub
-		return null;
+	public InputData addTask(Command type, String details) {
+		InputData taskInputData = new InputData(type);
+		String title = getTaskTitle(details);
+		ArrayList<String> tags = getTags(details);
+		Calendar end = setFirstTimeAndDate(details);
+		if (title.isEmpty()) {
+			taskInputData.setParsingStatus(ParsingStatus.FAIL);
+		} else {
+			assert(end != null);
+			taskInputData.put(Keys.TITLE, title);
+			taskInputData.put(Keys.HASHTAGS, tags);
+			taskInputData.put(Keys.DUE, end);
+			taskInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		}
+		return taskInputData;
 	}
 
-	public InputData addPlan(Command addPlan, String details) {
-		// TODO Auto-generated method stub
-		// a plan is the title itself, no need to get title
-		return null;
+	public InputData addPlan(Command type, String details) {
+		InputData planInputData = new InputData(type);
+		String title = details.substring(startingIndex);
+		title = title.replaceAll("#", "");
+		ArrayList<String> tags = getTags(details);
+		if (title.isEmpty()) {
+			planInputData.setParsingStatus(ParsingStatus.FAIL);
+		} else {
+			planInputData.put(Keys.TITLE, title);
+			planInputData.put(Keys.HASHTAGS, tags);
+			planInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		}
+		return planInputData;
 	}
-	
-	// --- Start of title methods --- //
 	
 	// This method can only be used for events and tasks
-	public String getTitle(String input) {
+	public String getEventTitle(String input) {
 		String title = input.replaceAll("#", "");
-		int startingIndex = 4;	// assume title starts after add command, e.g. "add <title>"
-		int endingIndex = getEndingTitleIndex(input) - 1; // trim ending white space
+		int endingIndex = title.indexOf("from") - 1; // trim ending white space
 		title = title.substring(startingIndex, endingIndex);
 		return title;
 	}
 	
-	public int getEndingTitleIndex(String input) {
-		int fromStringIndex = input.lastIndexOf("from");
-		int byStringIndex = input.lastIndexOf("by");
-		int onStringIndex = input.lastIndexOf("on");
-		int min = -1;
-		int keywordIndex = largePositiveInt; 
-		
-		if (fromStringIndex > min && fromStringIndex < keywordIndex) {
-			keywordIndex = fromStringIndex;
-		}
-		if (byStringIndex > min && byStringIndex < keywordIndex) {
-			keywordIndex = byStringIndex;
-		}
-		if (onStringIndex > min && onStringIndex < keywordIndex) {
-			keywordIndex = onStringIndex;
-		}
-		return keywordIndex;
+	public String getTaskTitle(String input) {
+		String title = input.replaceAll("#", "");
+		int endingIndex = title.indexOf("by") - 1; // trim ending white space
+		title = title.substring(startingIndex, endingIndex);
+		return title;
 	}
 	
-	// --- End of title methods --- //
+	public Calendar getDate(String input) {
+		ParserDate date = new ParserDate();
+		return date.getDate(input);
+	}
 	
-	/**
-	 * Returns an ArrayList of tags. Tags do not contain "#"
-	 * If no tags are found, retun an empty ArrayList
-	 * @param input that is directly retrieved from user
-	 * @return an ArrayList<String> of tags
-	 */
+	public Calendar getTime(String input) {
+		ParserTime time = new ParserTime();
+		return time.getTime(input);
+	}
+	
+	public Calendar setFirstTimeAndDate(String details) {
+		Calendar start = getTime(details);
+		Calendar date = getDate(details);
+		start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+		start.set(Calendar.MONTH, date.get(Calendar.MONTH));
+		start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+		return start;
+	}
+	
+	public Calendar setSecondTimeAndDate(String details) {
+		int toStringIndex = details.indexOf("to");
+		String endingTimeDateString = details.substring(toStringIndex);
+		Calendar end = getTime(endingTimeDateString);
+		Calendar date = getDate(endingTimeDateString);
+		end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+		end.set(Calendar.MONTH, date.get(Calendar.MONTH));
+		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+		return end;
+	}
+	
+	 // Returns an ArrayList of tags. Tags do not contain "#"
+	 // If no tags are found, retun an empty ArrayList
 	public ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
 		String tag;
@@ -117,6 +155,7 @@ public class ParserAdd {
 		for (String word : words) {
 			if (word.startsWith("#")) {
 				tag = word.replaceFirst("#", "");
+				assert(!tag.isEmpty());
 				tagArrayList.add(tag);
 			}
 		}
@@ -125,17 +164,8 @@ public class ParserAdd {
 
 	// checks if there is 2 date or 2 time in input
 	public boolean isEvent(String details) {
-		ParserDate date = new ParserDate();
-		ParserTime time = new ParserTime();
-		int toStringIndex = details.indexOf("to");
-		String firstDateAndTimeInString = details.substring(0, toStringIndex);
-		String secondDateAndTimeInString = details.substring(toStringIndex);
-		
-		if (date.containsDate(firstDateAndTimeInString) &&
-			date.containsDate(secondDateAndTimeInString)) {
-			return true;
-		} else if (time.containsTime(firstDateAndTimeInString) &&
-					time.containsTime(secondDateAndTimeInString)) {
+		if (details.contains("from") &&
+			details.contains("to")) {
 			return true;
 		} else {
 			return false;
@@ -144,10 +174,7 @@ public class ParserAdd {
 
 	// checks if there is 1 time or 1 date in input
 	public boolean isTask(String details) {
-		ParserDate date = new ParserDate();
-		ParserTime time = new ParserTime();
-		if (date.containsDate(details) ||
-			time.containsTime(details)) {
+		if (details.contains("by")) {
 			return true;
 		} else {
 			return false;
@@ -156,10 +183,9 @@ public class ParserAdd {
 
 	// checks that there are no time and date in input
 	public boolean isPlan(String details) {
-		ParserDate date = new ParserDate();
-		ParserTime time = new ParserTime();
-		if ((date.containsDate(details) == false) &&
-			(time.containsTime(details) == false)) {
+		if (!details.contains("from") &&
+			!details.contains("to") &&
+			!details.contains("by")) {
 			return true;
 		} else {
 			return false;
