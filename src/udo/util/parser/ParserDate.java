@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class ParserDate {
 
-Calendar mDate;
+	private Calendar mDate;
 	
 	public ParserDate() {
 		mDate = Calendar.getInstance();
@@ -19,16 +19,37 @@ Calendar mDate;
 	 * @param input string
 	 * @return Calendar date object
 	 */
-	public Calendar getDate() {
+	public Calendar getDate(String input) {
+		decipherText(input);
 		return mDate;
+	}
+	
+	/**
+	 * Method checks whether input contains a date string of format "dd/mm/yy"
+	 * @param input
+	 * @return true if date string exist, false otherwise
+	 */
+	public boolean containsDate(String input) {
+		String dateString = getDateString(input);
+		if (dateString != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public void decipherText(String input) {
 		String dateString = getDateString(input);
-		Calendar cal = formatDateSubstring(dateString);
-		mDate = cal;
+		if (dateString != null) {
+			Calendar cal = formatDateSubstring(dateString);
+			mDate = cal;
+		}
 	}
 
+	// checks for dateString with the format "dd/mm/yy"
+	// returns the date string with all white spaces trimed if a date string exist
+	// returns the first date string it reads if a date string exist
+	// otherwise return null
 	public String getDateString(String input) {
 		int dayMonthSlashIndex;
 		int monthYearSlashIndex;
@@ -36,7 +57,6 @@ Calendar mDate;
 		int dateStringStartingindex;
 		int dateStringEndingIndex;
 		String dateSubstring = input;
-		String ERROR_MESSAGE = "DateString does not exist or it was not detected";
 		
 		while (dateSubstring.contains("/")) {
 			dayMonthSlashIndex = dateSubstring.indexOf("/");
@@ -51,7 +71,7 @@ Calendar mDate;
 			}
 			dateSubstring = dateSubstring.substring(dateStringIndexOffset);
 		}
-		return ERROR_MESSAGE;
+		return null;
 	}
 	
 	public boolean isValidDateString(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {

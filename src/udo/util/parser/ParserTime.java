@@ -13,17 +13,42 @@ public class ParserTime {
 		mTime = Calendar.getInstance();
 	}
 	
-	public Calendar getTime() {
+	/**
+	 * Method returns the first time it reads from input.
+	 * Detects time by ":" character
+	 * @param input
+	 * @return Calendar time object
+	 */
+	public Calendar getTime(String input) {
+		decipherText(input);
 		return mTime;
+	}
+	
+	/**
+	 * Method checks whether input contains a time string of format "hh:mma"
+	 * @param input
+	 * @return true if time string exist, false otherwise
+	 */
+	public boolean containsTime(String input) {
+		if (getTimeString(input) != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public void decipherText(String input) {
 		String timeString = getTimeString(input);
-		Calendar cal = formatTimeSubstring(timeString);
-		mTime = cal;
+		if (timeString != null) {
+			Calendar cal = formatTimeSubstring(timeString);
+			mTime = cal;
+		}
 	}
 
-	//returns the first time it reads
+	// checks for dateString with the format "hh:mma"
+	// returns the date string with all white spaces trimed if a time string exist
+	// returns the first date string it reads if a time string exist		
+	// otherwise return null
 	public String getTimeString(String input) {
 		int timeSessionIndex;
 		int colonIndex;
@@ -31,7 +56,6 @@ public class ParserTime {
 		int timeSubstringEndingIndex;
 		int getTimeStringOffset;
 		String timeSubstring = input.toUpperCase();
-		String ERROR_MESSAGE = "timeSubstring does not exist or it was not detected";
 		
 		while (timeSubstring.contains(":")) {
 			colonIndex = timeSubstring.indexOf(":");
@@ -46,7 +70,7 @@ public class ParserTime {
 			getTimeStringOffset = timeSessionIndex + 1;
 			timeSubstring = timeSubstring.substring(getTimeStringOffset);
 		}
-		return ERROR_MESSAGE;
+		return null;
 	}
 
 	public boolean isVerifiedTimeString(String timeSubstring, int colonIndex, int timeSessionIndex) {

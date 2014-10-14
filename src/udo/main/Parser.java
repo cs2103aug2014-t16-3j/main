@@ -30,6 +30,7 @@ public class Parser {
 	private int empty = 0;
 	// these numbers are constants
 	
+	// need to refactor the following back into method
 	private int determineCommandTypeCommandPart = 0;
 	// retrives the first word of input. Assumes first word of input is command word
 	
@@ -54,8 +55,8 @@ public class Parser {
 	}
 	
 	/**
-	 * Parses input string received and returns it as an InputData object.
-	 * Depending on what the Command is, necessary fields are filled.
+	 * Parses raw user's input and return it as an InputData object.
+	 * Fields are filled accordingly to it's Commands 
 	 * 
 	 * @param input string 
 	 * @return InputData object
@@ -173,16 +174,7 @@ public class Parser {
 			return true;
 		}
 	}
-	
-	public boolean isEvent(String input) {
-		// TODO Auto-generated method stub
-		return true;
-	}
 
-	public boolean isValidEvent(String input) { // checks for events. Otherwise,
-		// TODO Auto-generated method stub			// we tag it as task
-		return false;
-	}
 
 	public String getTitle(String input) {
 		int keywordIndex = getSmallestIndex(input);
@@ -230,24 +222,17 @@ public class Parser {
 	/**
 	 * Returns an ArrayList of tags. Tags do not contain "#"
 	 * If no tags are found, retun an empty ArrayList
-	 * <p>
-	 * Tags require a space after them. Eg. "#2013 "
 	 * @param input that is directly retrieved from user
 	 * @return an ArrayList<String> of tags
 	 */
 	public ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
-		if (input.contains("#")) {
-			int indexOfSeparator;
-			String tag;
-			int indexOfHash = input.indexOf("#");
-			boolean hashIndexExist = (indexOfHash != indexDoesNotExist);
-			while (hashIndexExist) {
-				indexOfSeparator = input.indexOf(" ", indexOfHash);
-				tag = input.substring(indexOfHash + getTagsOffsetIndex, indexOfSeparator);
+		String tag;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			if (word.startsWith("#")) {
+				tag = word.replaceFirst("#", "");
 				tagArrayList.add(tag);
-				indexOfHash = input.indexOf("#", indexOfSeparator);
-				hashIndexExist = (indexOfHash != indexDoesNotExist);
 			}
 		}
 		return tagArrayList;
