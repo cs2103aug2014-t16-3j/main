@@ -1,39 +1,38 @@
 package udo.util.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
-public class ListView extends JScrollPane {
+public class ListView extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel mView = new JPanel();
 	
 	public ListView() {
 
-		//setOpaque(false);
-		mView.setOpaque(false);
-		setBackground(UI.MAIN_COLOR);
+		setOpaque(false);
 		//setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
-		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT));
-		mView.setLayout(new WrapLayout(WrapLayout.LEADING, 0 ,0));
+		setLayout(new WrapLayout(WrapLayout.LEADING, 0 ,0));
 	}
 
 	public void init(ArrayList<ItemData> data) {
 		for (int i = 0; i < data.size(); i++) {
 			Entry entry = new Entry(data.get(i), data.get(i).getItemType());
-			mView.add(entry);
+			add(entry);
+			revalidate();
 		}
-		setViewportView(mView);
-		revalidate();
 	}
 
 }

@@ -63,7 +63,7 @@ public class SingleView extends JPanel {
 	}
 	
 	private void addEntry(ItemData item) {
-		Entry entry = new Entry(item, item.getItemType());
+		Entry entry = new Entry(item, UI.ENTRY_EVENT);
 		add(entry);
 	}
 }

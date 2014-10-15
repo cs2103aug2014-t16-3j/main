@@ -35,8 +35,7 @@ public class UserInterface implements ActionListener {
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
 	private JScrollPane mScrollPane = new JScrollPane();
-	//private JPanel mTextArea = new JPanel();
-	private JScrollPane mTextArea = new JScrollPane();
+	private JPanel mTextArea = new JPanel();
 	private JPanel mTodayView = new JPanel();
 	private JPanel mToDoView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
@@ -76,11 +75,9 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up textArea
 		 */
-		//mTextArea.setOpaque(false);
-		mTextArea.getViewport().setBackground(UI.MAIN_COLOR);
-		
-		//mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
-		//mScrollPane.getViewport().add(mTextArea);
+		mTextArea.setOpaque(false);
+		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
+		mScrollPane.getViewport().add(mTextArea);
 
 		/**
 		 * Sets up textField
@@ -103,8 +100,7 @@ public class UserInterface implements ActionListener {
 		c.weightx = 1;
 		c.weighty = 0.5;
 
-		//mTextPanel.add(mScrollPane, c);
-		mTextPanel.add(mTextArea, c);
+		mTextPanel.add(mScrollPane, c);
 
 		c.gridy = 1;
 		c.weighty = 0;
@@ -192,14 +188,11 @@ public class UserInterface implements ActionListener {
 		fb.process(output);
 		String outputString = fb.getCommand();
 		
-		//mScrollPane.getViewport().removeAll();
-		mLayer.remove(mTextArea);
+		mScrollPane.getViewport().removeAll();
 		mTextArea = fb.getFinalView();
-		mTextArea.setBounds(0,0,360,550);
-		System.out.println(mTextArea.getBounds());
-		//mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-		//mScrollPane.getViewport().add(mTextArea);
-		mLayer.add(mTextArea, new Integer(1));
+		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+		mScrollPane.getViewport().add(mTextArea);
+
 		showPopup(outputString);
 	}
 
