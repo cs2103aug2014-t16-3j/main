@@ -2,7 +2,6 @@ package udo.util.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,10 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,6 +39,9 @@ public class DayView extends JPanel{
 	private ListView mEntryView = new ListView();
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
 	private ArrayList<Point> mTickerCoordsWH; //stores width and height of each ticker
+	
+	private static final Logger logger =
+	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
 	public DayView(){
 
@@ -64,6 +66,15 @@ public class DayView extends JPanel{
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.DAYVIEW_HEADER_HEIGHT));
+		try {
+			logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		populateView(data);
 	}
 	
@@ -78,7 +89,7 @@ public class DayView extends JPanel{
 	}
 	
 	private void populateView(ArrayList<ItemData> data) {
-		
+		logger.entering(getClass().getName(), "populateView");
 		if (data.size() == 0) {
 			JLabel noItems = new JLabel("You are free today!");
 			noItems.setFont(UI.FONT_14);
@@ -102,14 +113,22 @@ public class DayView extends JPanel{
 				wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
 				mTickerCoordsWH.add(wh);
 			}
-			mEntryView.populateView(data);
 			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
 					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
 			mScrollPane.getViewport().add(mEntryView);
+			mEntryView.populateView(data);
+			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
+				logger.info("TODAY mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
+			} else {
+				logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
+			}
+			
 			add(mScrollPane);
 			
 		}
+		
+		logger.exiting(getClass().getName(), "populateView");
 	}
 	
 	private void initHeader(Date newDate) {
@@ -159,6 +178,8 @@ public class DayView extends JPanel{
 			g.fillRect(mTickerCoordsXY.get(i).x, mTickerCoordsXY.get(i).y, mTickerCoordsWH.get(i).x, mTickerCoordsWH.get(i).y);
 		}
 	}
+	
+
 	
 }
 

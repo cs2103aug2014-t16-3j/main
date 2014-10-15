@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:28:47</date>
+  <millis>1413394127069</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:29:21</date>
+  <millis>1413394161942</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>mEntryView's preferredSize: java.awt.Dimension[width=0,height=0]</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:30:59</date>
+  <millis>1413394259400</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:32:00</date>
+  <millis>1413394320185</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]</message>
+</record>
+<record>
+  <date>2014-10-16T01:32:00</date>
+  <millis>1413394320192</millis>
+  <sequence>1</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>mEntryView's preferredSize is wider than parent</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:32:41</date>
+  <millis>1413394361935</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]</message>
+</record>
+<record>
+  <date>2014-10-16T01:32:41</date>
+  <millis>1413394361943</millis>
+  <sequence>1</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:34:17</date>
+  <millis>1413394457792</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.ToDoView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODO mEntryView's preferredSize: java.awt.Dimension[width=1095,height=72]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+<record>
+  <date>2014-10-16T01:34:17</date>
+  <millis>1413394457949</millis>
+  <sequence>1</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODAY mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:34:30</date>
+  <millis>1413394470142</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.ToDoView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODO mEntryView's preferredSize: java.awt.Dimension[width=1095,height=72]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+<record>
+  <date>2014-10-16T01:34:30</date>
+  <millis>1413394470231</millis>
+  <sequence>1</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODAY mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T01:34:35</date>
+  <millis>1413394475379</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.ToDoView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODO mEntryView's preferredSize: java.awt.Dimension[width=1095,height=72]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+<record>
+  <date>2014-10-16T01:34:35</date>
+  <millis>1413394475470</millis>
+  <sequence>1</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODAY mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>

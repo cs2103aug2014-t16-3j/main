@@ -2,6 +2,7 @@ package udo.util.ui;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
@@ -29,5 +30,7 @@ public class ListView extends JPanel {
 			add(entry);
 		}
 	}
+	
+
 
 }
