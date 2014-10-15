@@ -1,17 +1,13 @@
 package udo.util.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
+
 
 public class ListView extends JPanel {
 
@@ -23,15 +19,14 @@ public class ListView extends JPanel {
 	public ListView() {
 
 		setOpaque(false);
-		//setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
 		setLayout(new WrapLayout(WrapLayout.LEADING, 0 ,0));
 	}
 
-	public void init(ArrayList<ItemData> data) {
+	public void populateView(ArrayList<ItemData> data) {
+		removeAll();
 		for (int i = 0; i < data.size(); i++) {
 			Entry entry = new Entry(data.get(i), data.get(i).getItemType());
 			add(entry);
-			revalidate();
 		}
 	}
 

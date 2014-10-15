@@ -27,6 +27,7 @@ import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.ui.Feedback;
+import udo.util.ui.WrapLayout;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {

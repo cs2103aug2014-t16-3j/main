@@ -109,10 +109,11 @@ public class Constants {
 		public static final int MAIN_HEIGHT = 600;
 		public static final int SUBVIEW_WIDTH = 360;
 		public static final int SUBVIEW_HEIGHT = 550;
-		public static final int SUBVIEW_HEADER_LINEY = 33;
+		public static final int SUBVIEW_HEADER_LINEY = 40;
 		public static final int SIDEVIEW_PADDING = 30;
 		
 		public static final int DAYVIEW_HEADER_HEIGHT = 100;
+		public static final int TICKER_Y = 88;
 
 		public static final int TODOVIEW_HEADER_HEIGHT = 40;
 		

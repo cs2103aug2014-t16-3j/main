@@ -18,13 +18,14 @@ public class UItest {
 
 	private static UserInterface ui = new UserInterface();
 	public static void main(String[] args) {
+		
 
 		
-		testPermaTodayScreen();
+		testListAll();
 		
 		testPermaToDoScreen();
-
-		testListAll();
+		
+		testPermaTodayScreen();
 		
 		/**
 		 * Testing list single date
@@ -48,20 +49,20 @@ public class UItest {
 	}
 	
 	public static void testPermaTodayScreen() {
-		Engine engine = new Engine();
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
 		Calendar date = Calendar.getInstance();
-		for(int i = 0; i<3; i++) {
-			InputData input = new InputData(Command.ADD_EVENT);
+		ArrayList<String> tags = new ArrayList<String>();
+		tags.add("Asd");
+		tags.add("jkl");
+		for(int i = 0; i<4; i++) {
+			ItemData input = new ItemData(ItemType.EVENT);
+			input.put(Keys.UID, i);
 			input.put(Keys.TITLE, "dummyEvent" + i);
 			input.put(Keys.START, date);
 			input.put(Keys.END, date);
-			input.put(Keys.HASHTAGS, new ArrayList<String>());
-			input.setParsingStatus(ParsingStatus.SUCCESS);
-			OutputData output = engine.execute(input);
-			data.add((ItemData) output.get(Keys.ITEM));
+			input.put(Keys.HASHTAGS, tags);
+			data.add(input);
 		}
-		
 		ui.updateTodayScreen(data );
 	}
 	
