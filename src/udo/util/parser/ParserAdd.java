@@ -146,8 +146,8 @@ public class ParserAdd {
 		return end;
 	}
 	
-	 // Returns an ArrayList of tags. Tags do not contain "#"
-	 // If no tags are found, retun an empty ArrayList
+	// Returns an ArrayList of tags. Tags do not contain "#"
+	// If no tags are found, retun an empty ArrayList
 	public ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
 		String tag;
