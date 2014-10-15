@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import udo.util.shared.Command;
+import udo.util.shared.EditField;
 import udo.util.shared.InputData;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ParsingStatus;
 
 /**
  * This class handles all editing done by the user.
- * 
+ * Input recieve by this class is in the format: 
+ * "edit <<uid>> <<field to edit>> <<new info>>"
  */
 
 public class ParserEdit {
-	
-	// private int startingIndex = 6;
-	// assume edit details starts after edit command, e.g. "edit <fields>"
 
 	public ParserEdit() {
 		
@@ -56,38 +55,47 @@ public class ParserEdit {
 	public InputData setTitle(InputData data, String details) {
 		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
-		data.put(Keys.TITLE, title);
-		data.put(Keys.HASHTAGS, tags);
+		data.put(Keys.FIELD, EditField.TITLE);
+		data.put(Keys.VALUE, title);
+		data.put(Keys.FIELD, EditField.HASHTAGS);
+		data.put(Keys.VALUE, tags);
 		return data;
 	}
 	public InputData setStartTime(InputData data, String details) {
 		Calendar startTime = getStartTime(details);
-		data.put(Keys.START, startTime);
+		data.put(Keys.FIELD, EditField.START_TIME);
+		data.put(Keys.VALUE, startTime);
 		return data;
 	}
 	public InputData setEndTime(InputData data, String details) {
 		Calendar endTime = getEndTime(details);
-		data.put(Keys.END, endTime);
+		data.put(Keys.FIELD, EditField.END_TIME);
+		data.put(Keys.VALUE, endTime);
 		return data;
 	}
 	public InputData setStartDate(InputData data, String details) {
 		Calendar startDate = getStartDate(details);
-		data.put(Keys.START, startDate);
+		data.put(Keys.FIELD, EditField.START_DATE);
+		data.put(Keys.VALUE, startDate);
 		return data;
 	}
 	public InputData setEndDate(InputData data, String details) {
 		Calendar endDate = getEndDate(details);
-		data.put(Keys.END, endDate);
+		data.put(Keys.FIELD, EditField.END_DATE);
+		data.put(Keys.VALUE, endDate);
 		return data;
 	}
 	public InputData setDueTime(InputData data, String details) {
 		Calendar dueTime = getDueTime(details);
-		data.put(Keys.DUE, dueTime);
+		data.put(Keys.FIELD, EditField.DUE_TIME);
+		data.put(Keys.VALUE, dueTime);
 		return data;
 	}
 	public InputData setDueDate(InputData data, String details) {
-		// TODO Auto-generated method stub
-		return null;
+		Calendar dueDate = getDueDate(details);
+		data.put(Keys.FIELD, EditField.DUE_DATE);
+		data.put(Keys.VALUE, dueDate);
+		return data;
 	}
 	// returns uid if it exists
 	// otherwise returns -1
@@ -126,6 +134,7 @@ public class ParserEdit {
 		int startingIndex = 11; // new info starts after "edit title "
 		try {
 			String title = details.substring(startingIndex);
+			title.replaceAll("#", "");
 			return title;
 		} catch (IndexOutOfBoundsException e) {
 			return null;
