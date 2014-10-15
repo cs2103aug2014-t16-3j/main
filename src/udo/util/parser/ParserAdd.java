@@ -41,11 +41,9 @@ public class ParserAdd {
 			add = addEvent(Command.ADD_EVENT, details);
 		} else if (isTask(details)) {
 			add = addTask(Command.ADD_TASK, details);
-		} else if (isPlan(details)) {
-			add = addPlan(Command.ADD_PLAN, details);
 		} else {
-			add = new InputData(Command.NULL);
-		}
+			add = addPlan(Command.ADD_PLAN, details);
+		} 
 		return add;
 	}
 
@@ -129,6 +127,8 @@ public class ParserAdd {
 	public Calendar setFirstTimeAndDate(String details) {
 		Calendar start = getTime(details);
 		Calendar date = getDate(details);
+		assert(start != null);
+		assert(date != null);
 		start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
 		start.set(Calendar.MONTH, date.get(Calendar.MONTH));
 		start.set(Calendar.YEAR, date.get(Calendar.YEAR));
@@ -137,9 +137,12 @@ public class ParserAdd {
 	
 	public Calendar setSecondTimeAndDate(String details) {
 		int toStringIndex = details.indexOf("to");
+		assert(toStringIndex != -1);
 		String endingTimeDateString = details.substring(toStringIndex);
 		Calendar end = getTime(endingTimeDateString);
 		Calendar date = getDate(endingTimeDateString);
+		assert(end != null);
+		assert(date != null);
 		end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
 		end.set(Calendar.MONTH, date.get(Calendar.MONTH));
 		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
@@ -181,14 +184,4 @@ public class ParserAdd {
 		}
 	}
 
-	// checks that there are no time and date in input
-	public boolean isPlan(String details) {
-		if (!details.contains("from") &&
-			!details.contains("to") &&
-			!details.contains("by")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 }

@@ -16,18 +16,31 @@ import udo.util.shared.ParsingStatus;
  */
 
 public class ParserEdit {
+	
+	private boolean isValidEdit = false;
 
 	public ParserEdit() {
-		
+		isValidEdit = false;
 	}
 	//edit <uid> <field> <new-info>
 	public InputData edit(Command type, String details) {
 		InputData data = new InputData(type);
 		int uid = getUid(details);
 		String field = getField(details);
-		
-		updateField(field, data, details);
-		data.put(Keys.UID, uid);
+		boolean uidExist = (uid != -1);
+		if (uidExist) {
+			data.put(Keys.UID, uid);
+			updateField(field, data, details);
+			if (!isValidEdit) {
+				data.setParsingStatus(ParsingStatus.FAIL);
+			} else {
+				assert(isValidEdit == true);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			}
+		} else {
+			assert(!uidExist);
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
 		return data;
 	}
 	
@@ -51,50 +64,71 @@ public class ParserEdit {
 			return null;
 		}
 	}
-	
+	// check whether any of the value returned is null
 	public InputData setTitle(InputData data, String details) {
 		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
-		data.put(Keys.FIELD, EditField.TITLE);
-		data.put(Keys.VALUE, title);
-		data.put(Keys.FIELD, EditField.HASHTAGS);
-		data.put(Keys.VALUE, tags);
+		if (!title.isEmpty()) {
+			data.put(Keys.FIELD, EditField.TITLE);
+			data.put(Keys.VALUE, title);
+			data.put(Keys.FIELD, EditField.HASHTAGS);
+			data.put(Keys.VALUE, tags);
+			isValidEdit = true;
+		} 
 		return data;
 	}
 	public InputData setStartTime(InputData data, String details) {
 		Calendar startTime = getStartTime(details);
-		data.put(Keys.FIELD, EditField.START_TIME);
-		data.put(Keys.VALUE, startTime);
+		if (startTime != null) {
+			data.put(Keys.FIELD, EditField.START_TIME);
+			data.put(Keys.VALUE, startTime);
+			isValidEdit = true;
+		}
 		return data;
 	}
 	public InputData setEndTime(InputData data, String details) {
 		Calendar endTime = getEndTime(details);
-		data.put(Keys.FIELD, EditField.END_TIME);
-		data.put(Keys.VALUE, endTime);
+		if (endTime != null) {
+			data.put(Keys.FIELD, EditField.END_TIME);
+			data.put(Keys.VALUE, endTime);
+			isValidEdit = true;
+		}
 		return data;
 	}
 	public InputData setStartDate(InputData data, String details) {
 		Calendar startDate = getStartDate(details);
-		data.put(Keys.FIELD, EditField.START_DATE);
-		data.put(Keys.VALUE, startDate);
+		if (startDate != null) {
+			data.put(Keys.FIELD, EditField.START_DATE);
+			data.put(Keys.VALUE, startDate);
+			isValidEdit = true;
+		}
 		return data;
 	}
 	public InputData setEndDate(InputData data, String details) {
 		Calendar endDate = getEndDate(details);
-		data.put(Keys.FIELD, EditField.END_DATE);
-		data.put(Keys.VALUE, endDate);
+		if (endDate != null) {
+			data.put(Keys.FIELD, EditField.END_DATE);
+			data.put(Keys.VALUE, endDate);
+			isValidEdit = true;
+		}
 		return data;
 	}
 	public InputData setDueTime(InputData data, String details) {
 		Calendar dueTime = getDueTime(details);
-		data.put(Keys.FIELD, EditField.DUE_TIME);
-		data.put(Keys.VALUE, dueTime);
+		if (dueTime != null) {
+			data.put(Keys.FIELD, EditField.DUE_TIME);
+			data.put(Keys.VALUE, dueTime);
+			isValidEdit = true;
+		}
 		return data;
 	}
 	public InputData setDueDate(InputData data, String details) {
 		Calendar dueDate = getDueDate(details);
-		data.put(Keys.FIELD, EditField.DUE_DATE);
-		data.put(Keys.VALUE, dueDate);
+		if (dueDate != null) {
+			data.put(Keys.FIELD, EditField.DUE_DATE);
+			data.put(Keys.VALUE, dueDate);
+			isValidEdit = true;
+		}
 		return data;
 	}
 	// returns uid if it exists
