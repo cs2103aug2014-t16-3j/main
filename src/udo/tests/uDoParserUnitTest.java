@@ -33,6 +33,12 @@ public class uDoParserUnitTest {
 	String testPlan2 = "add reflections by Saturday";
 	
 	@Test
+	public void testAdd() {
+		p.add(Command.ADD, testEvent1);
+		
+	}
+	
+	@Test
 	public void testSetFirstTimeAndDate() {
 		Calendar start = addActivity.setFirstTimeAndDate(testTask1);
 		int day = start.get(Calendar.DAY_OF_MONTH);

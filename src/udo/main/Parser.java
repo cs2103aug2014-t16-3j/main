@@ -91,8 +91,7 @@ public class Parser {
 	public InputData processCommandType(Command commandType, String details) {
 		switch (commandType) {
 			case ADD:
-				ParserAdd activity = new ParserAdd();
-				return activity.add(commandType, details);
+				return add(commandType, details);
 			case LIST:
 				return list(commandType, details);
 			case DELETE:
@@ -183,13 +182,15 @@ public class Parser {
 		}
 	}
 	
+	public InputData add(Command type, String details) {
+		ParserAdd activity = new ParserAdd();
+		return activity.add(type, details);
+	}
+	
 	// edit <uid> <field> <newinfo>
 	private InputData edit(Command type, String details) {
-		ParserEdit data = new ParserEdit();
-		InputData editInputData = new InputData(type);
-		// put tags
-		editInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return editInputData;
+		ParserEdit activity = new ParserEdit();
+		return activity.edit(type, details);
 	}
 	
 	public InputData parsingTrash(Command type, String details) {
