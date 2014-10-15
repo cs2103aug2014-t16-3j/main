@@ -79,6 +79,9 @@ public class Constants {
 		public static final String TYPE_EVENT = "EVENT";
 		public static final String TYPE_TASK = "TASK";
 		public static final String TYPE_PLAN = "PLAN";
+		public static final String UNFORMATTED_STRING_EVENT = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$d/%10$d/%11$d|||%12$d:%13$d|||%14$s";
+		public static final String UNFORMATTED_STRING_TASK = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$s";
+		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$s";
 	}
 	
 	/**
