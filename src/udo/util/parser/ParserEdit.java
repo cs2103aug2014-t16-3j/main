@@ -1,9 +1,12 @@
 package udo.util.parser;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ParsingStatus;
 
 /**
  * This class handles all editing done by the user.
@@ -21,11 +24,71 @@ public class ParserEdit {
 	//edit <uid> <field> <new-info>
 	public InputData edit(Command type, String details) {
 		InputData data = new InputData(type);
-		// check for null
-		// put tag
+		int uid = getUid(details);
+		String field = getField(details);
+		
+		updateField(field, data, details);
+		data.put(Keys.UID, uid);
 		return data;
 	}
 	
+	public InputData updateField(String field, InputData data, String details) {
+		switch (field) {
+		case "title":
+			return setTitle(data, details);
+		case "start time":
+			return setStartTime(data, details);
+		case "end time":
+			return setEndTime(data, details);
+		case "start date":
+			return setStartDate(data, details);
+		case "end date":
+			return setEndDate(data, details);
+		case "due time":
+			return setDueTime(data, details);
+		case "due date":
+			return setDueDate(data, details);
+		default:
+			return null;
+		}
+	}
+	
+	public InputData setTitle(InputData data, String details) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		data.put(Keys.TITLE, title);
+		data.put(Keys.HASHTAGS, tags);
+		return data;
+	}
+	public InputData setStartTime(InputData data, String details) {
+		Calendar startTime = getStartTime(details);
+		data.put(Keys.START, startTime);
+		return data;
+	}
+	public InputData setEndTime(InputData data, String details) {
+		Calendar endTime = getEndTime(details);
+		data.put(Keys.END, endTime);
+		return data;
+	}
+	public InputData setStartDate(InputData data, String details) {
+		Calendar startDate = getStartDate(details);
+		data.put(Keys.START, startDate);
+		return data;
+	}
+	public InputData setEndDate(InputData data, String details) {
+		Calendar endDate = getEndDate(details);
+		data.put(Keys.END, endDate);
+		return data;
+	}
+	public InputData setDueTime(InputData data, String details) {
+		Calendar dueTime = getDueTime(details);
+		data.put(Keys.DUE, dueTime);
+		return data;
+	}
+	public InputData setDueDate(InputData data, String details) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	// returns uid if it exists
 	// otherwise returns -1
 	public int getUid(String details) {
@@ -47,6 +110,7 @@ public class ParserEdit {
 				"start time", "end time", 
 				"start date", "end date",
 				"due time", "due date"};
+		details = details.toLowerCase();
 		for (int i = 0; i < fields.length; i++) {
 			if (details.contains(fields[i])) {
 				return fields[i];
@@ -55,6 +119,7 @@ public class ParserEdit {
 		return null;
 	}
 	
+	// need to take in tags as well
 	// returns the new title if it exists
 	// otherwise returns null
 	public String getTitle(String details) {
@@ -137,5 +202,20 @@ public class ParserEdit {
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}
+	}
+	
+	// Returns an ArrayList of tags. Tags do not contain "#"
+	// If no tags are found, retun an empty ArrayList
+	public ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			if (word.startsWith("#")) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
 	}
 }
