@@ -8,6 +8,7 @@ import java.util.Collections;
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
 import udo.util.engine.UndoBin;
+import udo.util.exceptions.WritingToStorageFileException;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
@@ -405,13 +406,15 @@ public class Engine {
 	}
 
 	private OutputData runSave(InputData inputData) {
-		boolean writeOK = writeCacheToFile();
-		if (!writeOK) {
-			return null;
-		}
 		OutputData output = new OutputData(Command.SAVE,
 				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
+		try {
+			writeCacheToFile();
+		} catch (WritingToStorageFileException e) {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+		}
+		
 		return output;
 	}
 
@@ -494,7 +497,7 @@ public class Engine {
 		}
 	}
 
-	private boolean writeCacheToFile() {
+	private boolean writeCacheToFile() throws WritingToStorageFileException {
 		ArrayList<ItemData> itemsToWrite = mCache.getAllItems(); 
 		mFileManager.writeToFile(itemsToWrite);
 		return true;
