@@ -1,6 +1,7 @@
 package udo.util.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +15,8 @@ import javax.swing.SwingConstants;
 
 
 
+
+
 /*
  import javax.swing.JTextPane;
  import javax.swing.text.AttributeSet;
@@ -24,6 +27,7 @@ import javax.swing.SwingConstants;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
 
 public class Entry extends JPanel {
 
@@ -33,6 +37,7 @@ public class Entry extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel mDetailPanel = new JPanel();
+	private JTextArea mExtraDesc = new JTextArea();
 	private JTextArea mDescription = new JTextArea();
 	private JTextArea mHashtags = new JTextArea();
 	// TODO maybe put a JTextPane here
@@ -44,7 +49,7 @@ public class Entry extends JPanel {
 	private JPanel mSeparator = new JPanel();
 	private int mHorizontalRemainder;
 
-	public Entry(ItemData item, String type) {
+	public Entry(ItemData item, ItemType type) {
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
 		setBackground(UI.ENTRY_BGCOLOR);
 		
@@ -58,6 +63,11 @@ public class Entry extends JPanel {
 		mDetailPanel.setLayout(new BoxLayout(mDetailPanel, BoxLayout.PAGE_AXIS));
 		mDetailPanel.setOpaque(false);
 		
+		mExtraDesc.setFont(UI.FONT_14);
+		mExtraDesc.setEditable(false);
+		//mExtraDesc.setWrapStyleWord(true);
+		//mExtraDesc.setLineWrap(true);
+		
 		mDescription.setFont(UI.FONT_20);
 		mDescription.setWrapStyleWord(true);
 		mDescription.setLineWrap(true);
@@ -65,15 +75,17 @@ public class Entry extends JPanel {
 		
 		mHashtags.setFont(UI.FONT_16);
 		mHashtags.setEditable(false);
+		//mHashtags.setWrapStyleWord(true);
+		//mHashtags.setLineWrap(true);
 		
 		switch(type) {
-			case UI.ENTRY_EVENT:
+			case EVENT:
 				initEvent(item);
 				break;
-			case UI.ENTRY_TASK:
+			case TASK:
 				initTask(item);
 				break;
-			case UI.ENTRY_PLAN:
+			case PLAN:
 				initPlan(item);
 				break;
 			default:
@@ -93,10 +105,10 @@ public class Entry extends JPanel {
 	@SuppressWarnings("unchecked")
 	private void initTask(ItemData item) {
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
-		mTimePanel.add(initDate((Calendar) item.get(Keys.END)), BorderLayout.CENTER);
+		mTimePanel.add(initDate((Calendar) item.get(Keys.DUE)), BorderLayout.CENTER);
 		add(mTimePanel);
 		add(initSeparator());
-		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
+		add(initDetails((Calendar) item.get(Keys.DUE), (String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -108,6 +120,13 @@ public class Entry extends JPanel {
 		add(mTimePanel);
 		add(initSeparator());
 		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
+	}
+	
+	private JPanel initDetails(Calendar dueTime, String title, ArrayList<String> hashtags) {
+		SimpleDateFormat sdf = new SimpleDateFormat("kk:mm");
+		mExtraDesc.append(sdf.format(dueTime.getTime()));
+		mDetailPanel.add(mExtraDesc);
+		return initDetails(title, hashtags);
 	}
 	
 	private JPanel initDetails(String title, ArrayList<String> hashtags) {
