@@ -121,8 +121,7 @@ public class FileManager {
 		}
 		String[] lineArray = getStringArray(line);
 		/*
-		 * event [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime,
-		 * 7<tags>]
+		 * event [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime, 7<tags>]
 		 */
 
 		// this method is meant to be wordy

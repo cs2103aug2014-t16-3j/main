@@ -25,6 +25,26 @@ public class uDoEngineUnitTest {
 	
 	private static final int TEST_UID = 12345;
 	
+	@Test
+	public void testEngineAddPlan() {
+		Engine e = new Engine();
+		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
+		inputPlan.put(Keys.TITLE, "test plan");
+		inputPlan.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputPlan);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData addedPlan = (ItemData) output.get(Keys.ITEM);
+		assertFalse("added item in output not null",
+				null == addedPlan);
+		assertEquals("added item is a plan",
+				ItemType.PLAN, 
+				addedPlan.getItemType());
+	}
+	
 	
 	@Test
 	public void testEngineAddTask() {
