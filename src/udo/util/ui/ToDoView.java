@@ -1,11 +1,13 @@
 package udo.util.ui;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -23,6 +25,9 @@ public class ToDoView extends JPanel {
 	private ListView mEntryView = new ListView();
 	private JScrollPane mScrollPane = new JScrollPane();
 	
+	private static final Logger logger =
+	        Logger.getLogger(udo.util.ui.DayView.class.getName());
+	
 	public ToDoView() {
 		setLayout(new WrapLayout());
 		setOpaque(false);
@@ -36,6 +41,15 @@ public class ToDoView extends JPanel {
 	public void init(ArrayList<ItemData> data) {
 		initHeader();
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.TODOVIEW_HEADER_HEIGHT));
+		try {
+			logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		populateView(data);
 	}
 	
@@ -61,11 +75,17 @@ public class ToDoView extends JPanel {
 			noItems.setHorizontalAlignment(JLabel.CENTER);
 			add(noItems);
 		} else {
-			mEntryView.populateView(data);
 			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
 					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
 			mScrollPane.getViewport().add(mEntryView);
+			mEntryView.populateView(data);
+			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
+				logger.info("TODO mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
+			} else {
+				logger.fine("TODO mEntryView's preferredSize is contained in mScrollPane");
+			}
+			
 			add(mScrollPane);
 		}
 	}
