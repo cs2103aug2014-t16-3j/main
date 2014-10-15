@@ -45,14 +45,22 @@ public class Constants {
 	 * 
 	 */
 	public static final class StorageIndices {
+		// all
 		public static final int UID = 0;
 		public static final int TYPE = 1;
 		public static final int TITLE = 2;
+		// event
 		public static final int START_DATE = 3;
 		public static final int START_TIME = 4;
 		public static final int END_DATE = 5;
 		public static final int END_TIME = 6;
-		public static final int HASHTAGS = 7;
+		public static final int EVENT_HASHTAGS = 7;
+		// task
+		public static final int DUE_DATE = 3;
+		public static final int DUE_TIME = 4;
+		public static final int TASK_HASHTAGS = 5;
+		//plan
+		public static final int PLAN_HASHTAGS = 3;
 	}
 
 	/**

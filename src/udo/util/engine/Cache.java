@@ -254,7 +254,7 @@ public class Cache {
 
 	private boolean isBetweenDates(Calendar itemCal, Calendar from, Calendar to) {
 		// compare from 0:00 to 23:59 of the date range
-		from.set(Calendar.HOUR, 0);
+		from.set(Calendar.HOUR_OF_DAY, 0);
 		from.set(Calendar.MINUTE, 0);
 		from.set(Calendar.SECOND, 0);
 		to.set(Calendar.HOUR_OF_DAY, 23);
