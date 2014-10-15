@@ -27,6 +27,26 @@ public class uDoEngineUnitTest {
 	
 	
 	@Test
+	public void testEngineEditItem() {
+		Engine e = new Engine();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put("field", "title");
+		inputEdit.put("value", "dummy title");
+		OutputData output = e.execute(inputEdit);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == edited);
+		assertEquals("edited item actaully got edited",
+				"dummy title", 
+				edited.get(Keys.TITLE));
+	}
+	
+	@Test
 	public void testEngineAddPlan() {
 		Engine e = new Engine();
 		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
@@ -151,7 +171,7 @@ public class uDoEngineUnitTest {
 				null == s);
 	}
 
-	/*@Test // contains buggy save
+	@Test // contains buggy save
 	public void testEngineExecuteExit() {
 		Engine e = new Engine();
 		 
@@ -162,7 +182,7 @@ public class uDoEngineUnitTest {
 		assertEquals("the output command should be exit",
 				Command.EXIT,
 				o.getCommand());
-	}*/
+	}
 
 	@Test
 	public void testEngineExecuteAddEventNotNull() {
@@ -173,7 +193,7 @@ public class uDoEngineUnitTest {
 		assertFalse("", null == e.execute(in));
 	}
 
-	/*@Test // save is still buggy
+	@Test // save is still buggy
 	public void testEngineExecuteSave() {
 		Engine e = new Engine();
 		InputData in = new InputData(Command.SAVE);
@@ -181,7 +201,7 @@ public class uDoEngineUnitTest {
 		OutputData out = e.execute(in);
 		assertFalse("out should not be null", null == out);
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
-	}*/
+	}
 
 	@Test
 	public void testCacheAddItemSizeIncrease() {
