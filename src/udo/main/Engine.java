@@ -164,6 +164,8 @@ public class Engine {
 				input.get(Keys.TITLE));
 		task.put(Keys.DUE, 
 				input.get(Keys.DUE));
+		task.put(Keys.DONE, 
+				false);
 		task.put(Keys.HASHTAGS, 
 				input.get(Keys.HASHTAGS));
 		
@@ -199,6 +201,8 @@ public class Engine {
 		}
 		plan.put(Keys.TITLE, 
 				input.get(Keys.TITLE));
+		plan.put(Keys.DONE, 
+				false);
 		plan.put(Keys.HASHTAGS, 
 				input.get(Keys.HASHTAGS));
 		

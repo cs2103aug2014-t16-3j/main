@@ -60,9 +60,11 @@ public class Constants {
 		// task
 		public static final int DUE_DATE = 3;
 		public static final int DUE_TIME = 4;
-		public static final int TASK_HASHTAGS = 5;
+		public static final int TASK_DONE = 5;
+		public static final int TASK_HASHTAGS = 6;
 		//plan
-		public static final int PLAN_HASHTAGS = 3;
+		public static final int PLAN_DONE = 3;
+		public static final int PLAN_HASHTAGS = 4;
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class Constants {
 		public static final String TYPE_PLAN = "PLAN";
 		public static final String UNFORMATTED_STRING_EVENT = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$d/%10$d/%11$d|||%12$d:%13$d|||%14$s";
 		public static final String UNFORMATTED_STRING_TASK = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$b|||%10$s";
-		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%5$b|||%5$s";
+		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s";
 	}
 	
 	/**

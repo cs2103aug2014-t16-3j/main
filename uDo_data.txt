@@ -1,10 +1,10 @@
-12347|||PLAN|||sample plan|||test,play,work
+12347|||PLAN|||sample plan|||false|||test,play,work
 12345|||EVENT|||meeting|||23/1/14|||9:23|||23/1/14|||22:30|||meeting,boss,work
 12349|||EVENT|||bowling|||24/1/14|||13:30|||24/1/14|||15:45|||boss,play,fun,date
 33703|||EVENT|||new item|||12/12/2012|||4:0|||12/12/2012|||6:0|||new
 87141|||EVENT|||new item|||13/12/2012|||4:0|||12/12/2012|||6:0|||new
 12345|||EVENT|||sample event|||23/1/2014|||9:23|||23/1/14|||22:30|||meeting,boss,work
-12346|||TASK|||sample task|||24/1/2014|||13:30|||boss,play,fun,date
+12346|||TASK|||sample task|||24/1/2014|||13:30|||false|||boss,play,fun,date
 19660|||EVENT|||sleep|||8/10/2014|||1:11|||8/10/2014|||23:11|||sleep
 47631|||EVENT|||b|||9/10/2014|||14:0|||10/10/2014|||14:0|||b
 82764|||EVENT|||a|||9/10/2014|||20:0|||9/10/2014|||21:0|||a

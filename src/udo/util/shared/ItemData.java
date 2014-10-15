@@ -237,7 +237,7 @@ public class ItemData implements Comparable<ItemData> {
 	}
 	
 	private String makePlanString() {
-		// uid | type | title | ddate | dtime | tags
+		// uid | type | title | done | tags
 		@SuppressWarnings("unchecked")
 		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
 		assert (taglist != null);
@@ -247,6 +247,7 @@ public class ItemData implements Comparable<ItemData> {
 				mData.get(Keys.UID),
 				mType.toString(),
 				mData.get(Keys.TITLE),
+				mData.get(Keys.DONE),
 				tagsString);
 		return result;
 	}

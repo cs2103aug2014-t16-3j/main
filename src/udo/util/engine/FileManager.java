@@ -150,6 +150,10 @@ public class FileManager {
 		String title = lineArray[StorageIndices.TITLE];
 		item.put(Keys.TITLE,
 				title);
+		
+		boolean done = Boolean.parseBoolean(lineArray[StorageIndices.PLAN_DONE]);
+		item.put(Keys.DONE, 
+				done);
 
 		String tagsString = lineArray[StorageIndices.PLAN_HASHTAGS];
 		ArrayList<String> tagsList = getList(tagsString);
@@ -177,6 +181,10 @@ public class FileManager {
 		Calendar dueCal = getCalendar(dueDate, dueTime);
 		item.put(Keys.DUE, 
 				dueCal);
+		
+		boolean done = Boolean.parseBoolean(lineArray[StorageIndices.TASK_DONE]);
+		item.put(Keys.DONE, 
+				done);
 
 		String tagsString = lineArray[StorageIndices.TASK_HASHTAGS];
 		ArrayList<String> tagsList = getList(tagsString);
