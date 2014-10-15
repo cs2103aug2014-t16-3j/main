@@ -63,6 +63,18 @@ public class InputData {
 	public Object get(String key) {
 		return mData.get(key);
 	}
+	
+
+	/**
+	 * Returns a boolean value describing if the named item exists inside.
+	 * 
+	 * @param key
+	 *            The key of the item to check.
+	 * @return {@code true} if the item exists, or {@code false} otherwise.
+	 */
+	public boolean contains(String key) {
+		return mData.containsKey(key);
+	}
 
 	/**
 	 * Returns a boolean value describing if the named item exists inside.

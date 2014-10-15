@@ -46,8 +46,11 @@ public class Cache {
 		trackUID(item);
 		ItemType type = item.getItemType();
 		switch (type) {
-		case EVENT:
+		case EVENT :
 			mEvents.add(item);
+			return true;
+		case TASK :
+			mTasks.add(item);
 			return true;
 		default:
 			return false;

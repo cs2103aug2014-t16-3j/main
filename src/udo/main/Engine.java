@@ -57,6 +57,9 @@ public class Engine {
 			case ADD_EVENT:
 				output = runAddEvent(input);
 				break;
+			case ADD_TASK:
+				output = runAddTask(input);
+				break;
 			case LIST:
 				output = runList(input);
 				break;
@@ -77,9 +80,12 @@ public class Engine {
 						ParsingStatus.SUCCESS,
 						ExecutionStatus.NULL);
 		}
+		assert (output != null);
 		output.setParsingStatus(ParsingStatus.SUCCESS);
 		return output;
 	}
+
+	
 
 	// ****** public methods ******//
 	
@@ -98,17 +104,30 @@ public class Engine {
 
 	private OutputData runAddEvent(InputData inputData) {
 		ItemData event = new ItemData(ItemType.EVENT);
+		
 		// extract data from inputdata to make an event
 		// assume all data fields are present
-		event.put(Keys.UID, mCache.generateUID());
+		
+		// if the inputdata came from undo, then it would have the uid
+		if (inputData.contains(Keys.UID)) {
+			event.put(Keys.UID, 
+					inputData.get(Keys.UID));
+		} else {
+			event.put(Keys.UID, 
+					mCache.generateUID());
+		}
 
-		event.put(Keys.TITLE, inputData.get(Keys.TITLE));
+		event.put(Keys.TITLE, 
+				inputData.get(Keys.TITLE));
 
-		event.put(Keys.START, inputData.get(Keys.START));
+		event.put(Keys.START, 
+				inputData.get(Keys.START));
 
-		event.put(Keys.END, inputData.get(Keys.END));
+		event.put(Keys.END, 
+				inputData.get(Keys.END));
 
-		event.put(Keys.HASHTAGS, inputData.get(Keys.HASHTAGS));
+		event.put(Keys.HASHTAGS, 
+				inputData.get(Keys.HASHTAGS));
 
 		boolean addOK = mCache.addItem(event);
 		Command cmd = inputData.getCommand();
@@ -124,6 +143,51 @@ public class Engine {
 			output.setExecutionStatus(ExecutionStatus.FAIL);
 		}
 
+		return output;
+	}
+
+	private void putUID(ItemData item, InputData inputData) {
+		if (inputData.contains(Keys.UID)) {
+		}
+	}
+
+	private OutputData runAddTask(InputData input) {
+		Command cmd = input.getCommand();
+		ParsingStatus pStatus = input.getStatus();
+		OutputData output = new OutputData(cmd, pStatus);
+		
+		// extract data from inputdata to make an task
+		// assume all data fields are present
+		// TODO handle data fields missing
+		ItemData task = new ItemData(ItemType.TASK);
+		// if the inputdata came from undo, then it would have the uid
+		if (input.contains(Keys.UID)) {
+			task.put(Keys.UID, 
+					input.get(Keys.UID));
+		} else {
+			task.put(Keys.UID, 
+					mCache.generateUID());
+		}
+
+		task.put(Keys.TITLE, 
+				input.get(Keys.TITLE));
+
+		task.put(Keys.DUE, 
+				input.get(Keys.DUE));
+
+		task.put(Keys.HASHTAGS, 
+				input.get(Keys.HASHTAGS));
+		
+		//add to cache
+		boolean addOK = mCache.addItem(task);
+		if (addOK) {
+			output.put(Keys.ITEM, task);
+			output.setExecutionStatus(ExecutionStatus.SUCCESS);
+			storeUndo(Command.ADD_TASK, task);
+		} else {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+		}
+		
 		return output;
 	}
 
@@ -218,22 +282,26 @@ public class Engine {
 	private void storeUndo(Command previousCommand, ItemData previousItem) {
 		InputData undoInput;
 		switch (previousCommand) {
-			case ADD_EVENT:
+			case ADD_EVENT :
 				undoInput = new InputData(Command.DELETE);
 				undoInput.put(Keys.UID, previousItem.get(Keys.UID));
 				break;
-			case DELETE:
+			case ADD_TASK :
+				undoInput = new InputData(Command.DELETE);
+				undoInput.put(Keys.UID, previousItem.get(Keys.UID));
+				break;
+			case DELETE :
 				ItemType previousItemType = previousItem.getItemType();
 				// decide which kind of command based on the kind of item deleted.
 				switch (previousItemType) {
-					case EVENT:
+					case EVENT :
 						undoInput = new InputData(Command.ADD_EVENT);
 						break;
-					case TASK:
+					case TASK :
 						// TODO
 						undoInput = new InputData(Command.ADD_TASK);
 						break;
-					case PLAN:
+					case PLAN :
 						// TODO
 						undoInput = new InputData(Command.ADD_PLAN);
 						break;
@@ -249,7 +317,7 @@ public class Engine {
 					undoInput.put(key, previousItem.get(key));
 				}
 				break;
-			case EDIT:
+			case EDIT :
 				// TODO
 				undoInput = new InputData(Command.EDIT);
 				break;

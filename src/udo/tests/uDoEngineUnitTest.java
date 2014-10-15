@@ -25,6 +25,7 @@ public class uDoEngineUnitTest {
 	
 	private static final int TEST_UID = 12345;
 	
+	
 	@Test
 	public void testEngineAddTask() {
 		Engine e = new Engine();
@@ -37,6 +38,12 @@ public class uDoEngineUnitTest {
 		assertEquals("execution should be success",
 				ExecutionStatus.SUCCESS,
 				output.getExecutionStatus());
+		ItemData addedTask = (ItemData) output.get(Keys.ITEM);
+		assertFalse("added item in output not null",
+				null == addedTask);
+		assertEquals("added item is a task",
+				ItemType.TASK,
+				addedTask.getItemType());
 	}
 
 	@Test
