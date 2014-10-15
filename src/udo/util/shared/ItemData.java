@@ -215,7 +215,7 @@ public class ItemData implements Comparable<ItemData> {
 	}
 
 	private String makeTaskString() {
-		// uid | type | title | ddate | dtime | tags
+		// uid | type | title | ddate | dtime | done | tags
 		@SuppressWarnings("unchecked")
 		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
 		assert (taglist != null);
@@ -231,6 +231,7 @@ public class ItemData implements Comparable<ItemData> {
 				dueCal.get(Calendar.YEAR),
 				dueCal.get(Calendar.HOUR_OF_DAY),
 				dueCal.get(Calendar.MINUTE), 
+				mData.get(Keys.DONE),
 				tagsString);
 		return result;
 	}

@@ -8,6 +8,7 @@ public enum Command {
 	LIST, 
 	DELETE, 
 	EDIT, 
+	TOGGLE_DONE,
 	SAVE, 
 	EXIT, 
 	UNDO, 

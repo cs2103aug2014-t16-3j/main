@@ -10,6 +10,7 @@ import udo.util.engine.FileManager;
 import udo.util.engine.UndoBin;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
@@ -31,6 +32,8 @@ public class Engine {
 		loadFile();
 	}
 
+	// ****** public methods ******//
+
 	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
 		return mCache.getAllEventsOn(todayCal);
 	}
@@ -40,10 +43,16 @@ public class Engine {
 	}
 
 	public OutputData execute(InputData input) {
+		// precondition
+		assert (input != null);
+		
 		Command cmd = input.getCommand();
 		ParsingStatus parsingStatus = input.getStatus();
-		OutputData output;
+		//preconditions
+		assert (cmd != null);
+		assert (parsingStatus != null);
 		
+		OutputData output = null;
 		// check if parsing success or not
 		if (parsingStatus.equals(ParsingStatus.FAIL)) {
 			output = new OutputData(cmd, 
@@ -54,28 +63,31 @@ public class Engine {
 		
 		// decide what function to run.
 		switch (cmd) {
-			case ADD_EVENT:
+			case ADD_EVENT :
 				output = runAddEvent(input);
 				break;
-			case ADD_TASK:
+			case ADD_TASK :
 				output = runAddTask(input);
 				break;
-			case ADD_PLAN:
+			case ADD_PLAN :
 				output = runAddPlan(input);
 				break;
-			case LIST:
+			case EDIT :
+				output = runEdit(input);
+				break;
+			case LIST :
 				output = runList(input);
 				break;
-			case DELETE:
+			case DELETE :
 				output = runDelete(input);
 				break;
-			case UNDO:
+			case UNDO :
 				output = runUndo(input);
 				break;
-			case SAVE:
+			case SAVE :
 				output = runSave(input);
 				break;
-			case EXIT:
+			case EXIT :
 				output = runExit(input);
 				break;
 			default:
@@ -83,26 +95,13 @@ public class Engine {
 						ParsingStatus.SUCCESS,
 						ExecutionStatus.NULL);
 		}
+		
+		// postcondition
 		assert (output != null);
 		output.setParsingStatus(ParsingStatus.SUCCESS);
 		return output;
 	}
-
 	
-
-	// ****** public methods ******//
-	
-	private boolean loadFile() {
-		mCache.clear();
-		try {
-			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
-			mCache.addAll(itemsFromFile);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-
 	// ********* methods that execute the commands ******* //
 
 	private OutputData runAddEvent(InputData input) {
@@ -136,7 +135,7 @@ public class Engine {
 			// make output object with the event data inside
 			output.setExecutionStatus(ExecutionStatus.SUCCESS);
 			output.put(Keys.ITEM, event);
-			storeUndo(Command.ADD_EVENT, event);
+			storeAddDeleteUndo(Command.ADD_EVENT, event);
 		} else {
 			output.setExecutionStatus(ExecutionStatus.FAIL);
 		}
@@ -173,15 +172,13 @@ public class Engine {
 		if (addOK) {
 			output.put(Keys.ITEM, task);
 			output.setExecutionStatus(ExecutionStatus.SUCCESS);
-			storeUndo(Command.ADD_TASK, task);
+			storeAddDeleteUndo(Command.ADD_TASK, task);
 		} else {
 			output.setExecutionStatus(ExecutionStatus.FAIL);
 		}
 		
 		return output;
 	}
-
-	// ****** public methods ******//
 	
 	private OutputData runAddPlan(InputData input) {
 		Command cmd = input.getCommand();
@@ -210,7 +207,7 @@ public class Engine {
 		if (addOK) {
 			output.put(Keys.ITEM, plan);
 			output.setExecutionStatus(ExecutionStatus.SUCCESS);
-			storeUndo(Command.ADD_PLAN, plan);
+			storeAddDeleteUndo(Command.ADD_PLAN, plan);
 		} else {
 			output.setExecutionStatus(ExecutionStatus.FAIL);
 		}
@@ -261,7 +258,7 @@ public class Engine {
 					ParsingStatus.SUCCESS, 
 					ExecutionStatus.SUCCESS);
 			output.put(Keys.ITEM, deletedItem);
-			storeUndo(Command.DELETE, deletedItem);
+			storeAddDeleteUndo(Command.DELETE, deletedItem);
 		} else {
 			output = new OutputData(Command.DELETE, 
 					ParsingStatus.SUCCESS, 
@@ -272,8 +269,126 @@ public class Engine {
 	}
 
 	private OutputData runEdit(InputData inputData) {
+		int uid = (int) inputData.get(Keys.UID);
+		ItemData itemToEdit = mCache.getItem(uid);
+		EditField field = (EditField) inputData.get(Keys.FIELD);
+		Object value = inputData.get(Keys.VALUE);
+		ExecutionStatus eStatus = ExecutionStatus.FAIL;
+		switch (field) {
+			case DUE_DATE :
+				eStatus = runEditDueDate(itemToEdit, (Calendar) value);
+				break;
+			case DUE_TIME :
+				eStatus = runEditDueTime(itemToEdit, (Calendar) value);
+				break;
+			case END_DATE :
+				eStatus = runEditEndDate(itemToEdit, (Calendar) value);
+				break;
+			case END_TIME :
+				eStatus = runEditEndTime(itemToEdit, (Calendar) value);
+				break;
+			case START_DATE :
+				eStatus = runEditStartDate(itemToEdit, (Calendar) value);
+				break;
+			case START_TIME :
+				eStatus = runEditStartTime(itemToEdit, (Calendar) value);
+				break;
+			case TITLE :
+				eStatus = runEditTitle(itemToEdit, (String) value);
+				break;
+			default:
+				eStatus = ExecutionStatus.FAIL;
+		}
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				eStatus);
+		output.put(Keys.ITEM, itemToEdit);
+		return output;
+	}
 
-		return null;
+	private ExecutionStatus runEditTitle(ItemData item, String title) {
+		String oldTitle = (String) item.get(Keys.TITLE);
+		item.put(Keys.TITLE, title);
+		storeEditUndo(EditField.TITLE, oldTitle);
+		return ExecutionStatus.SUCCESS;
+	}
+	
+	private ExecutionStatus runEditDueTime(ItemData item, Calendar timeCal) {
+		if (item.getItemType() != ItemType.TASK) {
+			return ExecutionStatus.FAIL;
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.DUE);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setTime(dueCal, timeCal);
+		storeEditUndo(EditField.DUE_TIME, calToStore);
+		return ExecutionStatus.SUCCESS;
+	}
+	
+	private ExecutionStatus runEditStartTime(ItemData item, Calendar timeCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return ExecutionStatus.FAIL;
+		}
+		Calendar startCal = (Calendar) item.get(Keys.START);
+		Calendar calToStore = (Calendar) startCal.clone();
+		setTime(startCal, timeCal);
+		storeEditUndo(EditField.START_TIME, calToStore);
+		return ExecutionStatus.SUCCESS;
+	}
+	
+	private ExecutionStatus runEditEndTime(ItemData item, Calendar timeCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return ExecutionStatus.FAIL;
+		}
+		Calendar endCal = (Calendar) item.get(Keys.END);
+		Calendar calToStore = (Calendar) endCal.clone();
+		setTime(endCal, timeCal);
+		storeEditUndo(EditField.END_TIME, calToStore);
+		return ExecutionStatus.SUCCESS;
+	}
+
+	private ExecutionStatus setTime(Calendar itemCal, Calendar timeCal) {
+		itemCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+		itemCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+		return ExecutionStatus.SUCCESS;
+	}
+
+	private ExecutionStatus runEditDueDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.TASK) {
+			return ExecutionStatus.FAIL;
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.DUE);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setDate(dueCal, dateCal);
+		storeEditUndo(EditField.DUE_DATE, calToStore);
+		return ExecutionStatus.SUCCESS;
+	}
+
+	private ExecutionStatus runEditEndDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return ExecutionStatus.FAIL;
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.END);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setDate(dueCal, dateCal);
+		storeEditUndo(EditField.END_DATE, calToStore);
+		return ExecutionStatus.SUCCESS;
+	}
+	
+	private ExecutionStatus runEditStartDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return ExecutionStatus.FAIL;
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.START);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setDate(dueCal, dateCal);
+		storeEditUndo(EditField.START_DATE, calToStore);
+		return ExecutionStatus.SUCCESS;
+	}
+
+	private void setDate(Calendar itemCal, Calendar dateCal) {
+		itemCal.set(Calendar.YEAR, dateCal.get(Calendar.YEAR));
+		itemCal.set(Calendar.MONTH, dateCal.get(Calendar.MONTH));
+		itemCal.set(Calendar.DAY_OF_MONTH, dateCal.get(Calendar.DAY_OF_MONTH));
 	}
 
 	private OutputData runUndo(InputData inputData) {
@@ -306,7 +421,7 @@ public class Engine {
 
 	// ********* private abstracted helper methods ******* //
 
-	private void storeUndo(Command previousCommand, ItemData previousItem) {
+	private void storeAddDeleteUndo(Command previousCommand, ItemData previousItem) {
 		InputData undoInput;
 		switch (previousCommand) {
 			case ADD_EVENT :
@@ -348,10 +463,6 @@ public class Engine {
 					undoInput.put(key, previousItem.get(key));
 				}
 				break;
-			case EDIT :
-				// TODO
-				undoInput = new InputData(Command.EDIT);
-				break;
 			default:
 				// do nothing. this shouldnt happen
 				return;
@@ -359,6 +470,24 @@ public class Engine {
 		}
 		undoInput.setParsingStatus(ParsingStatus.SUCCESS);
 		mUndoBin.putInputData(undoInput);
+	}
+
+	private void storeEditUndo(EditField field, Object oldValue) {
+		InputData undoInput = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		undoInput.put(Keys.FIELD, field);
+		undoInput.put(Keys.VALUE, oldValue);
+		mUndoBin.putInputData(undoInput);
+	}
+
+	private boolean loadFile() {
+		mCache.clear();
+		try {
+			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
+			mCache.addAll(itemsFromFile);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
 	}
 
 	private boolean writeCacheToFile() {
