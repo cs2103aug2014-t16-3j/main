@@ -23,6 +23,8 @@ import udo.util.shared.ParsingStatus;
 
 public class uDoEngineUnitTest {
 	
+	private static final int TEST_UID = 12345;
+
 	@Test
 	public void testEngineGetTodayItems() {
 		Engine e = new Engine();
@@ -40,7 +42,7 @@ public class uDoEngineUnitTest {
 		
 		InputData input1 = new InputData(Command.DELETE);
 		input1.setParsingStatus(ParsingStatus.SUCCESS);
-		input1.put(Keys.UID, 12345);
+		input1.put(Keys.UID, TEST_UID);
 		e.execute(input1);
 		
 		InputData listInput = new InputData(Command.LIST);
@@ -68,13 +70,15 @@ public class uDoEngineUnitTest {
 	@Test
 	public void testEngineDelete() {
 		Engine e = new Engine();
-		 
 		InputData input = new InputData(Command.DELETE);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
-		input.put(Keys.UID, 12345);
-		OutputData o = e.execute(input);
-		assertFalse("cannot be null", null == o);
-		assertEquals("o success", ExecutionStatus.SUCCESS, o.getExecutionStatus());
+		input.put(Keys.UID, TEST_UID);
+		OutputData output = e.execute(input);
+		assertFalse("Output must not be null",
+				null == output);
+		assertEquals("Execution must be successful",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
 	}
 	
 	@Test

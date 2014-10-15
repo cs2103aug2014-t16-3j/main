@@ -24,56 +24,6 @@ public class ItemData implements Comparable<ItemData> {
 		mData = new HashMap<String, Object>();
 	}
 
-	@Override
-	public String toString() {
-		// TODO need to revise
-		switch (mType) {
-		case EVENT:
-			return makeEventString();
-		default:
-			return null;
-		}
-	}
-
-	private String makeEventString() {
-		Calendar startCal = (Calendar) mData.get(Keys.START);
-		Calendar endCal = (Calendar) mData.get(Keys.END);
-		@SuppressWarnings("unchecked")
-		String tagsString = getString((ArrayList<String>) mData
-				.get(Keys.HASHTAGS));
-
-		String eventInfo = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d"
-				+ "|||%7$d:%8$d|||%9$d/%10$d/%11$d" + "|||%12$d:%13$d|||%14$s";
-		String result = String.format(
-				eventInfo,
-				mData.get(Keys.UID),
-				mType.toString(),
-				mData.get(Keys.TITLE),
-				startCal.get(Calendar.DAY_OF_MONTH),
-				startCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in
-													// cal object
-				startCal.get(Calendar.YEAR),
-				startCal.get(Calendar.HOUR_OF_DAY),
-				startCal.get(Calendar.MINUTE),
-				endCal.get(Calendar.DAY_OF_MONTH),
-				endCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in
-												// cal object
-				endCal.get(Calendar.YEAR), endCal.get(Calendar.HOUR_OF_DAY),
-				endCal.get(Calendar.MINUTE), tagsString);
-		return result;
-	}
-
-	private String getString(ArrayList<String> list) {
-		String result = new String();
-		for (int i = 0; i < list.size(); i++) {
-			result = result.concat(list.get(i));
-			if (i != list.size() - 1 /* not last element */) {
-				result = result.concat(StorageStrings.TAG_DELIMITER);
-			}
-		}
-		return result;
-	}
-
 	public ItemType getItemType() {
 		return mType;
 	}
@@ -135,6 +85,17 @@ public class ItemData implements Comparable<ItemData> {
 
 	public HashMap<String, Object> getData() {
 		return mData;
+	}
+
+	@Override
+	public String toString() {
+		// TODO need to revise
+		switch (mType) {
+		case EVENT:
+			return makeEventString();
+		default:
+			return null;
+		}
 	}
 
 	@Override
@@ -208,5 +169,44 @@ public class ItemData implements Comparable<ItemData> {
 			// this should not happen
 			return 0;
 		}
+	}
+
+	private String getString(ArrayList<String> list) {
+		String result = new String();
+		for (int i = 0; i < list.size(); i++) {
+			result = result.concat(list.get(i));
+			if (i != list.size() - 1 /* not last element */) {
+				result = result.concat(StorageStrings.TAG_DELIMITER);
+			}
+		}
+		return result;
+	}
+
+	private String makeEventString() {
+		Calendar startCal = (Calendar) mData.get(Keys.START);
+		Calendar endCal = (Calendar) mData.get(Keys.END);
+		@SuppressWarnings("unchecked")
+		String tagsString = getString((ArrayList<String>) mData
+				.get(Keys.HASHTAGS));
+	
+		String eventInfo = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d"
+				+ "|||%7$d:%8$d|||%9$d/%10$d/%11$d" + "|||%12$d:%13$d|||%14$s";
+		String result = String.format(
+				eventInfo,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				startCal.get(Calendar.DAY_OF_MONTH),
+				startCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in
+													// cal object
+				startCal.get(Calendar.YEAR),
+				startCal.get(Calendar.HOUR_OF_DAY),
+				startCal.get(Calendar.MINUTE),
+				endCal.get(Calendar.DAY_OF_MONTH),
+				endCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in
+												// cal object
+				endCal.get(Calendar.YEAR), endCal.get(Calendar.HOUR_OF_DAY),
+				endCal.get(Calendar.MINUTE), tagsString);
+		return result;
 	}
 }
