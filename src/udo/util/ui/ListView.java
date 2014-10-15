@@ -23,17 +23,13 @@ public class ListView extends JScrollPane {
 		mView.setOpaque(false);
 		setBackground(UI.MAIN_COLOR);
 		//setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
-		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT));
-		mView.setLayout(new WrapLayout(WrapLayout.LEADING, 0 ,0));
 	}
 
 	public void init(ArrayList<ItemData> data) {
 		for (int i = 0; i < data.size(); i++) {
 			Entry entry = new Entry(data.get(i), data.get(i).getItemType());
-			mView.add(entry);
+			add(entry);
 		}
-		setViewportView(mView);
-		revalidate();
 	}
 
 }

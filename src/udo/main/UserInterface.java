@@ -195,8 +195,6 @@ public class UserInterface implements ActionListener {
 		//mScrollPane.getViewport().removeAll();
 		mLayer.remove(mTextArea);
 		mTextArea = fb.getFinalView();
-		mTextArea.setBounds(0,0,360,550);
-		System.out.println(mTextArea.getBounds());
 		//mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 		//mScrollPane.getViewport().add(mTextArea);
 		mLayer.add(mTextArea, new Integer(1));
