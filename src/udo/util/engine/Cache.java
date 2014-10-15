@@ -52,6 +52,9 @@ public class Cache {
 		case TASK :
 			mTasks.add(item);
 			return true;
+		case PLAN :
+			mPlans.add(item);
+			return true;
 		default:
 			return false;
 		}
