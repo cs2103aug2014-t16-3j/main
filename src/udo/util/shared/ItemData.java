@@ -91,8 +91,10 @@ public class ItemData implements Comparable<ItemData> {
 	public String toString() {
 		// TODO need to revise
 		switch (mType) {
-		case EVENT:
+		case EVENT :
 			return makeEventString();
+		case TASK : 
+			return makeTaskString();
 		default:
 			return null;
 		}
@@ -175,7 +177,7 @@ public class ItemData implements Comparable<ItemData> {
 		String result = new String();
 		for (int i = 0; i < list.size(); i++) {
 			result = result.concat(list.get(i));
-			if (i != list.size() - 1 /* not last element */) {
+			if (i != list.size() - 1) { //not last element 
 				result = result.concat(StorageStrings.TAG_DELIMITER);
 			}
 		}
@@ -211,5 +213,9 @@ public class ItemData implements Comparable<ItemData> {
 				endCal.get(Calendar.MINUTE), 
 				tagsString);
 		return result;
+	}
+
+	private String makeTaskString() {
+		return null;
 	}
 }

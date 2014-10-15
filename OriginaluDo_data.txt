@@ -1,2 +1,6 @@
-12345|||EVENT|||meeting|||23/01/14|||09:23|||23/01/14|||22:30|||meeting,boss,work
-12346|||EVENT|||bowling|||24/01/14|||13:30|||24/01/14|||15:45|||boss,play,fun,date
+12345|||EVENT|||sample event|||23/01/2014|||09:23|||23/01/14|||22:30|||meeting,boss,work
+12346|||TASK|||sample task|||24/01/2014|||13:30|||boss,play,fun,date
+12347|||PLAN|||sample plan|||test,play,work
+
+json version:
+
