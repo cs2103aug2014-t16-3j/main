@@ -24,47 +24,27 @@ import udo.util.shared.ParsingStatus;
 public class uDoEngineUnitTest {
 	
 	private static final int TEST_UID = 12345;
+	
+	@Test
+	public void testEngineAddTask() {
+		Engine e = new Engine();
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputTask);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+	}
 
 	@Test
 	public void testEngineGetTodayItems() {
 		Engine e = new Engine();
-		 
 		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
-		assertEquals("length of todayList is currently 2",
-				2,
-				todayList.size());
-	}
-	
-	@Test
-	public void testEngineUndoDelete() {
-		Engine e = new Engine();
-		 
-		
-		InputData input1 = new InputData(Command.DELETE);
-		input1.setParsingStatus(ParsingStatus.SUCCESS);
-		input1.put(Keys.UID, TEST_UID);
-		e.execute(input1);
-		
-		InputData listInput = new InputData(Command.LIST);
-		listInput.put(Keys.QUERY_TYPE, ListQuery.ALL);
-		listInput.setParsingStatus(ParsingStatus.SUCCESS);
-		OutputData o = e.execute(listInput);
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> a = (ArrayList<ItemData>) o.get(Keys.ITEMS);
-		assertEquals("num of items should be 1 after delete",
-				1,
-				a.size());
-		
-		InputData input2 = new InputData(Command.UNDO);
-		input2.setParsingStatus(ParsingStatus.SUCCESS);
-		e.execute(input2);
-		
-		OutputData o2 = e.execute(listInput);
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> a2 = (ArrayList<ItemData>) o2.get(Keys.ITEMS);
-		assertEquals("num of items should still be 2 after undo",
-				2,
-				a2.size());
+		assertFalse("todayList is not null",
+				null == todayList);
 	}
 
 	@Test
@@ -127,9 +107,8 @@ public class uDoEngineUnitTest {
 		@SuppressWarnings("unchecked")
 		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
 		
-		assertEquals("list size should be 2",
-				2,
-				s.size());
+		assertFalse("there should be items",
+				null == s);
 	}
 
 	@Test
@@ -164,12 +143,6 @@ public class uDoEngineUnitTest {
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
 	}
 
-	/*@Test
-	public void testEngineLoadFile() {
-		assertTrue("the loading of the file should return true if successful",
-				new Engine().loadFile());
-	}*/
-
 	@Test
 	public void testCacheAddItemSizeIncrease() {
 		Cache c = new Cache();
@@ -194,42 +167,5 @@ public class uDoEngineUnitTest {
 		i2.put("b", "ajshdgf");
 		assertTrue(i1.equals(i2));
 	}
-
-	/*
-	 * @Test public void testFileManagerGetItemData() { FileManager fm = new
-	 * FileManager(); ItemData iExp = new ItemData(ItemType.EVENT);
-	 * iExp.put("title", "meeting"); iExp.put("date", "23/01/14");
-	 * iExp.put("start time", "09.23am"); iExp.put("end time", "10.30pm");
-	 * iExp.put("tags", "meeting, boss, work"); ItemData i = fm.getItemData(
-	 * "event|||meeting|||23/01/14|||09.23am|||10.30pm|||meeting, boss, work");
-	 * assertTrue("same item", iExp.equals(i)); }
-	 */
-
-	/*@Test
-	public void testEngineLoadFileTrue() {
-		Engine e = new Engine();
-		assertTrue("the loading of the file should return true when successful",
-				e.loadFile());
-	}*/
-
-	/*@Test
-	public void testFileManagerReadFileOutput() {
-		FileManager fm = new FileManager();
-		String itemString = new String();
-		try {
-			ArrayList<ItemData> items = fm.getFromFile();
-			for (ItemData item : items) {
-				itemString = itemString.concat(item.toString());
-
-			}
-		} catch (IOException e) {
-			itemString = "failed";
-		}
-		assertEquals(
-				"the fileoutput should look like that",
-				"12345|||EVENT|||meeting|||23/1/14|||9:23|||23/1/14|||22:30|||meeting,boss,work"
-						+ "12346|||EVENT|||bowling|||24/1/14|||13:30|||24/1/14|||15:45|||boss,play,fun,date",
-				itemString);
-	}*/
 
 }
