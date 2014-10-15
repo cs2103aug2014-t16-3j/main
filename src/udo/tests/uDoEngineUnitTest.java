@@ -41,7 +41,7 @@ public class uDoEngineUnitTest {
 		ItemData edited = (ItemData) output.get(Keys.ITEM);
 		assertFalse("edited item in output not null",
 				null == edited);
-		assertEquals("edited item actaully got edited",
+		assertEquals("ensure edited item actaully got edited",
 				"dummy title", 
 				edited.get(Keys.TITLE));
 	}
