@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
@@ -19,11 +20,11 @@ public class ToDoView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel mHeader = new JPanel();
+	private ListView mEntryView = new ListView();
+	private JScrollPane mScrollPane = new JScrollPane();
 	
 	public ToDoView() {
-		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT));
-		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
-		setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
+		setLayout(new WrapLayout());
 		setOpaque(false);
 	}
 	
@@ -60,10 +61,12 @@ public class ToDoView extends JPanel {
 			noItems.setHorizontalAlignment(JLabel.CENTER);
 			add(noItems);
 		} else {
-			for (int i = 0; i < data.size(); i++) {
-				Entry entry = new Entry(data.get(i), data.get(i).getItemType());
-				add(entry);
-			}
+			mEntryView.populateView(data);
+			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
+			mScrollPane.getViewport().add(mEntryView);
+			add(mScrollPane);
 		}
 	}
 	

@@ -21,6 +21,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import udo.util.shared.Constants.Keys;
@@ -35,6 +36,8 @@ public class DayView extends JPanel{
 	private SimpleDateFormat mDayFormat = new SimpleDateFormat("EEEE");  
 	private BufferedImage mTickerImg;
 	private JLabel mTicker;
+	private JScrollPane mScrollPane = new JScrollPane();
+	private ListView mEntryView = new ListView();
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
 	private ArrayList<Point> mTickerCoordsWH; //stores width and height of each ticker
 	
@@ -42,9 +45,7 @@ public class DayView extends JPanel{
 
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
-		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT));
-		setBounds(20,20,UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
-		setLayout(new FlowLayout(FlowLayout.LEADING, 0, 0));
+		setLayout(new WrapLayout());
 		setOpaque(false);
 		loadTicker();
 	}
@@ -89,20 +90,25 @@ public class DayView extends JPanel{
 		} else {
 			int hour, min, total;
 			Point xy,wh;
-			for (int i = 0; i < data.size(); i++) {
+			for(int i = 0; i<data.size(); i++) {
 				hour = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
 				min = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.MINUTE);
 				total = hour+min;
-				xy = new Point((int) Math.floor(total/4d), 81);
+				xy = new Point((int) Math.floor(total/4d), UI.TICKER_Y);
 				mTickerCoordsXY.add(xy);
 				hour = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
 				min = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.MINUTE);
 				total = hour+min;
 				wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
 				mTickerCoordsWH.add(wh);
-				Entry entry = new Entry(data.get(i), data.get(i).getItemType());
-				add(entry);
 			}
+			mEntryView.populateView(data);
+			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
+			mScrollPane.getViewport().add(mEntryView);
+			add(mScrollPane);
+			
 		}
 	}
 	

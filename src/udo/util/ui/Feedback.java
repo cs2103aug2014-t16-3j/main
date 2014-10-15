@@ -1,10 +1,12 @@
 package udo.util.ui;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.ItemData;
 import udo.util.shared.ListQuery;
@@ -33,7 +35,11 @@ public class Feedback {
 		mToDoView = new ToDoView();
 		mSingleView = new SingleView();
 		mMainTodayView = new DayView();
+		mMainTodayView.setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		mMainTodayView.setLayout(new WrapLayout());
 		mMainToDoView = new ToDoView();
+		mMainToDoView.setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		mMainToDoView.setLayout(new WrapLayout());
 	}
 
 	public JPanel initTodayView(ArrayList<ItemData> data) {
@@ -129,8 +135,7 @@ public class Feedback {
 			}
 			mCommand = "Listing " + query;
 		}
-		mListView.removeAll();
-		mListView.init((ArrayList<ItemData>) mData);
+		mListView.populateView((ArrayList<ItemData>) mData);
 		mFinalView = mListView;
 	}
 
