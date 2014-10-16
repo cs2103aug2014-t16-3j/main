@@ -50,6 +50,7 @@ public class DayView extends JPanel{
 		setLayout(new WrapLayout());
 		setOpaque(false);
 		loadTicker();
+		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
 	}
 
 	public void init(ArrayList<ItemData> data) {

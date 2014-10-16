@@ -46,3 +46,95 @@ mEntryView's preferredSize is wider than mScrollPane</message>
 mEntryView's preferredSize is wider than mScrollPane</message>
 </record>
 </log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T09:55:47</date>
+  <millis>1413424547181</millis>
+  <sequence>1</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODAY mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T10:00:24</date>
+  <millis>1413424824816</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODAY mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T10:01:23</date>
+  <millis>1413424883708</millis>
+  <sequence>0</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODAY mEntryView's preferredSize: java.awt.Dimension[width=1460,height=64]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>

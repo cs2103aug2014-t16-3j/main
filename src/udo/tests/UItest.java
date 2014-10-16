@@ -69,7 +69,7 @@ public class UItest {
 	public static void testPermaToDoScreen() {
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
 		Calendar date = Calendar.getInstance();
-		for(int i = 0; i<3; i++) {
+		for(int i = 0; i<9; i++) {
 			ItemData input = new ItemData(ItemType.TASK);
 			input.put(Keys.UID, i);
 			input.put(Keys.TITLE, "dummyTask" + i);

@@ -31,6 +31,7 @@ public class ToDoView extends JPanel {
 	public ToDoView() {
 		setLayout(new WrapLayout());
 		setOpaque(false);
+		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
 	}
 	
 	public void init() {

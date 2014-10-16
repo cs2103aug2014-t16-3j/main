@@ -65,8 +65,8 @@ public class Entry extends JPanel {
 		
 		mExtraDesc.setFont(UI.FONT_14);
 		mExtraDesc.setEditable(false);
-		//mExtraDesc.setWrapStyleWord(true);
-		//mExtraDesc.setLineWrap(true);
+		mExtraDesc.setWrapStyleWord(true);
+		mExtraDesc.setLineWrap(true);
 		
 		mDescription.setFont(UI.FONT_20);
 		mDescription.setWrapStyleWord(true);
@@ -75,8 +75,8 @@ public class Entry extends JPanel {
 		
 		mHashtags.setFont(UI.FONT_16);
 		mHashtags.setEditable(false);
-		//mHashtags.setWrapStyleWord(true);
-		//mHashtags.setLineWrap(true);
+		mHashtags.setWrapStyleWord(true);
+		mHashtags.setLineWrap(true);
 		
 		switch(type) {
 			case EVENT:

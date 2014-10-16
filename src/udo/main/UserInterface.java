@@ -191,7 +191,6 @@ public class UserInterface implements ActionListener {
 		
 		mScrollPane.getViewport().removeAll();
 		mTextArea = fb.getFinalView();
-		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 		mScrollPane.getViewport().add(mTextArea);
 
 		showPopup(outputString);

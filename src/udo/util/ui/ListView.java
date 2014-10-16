@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import udo.util.shared.Constants.UI;
@@ -21,6 +22,8 @@ public class ListView extends JPanel {
 
 		setOpaque(false);
 		setLayout(new WrapLayout(WrapLayout.LEADING, 0 ,0));
+		setSize(new Dimension(UI.SUBVIEW_WIDTH, 1));
+		setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 	}
 
 	public void populateView(ArrayList<ItemData> data) {
