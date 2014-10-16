@@ -46,7 +46,7 @@ public class Parser {
 	
 	private int deleteStartingIndex = 7; 
 	// get input after "delete "
-	private int isValidDeleteInt = 8; 
+	//private int isValidDeleteInt = 8; 
 	// checks if there is input after "delete "
 	
 	public Parser() {
@@ -116,8 +116,9 @@ public class Parser {
 		InputData deleteInputData = new InputData(type);
 		if (isValidDelete(details)) {
 			String deleteIndexString = details.substring(deleteStartingIndex);
-			int deleteIndex = Integer.parseInt(deleteIndexString);
-			deleteInputData.put(Keys.UID, deleteIndex);
+			int uidIndex = Integer.parseInt(deleteIndexString);
+			assert(uidIndex > 0);
+			deleteInputData.put(Keys.UID, uidIndex);
 			deleteInputData.setParsingStatus(ParsingStatus.SUCCESS);
 			return deleteInputData;
 		} else {
@@ -127,6 +128,7 @@ public class Parser {
 	}
 	
 	public boolean isValidDelete(String input) {
+		int isValidDeleteInt = 8; // checks if there is input after "delete "
 		if (input.length() >= isValidDeleteInt) {
 			String deleteIndexString = input.substring(deleteStartingIndex);
 			if (isInteger(deleteIndexString)) {

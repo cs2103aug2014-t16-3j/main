@@ -58,7 +58,10 @@ public class uDoParserUnitTest {
 	String testEditDueDate1 = "edit 12345 due date 12/10/14";
 	String testEditDueDate2 = "edit 12345 due date 1/1/11";
 	
-	
+	@Test
+	public void testEdit() {
+		InputData data = p.getInputData(testEditTitle2);
+	}
 	
 	@Test
 	public void testStartDate() {

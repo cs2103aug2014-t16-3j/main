@@ -78,7 +78,7 @@ public class ParserDate {
 		if (isSingleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex) ||
 			isDoubleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex)) {
 			
-			try {
+			try { // must check index out of bounds
 				int dayStartingIndex = dayMonthSlashIndex - 2;
 				int monthStartingIndex = dayMonthSlashIndex + 1;
 				int yearStartingIndex = monthYearSlashIndex + 1;
