@@ -1,10 +1,10 @@
 package udo.util.ui;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ExecutionStatus;
@@ -61,12 +61,10 @@ public class Feedback {
 			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
 				switch (output.getCommand()) {
 					case ADD_EVENT:
-						add_entry(output, "addEvent");
-						break;
 					case ADD_TASK:
-						break;
 					case ADD_PLAN:
-						break;
+						add_entry(output, output.getCommand());
+						break;						
 					case DELETE:
 						delete_entry(output);
 						break;
@@ -94,7 +92,7 @@ public class Feedback {
 		}
 	}
 
-	private void add_entry(OutputData output, String type) {
+	private void add_entry(OutputData output, Command type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
 		mSingleView.init(item, type);
@@ -105,7 +103,7 @@ public class Feedback {
 	private void delete_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
-		mSingleView.init(item, "delete");
+		mSingleView.init(item, Command.DELETE);
 		mFinalView = mSingleView;
 		mCommand = "Deleted " + item.get(Keys.TITLE);
 	}

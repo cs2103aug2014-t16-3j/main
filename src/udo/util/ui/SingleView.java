@@ -5,8 +5,10 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import udo.util.shared.Command;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
 
 public class SingleView extends JPanel {
 
@@ -21,19 +23,20 @@ public class SingleView extends JPanel {
 		mMessage.setFont(UI.FONT_14);
 	}
 	
-	public void init(ItemData item, String cmdType) {
-		switch (cmdType) {
-		case "addEvent" : 
+	public void init(ItemData item, Command type) {
+		switch (type) {
+		case ADD_EVENT: 
+		case ADD_PLAN:
+		case ADD_TASK:
 			initAdd();
 			break;
-			// TODO dont forget add task/plan
-		case "delete" :
+		case DELETE :
 			initDelete();
 			break;
-		case "edit" :
+		case EDIT :
 			// TODO get edit itemdata
 			break;
-		case "undo" :
+		case UNDO :
 			initUndo();
 			break;
 		default :

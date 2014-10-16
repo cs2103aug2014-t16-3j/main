@@ -7,6 +7,7 @@ import udo.main.Engine;
 import udo.main.UserInterface;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
@@ -30,7 +31,7 @@ public class UItest {
 		/**
 		 * Testing list single date
 		 */
-		
+		//testSingleView();
 		/**
 		 * Testing list single hashtag
 		 */
@@ -48,6 +49,20 @@ public class UItest {
 		 */
 	}
 	
+	private static void testSingleView() {
+		OutputData output = new OutputData(Command.ADD_PLAN, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ItemData item = new ItemData(ItemType.PLAN);
+		item.put(Keys.UID, 1);
+		item.put(Keys.TITLE, "sample SingleItem");
+//		item.put(Keys.DUE, Calendar.getInstance());
+//		item.put(Keys.START, Calendar.getInstance());
+//		item.put(Keys.END, Calendar.getInstance());
+		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		output.put(Keys.ITEM, item);
+		ui.show(output);
+		
+	}
+
 	public static void testPermaTodayScreen() {
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
 		Calendar date = Calendar.getInstance();
