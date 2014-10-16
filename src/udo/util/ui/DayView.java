@@ -68,7 +68,7 @@ public class DayView extends JPanel{
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.DAYVIEW_HEADER_HEIGHT));
 		try {
-			logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
+			logger.addHandler(new FileHandler("logs/dayViewLog%u.txt", true));
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,7 +81,7 @@ public class DayView extends JPanel{
 	
 	private void loadTicker() {
 		try {                
-			mTickerImg = ImageIO.read(new File("dayViewTicker.png"));
+			mTickerImg = ImageIO.read(new File("img/dayViewTicker.png"));
 		} catch (IOException ex) {
 			// handle exception...
 		}

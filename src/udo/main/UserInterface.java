@@ -63,7 +63,7 @@ public class UserInterface implements ActionListener {
 		try {
 		     GraphicsEnvironment ge = 
 		         GraphicsEnvironment.getLocalGraphicsEnvironment();
-		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Ubuntu-R.TTF")));
+		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("fonts/Ubuntu-R.TTF")));
 		} catch (IOException|FontFormatException e) {
 		     //Handle exception
 		}

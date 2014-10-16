@@ -138,3 +138,35 @@ mEntryView's preferredSize is wider than mScrollPane</message>
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 </log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-10-16T16:26:56</date>
+  <millis>1413448016327</millis>
+  <sequence>1</sequence>
+  <logger>udo.util.ui.DayView</logger>
+  <level>INFO</level>
+  <class>udo.util.ui.DayView</class>
+  <method>populateView</method>
+  <thread>1</thread>
+  <message>TODAY mEntryView's preferredSize: java.awt.Dimension[width=5126,height=80]
+mEntryView's preferredSize is wider than mScrollPane</message>
+</record>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+</log>

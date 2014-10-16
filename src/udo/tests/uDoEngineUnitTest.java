@@ -27,6 +27,13 @@ public class uDoEngineUnitTest {
 	private static final int TEST_UID = 12345;
 	
 	@Test
+	public void testEngineasEditItemEndTime() {
+		Engine e = new Engine();
+		e.execute(null);
+	
+	}
+	
+	@Test
 	public void testEngineEditItemEndTime() {
 		Engine e = new Engine();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
