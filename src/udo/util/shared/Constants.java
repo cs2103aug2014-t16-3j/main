@@ -122,6 +122,7 @@ public class Constants {
 		
 		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
 		public static final int ENTRY_SEPARATOR_WIDTH = -5;
+		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
 		
 		public static final String ENTRY_ALL = "ALL";
 		public static final String ENTRY_EVENT = "EVENT";

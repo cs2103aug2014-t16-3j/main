@@ -98,6 +98,8 @@ public class Entry extends JPanel {
 	@SuppressWarnings("unchecked")
 	private void initPlan(ItemData item) {
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.CENTER);
+		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
+				0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
 		add(mTimePanel);
 		add(initSeparator());
 		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
@@ -108,6 +110,8 @@ public class Entry extends JPanel {
 	private void initTask(ItemData item) {
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
 		mTimePanel.add(initDate((Calendar) item.get(Keys.DUE)), BorderLayout.CENTER);
+		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
+															0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
 		add(mTimePanel);
 		add(initSeparator());
 		add(initDetails((Calendar) item.get(Keys.DUE), (String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
