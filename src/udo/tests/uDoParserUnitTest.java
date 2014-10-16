@@ -27,7 +27,7 @@ public class uDoParserUnitTest {
 	
 	String testEvent1 = "add #date with #jiawei from 30/9/14 11:09pm to 3/8/25 6:45pm";
 	String testEvent2 = "add #cs2010 #homework finish it! from 12/12/13 11:30am to 11/3/14 5:45am";
-	String testEvent3 = "add #test only from 10am to 1pm";
+	String testEvent3 = "add #test only from 10am to 1pm"; // returns current date and time for both start and end time
 	
 	String testTask1 = "add make #friendship #bands by 12/12/13 9:31am";
 	String testTask2 = "add finish homework by 11:30am";
@@ -41,13 +41,13 @@ public class uDoParserUnitTest {
 	String testEditTitle2 = "edit 12345 title #school is #fun!";
 	
 	String testEditStartTime1 = "edit 12345 start time 3:15am";
-	String testEditStartTime2 = "edit 12345 start time 3am";
+	String testEditStartTime2 = "edit 12345 start time 3:00am";
 	
 	String testEditEndTime1 = "edit 12345 end time 4:14pm";
-	String testEditEndTime2 = "edit 12345 end time 4pm";
+	String testEditEndTime2 = "edit 12345 end time 4:00pm";
 	
 	String testEditStartDate1 = "edit 12345 start date 12/10/14";
-	String testEditStartDate2 = "edit 12345 start date 1/1";
+	String testEditStartDate2 = "edit 12345 start date 1/1/11";
 	
 	String testEditEndDate1 = "edit 12345 end date 12/10/14";
 	String testEditEndDate2 = "edit 12345 end date 12/10/14";
@@ -56,15 +56,50 @@ public class uDoParserUnitTest {
 	String tsetEditDueTime2 = "edit 12345 due date 7pm";
 	
 	String testEditDueDate1 = "edit 12345 due date 12/10/14";
-	String testEditDueDate2 = "edit 12345 due date 1/1";
+	String testEditDueDate2 = "edit 12345 due date 1/1/11";
+	
+	
+	
+	@Test
+	public void testStartDate() {
+		InputData data = editActivity.edit(Command.EDIT, testEditStartDate2);
+		ParsingStatus status = data.getStatus();
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH);
+		int year = date.get(Calendar.YEAR);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(1, day);
+		assertEquals(0, month);
+		assertEquals(2011, year);
+	}
+	
+	@Test
+	public void testEndTime() {
+		InputData data = editActivity.edit(Command.EDIT, testEditEndTime2);
+		ParsingStatus status = data.getStatus();
+		Calendar time = (Calendar) data.get(Keys.VALUE);
+		int hour = time.get(Calendar.HOUR);
+		int mins = time.get(Calendar.MINUTE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(4, hour);
+		assertEquals(0, mins);
+	}
 	
 	@Test
 	public void testStartTime() {
 		InputData data = editActivity.edit(Command.EDIT, testEditStartTime2);
 		ParsingStatus status = data.getStatus();
-		Object time = data.get(Keys.VALUE);
+		Calendar time = (Calendar) data.get(Keys.VALUE);	
+		int hour = time.get(Calendar.HOUR);
+		int mins = time.get(Calendar.MINUTE);
 		
 		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(3, hour);
+		assertEquals(0, mins);
 	}
 	
 	@Test

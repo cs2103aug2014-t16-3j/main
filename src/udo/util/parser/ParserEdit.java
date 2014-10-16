@@ -18,9 +18,12 @@ import udo.util.shared.ParsingStatus;
 public class ParserEdit {
 	
 	private boolean isValidEdit = false;
+	private ParserTime time;
+	private ParserDate date;
 
 	public ParserEdit() {
-		
+		time = new ParserTime();
+		date = new ParserDate();
 	}
 	//edit <uid> <field> <new-info>
 	public InputData edit(Command type, String details) {
@@ -28,6 +31,7 @@ public class ParserEdit {
 		int uid = getUid(details);
 		String field = getField(details);
 		boolean uidExist = (uid != -1);
+		
 		if (uidExist) {
 			data.put(Keys.UID, uid);
 			updateField(field, data, details);
@@ -68,7 +72,7 @@ public class ParserEdit {
 	public InputData setTitle(InputData data, String details) {
 		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
-		if (!title.isEmpty()) {
+		if (!title.isEmpty() && title != null) {
 			data.put(Keys.FIELD, EditField.TITLE);
 			data.put(Keys.VALUE, title);
 			data.put(Keys.HASHTAGS, tags);
@@ -76,57 +80,71 @@ public class ParserEdit {
 		} 
 		return data;
 	}
+	
 	public InputData setStartTime(InputData data, String details) {
-		Calendar startTime = getStartTime(details);
-		if (startTime != null) {
+		int startingIndex = 22; // new info starts after "edit 12345 start time "
+		if (details.length() > startingIndex) {
+			isValidEdit = true;
+			Calendar startTime = time.getTime(details);
 			data.put(Keys.FIELD, EditField.START_TIME);
 			data.put(Keys.VALUE, startTime);
-			isValidEdit = true;
-		}
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} 
 		return data;
 	}
+	
 	public InputData setEndTime(InputData data, String details) {
-		Calendar endTime = getEndTime(details);
-		if (endTime != null) {
+		int startingIndex = 20; // new info starts after "edit 12345 end time "
+		if (details.length() > startingIndex) {
+			isValidEdit = true;
+			Calendar endTime = time.getTime(details);
 			data.put(Keys.FIELD, EditField.END_TIME);
 			data.put(Keys.VALUE, endTime);
-			isValidEdit = true;
-		}
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} 
 		return data;
 	}
+	
 	public InputData setStartDate(InputData data, String details) {
-		Calendar startDate = getStartDate(details);
-		if (startDate != null) {
+		int startingIndex = 22; // new info starts after "edit 12345 start date "
+		if (details.length() > startingIndex) {
+			isValidEdit = true;
+			Calendar startDate = date.getDate(details);
 			data.put(Keys.FIELD, EditField.START_DATE);
 			data.put(Keys.VALUE, startDate);
-			isValidEdit = true;
-		}
+		} 
 		return data;
 	}
+	
 	public InputData setEndDate(InputData data, String details) {
-		Calendar endDate = getEndDate(details);
-		if (endDate != null) {
+		int startingIndex = 20; // new info starts after "edit 12345 end date "
+		if (details.length() > startingIndex) {
+			isValidEdit = true;
+			Calendar endDate = date.getDate(details);
 			data.put(Keys.FIELD, EditField.END_DATE);
 			data.put(Keys.VALUE, endDate);
-			isValidEdit = true;
 		}
 		return data;
 	}
+	
 	public InputData setDueTime(InputData data, String details) {
-		Calendar dueTime = getDueTime(details);
-		if (dueTime != null) {
+		int startingIndex = 20; // new info starts after "edit 12345 due time "
+		if (details.length() > startingIndex) {
+			isValidEdit = true;
+			Calendar dueTime = time.getTime(details);
 			data.put(Keys.FIELD, EditField.DUE_TIME);
 			data.put(Keys.VALUE, dueTime);
-			isValidEdit = true;
 		}
 		return data;
 	}
+	
 	public InputData setDueDate(InputData data, String details) {
-		Calendar dueDate = getDueDate(details);
-		if (dueDate != null) {
+		int startingIndex = 20; // new info starts after "edit 12345 due date "
+		if (details.length() > startingIndex) {
+			isValidEdit = true;
+			Calendar dueDate = date.getDate(details);
 			data.put(Keys.FIELD, EditField.DUE_DATE);
 			data.put(Keys.VALUE, dueDate);
-			isValidEdit = true;
 		}
 		return data;
 	}
@@ -169,78 +187,6 @@ public class ParserEdit {
 			String title = details.substring(startingIndex);
 			title.replaceAll("#", "");
 			return title;
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-	}
-	
-	public Calendar getStartTime(String details) {
-		int startingIndex = 22; // new info starts after "edit 12345 start time "
-		try {
-			String timeString = details.substring(startingIndex);
-			ParserTime startTime = new ParserTime();
-			Calendar cal = startTime.getTime(timeString);
-			return cal;
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-	}
-	
-	public Calendar getEndTime(String details) {
-		int startingIndex = 20; // new info starts after "edit 12345 end time "
-		try {
-			String timeString = details.substring(startingIndex);
-			ParserTime endTime = new ParserTime();
-			Calendar cal = endTime.getTime(timeString);
-			return cal;
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-	}
-	
-	public Calendar getStartDate(String details) {
-		int startingIndex = 22; // new info starts after "edit 12345 start date "
-		try {
-			String dateString = details.substring(startingIndex);
-			ParserDate startDate = new ParserDate();
-			Calendar cal = startDate.getDate(dateString);
-			return cal;
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-	}
-	
-	public Calendar getEndDate(String details) {
-		int startingIndex = 20; // new info starts after "edit 12345 end date "
-		try {
-			String dateString = details.substring(startingIndex);
-			ParserDate endDate = new ParserDate();
-			Calendar cal = endDate.getDate(dateString);
-			return cal;
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-	}
-	
-	public Calendar getDueTime(String details) {
-		int startingIndex = 20; // new info starts after "edit 12345 due time "
-		try {
-			String timeString = details.substring(startingIndex);
-			ParserTime dueTime = new ParserTime();
-			Calendar cal = dueTime.getTime(timeString);
-			return cal;
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-	}
-	
-	public Calendar getDueDate(String details) {
-		int startingIndex = 20; // new info starts after "edit 12345 due date "
-		try {
-			String dateString = details.substring(startingIndex);
-			ParserDate dueDate = new ParserDate();
-			Calendar cal = dueDate.getDate(dateString);
-			return cal;
 		} catch (IndexOutOfBoundsException e) {
 			return null;
 		}

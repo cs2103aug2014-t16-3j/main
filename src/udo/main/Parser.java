@@ -187,7 +187,6 @@ public class Parser {
 		return activity.add(type, details);
 	}
 	
-	// edit <uid> <field> <newinfo>
 	public InputData edit(Command type, String details) {
 		ParserEdit activity = new ParserEdit();
 		return activity.edit(type, details);
