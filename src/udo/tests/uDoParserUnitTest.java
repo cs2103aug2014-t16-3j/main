@@ -37,6 +37,52 @@ public class uDoParserUnitTest {
 	String testPlan1 = "add vending #machines no money";
 	String testPlan2 = "add call meow mi later";
 	
+	String testEditTitle1 = "edit title go to school";
+	String testEditTitle2 = "edit 12345 title #school is #fun!";
+	
+	String testEditStartTime1 = "edit 12345 start time 3:15am";
+	String testEditStartTime2 = "edit 12345 start time 3am";
+	
+	String testEditEndTime1 = "edit 12345 end time 4:14pm";
+	String testEditEndTime2 = "edit 12345 end time 4pm";
+	
+	String testEditStartDate1 = "edit 12345 start date 12/10/14";
+	String testEditStartDate2 = "edit 12345 start date 1/1";
+	
+	String testEditEndDate1 = "edit 12345 end date 12/10/14";
+	String testEditEndDate2 = "edit 12345 end date 12/10/14";
+	
+	String testEditDueTime1 = "edit 12345 due date 7:12pm";
+	String tsetEditDueTime2 = "edit 12345 due date 7pm";
+	
+	String testEditDueDate1 = "edit 12345 due date 12/10/14";
+	String testEditDueDate2 = "edit 12345 due date 1/1";
+	
+	@Test
+	public void testStartTime() {
+		InputData data = editActivity.edit(Command.EDIT, testEditStartTime2);
+		ParsingStatus status = data.getStatus();
+		Object time = data.get(Keys.VALUE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+	}
+	
+	@Test
+	public void testEditTitle() {
+		InputData data = editActivity.edit(Command.EDIT, testEditTitle1);
+		ParsingStatus status = data.getStatus();
+		assertEquals(ParsingStatus.FAIL, status);
+		
+		data = editActivity.edit(Command.EDIT, testEditTitle2);
+		status = data.getStatus();
+		Object title = data.get(Keys.VALUE);
+		Object tags = data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals("#school is #fun!", title);
+		assertEquals("[school, fun!]", tags.toString());
+	}
+	
 	@Test
 	public void testAddingEvent() {
 		InputData event = p.add(Command.ADD, testEvent3);

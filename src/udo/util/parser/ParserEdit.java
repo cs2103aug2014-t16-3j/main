@@ -20,7 +20,7 @@ public class ParserEdit {
 	private boolean isValidEdit = false;
 
 	public ParserEdit() {
-		isValidEdit = false;
+		
 	}
 	//edit <uid> <field> <new-info>
 	public InputData edit(Command type, String details) {
@@ -71,8 +71,7 @@ public class ParserEdit {
 		if (!title.isEmpty()) {
 			data.put(Keys.FIELD, EditField.TITLE);
 			data.put(Keys.VALUE, title);
-			data.put(Keys.FIELD, EditField.HASHTAGS);
-			data.put(Keys.VALUE, tags);
+			data.put(Keys.HASHTAGS, tags);
 			isValidEdit = true;
 		} 
 		return data;
@@ -165,7 +164,7 @@ public class ParserEdit {
 	// returns the new title if it exists
 	// otherwise returns null
 	public String getTitle(String details) {
-		int startingIndex = 11; // new info starts after "edit title "
+		int startingIndex = 17; // new info starts after "edit 12345 title "
 		try {
 			String title = details.substring(startingIndex);
 			title.replaceAll("#", "");
@@ -176,7 +175,7 @@ public class ParserEdit {
 	}
 	
 	public Calendar getStartTime(String details) {
-		int startingIndex = 16; // new info starts after "edit start time "
+		int startingIndex = 22; // new info starts after "edit 12345 start time "
 		try {
 			String timeString = details.substring(startingIndex);
 			ParserTime startTime = new ParserTime();
@@ -188,7 +187,7 @@ public class ParserEdit {
 	}
 	
 	public Calendar getEndTime(String details) {
-		int startingIndex = 14; // new info starts after "edit end time "
+		int startingIndex = 20; // new info starts after "edit 12345 end time "
 		try {
 			String timeString = details.substring(startingIndex);
 			ParserTime endTime = new ParserTime();
@@ -200,7 +199,7 @@ public class ParserEdit {
 	}
 	
 	public Calendar getStartDate(String details) {
-		int startingIndex = 16; // new info starts after "edit start date "
+		int startingIndex = 22; // new info starts after "edit 12345 start date "
 		try {
 			String dateString = details.substring(startingIndex);
 			ParserDate startDate = new ParserDate();
@@ -212,7 +211,7 @@ public class ParserEdit {
 	}
 	
 	public Calendar getEndDate(String details) {
-		int startingIndex = 14; // new info starts after "edit end date "
+		int startingIndex = 20; // new info starts after "edit 12345 end date "
 		try {
 			String dateString = details.substring(startingIndex);
 			ParserDate endDate = new ParserDate();
@@ -224,7 +223,7 @@ public class ParserEdit {
 	}
 	
 	public Calendar getDueTime(String details) {
-		int startingIndex = 14; // new info starts after "edit due time "
+		int startingIndex = 20; // new info starts after "edit 12345 due time "
 		try {
 			String timeString = details.substring(startingIndex);
 			ParserTime dueTime = new ParserTime();
@@ -236,7 +235,7 @@ public class ParserEdit {
 	}
 	
 	public Calendar getDueDate(String details) {
-		int startingIndex = 14; // new info starts after "edit due date "
+		int startingIndex = 20; // new info starts after "edit 12345 due date "
 		try {
 			String dateString = details.substring(startingIndex);
 			ParserDate dueDate = new ParserDate();
