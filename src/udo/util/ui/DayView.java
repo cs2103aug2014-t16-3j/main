@@ -40,8 +40,8 @@ public class DayView extends JPanel{
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
 	private ArrayList<Point> mTickerCoordsWH; //stores width and height of each ticker
 	
-	private static final Logger logger =
-	        Logger.getLogger(udo.util.ui.DayView.class.getName());
+//	private static final Logger logger =
+//	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
 	public DayView(){
 
@@ -90,7 +90,7 @@ public class DayView extends JPanel{
 	}
 	
 	private void populateView(ArrayList<ItemData> data) {
-		logger.entering(getClass().getName(), "populateView");
+		//logger.entering(getClass().getName(), "populateView");
 		if (data.size() == 0) {
 			JLabel noItems = new JLabel("You are free today!");
 			noItems.setFont(UI.FONT_14);
@@ -120,16 +120,16 @@ public class DayView extends JPanel{
 			mScrollPane.getViewport().add(mEntryView);
 			mEntryView.populateView(data);
 			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
-				logger.info("TODAY mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
+//				logger.info("TODAY mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
 			} else {
-				logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
+//				logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
 			}
 			
 			add(mScrollPane);
 			
 		}
 		
-		logger.exiting(getClass().getName(), "populateView");
+//		logger.exiting(getClass().getName(), "populateView");
 	}
 	
 	private void initHeader(Date newDate) {
