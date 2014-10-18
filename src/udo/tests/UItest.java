@@ -31,7 +31,7 @@ public class UItest {
 		/**
 		 * Testing list single date
 		 */
-		//testSingleView();
+//		testSingleView();
 		/**
 		 * Testing list single hashtag
 		 */

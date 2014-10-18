@@ -107,6 +107,8 @@ public class Constants {
 		public static final Font FONT_16 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_16);
 		public static final Font FONT_14 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
 		public static final Font FONT_12 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_12);
+		public static final Font FONT_20_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_20);
+		public static final Font FONT_12_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_12);
 		
 		public static final int MAIN_WIDTH = 400;
 		public static final int MAIN_HEIGHT = 600;
@@ -133,6 +135,8 @@ public class Constants {
 		//public static final Color SUBVIEW_COLOR = new Color();
 		public static final Color ENTRY_BGCOLOR = new Color(255,255,255);
 		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
+		public static final Color ENTRY_DATE_COLOR = new Color(150,150,150);
+		public static final Color ENTRY_HASHTAGS_COLOR = new Color(28,134,238);
 		
 		public static final Color UID_COLOR = new Color(238,238,238);
 		public static final Color SEPARATOR_COLOR = new Color(100,100,100);
