@@ -18,140 +18,101 @@ public class RunnerAdd extends Runner {
 	@Override
 	public OutputData run() {
 		Command cmd = mInput.getCommand();
-
-		OutputData output = null;
+		ParsingStatus pStatus = mInput.getStatus();
+		OutputData output = new OutputData(cmd, pStatus);
+		ItemData item = addGeneric(mInput);
+		boolean cacheAddOK = false;
 		
-		// decide what function to run.
+		// carry out specific add for each itemtype.
+		// also adds the final item to the cache.
 		switch (cmd) {
 			case ADD_EVENT :
-				output = runAddEvent(mInput);
+				cacheAddOK = addEvent(mInput, item);
 				break;
 			case ADD_TASK :
-				output = runAddTask(mInput);
+				cacheAddOK = addTask(mInput, item);
 				break;
 			case ADD_PLAN :
-				output = runAddPlan(mInput);
+				cacheAddOK = addPlan(mInput, item);
 				break;
 			default :
 				break;
 		}
+
+		if (cacheAddOK) {
+			// if added item successfully
+			// make output object with the event data inside
+			// also store undo command.
+			output.setExecutionStatus(ExecutionStatus.SUCCESS);
+			output.put(Keys.ITEM, item);
+			storeUndo(item);
+		} else {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+		}
 		
 		return output;
 	}
 	
-	private OutputData runAddEvent(InputData input) {
-		Command cmd = input.getCommand();
-		ParsingStatus pStatus = input.getStatus();
-		OutputData output = new OutputData(cmd, pStatus);
+	private ItemData addGeneric(InputData input) {
 		// extract data from inputdata to make an event
-		// assume all data fields are present
-		ItemData event = new ItemData(ItemType.EVENT);
+		ItemData item = new ItemData();
+		
 		if (input.contains(Keys.UID)) {
-			// if the inputdata came from undo, then it would have the uid
-			event.put(Keys.UID, 
+			// if the inputdata came from undo, 
+			// then it would have the uid
+			item.put(Keys.UID, 
 					input.get(Keys.UID));
 		} else {
-			event.put(Keys.UID, 
+			item.put(Keys.UID, 
 					mCache.generateUID());
 		}
-		event.put(Keys.TITLE, 
+		
+		item.put(Keys.TITLE, 
 				input.get(Keys.TITLE));
+		item.put(Keys.HASHTAGS, 
+				input.get(Keys.HASHTAGS));
+		
+		return item;
+	}
+	
+	private boolean addEvent(InputData input, ItemData event) {
+		event.setItemType(ItemType.EVENT);
+		
 		event.put(Keys.START, 
 				input.get(Keys.START));
 		event.put(Keys.END, 
 				input.get(Keys.END));
-		event.put(Keys.HASHTAGS, 
-				input.get(Keys.HASHTAGS));
 
-		boolean addOK = mCache.addItem(event);
-		
-		if (addOK) {
-			// if added item successfully
-			// make output object with the event data inside
-			output.setExecutionStatus(ExecutionStatus.SUCCESS);
-			output.put(Keys.ITEM, event);
-			//storeAddDeleteUndo(Command.ADD_EVENT, event);
-		} else {
-			output.setExecutionStatus(ExecutionStatus.FAIL);
-		}
-
-		return output;
+		return mCache.addItem(event);
 	}
 
-	private OutputData runAddTask(InputData input) {
-		Command cmd = input.getCommand();
-		ParsingStatus pStatus = input.getStatus();
-		OutputData output = new OutputData(cmd, pStatus);
+	private boolean addTask(InputData input, ItemData task) {
+		task.setItemType(ItemType.TASK);
 		
-		// extract data from inputdata to make an task
-		// assume all data fields are present
-		// TODO handle data fields missing
-		ItemData task = new ItemData(ItemType.TASK);
-		if (input.contains(Keys.UID)) {
-			// if the inputdata came from undo, then it would have the uid
-			task.put(Keys.UID, 
-					input.get(Keys.UID));
-		} else {
-			task.put(Keys.UID, 
-					mCache.generateUID());
-		}
-		task.put(Keys.TITLE, 
-				input.get(Keys.TITLE));
 		task.put(Keys.DUE, 
 				input.get(Keys.DUE));
 		task.put(Keys.DONE, 
 				false);
-		task.put(Keys.HASHTAGS, 
-				input.get(Keys.HASHTAGS));
 		
 		//add to cache
-		boolean addOK = mCache.addItem(task);
-		if (addOK) {
-			output.put(Keys.ITEM, task);
-			output.setExecutionStatus(ExecutionStatus.SUCCESS);
-			//storeAddDeleteUndo(Command.ADD_TASK, task);
-		} else {
-			output.setExecutionStatus(ExecutionStatus.FAIL);
-		}
-		
-		return output;
+		return mCache.addItem(task);
 	}
 	
-	private OutputData runAddPlan(InputData input) {
-		Command cmd = input.getCommand();
-		ParsingStatus pStatus = input.getStatus();
-		OutputData output = new OutputData(cmd, pStatus);
+	private boolean addPlan(InputData input, ItemData plan) {
+		plan.setItemType(ItemType.PLAN);
 		
-		// extract data from inputdata to make an task
-		// assume all data fields are present
-		// TODO handle data fields missing
-		ItemData plan = new ItemData(ItemType.PLAN);
-		if (input.contains(Keys.UID)) {
-			// if the inputdata came from undo, then it would have the uid
-			plan.put(Keys.UID, 
-					input.get(Keys.UID));
-		} else {
-			plan.put(Keys.UID, 
-					mCache.generateUID());
-		}
-		plan.put(Keys.TITLE, 
-				input.get(Keys.TITLE));
 		plan.put(Keys.DONE, 
 				false);
-		plan.put(Keys.HASHTAGS, 
-				input.get(Keys.HASHTAGS));
 		
 		//add to cache
-		boolean addOK = mCache.addItem(plan);
-		if (addOK) {
-			output.put(Keys.ITEM, plan);
-			output.setExecutionStatus(ExecutionStatus.SUCCESS);
-			//storeAddDeleteUndo(Command.ADD_PLAN, plan);
-		} else {
-			output.setExecutionStatus(ExecutionStatus.FAIL);
-		}
-		
-		return output;
+		return mCache.addItem(plan);
+	}
+	
+	private void storeUndo(ItemData item) {
+		InputData undoInput = new InputData(Command.DELETE);
+		undoInput.put(Keys.UID, item.get(Keys.UID));
+		undoInput.setParsingStatus(ParsingStatus.SUCCESS);
+		mUndoBin.putInputData(undoInput);
 	}
 
 }

@@ -18,10 +18,19 @@ public class ItemData implements Comparable<ItemData> {
 
 	private ItemType mType;
 	private HashMap<String, Object> mData;
+	
+	public ItemData() {
+		mType = ItemType.PLAN;
+		mData = new HashMap<String, Object>();
+	}
 
 	public ItemData(ItemType type) {
 		mType = type;
 		mData = new HashMap<String, Object>();
+	}
+	
+	public void setItemType(ItemType type) {
+		mType = type;
 	}
 
 	public ItemType getItemType() {
