@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -12,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+
 
 
 
@@ -189,13 +191,50 @@ public class Entry extends JPanel {
 	
 	private String getDay(Calendar cal) {
 		String day = "";
+		SimpleDateFormat sdfDay = new SimpleDateFormat("EEEE");
+		Calendar today = Calendar.getInstance();
+		int dayDiff = getDayDiff(today, cal);
+		switch(dayDiff) {
+			case -1:
+				day = "yesterday ";
+				break;
+			case 0:
+				if(cal.get(Calendar.HOUR_OF_DAY) > 17) {
+					day = "tonight ";
+				}else{
+					day = "today ";
+				}
+				break;
+			case 1:
+				day = "tomorrow ";
+				break;
+			case -6:
+			case -5:
+			case -4:
+			case -3:
+			case -2:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				day = sdfDay.format(cal.getTime()) + " ";
+			default:
+				break;
+		}
 		return day;
 	}
 	
 	private int getDayDiff(Calendar start, Calendar end) {
-		int diff = (int) (end.getTime().getTime() - start.getTime().getTime()) / (1000 * 60 * 60 * 24);
-		System.out.println(diff + " in date: " + start.get(Calendar.DAY_OF_MONTH));
-		return diff;
+		int tempYear = end.get(Calendar.YEAR);
+		int endDays = end.get(Calendar.DAY_OF_YEAR);
+		
+		while(tempYear > start.get(Calendar.YEAR)) {
+			tempYear--;
+			Calendar offsetYear = new GregorianCalendar(tempYear, Calendar.DECEMBER, 31);
+			endDays += offsetYear.get(Calendar.DAY_OF_YEAR);
+		}
+		return endDays - start.get(Calendar.DAY_OF_YEAR);
 	}
 	
 	private JPanel initDate(Calendar cal) {
