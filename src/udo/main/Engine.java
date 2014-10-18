@@ -7,6 +7,8 @@ import java.util.Collections;
 
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
+import udo.util.engine.Runner;
+import udo.util.engine.RunnerAdd;
 import udo.util.engine.UndoBin;
 import udo.util.exceptions.WritingToStorageFileException;
 import udo.util.shared.Command;
@@ -96,16 +98,21 @@ public class Engine {
 			return output;
 		}
 		
+		Runner commandRunner = null;
+		
 		// decide what function to run.
 		switch (cmd) {
 			case ADD_EVENT :
-				output = runAddEvent(input);
+				commandRunner = new RunnerAdd(input, mUndoBin, mCache);
+				//output = runAddEvent(input);
 				break;
 			case ADD_TASK :
-				output = runAddTask(input);
+				commandRunner = new RunnerAdd(input, mUndoBin, mCache);
+				//output = runAddTask(input);
 				break;
 			case ADD_PLAN :
-				output = runAddPlan(input);
+				commandRunner = new RunnerAdd(input, mUndoBin, mCache);
+				//output = runAddPlan(input);
 				break;
 			case EDIT :
 				output = runEdit(input);
@@ -129,6 +136,10 @@ public class Engine {
 				output = new OutputData(cmd, 
 						ParsingStatus.SUCCESS,
 						ExecutionStatus.NULL);
+		}
+		
+		if (commandRunner != null) {
+			output = commandRunner.run();
 		}
 		
 		// postcondition
