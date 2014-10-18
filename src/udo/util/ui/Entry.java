@@ -1,7 +1,6 @@
 package udo.util.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,9 +45,8 @@ public class Entry extends JPanel {
 	private JTextArea mHashtags = new JTextArea();
 	// TODO maybe put a JTextPane here
 	private JLabel mUid = new JLabel();
-	private JLabel mDate; // can be hour or date
-	private JLabel mMonth = new JLabel(); // can be minute or month
-	private JLabel mDash = new JLabel("-");
+	private JLabel mDate;
+	private JLabel mMonth = new JLabel();
 	private JPanel mTimePanel = new JPanel();
 	private JPanel mSeparator = new JPanel();
 	private int mHorizontalRemainder;
@@ -160,12 +158,6 @@ public class Entry extends JPanel {
 		mUid.setText(uid.toString());
 		mUid.setHorizontalAlignment(SwingConstants.CENTER);
 		return mUid;
-	}
-	
-	private JLabel initDash() {
-		mDash.setFont(UI.FONT_16);
-		mDash.setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 6));
-		return mDash;
 	}
 	
 	private String initTime(Calendar cal) {

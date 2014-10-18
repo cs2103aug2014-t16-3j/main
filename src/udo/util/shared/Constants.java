@@ -118,7 +118,8 @@ public class Constants {
 		public static final int SIDEVIEW_PADDING = 30;
 		
 		public static final int DAYVIEW_HEADER_HEIGHT = 100;
-		public static final int TICKER_Y = 88;
+		public static final String TICKER_IMAGE_DIR = "img/dayViewTicker2.png";
+		public static final int TICKER_Y = 18;
 
 		public static final int TODOVIEW_HEADER_HEIGHT = 40;
 		

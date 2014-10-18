@@ -38,7 +38,9 @@ public class DayView extends JPanel{
 	private JScrollPane mScrollPane = new JScrollPane();
 	private ListView mEntryView = new ListView();
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
-	private ArrayList<Point> mTickerCoordsWH; //stores width and height of each ticker
+	private ArrayList<Point> mTickerCoordsWH; // stores width and height of each ticker
+	private ArrayList<Point> mRedTickCoordsXY; // stores x and y coords of overlapped start
+	private ArrayList<Point> mRedTickCoordsWH; // stores width and height of red ticks
 	
 //	private static final Logger logger =
 //	        Logger.getLogger(udo.util.ui.DayView.class.getName());
@@ -47,6 +49,8 @@ public class DayView extends JPanel{
 
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
+		mRedTickCoordsXY = new ArrayList<Point>();
+		mRedTickCoordsWH = new ArrayList<Point>();
 		setLayout(new WrapLayout());
 		setOpaque(false);
 		loadTicker();
@@ -67,25 +71,50 @@ public class DayView extends JPanel{
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.DAYVIEW_HEADER_HEIGHT));
-		try {
-			logger.addHandler(new FileHandler("logs/dayViewLog%u.txt", true));
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			logger.addHandler(new FileHandler("logs/dayViewLog%u.txt", true));
+//		} catch (SecurityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		populateView(data);
 	}
 	
 	private void loadTicker() {
 		try {                
-			mTickerImg = ImageIO.read(new File("img/dayViewTicker.png"));
+			mTickerImg = ImageIO.read(new File(UI.TICKER_IMAGE_DIR));
 		} catch (IOException ex) {
 			// handle exception...
 		}
-		mTicker = new JLabel(new ImageIcon(mTickerImg));
+//		mTicker = new JLabel(new ImageIcon(mTickerImg));
+		mTicker = new JLabel(new ImageIcon(mTickerImg)){
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.setColor(Color.GREEN);
+				System.out.println(mTickerCoordsXY.size());
+				for(int i=0; i < mTickerCoordsXY.size(); i++) {
+					g.fillRect(mTickerCoordsXY.get(i).x, 
+								mTickerCoordsXY.get(i).y, 
+								mTickerCoordsWH.get(i).x, 
+								mTickerCoordsWH.get(i).y);
+				}
+				g.setColor(Color.RED);
+				System.out.println(mRedTickCoordsXY.size());
+				for(int i=0; i< mRedTickCoordsXY.size(); i++) {
+					g.fillRect(mRedTickCoordsXY.get(i).x, 
+								mRedTickCoordsXY.get(i).y, 
+								mRedTickCoordsWH.get(i).x, 
+								mRedTickCoordsWH.get(i).y);
+				}
+			}
+			
+		};
 		mTicker.setPreferredSize(new Dimension(mTickerImg.getWidth(),mTickerImg.getHeight()));
 	}
 	
@@ -102,17 +131,41 @@ public class DayView extends JPanel{
 		} else {
 			int hour, min, total;
 			Point xy,wh;
+			Point redXY, redWH;
+			xy = new Point();
+			wh = new Point();
+			int currItem_startX = 0;
+			int lastItem_endX = 0;
+			
 			for(int i = 0; i<data.size(); i++) {
 				hour = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
 				min = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.MINUTE);
 				total = hour+min;
-				xy = new Point((int) Math.floor(total/4d), UI.TICKER_Y);
+				xy = new Point(Math.max (1, (int) Math.floor(total/4d)), UI.TICKER_Y); //minimum x pixel is 1
 				mTickerCoordsXY.add(xy);
+				if(i>0) {
+					currItem_startX = xy.x;
+					lastItem_endX = mTickerCoordsXY.get(i-1).x + mTickerCoordsWH.get(i-1).x;
+				}
 				hour = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
 				min = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.MINUTE);
 				total = hour+min;
 				wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
 				mTickerCoordsWH.add(wh);
+				int currItem_endX = xy.x + wh.x;
+				if(currItem_startX < lastItem_endX) {
+					System.out.println("Start overlaps");
+					redXY = new Point(xy.x, xy.y);
+					mRedTickCoordsXY.add(redXY);
+					if(currItem_endX > lastItem_endX) {
+						System.out.println("end overlaps");
+						redWH = new Point(lastItem_endX - currItem_startX, 10);
+					}else{
+						System.out.println("end doesnt overlap");
+						redWH = new Point(currItem_endX - currItem_startX, 10);
+					}
+					mRedTickCoordsWH.add(redWH);
+				}
 			}
 			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
@@ -128,7 +181,6 @@ public class DayView extends JPanel{
 			add(mScrollPane);
 			
 		}
-		
 //		logger.exiting(getClass().getName(), "populateView");
 	}
 	
@@ -149,6 +201,8 @@ public class DayView extends JPanel{
 		day.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
 		day.setHorizontalAlignment(SwingConstants.RIGHT);
 		day.setOpaque(true);
+		
+		
 		
 		mHeader.add(date);
 		mHeader.add(day);
@@ -174,10 +228,7 @@ public class DayView extends JPanel{
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawLine(UI.SUBVIEW_WIDTH/4, UI.SUBVIEW_HEADER_LINEY, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
-		g.setColor(Color.GREEN);
-		for(int i=0; i < mTickerCoordsXY.size(); i++) {
-			g.fillRect(mTickerCoordsXY.get(i).x, mTickerCoordsXY.get(i).y, mTickerCoordsWH.get(i).x, mTickerCoordsWH.get(i).y);
-		}
+		
 	}
 	
 
