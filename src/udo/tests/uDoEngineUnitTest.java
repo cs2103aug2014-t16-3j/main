@@ -27,15 +27,8 @@ public class uDoEngineUnitTest {
 	private static final int TEST_UID = 12345;
 	
 	@Test
-	public void testEngineasEditItemEndTime() {
-		Engine e = new Engine();
-		e.execute(null);
-	
-	}
-	
-	@Test
 	public void testEngineEditItemEndTime() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
 		inputEdit.put(Keys.UID, 12345);
 		inputEdit.put("field", EditField.END_TIME);
@@ -58,7 +51,7 @@ public class uDoEngineUnitTest {
 	
 	@Test
 	public void testEngineEditItemDueTime() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
 		inputEdit.put(Keys.UID, 12346);
 		inputEdit.put("field", EditField.DUE_TIME);
@@ -81,7 +74,7 @@ public class uDoEngineUnitTest {
 
 	@Test
 	public void testEngineEditItemDueDate() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
 		inputEdit.put(Keys.UID, 12346);
 		inputEdit.put("field", EditField.DUE_DATE);
@@ -104,7 +97,7 @@ public class uDoEngineUnitTest {
 	
 	@Test
 	public void testEngineEditItemTitle() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
 		inputEdit.put(Keys.UID, TEST_UID);
 		inputEdit.put("field", EditField.TITLE);
@@ -126,7 +119,7 @@ public class uDoEngineUnitTest {
 	
 	@Test
 	public void testEngineAddPlan() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
 		inputPlan.put(Keys.TITLE, "test plan");
 		inputPlan.put(Keys.DUE, Calendar.getInstance());
@@ -146,7 +139,7 @@ public class uDoEngineUnitTest {
 	
 	@Test
 	public void testEngineAddTask() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
 		inputTask.put(Keys.TITLE, "test task");
 		inputTask.put(Keys.DUE, Calendar.getInstance());
@@ -166,7 +159,7 @@ public class uDoEngineUnitTest {
 	
 	@Test
 	public void testEngineGetUpcomingTasks() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		Calendar from = Calendar.getInstance();
 		from.setLenient(true);
 		Calendar to = Calendar.getInstance();
@@ -179,7 +172,7 @@ public class uDoEngineUnitTest {
 
 	@Test
 	public void testEngineGetTodayItems() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
 		assertFalse("todayList is not null",
 				null == todayList);
@@ -187,7 +180,7 @@ public class uDoEngineUnitTest {
 
 	@Test
 	public void testEngineDelete() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData input = new InputData(Command.DELETE);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.UID, TEST_UID);
@@ -201,7 +194,7 @@ public class uDoEngineUnitTest {
 	
 	@Test
 	public void testEngineExecuteListHash() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
@@ -225,7 +218,7 @@ public class uDoEngineUnitTest {
 
 	@Test
 	public void testEngineExecuteListAll() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
@@ -251,7 +244,7 @@ public class uDoEngineUnitTest {
 
 	@Test // contains buggy save
 	public void testEngineExecuteExit() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		 
 		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
 		assertEquals("the output status shud be success",
@@ -264,7 +257,7 @@ public class uDoEngineUnitTest {
 
 	@Test
 	public void testEngineExecuteAddEventNotNull() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		 
 		InputData in = new InputData(Command.ADD_EVENT);
 		in.setParsingStatus(ParsingStatus.SUCCESS);
@@ -273,7 +266,7 @@ public class uDoEngineUnitTest {
 
 	@Test // save is still buggy
 	public void testEngineExecuteSave() {
-		Engine e = new Engine();
+		Engine e = Engine.getInstance();
 		InputData in = new InputData(Command.SAVE);
 		in.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData out = e.execute(in);

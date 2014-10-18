@@ -18,13 +18,23 @@ import udo.util.shared.ItemType;
 
 public class FileManager {
 
+	private String mFilename;
+	
 	private BufferedReader mReader;
 	private ItemData mNextItem;
 	private boolean mIsReading;
+	
 	private BufferedWriter mWriter;
 	private boolean mIsWriting;
 
 	public FileManager() {
+		mFilename = StorageStrings.FILENAME;
+		mIsReading = false;
+		mIsWriting = false;
+	}
+	
+	public FileManager(String filename) {
+		mFilename = filename;
 		mIsReading = false;
 		mIsWriting = false;
 	}
@@ -32,6 +42,7 @@ public class FileManager {
 	public ArrayList<ItemData> getFromFile() throws IOException {
 		startReadMode();
 		if (!isReading()) {
+			System.out.println("not readinf");
 			return null;
 		}
 		ArrayList<ItemData> result = new ArrayList<ItemData>();
@@ -54,20 +65,23 @@ public class FileManager {
 
 	private boolean startReadMode() {
 		if (isWriting()) {
+			System.out.println("iswriting");
 			return false;
 		}
 		try {
 			mReader = new BufferedReader(
-					new FileReader(StorageStrings.FILENAME));
+					new FileReader(mFilename));
 			String nextLine = mReader.readLine();
 			mNextItem = getItemData(nextLine);
 		} catch (FileNotFoundException e) {
 			// if there's no existing file, create the file.
 			// then try opening it again.
-			createNewFile(StorageStrings.FILENAME);
+			System.out.println("fnf");
+			createNewFile(mFilename);
 			startReadMode();
 		} catch (IOException e) {
 			// if unable to read the nextline
+			System.out.println("io ex");
 			return false;
 		}
 		setReading(true);
@@ -273,7 +287,7 @@ public class FileManager {
 		try {
 			// will overwrite the current file with the new data.
 			mWriter = new BufferedWriter(
-					new FileWriter(StorageStrings.FILENAME));
+					new FileWriter(mFilename));
 		} catch (IOException e) {
 			return false;
 		}
@@ -288,7 +302,7 @@ public class FileManager {
 		} catch (IOException e) {
 			return false;
 		}
-		setWriting(true);
+		setWriting(false);
 		return true;
 	}
 

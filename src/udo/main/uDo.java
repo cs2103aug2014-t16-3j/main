@@ -33,7 +33,7 @@ public class uDo {
 	public uDo() {
 		mUI = new UserInterface(); // the UI is shown when init-ed
 		mParser = new Parser();
-		mEngine = new Engine();
+		mEngine = Engine.getInstance(); // Engine is a Singleton pattern
 		mIsRunning = true;
 	}
 

@@ -21,19 +21,33 @@ import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
 
 public class Engine {
-
+	
+	private static Engine ENGINE_INSTANCE = null;
+	
 	private FileManager mFileManager;
 	private Cache mCache;
 	private UndoBin mUndoBin;
 
-	public Engine() {
+	private Engine() {
 		mFileManager = new FileManager();
 		mCache = new Cache();
 		mUndoBin = new UndoBin();
-		loadFile();
+	}
+	
+	/**
+	 * This method returns the Engine. It restricts the caller to only one instance
+	 * of the Engine. This follows the Singleton Pattern.
+	 * @return The one and only instance of the Engine.
+	 */
+	public static Engine getInstance() {
+		if (ENGINE_INSTANCE == null) {
+			ENGINE_INSTANCE = new Engine();
+		}
+		ENGINE_INSTANCE.loadFile();
+		return ENGINE_INSTANCE;
 	}
 
-	// ****** public methods ******//
+	// ****** public methods ****** //
 
 	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
 		return mCache.getAllEventsOn(todayCal);

@@ -96,7 +96,7 @@ public class UItest {
 	}
 	
 	public static void testListAll() {
-		Engine engine = new Engine();
+		Engine engine = Engine.getInstance();
 		InputData input = new InputData(Command.LIST);
 		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
