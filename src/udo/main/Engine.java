@@ -28,6 +28,9 @@ public class Engine {
 	private Cache mCache;
 	private UndoBin mUndoBin;
 
+	/**
+	 * private constructor. to instantiate this class, use the static getInstance() method.
+	 */
 	private Engine() {
 		mFileManager = new FileManager();
 		mCache = new Cache();
@@ -48,22 +51,39 @@ public class Engine {
 	}
 
 	// ****** public methods ****** //
-
+	
+	/**
+	 * This method returns an arraylist of events that occur on the specified day frame.
+	 * @param todayCal the calendar object containing the specified day
+	 * @return an arraylist of events that occur on the specified day
+	 */
 	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
 		return mCache.getAllEventsOn(todayCal);
 	}
 	
+	/**
+	 * This method returns an arraylist of tasks that occur between two dates.
+	 * @param fromCal one of the dates
+	 * @param toCal another one of the dates.
+	 * @return an arraylist of tasks that occur between the dates.
+	 */
 	public ArrayList<ItemData> getTodoScreenItems(Calendar fromCal, Calendar toCal) {
 		return mCache.getAllTasksBetween(fromCal, toCal);
 	}
 
+	/**
+	 * This method returns an outputdata object that contains the execution result
+	 * and additional information.
+	 * @param input The inputdata object to execute 
+	 * @return the outputdata object containing execution result.
+	 */
 	public OutputData execute(InputData input) {
-		// precondition
+		// precondition, input cannot be null
 		assert (input != null);
 		
 		Command cmd = input.getCommand();
 		ParsingStatus parsingStatus = input.getStatus();
-		//preconditions
+		//preconditions, input must have these components
 		assert (cmd != null);
 		assert (parsingStatus != null);
 		
