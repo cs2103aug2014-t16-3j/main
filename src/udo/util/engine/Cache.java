@@ -145,6 +145,10 @@ public class Cache {
 		return allPlans;
 	}
 
+	/**
+	 * returns a list of both tasks and plans
+	 * @return
+	 */
 	public ArrayList<ItemData> getAllTodo() {
 		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
 		allTasksAndPlans.addAll(getAllTasks());

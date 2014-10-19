@@ -16,12 +16,11 @@ import java.util.HashMap;
  * will be stored in a hash table and only accessed by a key.
  * 
  */
-public class OutputData {
+public class OutputData extends DataHolder {
 
-	Command mCommand;
-	ParsingStatus mParsingStatus;
-	ExecutionStatus mExecutionStatus;
-	HashMap<String, Object> mData;
+	private Command mCommand;
+	private ParsingStatus mParsingStatus;
+	private ExecutionStatus mExecutionStatus;
 	
 	public OutputData(Command cmd) {
 		mCommand = cmd;
@@ -55,24 +54,6 @@ public class OutputData {
 	 * 
 	 * @return the {@code ExecutionStatus} value
 	 */
-	public void setParsingStatus(ParsingStatus status) {
-		mParsingStatus = status;
-	}
-	
-	/**
-	 * Retrieves the {@code ExecutionStatus} value
-	 * 
-	 * @return the {@code ExecutionStatus} value
-	 */
-	public void setExecutionStatus(ExecutionStatus status) {
-		mExecutionStatus = status;
-	}
-	
-	/**
-	 * Retrieves the {@code ExecutionStatus} value
-	 * 
-	 * @return the {@code ExecutionStatus} value
-	 */
 	public ParsingStatus getParsingStatus() {
 		return mParsingStatus;
 	}
@@ -87,49 +68,21 @@ public class OutputData {
 	}
 
 	/**
-	 * Associates the specified item with the specified key in the OutputData
-	 * object. An existing item of the same key will be replaced. The item
-	 * inserted cannot be {@code null}.
+	 * Retrieves the {@code ExecutionStatus} value
 	 * 
-	 * @param key
-	 *            The key of the item.
-	 * @param item
-	 *            The item to be put inside the OutputData object.
-	 * @return {@code true} when the operation is successful, or {@code false}
-	 *         when the inserted item is null
+	 * @return the {@code ExecutionStatus} value
 	 */
-	public boolean put(String key, Object item) {
-		if (item != null) {
-			mData.put(key, item);
-			return true;
-		} else {
-			return false;
-		}
+	public void setParsingStatus(ParsingStatus status) {
+		mParsingStatus = status;
 	}
-
+	
 	/**
-	 * Retrieves the item that is associated with the key.
+	 * Retrieves the {@code ExecutionStatus} value
 	 * 
-	 * @param key
-	 *            The key of the item to retrieve
-	 * @return The item, or {@code null} if the key is not mapped.
+	 * @return the {@code ExecutionStatus} value
 	 */
-	public Object get(String key) {
-		if (mData.containsKey(key)) {
-			return mData.get(key);
-		} else {
-			return null;
-		}
+	public void setExecutionStatus(ExecutionStatus status) {
+		mExecutionStatus = status;
 	}
-
-	/**
-	 * Returns a boolean value describing if the named item exists inside.
-	 * 
-	 * @param key
-	 *            The key of the item to check.
-	 * @return {@code true} if the item exists, or {@code false} otherwise.
-	 */
-	public boolean contains(String key) {
-		return mData.containsKey(key);
-	}
+	
 }

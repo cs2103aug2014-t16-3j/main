@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import udo.util.exceptions.WritingToStorageFailedException;
@@ -200,7 +201,7 @@ public class FileManager {
 		boolean done = Boolean.parseBoolean(lineArray[StorageIndices.TASK_DONE]);
 		item.put(Keys.DONE, 
 				done);
-
+		
 		String tagsString = lineArray[StorageIndices.TASK_HASHTAGS];
 		ArrayList<String> tagsList = getList(tagsString);
 		item.put(Keys.HASHTAGS, 
@@ -276,11 +277,15 @@ public class FileManager {
 
 	private ArrayList<String> getList(String tagsString) {
 		ArrayList<String> list = new ArrayList<String>();
-		String[] tagsArray = tagsString.split(",");
-		for (int i = 0; i < tagsArray.length; i++) {
-			list.add(tagsArray[i]);
+		if (tagsString == null || tagsString.length() == 0) {
+			return list;
+		} else {
+			String[] tagsArray = tagsString.split(",");
+			for (int i = 0; i < tagsArray.length; i++) {
+				list.add(tagsArray[i]);
+			}
+			return list;
 		}
-		return list;
 	}
 
 	private boolean startWriteMode() {

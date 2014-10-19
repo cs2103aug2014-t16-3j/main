@@ -14,19 +14,17 @@ import udo.util.shared.Constants.StorageStrings;
  * keys from the Constants.Keys class.
  * 
  */
-public class ItemData implements Comparable<ItemData> {
+public class ItemData extends DataHolder implements Comparable<ItemData> {
 
 	private ItemType mType;
-	private HashMap<String, Object> mData;
 	
 	public ItemData() {
-		mType = ItemType.PLAN;
-		mData = new HashMap<String, Object>();
+		mType = ItemType.PLAN; // a default value
 	}
 
 	public ItemData(ItemType type) {
+		super();
 		mType = type;
-		mData = new HashMap<String, Object>();
 	}
 	
 	public void setItemType(ItemType type) {
@@ -35,80 +33,6 @@ public class ItemData implements Comparable<ItemData> {
 
 	public ItemType getItemType() {
 		return mType;
-	}
-
-	/**
-	 * Associates the specified item with the specified key An existing item of
-	 * the same key will be replaced. The item inserted cannot be {@code null}.
-	 * 
-	 * @param key
-	 *            The key of the item.
-	 * @param item
-	 *            The item to be put inside
-	 * @return {@code true} when the operation is successful, or {@code false}
-	 *         when the inserted item is null
-	 */
-	public boolean put(String key, Object item) {
-		if (item != null) {
-			mData.put(key, item);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Retrieves the item that is associated with the key.
-	 * 
-	 * @param key
-	 *            The key of the item to retrieve
-	 * @return The item, or {@code null} if the key is not mapped.
-	 */
-	public Object get(String key) {
-		if (mData.containsKey(key)) {
-			return mData.get(key);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns a boolean value describing if the named item exists inside.
-	 * 
-	 * @param key
-	 *            The key of the item to check.
-	 * @return {@code true} if the item exists, or {@code false} otherwise.
-	 */
-	public boolean contains(String key) {
-		return mData.containsKey(key);
-	}
-
-	/**
-	 * Returns a {@link Set} view of the keys contained in this object.
-	 * 
-	 * @return the keyset
-	 */
-	public Set<String> getKeys() {
-		return mData.keySet();
-	}
-
-	public HashMap<String, Object> getData() {
-		return mData;
-	}
-
-	@Override
-	public String toString() {
-		// TODO need to revise
-		switch (mType) {
-		case EVENT :
-			return makeEventString();
-		case TASK : 
-			return makeTaskString();
-		case PLAN : 
-			return makePlanString();
-		default:
-			return null;
-		}
 	}
 
 	@Override
@@ -139,6 +63,20 @@ public class ItemData implements Comparable<ItemData> {
 				return false;
 			}
 			return true;
+		}
+	}
+
+	@Override
+	public String toString() {
+		switch (mType) {
+		case EVENT :
+			return makeEventString();
+		case TASK : 
+			return makeTaskString();
+		case PLAN : 
+			return makePlanString();
+		default:
+			return null;
 		}
 	}
 
@@ -192,6 +130,8 @@ public class ItemData implements Comparable<ItemData> {
 				result = result.concat(StorageStrings.TAG_DELIMITER);
 			}
 		}
+		result.concat(";");
+		// postcondition
 		assert (result != null);
 		return result;
 	}
