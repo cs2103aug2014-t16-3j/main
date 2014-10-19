@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.util.exceptions.WritingToStorageFileException;
+import udo.util.exceptions.WritingToStorageFailedException;
 import udo.util.shared.Constants.StorageIndices;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.StorageStrings;
@@ -54,7 +54,7 @@ public class FileManager {
 		return result;
 	}
 
-	public boolean writeToFile(ArrayList<ItemData> list) throws WritingToStorageFileException {
+	public boolean writeToFile(ArrayList<ItemData> list) throws WritingToStorageFailedException {
 		startWriteMode();
 		for (ItemData item : list) {
 			write(item);
@@ -306,13 +306,13 @@ public class FileManager {
 		return true;
 	}
 
-	private void write(ItemData item) throws WritingToStorageFileException {
+	private void write(ItemData item) throws WritingToStorageFailedException {
 		String itemString = item.toString();
 		try {
 			mWriter.append(itemString);
 			mWriter.newLine();
 		} catch (IOException e) {
-			throw new WritingToStorageFileException();
+			throw new WritingToStorageFailedException();
 		}
 	}
 

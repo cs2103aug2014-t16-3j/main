@@ -59,8 +59,8 @@ public class uDo {
 			
 			String inputString = mUI.getInput();
 			OutputData outputData = parseAndExecute(inputString);
-			checkForExitCommand(outputData);
 			mUI.show(outputData);
+			checkForExitCommand(outputData);
 		}
 		System.exit(EXIT_STATUS_OK);
 	}

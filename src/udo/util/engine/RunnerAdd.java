@@ -17,11 +17,14 @@ public class RunnerAdd extends Runner {
 
 	@Override
 	public OutputData run() {
+		// create outputdata with these params
 		Command cmd = mInput.getCommand();
 		ParsingStatus pStatus = mInput.getStatus();
 		OutputData output = new OutputData(cmd, pStatus);
-		ItemData item = addGeneric(mInput);
+		
 		boolean cacheAddOK = false;
+		
+		ItemData item = addGeneric(mInput);
 		
 		// carry out specific add for each itemtype.
 		// also adds the final item to the cache.
