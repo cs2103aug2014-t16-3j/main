@@ -28,6 +28,31 @@ public class uDoEngineUnitTest {
 	private static final int EVENT_UID = 12345;
 	
 	@Test
+	public void testEngineListDone() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		e.execute(input);
+		
+		input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
+		
+		OutputData output = e.execute(input);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		assertFalse("items in output not null",
+				null == items);
+		assertFalse("number of items in output not null",
+				0 == items.size());
+		
+	}
+	
+	@Test
 	public void testEngineMarkAndToggleDone() {
 		Engine e = Engine.getInstance();
 		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);

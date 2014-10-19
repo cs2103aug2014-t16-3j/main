@@ -95,6 +95,19 @@ public class Cache {
 		Collections.sort(allTasks);
 		return allTasks;
 	}
+	
+	public ArrayList<ItemData> getAllItemsWithHashtag(String tag) {
+		ArrayList<ItemData> result = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			@SuppressWarnings("unchecked")
+			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
+			if (tags.contains(tag)) {
+				result.add(item);
+			}
+		}
+		Collections.sort(result);
+		return result;
+	}
 
 	public ArrayList<ItemData> getAllEvents() {
 		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
@@ -138,6 +151,22 @@ public class Cache {
 		allTasksAndPlans.addAll(getAllPlans());
 		Collections.sort(allTasksAndPlans);
 		return allTasksAndPlans;
+	}
+	
+	/**
+	 * returns a list of items marked as done.
+	 * items can only be of task or plan type.
+	 * @return the list of done items
+	 */
+	public ArrayList<ItemData> getAllDone() {
+		ArrayList<ItemData> allDone = new ArrayList<ItemData>();
+		for (ItemData item : getAllTodo()) {
+			if ((boolean) item.get(Keys.DONE)) {
+				allDone.add(item);
+			}
+		}
+		Collections.sort(allDone);
+		return allDone;
 	}
 
 	public ArrayList<ItemData> getAllItems() {

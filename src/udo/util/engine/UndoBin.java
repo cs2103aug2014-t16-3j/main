@@ -16,7 +16,7 @@ public class UndoBin {
 		mInputData = input;
 	}
 
-	public InputData getInputData() {
+	public InputData getUndoInputData() {
 		return mInputData;
 	}
 }

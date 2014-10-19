@@ -163,10 +163,10 @@ public class Engine {
 
 	private OutputData runUndo(InputData inputData) {
 		/*
-		 * store the inputdata to be executed. so here just execute that
-		 * inputdata.
+		 * the inputdata to be executed is already stored. 
+		 * so here just execute that inputdata.
 		 */
-		InputData undoInput = mUndoBin.getInputData();
+		InputData undoInput = mUndoBin.getUndoInputData();
 		return execute(undoInput);
 	}
 
