@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import udo.util.parser.ParserAdd;
+import udo.util.parser.ParserCommand;
 import udo.util.parser.ParserDate;
+import udo.util.parser.ParserDelete;
 import udo.util.parser.ParserEdit;
+import udo.util.parser.ParserExit;
 import udo.util.parser.ParserList;
+import udo.util.parser.ParserSave;
 import udo.util.parser.ParserTime;
+import udo.util.parser.ParserTrash;
+import udo.util.parser.ParserUndo;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 import udo.util.shared.Constants.Keys;
@@ -111,41 +117,6 @@ public class Parser {
 				return null; // parsing status fail
 			}
 	}
-
-	public InputData delete(Command type, String details) {
-		InputData deleteInputData = new InputData(type);
-		if (isValidDelete(details)) {
-			String deleteIndexString = details.substring(deleteStartingIndex);
-			int uidIndex = Integer.parseInt(deleteIndexString);
-			assert(uidIndex > 0);
-			deleteInputData.put(Keys.UID, uidIndex);
-			deleteInputData.setParsingStatus(ParsingStatus.SUCCESS);
-			return deleteInputData;
-		} else {
-			deleteInputData.setParsingStatus(ParsingStatus.FAIL);
-			return deleteInputData;
-		}
-	}
-	
-	public boolean isValidDelete(String input) {
-		int isValidDeleteInt = 8; // checks if there is input after "delete "
-		if (input.length() >= isValidDeleteInt) {
-			String deleteIndexString = input.substring(deleteStartingIndex);
-			if (isInteger(deleteIndexString)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean isInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
 	
 	public InputData add(Command type, String details) {
 		ParserAdd activity = new ParserAdd();
@@ -153,8 +124,9 @@ public class Parser {
 	}
 	
 	public InputData list(Command type, String details) {
-		ParserList activity = new ParserList();
-		return activity.list(type, details);
+		ParserCommand list = new ParserList();
+		InputData data = list.run(type, details);
+		return data;
 	}
 
 	public InputData edit(Command type, String details) {
@@ -162,27 +134,33 @@ public class Parser {
 		return activity.edit(type, details);
 	}
 	
+	public InputData delete(Command type, String details) {
+		ParserCommand delete = new ParserDelete();
+		InputData data = delete.run(type, details);
+		return data;
+	}
+	
 	public InputData parsingTrash(Command type, String details) {
-		InputData trashInputData = new InputData(type);
-		trashInputData.setParsingStatus(ParsingStatus.FAIL);
-		return trashInputData;
+		ParserCommand trash = new ParserTrash();
+		InputData data = trash.run(type);
+		return data;
 	}
 
 	public InputData undo(Command type, String details) {
-		InputData undoInputData = new InputData(type);
-		undoInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return undoInputData;
+		ParserCommand undo = new ParserUndo();
+		InputData data = undo.run(type);
+		return data;
 	}
 
 	public InputData save(Command type, String details) {
-		InputData saveInputData = new InputData(type);
-		saveInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return saveInputData;
+		ParserCommand save = new ParserSave();
+		InputData data = save.run(type);
+		return data;
 	}
 
 	public InputData exit(Command type, String details) {
-		InputData exitInputData = new InputData(type);
-		exitInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return exitInputData;
+		ParserCommand exit = new ParserExit();
+		InputData data = exit.run(type);
+		return data;
 	}
 }
