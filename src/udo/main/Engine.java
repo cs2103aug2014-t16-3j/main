@@ -112,16 +112,21 @@ public class Engine {
 				commandRunner = new RunnerAdd(input, mUndoBin, mCache);
 				break;
 				
-			case EDIT :
-				commandRunner = new RunnerEdit(input, mUndoBin, mCache);
-				break;
-				
 			case LIST :
 				commandRunner = new RunnerList(input, mUndoBin, mCache);
 				break;
 				
+			case EDIT :
+				commandRunner = new RunnerEdit(input, mUndoBin, mCache);
+				break;
+				
 			case DELETE :
 				commandRunner = new RunnerDelete(input, mUndoBin, mCache);
+				break;
+				
+			case MARK_DONE :
+			case TOGGLE_DONE :
+				commandRunner = new RunnerDone(input, mUndoBin, mCache);
 				break;
 				
 			case UNDO :
@@ -135,7 +140,7 @@ public class Engine {
 				
 			case EXIT :
 				// exit uses the save runner so cannot be abstracted
-				// without violating demeter princlepl
+				// into a runner without violating demeter princlepl
 				output = runExit();
 				break;
 				

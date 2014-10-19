@@ -61,6 +61,7 @@ public class Cache {
 	}
 
 	public ItemData getItem(int uid) {
+		// TODO throw exception when item not found
 		ArrayList<ItemData> items = getAllItems();
 		ItemData result = null;
 		for (ItemData item : items) {

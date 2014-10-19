@@ -24,13 +24,48 @@ import udo.util.shared.ParsingStatus;
 
 public class uDoEngineUnitTest {
 	
-	private static final int TEST_UID = 12345;
+	private static final int TASK_UID = 12346;
+	private static final int EVENT_UID = 12345;
+	
+	@Test
+	public void testEngineMarkAndToggleDone() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		OutputData output = e.execute(input);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == item);
+		assertTrue("ensure edited item marked", 
+				(boolean)item.get(Keys.DONE));
+		System.out.println(item);
+		
+		input = new InputData(Command.TOGGLE_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		output = e.execute(input);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		item = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == item);
+		assertFalse("ensure edited item unmarked", 
+				(boolean)item.get(Keys.DONE));
+		System.out.println(item);
+	}
 	
 	@Test
 	public void testEngineEditItemEndTime() {
 		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, 12345);
+		inputEdit.put(Keys.UID, EVENT_UID);
 		inputEdit.put("field", EditField.END_TIME);
 		inputEdit.put("value", Calendar.getInstance());
 		OutputData output = e.execute(inputEdit);
@@ -53,7 +88,7 @@ public class uDoEngineUnitTest {
 	public void testEngineEditItemDueTime() {
 		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, 12346);
+		inputEdit.put(Keys.UID, TASK_UID);
 		inputEdit.put("field", EditField.DUE_TIME);
 		inputEdit.put("value", Calendar.getInstance());
 		OutputData output = e.execute(inputEdit);
@@ -76,7 +111,7 @@ public class uDoEngineUnitTest {
 	public void testEngineEditItemDueDate() {
 		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, 12346);
+		inputEdit.put(Keys.UID, TASK_UID);
 		inputEdit.put("field", EditField.DUE_DATE);
 		inputEdit.put("value", Calendar.getInstance());
 		OutputData output = e.execute(inputEdit);
@@ -99,7 +134,7 @@ public class uDoEngineUnitTest {
 	public void testEngineEditItemTitle() {
 		Engine e = Engine.getInstance();
 		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, TEST_UID);
+		inputEdit.put(Keys.UID, EVENT_UID);
 		inputEdit.put("field", EditField.TITLE);
 		inputEdit.put("value", "dummy title");
 		OutputData output = e.execute(inputEdit);
@@ -183,7 +218,7 @@ public class uDoEngineUnitTest {
 		Engine e = Engine.getInstance();
 		InputData input = new InputData(Command.DELETE);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
-		input.put(Keys.UID, TEST_UID);
+		input.put(Keys.UID, EVENT_UID);
 		OutputData output = e.execute(input);
 		assertFalse("Output must not be null",
 				null == output);
