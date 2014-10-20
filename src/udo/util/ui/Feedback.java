@@ -77,7 +77,8 @@ public class Feedback {
 					case UNDO:
 						break;
 					case EDIT:
-						break;
+						edit_entry(output);
+						break; 
 					case SAVE:
 						mCommand = "Saved ";
 						break;
@@ -107,7 +108,16 @@ public class Feedback {
 		mFinalView = mSingleView;
 		mCommand = "Deleted " + item.get(Keys.TITLE);
 	}
-
+	
+	private void edit_entry(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(item, Command.EDIT);
+		mFinalView = mSingleView;
+		mCommand = "Edited " + item.get(Keys.UID);
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void list_entry(OutputData output) {
 		// TODO check if query is specified to 1 day, is a todo, or general list
@@ -122,10 +132,15 @@ public class Feedback {
 			String query = "";
 			switch (queryType) {
 				case ALL:
-					query = "All";
+					query = "all items";
 					break;
 				case SINGLE_HASHTAG:
 					query = "#" + (String) output.get(Keys.QUERY);
+					break;
+				case DATE:
+					break;
+				case DONE:
+					query = "items that have been marked as done";
 					break;
 				default:
 					break;

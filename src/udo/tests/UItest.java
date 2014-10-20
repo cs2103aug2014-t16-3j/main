@@ -21,47 +21,136 @@ public class UItest {
 	public static void main(String[] args) {
 		
 
+		/**
+		 * Testing listing items in main screen
+		 */
+//		testListAll();
+//		testListDone();
+//		testListSingleDate();
+//		testListSingleHashtag();
+	
+		/**
+		 * Testing single views in main screen
+		 */
+//		testAddEvent();
+//		testAddTask();
+//		testAddPlan();
+		testEditItem();
+//		testDeleteItem();
+//		testMarkAsDone();
+//		testToggleDone();	
 		
-		testListAll();
-		
+		/**
+		 * Testing side screens
+		 */
 		testPermaToDoScreen();
-		
 		testPermaTodayScreen();
-		
-		/**
-		 * Testing list single date
-		 */
-//		testSingleView();
-		/**
-		 * Testing list single hashtag
-		 */
-		
-		/**
-		 * Testing add item
-		 */
-		
-		/**
-		 * Testing delete item
-		 */
-		
-		/**
-		 * Testing edit item
-		 */
 	}
 	
-	private static void testSingleView() {
+	private static void testToggleDone() {
+		OutputData output = new OutputData(Command.TOGGLE_DONE, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ItemData item = new ItemData(ItemType.EVENT);
+		item.put(Keys.UID, 1);
+		item.put(Keys.TITLE, "sample SingleEVENT");
+		item.put(Keys.START, Calendar.getInstance());
+		item.put(Keys.END, Calendar.getInstance());
+		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		output.put(Keys.ITEM, item);
+		ui.show(output);
+	}
+
+	private static void testMarkAsDone() {
+		OutputData output = new OutputData(Command.MARK_DONE, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ItemData item = new ItemData(ItemType.EVENT);
+		item.put(Keys.UID, 1);
+		item.put(Keys.TITLE, "sample SingleEVENT");
+		item.put(Keys.START, Calendar.getInstance());
+		item.put(Keys.END, Calendar.getInstance());
+		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		output.put(Keys.ITEM, item);
+		ui.show(output);
+	}
+
+	private static void testAddEvent() {
+		OutputData output = new OutputData(Command.ADD_EVENT, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ItemData item = new ItemData(ItemType.EVENT);
+		item.put(Keys.UID, 1);
+		item.put(Keys.TITLE, "sample SingleEVENT");
+		item.put(Keys.START, Calendar.getInstance());
+		item.put(Keys.END, Calendar.getInstance());
+		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		output.put(Keys.ITEM, item);
+		ui.show(output);
+	}
+
+	private static void testAddTask() {
+		OutputData output = new OutputData(Command.ADD_TASK, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ItemData item = new ItemData(ItemType.TASK);
+		item.put(Keys.UID, 1);
+		item.put(Keys.TITLE, "sample SingleTASK");
+		item.put(Keys.DUE, Calendar.getInstance());
+		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		output.put(Keys.ITEM, item);
+		ui.show(output);
+	}
+
+	private static void testAddPlan() {
 		OutputData output = new OutputData(Command.ADD_PLAN, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
 		ItemData item = new ItemData(ItemType.PLAN);
 		item.put(Keys.UID, 1);
+		item.put(Keys.TITLE, "sample SinglePLAN");
+		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		output.put(Keys.ITEM, item);
+		ui.show(output);	
+	}
+
+	private static void testDeleteItem() {
+		OutputData output = new OutputData(Command.DELETE, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ItemData item = new ItemData(ItemType.PLAN);
+		item.put(Keys.UID, 1);
 		item.put(Keys.TITLE, "sample SingleItem");
-//		item.put(Keys.DUE, Calendar.getInstance());
-//		item.put(Keys.START, Calendar.getInstance());
-//		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		output.put(Keys.ITEM, item);
 		ui.show(output);
 		
 	}
+
+	private static void testListSingleHashtag() {
+		// TODO Auto-generated method stub
+		Engine engine = Engine.getInstance();
+		InputData input = new InputData(Command.LIST);
+		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+		input.put(Keys.QUERY, "test");
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		OutputData output = engine.execute(input);
+		ui.show(output);
+	}
+
+	private static void testListSingleDate() {
+		// TODO Auto-generated method stub
+		Engine engine = Engine.getInstance();
+		InputData input = new InputData(Command.LIST);
+		input.put(Keys.QUERY_TYPE, ListQuery.DATE);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		OutputData output = engine.execute(input);
+		ui.show(output);
+	}
+
+	private static void testEditItem() {
+		OutputData output = new OutputData(Command.EDIT, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ItemData item = new ItemData(ItemType.EVENT);
+		item.put(Keys.UID, 1);
+		item.put(Keys.TITLE, "sample EditedItem");
+		item.put(Keys.START, Calendar.getInstance());
+		item.put(Keys.END, Calendar.getInstance());
+		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		item.put(Keys.FIELD, Keys.TITLE);
+		item.put(Keys.VALUE, "Edited Item");
+		output.put(Keys.ITEM, item);
+		ui.show(output);
+		
+	}
+
 
 	public static void testPermaTodayScreen() {
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
@@ -99,6 +188,15 @@ public class UItest {
 		Engine engine = Engine.getInstance();
 		InputData input = new InputData(Command.LIST);
 		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		OutputData output = engine.execute(input);
+		ui.show(output);
+	}
+	
+	public static void testListDone() {
+		Engine engine = Engine.getInstance();
+		InputData input = new InputData(Command.LIST);
+		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData output = engine.execute(input);
 		ui.show(output);

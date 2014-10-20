@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
@@ -34,7 +35,7 @@ public class SingleView extends JPanel {
 			initDelete();
 			break;
 		case EDIT :
-			// TODO get edit itemdata
+			initEdit(item);
 			break;
 		case UNDO :
 			initUndo();
@@ -43,6 +44,15 @@ public class SingleView extends JPanel {
 			break;
 		}
 		addEntry(item);
+	}
+
+	private void initEdit(ItemData item) {
+		// TODO Auto-generated method stub
+		mMessage.setText("<html>You have edited: <br>" + item.get(Keys.FIELD) 
+							+ "<br>from: " 
+							+ "<br>to: </html>" 
+							+ item.get(Keys.VALUE));
+		add(mMessage);
 	}
 
 	private void initAdd() {

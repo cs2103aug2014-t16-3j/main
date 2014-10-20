@@ -97,7 +97,6 @@ public class DayView extends JPanel{
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				g.setColor(Color.GREEN);
-				System.out.println(mTickerCoordsXY.size());
 				for(int i=0; i < mTickerCoordsXY.size(); i++) {
 					g.fillRect(mTickerCoordsXY.get(i).x, 
 								mTickerCoordsXY.get(i).y, 
@@ -105,7 +104,6 @@ public class DayView extends JPanel{
 								mTickerCoordsWH.get(i).y);
 				}
 				g.setColor(Color.RED);
-				System.out.println(mRedTickCoordsXY.size());
 				for(int i=0; i< mRedTickCoordsXY.size(); i++) {
 					g.fillRect(mRedTickCoordsXY.get(i).x, 
 								mRedTickCoordsXY.get(i).y, 
@@ -154,14 +152,11 @@ public class DayView extends JPanel{
 				mTickerCoordsWH.add(wh);
 				int currItem_endX = xy.x + wh.x;
 				if(currItem_startX < lastItem_endX) {
-					System.out.println("Start overlaps");
 					redXY = new Point(xy.x, xy.y);
 					mRedTickCoordsXY.add(redXY);
 					if(currItem_endX > lastItem_endX) {
-						System.out.println("end overlaps");
 						redWH = new Point(lastItem_endX - currItem_startX, 10);
 					}else{
-						System.out.println("end doesnt overlap");
 						redWH = new Point(currItem_endX - currItem_startX, 10);
 					}
 					mRedTickCoordsWH.add(redWH);
