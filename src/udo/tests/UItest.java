@@ -35,10 +35,10 @@ public class UItest {
 //		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-		testEditItem();
+//		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
-//		testToggleDone();	
+		testToggleDone();	
 		
 		/**
 		 * Testing side screens
@@ -55,6 +55,7 @@ public class UItest {
 		item.put(Keys.START, Calendar.getInstance());
 		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
+		item.put(Keys.DONE, true);
 		output.put(Keys.ITEM, item);
 		ui.show(output);
 	}
@@ -158,7 +159,7 @@ public class UItest {
 		ArrayList<String> tags = new ArrayList<String>();
 		tags.add("Asd");
 		tags.add("jkl");
-		for(int i = 0; i<14; i++) {
+		for(int i = 0; i<4; i++) {
 			ItemData input = new ItemData(ItemType.EVENT);
 			input.put(Keys.UID, i);
 			input.put(Keys.TITLE, "dummyEvent" + i);

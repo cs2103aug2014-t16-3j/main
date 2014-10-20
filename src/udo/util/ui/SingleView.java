@@ -21,6 +21,7 @@ public class SingleView extends JPanel {
 		
 		setOpaque(false);
 		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT));
+		setLayout(new WrapLayout(WrapLayout.LEADING, 5,5));
 		mMessage.setFont(UI.FONT_14);
 	}
 	
@@ -40,15 +41,33 @@ public class SingleView extends JPanel {
 		case UNDO :
 			initUndo();
 			break;
+		case MARK_DONE:
+			initMarkDone();
+			break;
+		case TOGGLE_DONE:
+			initToggleDone();
+			break;
 		default :
 			break;
 		}
 		addEntry(item);
 	}
 
+	private void initToggleDone() {
+		mMessage.setText("You have toggled the completion status of: ");
+		add(mMessage);
+		
+	}
+
+	private void initMarkDone() {
+		mMessage.setText("You have marked the following as completed: ");
+		add(mMessage);
+		
+	}
+
 	private void initEdit(ItemData item) {
 		// TODO Auto-generated method stub
-		mMessage.setText("<html>You have edited: <br>" + item.get(Keys.FIELD) 
+		mMessage.setText("<html>You have edited: " + item.get(Keys.FIELD) 
 							+ "<br>from: " 
 							+ "<br>to: </html>" 
 							+ item.get(Keys.VALUE));

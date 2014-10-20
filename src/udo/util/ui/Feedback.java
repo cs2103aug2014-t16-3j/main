@@ -79,6 +79,12 @@ public class Feedback {
 					case EDIT:
 						edit_entry(output);
 						break; 
+					case MARK_DONE:
+						mark_done(output);
+						break;
+					case TOGGLE_DONE:
+						toggle_done(output);
+						break;
 					case SAVE:
 						mCommand = "Saved ";
 						break;
@@ -91,6 +97,22 @@ public class Feedback {
 		} else {
 			mCommand = "Command not recognised. Please try again";
 		}
+	}
+
+	private void toggle_done(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(item, Command.TOGGLE_DONE);
+		mFinalView = mSingleView;
+		mCommand = "Toggled completion status of " + item.get(Keys.TITLE);
+	}
+
+	private void mark_done(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(item, Command.MARK_DONE);
+		mFinalView = mSingleView;
+		mCommand = "Marked " + item.get(Keys.TITLE) + " as done";
 	}
 
 	private void add_entry(OutputData output, Command type) {
