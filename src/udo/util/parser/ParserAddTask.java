@@ -1,9 +1,12 @@
 package udo.util.parser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
 
 public class ParserAddTask implements ParserAddCommand {
 
@@ -13,31 +16,26 @@ public class ParserAddTask implements ParserAddCommand {
 
 	@Override
 	public void fill(Command type, String details, InputData data) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public InputData addTask(Command type, String details) {
-		InputData taskInputData = new InputData(type);
-		String title = getTaskTitle(details);
+		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
 		Calendar end = setFirstTimeAndDate(details);
-		if (title.isEmpty()) {
-			taskInputData.setParsingStatus(ParsingStatus.FAIL);
+		if (!title.isEmpty() && end != null) {
+			data.put(Keys.TITLE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.put(Keys.DUE, end);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {
-			assert(end != null);
-			taskInputData.put(Keys.TITLE, title);
-			taskInputData.put(Keys.HASHTAGS, tags);
-			taskInputData.put(Keys.DUE, end);
-			taskInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		}
-		return taskInputData;
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}	
 	}
 
 	@Override
 	public String getTitle(String input) {
-		// TODO Auto-generated method stub
-		return null;
+		String title = input.replaceAll("#", "");
+		int startingIndex = 4;						// start after "add "
+		int endingIndex = title.indexOf("by") - 2; // trim ending white space
+		title = title.substring(startingIndex, endingIndex);
+		return title;
 	}
 
 	@Override
@@ -54,6 +52,27 @@ public class ParserAddTask implements ParserAddCommand {
 			}
 		}
 		return tagArrayList;
+	}
+	
+	public Calendar getDate(String input) {
+		ParserDate date = new ParserDate();
+		return date.getDate(input);
+	}
+	
+	public Calendar getTime(String input) {
+		ParserTime time = new ParserTime();
+		return time.getTime(input);
+	}
+	
+	public Calendar setFirstTimeAndDate(String details) {
+		Calendar start = getTime(details);
+		Calendar date = getDate(details);
+		if (start != null && date != null) {
+			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+		}
+		return start;
 	}
 
 }
