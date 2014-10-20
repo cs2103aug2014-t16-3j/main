@@ -36,15 +36,20 @@ public class ParserAdd {
 	 * @return an InputData
 	 */
 	public InputData add(Command type, String details) {
-		InputData add = null;
+		InputData data;
 		if (isEvent(details)) {
-			add = addEvent(Command.ADD_EVENT, details);
+			data = new InputData(Command.ADD_EVENT);
+			ParserAddCommand event = new ParserAddEvent();
+			event.fill(type, details, data);
 		} else if (isTask(details)) {
-			add = addTask(Command.ADD_TASK, details);
+			data = new InputData(Command.ADD_TASK);
+			ParserAddCommand task = new ParserAddEvent();
+			task.fill(type, details, data);
 		} else {
-			add = addPlan(Command.ADD_PLAN, details);
+			data = new InputData(Command.ADD_PLAN);
+			//plan
 		} 
-		return add;
+		return data;
 	}
 
 	public InputData addEvent(Command type, String details) {
