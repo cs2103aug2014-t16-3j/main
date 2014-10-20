@@ -28,6 +28,60 @@ public class uDoEngineUnitTest {
 	private static final int EVENT_UID = 12345;
 	
 	@Test
+	// The boundary for delete uid is 00000 to 99999
+	// within that range, it is split into uid exist and do not exist.
+	public void testEngineDeleteBoundaryCasesForUID() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.DELETE, ParsingStatus.SUCCESS);
+		
+		// this is the boundary case for negative value partition 
+		input.put(Keys.UID, -1);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+		
+		// this is the lower boundary case for the "within range" partition
+		// this uid also does not exist
+		input.put(Keys.UID, 00000);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+		
+		// this is the upper boundary case for the "within range" partition
+		// this uid also does not exist
+		input.put(Keys.UID, 99999);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+
+		// this is a case for the "exists" partition
+		input.put(Keys.UID, EVENT_UID);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+	}
+	
+	@Test
 	public void testEngineListDone() {
 		Engine e = Engine.getInstance();
 		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
@@ -48,8 +102,7 @@ public class uDoEngineUnitTest {
 		assertFalse("items in output not null",
 				null == items);
 		assertFalse("number of items in output not null",
-				0 == items.size());
-		
+				0 == items.size());	
 	}
 	
 	@Test

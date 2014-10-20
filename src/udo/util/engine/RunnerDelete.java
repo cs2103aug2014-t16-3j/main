@@ -1,5 +1,6 @@
 package udo.util.engine;
 
+import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Command;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
@@ -18,22 +19,33 @@ public class RunnerDelete extends Runner {
 	@Override
 	public OutputData run() {
 		int uid = (int) mInput.get(Keys.UID);
-		ItemData deletedItem = mCache.getItem(uid);
-		boolean deleteOK = mCache.deleteItem(uid);
+		ItemData deletedItem;
 		OutputData output;
-		if (deleteOK) {
-			output = new OutputData(Command.DELETE, 
-					ParsingStatus.SUCCESS, 
-					ExecutionStatus.SUCCESS);
-			output.put(Keys.ITEM, deletedItem);
-			storeUndo(deletedItem);
-		} else {
+		
+		try {
+			deletedItem = mCache.getItem(uid);
+			boolean deleteOK = mCache.deleteItem(uid);
+			
+			if (deleteOK) {
+				output = new OutputData(Command.DELETE, 
+						ParsingStatus.SUCCESS, 
+						ExecutionStatus.SUCCESS);
+				output.put(Keys.ITEM, deletedItem);
+				storeUndo(deletedItem);
+			} else {
+				output = new OutputData(Command.DELETE, 
+						ParsingStatus.SUCCESS, 
+						ExecutionStatus.FAIL);
+			}
+
+			return output;
+			
+		} catch (ItemNotFoundException e) {
 			output = new OutputData(Command.DELETE, 
 					ParsingStatus.SUCCESS, 
 					ExecutionStatus.FAIL);
+			return output;
 		}
-
-		return output;
 	}
 
 	private void storeUndo(ItemData item) {

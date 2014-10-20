@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
+import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
@@ -60,7 +61,7 @@ public class Cache {
 		}
 	}
 
-	public ItemData getItem(int uid) {
+	public ItemData getItem(int uid) throws ItemNotFoundException {
 		// TODO throw exception when item not found
 		ArrayList<ItemData> items = getAllItems();
 		ItemData result = null;
@@ -71,6 +72,11 @@ public class Cache {
 				break;
 			}
 		}
+		
+		if (result == null) {
+			throw new ItemNotFoundException();
+		}
+		
 		return result;
 	}
 	

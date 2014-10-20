@@ -3,6 +3,7 @@ package udo.main;
 import udo.util.engine.Cache;
 import udo.util.engine.Runner;
 import udo.util.engine.UndoBin;
+import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
@@ -22,41 +23,48 @@ public class RunnerDone extends Runner {
 	public OutputData run() {
 		Command cmd = mInput.getCommand();
 		int uid = (int) mInput.get(Keys.UID);
-		ItemData itemToMark = mCache.getItem(uid);
-		
-		// ensure item exists
-		if (itemToMark == null) {
-			return new OutputData(cmd,
+		try {
+			ItemData itemToMark = mCache.getItem(uid);
+			
+			// ensure item exists
+			if (itemToMark == null) {
+				return new OutputData(cmd,
+						ParsingStatus.SUCCESS,
+						ExecutionStatus.FAIL);
+			}
+			
+			// ensure item is markable (i.e. not event)
+			if (itemToMark.getItemType() == ItemType.EVENT) {
+				return new OutputData(cmd,
+						ParsingStatus.SUCCESS,
+						ExecutionStatus.FAIL);
+			}
+			
+			switch (cmd) {
+				case MARK_DONE :
+					markDone(itemToMark);
+					break;
+					
+				case TOGGLE_DONE :
+					toggleDone(itemToMark);
+					break;
+					
+				default:
+					break;
+			}
+			
+			OutputData output = new OutputData(cmd,
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.SUCCESS);
+			output.put(Keys.ITEM, itemToMark);
+			
+			return output;
+			
+		} catch (ItemNotFoundException e) {
+			return new OutputData(Command.EXIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
-		
-		// ensure item is markable (i.e. not event)
-		if (itemToMark.getItemType() == ItemType.EVENT) {
-			return new OutputData(cmd,
-					ParsingStatus.SUCCESS,
-					ExecutionStatus.FAIL);
-		}
-		
-		switch (cmd) {
-			case MARK_DONE :
-				markDone(itemToMark);
-				break;
-				
-			case TOGGLE_DONE :
-				toggleDone(itemToMark);
-				break;
-				
-			default:
-				break;
-		}
-		
-		OutputData output = new OutputData(cmd,
-				ParsingStatus.SUCCESS,
-				ExecutionStatus.SUCCESS);
-		output.put(Keys.ITEM, itemToMark);
-		
-		return output;
 	}
 
 	private void markDone(ItemData itemToMark) {

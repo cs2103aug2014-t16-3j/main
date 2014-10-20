@@ -2,6 +2,7 @@ package udo.util.engine;
 
 import java.util.Calendar;
 
+import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Command;
 import udo.util.shared.EditField;
 import udo.util.shared.ExecutionStatus;
@@ -21,40 +22,47 @@ public class RunnerEdit extends Runner {
 	@Override
 	public OutputData run() {
 		int uid = (int) mInput.get(Keys.UID);
-		ItemData itemToEdit = mCache.getItem(uid);
-		EditField field = (EditField) mInput.get(Keys.FIELD);
-		Object value = mInput.get(Keys.VALUE);
-		ExecutionStatus eStatus = ExecutionStatus.FAIL;
-		switch (field) {
-			case DUE_DATE :
-				eStatus = runEditDueDate(itemToEdit, (Calendar) value);
-				break;
-			case DUE_TIME :
-				eStatus = runEditDueTime(itemToEdit, (Calendar) value);
-				break;
-			case END_DATE :
-				eStatus = runEditEndDate(itemToEdit, (Calendar) value);
-				break;
-			case END_TIME :
-				eStatus = runEditEndTime(itemToEdit, (Calendar) value);
-				break;
-			case START_DATE :
-				eStatus = runEditStartDate(itemToEdit, (Calendar) value);
-				break;
-			case START_TIME :
-				eStatus = runEditStartTime(itemToEdit, (Calendar) value);
-				break;
-			case TITLE :
-				eStatus = runEditTitle(itemToEdit, (String) value);
-				break;
-			default:
-				eStatus = ExecutionStatus.FAIL;
+		try {
+			ItemData itemToEdit = mCache.getItem(uid);
+			EditField field = (EditField) mInput.get(Keys.FIELD);
+			Object value = mInput.get(Keys.VALUE);
+			ExecutionStatus eStatus = ExecutionStatus.FAIL;
+			switch (field) {
+				case DUE_DATE :
+					eStatus = runEditDueDate(itemToEdit, (Calendar) value);
+					break;
+				case DUE_TIME :
+					eStatus = runEditDueTime(itemToEdit, (Calendar) value);
+					break;
+				case END_DATE :
+					eStatus = runEditEndDate(itemToEdit, (Calendar) value);
+					break;
+				case END_TIME :
+					eStatus = runEditEndTime(itemToEdit, (Calendar) value);
+					break;
+				case START_DATE :
+					eStatus = runEditStartDate(itemToEdit, (Calendar) value);
+					break;
+				case START_TIME :
+					eStatus = runEditStartTime(itemToEdit, (Calendar) value);
+					break;
+				case TITLE :
+					eStatus = runEditTitle(itemToEdit, (String) value);
+					break;
+				default:
+					eStatus = ExecutionStatus.FAIL;
+			}
+			OutputData output = new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					eStatus);
+			output.put(Keys.ITEM, itemToEdit);
+			return output;
+			
+		} catch (ItemNotFoundException e) {
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
 		}
-		OutputData output = new OutputData(Command.EDIT, 
-				ParsingStatus.SUCCESS,
-				eStatus);
-		output.put(Keys.ITEM, itemToEdit);
-		return output;
 	}
 
 	private ExecutionStatus runEditTitle(ItemData item, String title) {
