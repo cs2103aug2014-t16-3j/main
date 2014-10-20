@@ -11,11 +11,11 @@ import udo.util.shared.ParsingStatus;
 public class ParserAddEvent implements ParserAddCommand {
 
 	public ParserAddEvent() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
-	public void fill(Command type, String details, InputData data) {
+	public void fill(String details, InputData data) {
 		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
 		Calendar start = setFirstTimeAndDate(details);
