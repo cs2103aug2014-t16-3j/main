@@ -32,6 +32,8 @@ import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
 
+	private static UserInterface mUserInterface;
+	
 	private JFrame mFrame = new JFrame("uDo");
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
@@ -49,7 +51,13 @@ public class UserInterface implements ActionListener {
 
 	private Feedback fb;
 
-	public UserInterface() {
+	public static UserInterface getInstance() {
+		if(mUserInterface == null) {
+			mUserInterface = new UserInterface();
+		}
+		return mUserInterface;
+	}
+	private UserInterface() {
 
 
 		fb = new Feedback();

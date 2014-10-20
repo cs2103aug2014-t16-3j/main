@@ -31,7 +31,7 @@ public class uDo {
 	boolean mIsRunning;
 
 	public uDo() {
-		mUI = new UserInterface(); // the UI is shown when init-ed
+		mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
 		mParser = new Parser();
 		mEngine = Engine.getInstance(); // Engine is a Singleton pattern
 		mIsRunning = true;

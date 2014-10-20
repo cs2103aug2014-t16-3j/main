@@ -17,7 +17,7 @@ import udo.util.shared.ParsingStatus;
 
 public class UItest {
 
-	private static UserInterface ui = new UserInterface();
+	private static UserInterface ui = UserInterface.getInstance();
 	public static void main(String[] args) {
 		
 
