@@ -26,35 +26,34 @@ public class RunnerEdit extends Runner {
 			ItemData itemToEdit = mCache.getItem(uid);
 			EditField field = (EditField) mInput.get(Keys.FIELD);
 			Object value = mInput.get(Keys.VALUE);
-			ExecutionStatus eStatus = ExecutionStatus.FAIL;
+			OutputData output;
 			switch (field) {
 				case DUE_DATE :
-					eStatus = runEditDueDate(itemToEdit, (Calendar) value);
+					output = runEditDueDate(itemToEdit, (Calendar) value);
 					break;
 				case DUE_TIME :
-					eStatus = runEditDueTime(itemToEdit, (Calendar) value);
+					output = runEditDueTime(itemToEdit, (Calendar) value);
 					break;
 				case END_DATE :
-					eStatus = runEditEndDate(itemToEdit, (Calendar) value);
+					output = runEditEndDate(itemToEdit, (Calendar) value);
 					break;
 				case END_TIME :
-					eStatus = runEditEndTime(itemToEdit, (Calendar) value);
+					output = runEditEndTime(itemToEdit, (Calendar) value);
 					break;
 				case START_DATE :
-					eStatus = runEditStartDate(itemToEdit, (Calendar) value);
+					output = runEditStartDate(itemToEdit, (Calendar) value);
 					break;
 				case START_TIME :
-					eStatus = runEditStartTime(itemToEdit, (Calendar) value);
+					output = runEditStartTime(itemToEdit, (Calendar) value);
 					break;
 				case TITLE :
-					eStatus = runEditTitle(itemToEdit, (String) value);
+					output = runEditTitle(itemToEdit, (String) value);
 					break;
 				default:
-					eStatus = ExecutionStatus.FAIL;
+					output = new OutputData(Command.EDIT, 
+							ParsingStatus.SUCCESS,
+							ExecutionStatus.FAIL);
 			}
-			OutputData output = new OutputData(Command.EDIT, 
-					ParsingStatus.SUCCESS,
-					eStatus);
 			output.put(Keys.ITEM, itemToEdit);
 			return output;
 			
@@ -65,84 +64,132 @@ public class RunnerEdit extends Runner {
 		}
 	}
 
-	private ExecutionStatus runEditTitle(ItemData item, String title) {
+	private OutputData runEditTitle(ItemData item, String title) {
 		String oldTitle = (String) item.get(Keys.TITLE);
 		item.put(Keys.TITLE, title);
 		storeUndo(EditField.TITLE, oldTitle);
-		return ExecutionStatus.SUCCESS;
+		OutputData output = new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, oldTitle);
+		return output;
 	}
 	
-	private ExecutionStatus runEditDueTime(ItemData item, Calendar timeCal) {
+	private OutputData runEditDueTime(ItemData item, Calendar timeCal) {
 		if (item.getItemType() != ItemType.TASK) {
-			return ExecutionStatus.FAIL;
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.DUE);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setTime(dueCal, timeCal);
 		storeUndo(EditField.DUE_TIME, calToStore);
-		return ExecutionStatus.SUCCESS;
+		OutputData output = new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
 	}
 	
-	private ExecutionStatus runEditStartTime(ItemData item, Calendar timeCal) {
+	private OutputData runEditStartTime(ItemData item, Calendar timeCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return ExecutionStatus.FAIL;
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
 		}
 		Calendar startCal = (Calendar) item.get(Keys.START);
 		Calendar calToStore = (Calendar) startCal.clone();
 		setTime(startCal, timeCal);
 		storeUndo(EditField.START_TIME, calToStore);
-		return ExecutionStatus.SUCCESS;
+		OutputData output = new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
 	}
 	
-	private ExecutionStatus runEditEndTime(ItemData item, Calendar timeCal) {
+	private OutputData runEditEndTime(ItemData item, Calendar timeCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return ExecutionStatus.FAIL;
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
 		}
 		Calendar endCal = (Calendar) item.get(Keys.END);
 		Calendar calToStore = (Calendar) endCal.clone();
 		setTime(endCal, timeCal);
 		storeUndo(EditField.END_TIME, calToStore);
-		return ExecutionStatus.SUCCESS;
+		OutputData output = new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
 	}
 
-	private ExecutionStatus setTime(Calendar itemCal, Calendar timeCal) {
+	private OutputData setTime(Calendar itemCal, Calendar timeCal) {
 		itemCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
 		itemCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
-		return ExecutionStatus.SUCCESS;
+		return new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
 	}
 
-	private ExecutionStatus runEditDueDate(ItemData item, Calendar dateCal) {
+	private OutputData runEditDueDate(ItemData item, Calendar dateCal) {
 		if (item.getItemType() != ItemType.TASK) {
-			return ExecutionStatus.FAIL;
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.DUE);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setDate(dueCal, dateCal);
 		storeUndo(EditField.DUE_DATE, calToStore);
-		return ExecutionStatus.SUCCESS;
+		OutputData output = new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
 	}
 
-	private ExecutionStatus runEditEndDate(ItemData item, Calendar dateCal) {
+	private OutputData runEditEndDate(ItemData item, Calendar dateCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return ExecutionStatus.FAIL;
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.END);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setDate(dueCal, dateCal);
 		storeUndo(EditField.END_DATE, calToStore);
-		return ExecutionStatus.SUCCESS;
+		OutputData output = new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
 	}
 	
-	private ExecutionStatus runEditStartDate(ItemData item, Calendar dateCal) {
+	private OutputData runEditStartDate(ItemData item, Calendar dateCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return ExecutionStatus.FAIL;
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.START);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setDate(dueCal, dateCal);
 		storeUndo(EditField.START_DATE, calToStore);
-		return ExecutionStatus.SUCCESS;
+		OutputData output = new OutputData(Command.EXIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
 	}
+	
+	
+	
+	
+	
+	
 
 	private void setDate(Calendar itemCal, Calendar dateCal) {
 		itemCal.set(Calendar.YEAR, dateCal.get(Calendar.YEAR));
