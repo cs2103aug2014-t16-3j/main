@@ -3,10 +3,12 @@ package udo.util.parser;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import udo.util.parser.edit.ParserEditCommand;
+import udo.util.parser.edit.ParserEditTitle;
 import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
 import udo.util.shared.InputData;
-import udo.util.shared.Constants.Keys;
 import udo.util.shared.ParsingStatus;
 
 /**
@@ -48,37 +50,30 @@ public class ParserEdit {
 		return data;
 	}
 	
-	public InputData updateField(String field, InputData data, String details) {
+	private void updateField(String field, InputData data, String details) {
 		switch (field) {
 		case "title":
-			return setTitle(data, details);
+			setTitle(data, details);
 		case "start time":
-			return setStartTime(data, details);
+			setStartTime(data, details);
 		case "end time":
-			return setEndTime(data, details);
+			setEndTime(data, details);
 		case "start date":
-			return setStartDate(data, details);
+			setStartDate(data, details);
 		case "end date":
-			return setEndDate(data, details);
+			setEndDate(data, details);
 		case "due time":
-			return setDueTime(data, details);
+			setDueTime(data, details);
 		case "due date":
-			return setDueDate(data, details);
+			setDueDate(data, details);
 		default:
-			return null;
+			;
 		}
 	}
 	// check whether any of the value returned is null
-	public InputData setTitle(InputData data, String details) {
-		String title = getTitle(details);
-		ArrayList<String> tags = getTags(details);
-		if (!title.isEmpty() && title != null) {
-			data.put(Keys.FIELD, EditField.TITLE);
-			data.put(Keys.VALUE, title);
-			data.put(Keys.HASHTAGS, tags);
-			isValidEdit = true;
-		} 
-		return data;
+	private void setTitle(InputData data, String details) {
+		ParserEditCommand title = new ParserEditTitle();
+		title.fill(details, data);
 	}
 	
 	public InputData setStartTime(InputData data, String details) {

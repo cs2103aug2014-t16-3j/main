@@ -1,5 +1,8 @@
 package udo.util.parser;
 
+import udo.util.parser.add.ParserAddCommand;
+import udo.util.parser.add.ParserAddEvent;
+import udo.util.parser.add.ParserAddPlan;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 
