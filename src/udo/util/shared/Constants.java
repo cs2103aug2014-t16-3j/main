@@ -36,6 +36,7 @@ public class Constants {
 		public static final String FIELD = "field";
 		public static final String VALUE = "value";
 		public static final String DATE = "date";
+		public static final String OLD_VALUE = "Old value";
 	}
 
 	/**
