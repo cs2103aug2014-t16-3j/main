@@ -19,10 +19,132 @@ import udo.util.shared.ParsingStatus;
 public class uDoParserUnitTest {
 
 	Parser p = new Parser();
-	ParserAdd pa = new ParserAdd();
-	String plan1 = "add finish #cs2103 stuff";
-	String task1 = "add Meet jane after #school #by #22/10/2014 7:30am";
-	String event1 = "add meet #boss #from 22/10/2014 10:00am to 22/10/2014 9:00pm";
+	
+	@Test
+	public void testEditDueDate() {
+		String editDueDate = "edit 20430 due date 10/2/34";
+		InputData data = p.getInputData(editDueDate);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH);
+		int year = date.get(Calendar.YEAR);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.DUE_DATE, field);
+		
+		assertEquals(10, day);
+		assertEquals(1, month);
+		assertEquals(2034, year);
+	}
+	
+	@Test
+	public void testEditDueTime() {
+		String editDueTime = "edit 30953 due time 12:10am";
+		InputData data = p.getInputData(editDueTime);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int hour = date.get(Calendar.HOUR);
+		int mins = date.get(Calendar.MINUTE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.DUE_TIME, field);
+
+		assertEquals(0, hour);
+		assertEquals(10, mins);
+	}
+	
+	@Test
+	public void testEditEndDate() {
+		String editEndDate = "edit 23859 end date 10/1/94";
+		InputData data = p.getInputData(editEndDate);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH);
+		int year = date.get(Calendar.YEAR);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.END_DATE, field);
+		
+		assertEquals(10, day);
+		assertEquals(0, month);
+		assertEquals(1994, year);
+	}
+	
+	@Test
+	public void testEditEndTime() {
+		String editEndTime = "edit 23535 end time 10:12pm";
+		InputData data = p.getInputData(editEndTime);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int hour = date.get(Calendar.HOUR);
+		int mins = date.get(Calendar.MINUTE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.END_TIME, field);
+
+		assertEquals(10, hour);
+		assertEquals(12, mins);
+	}
+	
+	@Test
+	public void testEditStartDate() {
+		String editStartDate = "edit 21345 start date 9/12/13";
+		InputData data = p.getInputData(editStartDate);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH);
+		int year = date.get(Calendar.YEAR);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.START_DATE, field);
+		
+		assertEquals(9, day);
+		assertEquals(11, month);
+		assertEquals(2013, year);
+	}
+	
+	@Test
+	public void testEditStartTime() {
+		String editStartTime = "edit 23834 start time 9:00am";
+		InputData data = p.getInputData(editStartTime);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int hour = date.get(Calendar.HOUR);
+		int mins = date.get(Calendar.MINUTE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.START_TIME, field);
+
+		assertEquals(9, hour);
+		assertEquals(0, mins);
+	}
 	
 	@Test
 	public void testEditTitle() {
@@ -81,6 +203,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testAddPlan() {
+		String plan1 = "add finish #cs2103 stuff";
 		InputData data = p.getInputData(plan1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -94,6 +217,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testAddTask() {
+		String task1 = "add Meet jane after #school #by #22/10/14 7:30am";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -102,7 +226,7 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.ADD_TASK, data.getCommand());
 		assertEquals("Meet jane after school", title);
-		assertEquals("[school, by, 22/10/2014]", hashtags.toString());
+		assertEquals("[school, by, 22/10/14]", hashtags.toString());
 		
 		Calendar due = (Calendar) data.get(Keys.DUE);
 		int day = due.get(Calendar.DAY_OF_MONTH);
@@ -113,13 +237,14 @@ public class uDoParserUnitTest {
 		
 		assertEquals(22, day);
 		assertEquals(9, month);
-		//assertEquals(2014, year);
+		assertEquals(2014, year);
 		assertEquals(7, hour);
 		assertEquals(30, mins);
 	}
 	
 	@Test
 	public void testAddEvent() {
+		String event1 = "add meet #boss #from 22/10/2014 10:00am to 22/10/14 9:00pm";
 		InputData data = p.getInputData(event1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -141,7 +266,7 @@ public class uDoParserUnitTest {
 		
 		assertEquals(22, day);
 		assertEquals(9, month);
-		//assertEquals(2014, year);
+		assertEquals(2014, year);
 		assertEquals(9, hour);
 		assertEquals(0, mins);
 	}
