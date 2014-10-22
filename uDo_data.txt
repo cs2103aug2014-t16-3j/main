@@ -1,4 +1,6 @@
-12347|||PLAN|||sample plan|||false|||test,play,work|||;
+12347|||PLAN|||sample plan|||true|||test,play,work|||;
+24901|||PLAN|||go drinking with mates today|||true|||drinking|||;
+53423|||PLAN|||hello world!|||false||||||;
 33703|||EVENT|||new item|||12/12/2012|||4:0|||12/12/2012|||6:0|||new|||;
 88040|||TASK|||asd|||12/12/2012|||13:30|||false||||||;
 87141|||EVENT|||new item|||13/12/2012|||4:0|||12/12/2012|||6:0|||new|||;
@@ -9,3 +11,4 @@
 19660|||EVENT|||sleep|||8/10/2014|||1:11|||8/10/2014|||23:11|||sleep|||;
 47631|||EVENT|||b|||9/10/2014|||14:0|||10/10/2014|||14:0|||b|||;
 82764|||EVENT|||a|||9/10/2014|||20:0|||9/10/2014|||21:0|||a|||;
+38543|||TASK|||meet mom|||13/10/2014|||14:0|||false|||mom|||;
