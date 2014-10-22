@@ -29,6 +29,7 @@ public class ToDoView extends JPanel {
 	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
 	public ToDoView() {
+		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 		setLayout(new WrapLayout());
 		setOpaque(false);
 		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);

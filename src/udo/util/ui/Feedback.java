@@ -1,6 +1,8 @@
 package udo.util.ui;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JPanel;
 
@@ -35,8 +37,6 @@ public class Feedback {
 		mToDoView = new ToDoView();
 		mSingleView = new SingleView();
 		mMainTodayView = new DayView();
-		mMainTodayView.setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
-		mMainTodayView.setLayout(new WrapLayout());
 		mMainToDoView = new ToDoView();
 		mMainToDoView.setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 		mMainToDoView.setLayout(new WrapLayout());
@@ -155,14 +155,20 @@ public class Feedback {
 			switch (queryType) {
 				case ALL:
 					query = "all items";
+					setToListView();
 					break;
 				case SINGLE_HASHTAG:
 					query = "#" + (String) output.get(Keys.QUERY);
-					break;
-				case DATE:
+					setToListView();
 					break;
 				case DONE:
 					query = "items that have been marked as done";
+					setToListView();
+					break;
+				case DATE:
+					Date date = ((Calendar) output.get(Keys.QUERY)).getTime();
+					query = "items on " + date;
+					setToDayVIew(date);
 					break;
 				default:
 					break;
@@ -170,8 +176,22 @@ public class Feedback {
 			}
 			mCommand = "Listing " + query;
 		}
+		
+	}
+	
+	private void setToListView() {
 		mListView.populateView((ArrayList<ItemData>) mData);
 		mFinalView = mListView;
+	}
+	
+	private void setToDayVIew(Date date) {
+		mDayView.init(date, (ArrayList<ItemData>) mData);
+		mFinalView = mDayView;
+	}
+	
+	private void setToToDoView() {
+		mToDoView.init((ArrayList<ItemData>) mData);
+		mFinalView = mToDoView;
 	}
 
 	public String getCommand() {

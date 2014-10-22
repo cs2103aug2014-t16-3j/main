@@ -47,10 +47,12 @@ public class DayView extends JPanel{
 	
 	public DayView(){
 
+		mHeader.setOpaque(false);
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
 		mRedTickCoordsXY = new ArrayList<Point>();
 		mRedTickCoordsWH = new ArrayList<Point>();
+		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 		setLayout(new WrapLayout());
 		setOpaque(false);
 		loadTicker();
@@ -195,9 +197,6 @@ public class DayView extends JPanel{
 		height = fm.getHeight();
 		day.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
 		day.setHorizontalAlignment(SwingConstants.RIGHT);
-		day.setOpaque(true);
-		
-		
 		
 		mHeader.add(date);
 		mHeader.add(day);

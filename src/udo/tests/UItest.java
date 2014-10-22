@@ -28,7 +28,7 @@ public class UItest {
 		 */
 //		testListAll();
 //		testListDone();
-//		testListSingleDate();
+		testListSingleDate();
 //		testListSingleHashtag();
 	
 		/**
@@ -37,7 +37,7 @@ public class UItest {
 //		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-		testEditItem();
+//		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
 //		testToggleDone();	
@@ -131,11 +131,21 @@ public class UItest {
 
 	private static void testListSingleDate() {
 		// TODO Auto-generated method stub
-		Engine engine = Engine.getInstance();
-		InputData input = new InputData(Command.LIST);
-		input.put(Keys.QUERY_TYPE, ListQuery.DATE);
-		input.setParsingStatus(ParsingStatus.SUCCESS);
-		OutputData output = engine.execute(input);
+		OutputData output = new OutputData(Command.LIST, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
+		ArrayList<ItemData> data = new ArrayList<ItemData>();
+		Calendar date = Calendar.getInstance();
+		output.put(Keys.QUERY_TYPE, ListQuery.DATE);
+		output.put(Keys.QUERY, Calendar.getInstance());
+		for(int i = 0; i<9; i++) {
+			ItemData input = new ItemData(ItemType.EVENT);
+			input.put(Keys.UID, i);
+			input.put(Keys.TITLE, "dummyEvent" + i);
+			input.put(Keys.START, date);
+			input.put(Keys.END, date);
+			input.put(Keys.HASHTAGS, new ArrayList<String>());
+			data.add(input);
+		}
+		output.put(Keys.ITEMS, data);
 		ui.show(output);
 	}
 
