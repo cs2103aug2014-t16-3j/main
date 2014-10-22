@@ -1,5 +1,6 @@
 package udo.util.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -166,8 +167,9 @@ public class Feedback {
 					setToListView();
 					break;
 				case DATE:
+					SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
 					Date date = ((Calendar) output.get(Keys.QUERY)).getTime();
-					query = "items on " + date;
+					query = "items on " + sdf.format(date);
 					setToDayVIew(date);
 					break;
 				default:
