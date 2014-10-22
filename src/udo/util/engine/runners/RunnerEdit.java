@@ -60,7 +60,7 @@ public class RunnerEdit extends Runner {
 			return output;
 			
 		} catch (ItemNotFoundException e) {
-			return new OutputData(Command.EXIT, 
+			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
@@ -69,8 +69,9 @@ public class RunnerEdit extends Runner {
 	private OutputData runEditTitle(ItemData item, String title) {
 		String oldTitle = (String) item.get(Keys.TITLE);
 		item.put(Keys.TITLE, title);
-		storeUndo(EditField.TITLE, oldTitle);
-		OutputData output = new OutputData(Command.EXIT, 
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.TITLE, oldTitle);
+		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, oldTitle);
@@ -79,15 +80,16 @@ public class RunnerEdit extends Runner {
 	
 	private OutputData runEditDueTime(ItemData item, Calendar timeCal) {
 		if (item.getItemType() != ItemType.TASK) {
-			return new OutputData(Command.EXIT, 
+			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.DUE);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setTime(dueCal, timeCal);
-		storeUndo(EditField.DUE_TIME, calToStore);
-		OutputData output = new OutputData(Command.EXIT, 
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.DUE_TIME, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, calToStore);
@@ -96,15 +98,16 @@ public class RunnerEdit extends Runner {
 	
 	private OutputData runEditStartTime(ItemData item, Calendar timeCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return new OutputData(Command.EXIT, 
+			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
 		Calendar startCal = (Calendar) item.get(Keys.START);
 		Calendar calToStore = (Calendar) startCal.clone();
 		setTime(startCal, timeCal);
-		storeUndo(EditField.START_TIME, calToStore);
-		OutputData output = new OutputData(Command.EXIT, 
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.START_TIME, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, calToStore);
@@ -113,15 +116,16 @@ public class RunnerEdit extends Runner {
 	
 	private OutputData runEditEndTime(ItemData item, Calendar timeCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return new OutputData(Command.EXIT, 
+			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
 		Calendar endCal = (Calendar) item.get(Keys.END);
 		Calendar calToStore = (Calendar) endCal.clone();
 		setTime(endCal, timeCal);
-		storeUndo(EditField.END_TIME, calToStore);
-		OutputData output = new OutputData(Command.EXIT, 
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.END_TIME, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, calToStore);
@@ -131,22 +135,23 @@ public class RunnerEdit extends Runner {
 	private OutputData setTime(Calendar itemCal, Calendar timeCal) {
 		itemCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
 		itemCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
-		return new OutputData(Command.EXIT, 
+		return new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 	}
 
 	private OutputData runEditDueDate(ItemData item, Calendar dateCal) {
 		if (item.getItemType() != ItemType.TASK) {
-			return new OutputData(Command.EXIT, 
+			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.DUE);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setDate(dueCal, dateCal);
-		storeUndo(EditField.DUE_DATE, calToStore);
-		OutputData output = new OutputData(Command.EXIT, 
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.DUE_DATE, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, calToStore);
@@ -155,15 +160,16 @@ public class RunnerEdit extends Runner {
 
 	private OutputData runEditEndDate(ItemData item, Calendar dateCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return new OutputData(Command.EXIT, 
+			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.END);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setDate(dueCal, dateCal);
-		storeUndo(EditField.END_DATE, calToStore);
-		OutputData output = new OutputData(Command.EXIT, 
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.END_DATE, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, calToStore);
@@ -172,15 +178,16 @@ public class RunnerEdit extends Runner {
 	
 	private OutputData runEditStartDate(ItemData item, Calendar dateCal) {
 		if (item.getItemType() != ItemType.EVENT) {
-			return new OutputData(Command.EXIT, 
+			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
 		Calendar dueCal = (Calendar) item.get(Keys.START);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setDate(dueCal, dateCal);
-		storeUndo(EditField.START_DATE, calToStore);
-		OutputData output = new OutputData(Command.EXIT, 
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.START_DATE, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, calToStore);
@@ -199,8 +206,9 @@ public class RunnerEdit extends Runner {
 		itemCal.set(Calendar.DAY_OF_MONTH, dateCal.get(Calendar.DAY_OF_MONTH));
 	}
 
-	private void storeUndo(EditField field, Object oldValue) {
+	private void storeUndo(int uid, EditField field, Object oldValue) {
 		InputData undoInput = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		undoInput.put(Keys.UID, uid);
 		undoInput.put(Keys.FIELD, field);
 		undoInput.put(Keys.VALUE, oldValue);
 		mUndoBin.putInputData(undoInput);

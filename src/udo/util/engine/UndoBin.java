@@ -19,4 +19,8 @@ public class UndoBin {
 	public InputData getUndoInputData() {
 		return mInputData;
 	}
+
+	public void clear() {
+		mInputData = null;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
+import udo.util.engine.UndoBin;
 import udo.util.exceptions.WritingToStorageFailedException;
 import udo.util.shared.Command;
 import udo.util.shared.ExecutionStatus;
