@@ -1,48 +1,42 @@
-package udo.util.parser;
+package udo.util.parser.list;
 
 import java.util.ArrayList;
 
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
+import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.ParsingStatus;
 
-public class ParserAddPlan implements ParserAddCommand {
+public class ParserListHashtag implements ParserListCommand {
 
-	public ParserAddPlan() {
-		
+	public ParserListHashtag() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void fill(String details, InputData data) {
-		int startingIndex = 4;
-		String title = details.substring(startingIndex);
-		title = title.replaceAll("#", "");
+	public void fill(Command type, String details, InputData data) {
 		ArrayList<String> tags = getTags(details);
-		if (!title.isEmpty()) {
-			data.put(Keys.TITLE, title);
-			data.put(Keys.HASHTAGS, tags);
+		if (!tags.isEmpty()) {
+			data.put(Keys.HASHTAG, tags.get(0));
+			data.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}
 	}
-
-	@Override
-	public String getTitle(String input) {
-		return null;
-	}
-
+	
 	// Returns an ArrayList of tags. Tags do not contain "#"
 	// If no tags are found, retun an empty ArrayList
-	@Override
-	public ArrayList<String> getTags(String input) {
+	private ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
 		String tag;
+		boolean hashTagFilled;
 		String words[] = input.split(" ");
 		for (String word : words) {
-			if (word.startsWith("#")) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
 				tag = word.replaceFirst("#", "");
-				assert(!tag.isEmpty());
 				tagArrayList.add(tag);
 			}
 		}

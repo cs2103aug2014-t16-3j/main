@@ -6,13 +6,14 @@ import java.util.Calendar;
 
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
-import udo.util.engine.Runner;
-import udo.util.engine.RunnerAdd;
-import udo.util.engine.RunnerDelete;
-import udo.util.engine.RunnerEdit;
-import udo.util.engine.RunnerList;
-import udo.util.engine.RunnerSave;
 import udo.util.engine.UndoBin;
+import udo.util.engine.runners.Runner;
+import udo.util.engine.runners.RunnerAdd;
+import udo.util.engine.runners.RunnerDelete;
+import udo.util.engine.runners.RunnerDone;
+import udo.util.engine.runners.RunnerEdit;
+import udo.util.engine.runners.RunnerList;
+import udo.util.engine.runners.RunnerSave;
 import udo.util.shared.Command;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
@@ -86,22 +87,22 @@ public class Engine {
 	public OutputData execute(InputData input) {
 		// precondition, input cannot be null
 		assert (input != null);
-		
+
+		//preconditions, input must have these components
 		Command cmd = input.getCommand();
 		ParsingStatus parsingStatus = input.getStatus();
-		//preconditions, input must have these components
 		assert (cmd != null);
 		assert (parsingStatus != null);
 		
-		OutputData output = null;
 		// check if parsing success or not
 		if (parsingStatus.equals(ParsingStatus.FAIL)) {
-			output = new OutputData(cmd, 
+			OutputData output = new OutputData(cmd, 
 					ParsingStatus.FAIL,
 					ExecutionStatus.NULL);
 			return output;
 		}
 		
+		OutputData output = null;
 		Runner commandRunner = null;
 		
 		// decide what function to run.
@@ -145,12 +146,13 @@ public class Engine {
 				break;
 				
 			default:
-				output = new OutputData(cmd, 
+				return new OutputData(cmd, 
 						ParsingStatus.SUCCESS,
 						ExecutionStatus.NULL);
 		}
 		
-		if (commandRunner != null) {
+		// to filter the commands that need the runner to execute
+		if (commandRunner != null && output == null) {
 			output = commandRunner.run();
 		}
 		
@@ -159,13 +161,14 @@ public class Engine {
 		return output;
 	}
 	
+	
+	
+	
 	// ********* methods that execute the commands ******* //
 
 	private OutputData runUndo(InputData inputData) {
-		/*
-		 * the inputdata to be executed is already stored. 
-		 * so here just execute that inputdata.
-		 */
+		 // the inputdata to be executed is already stored. 
+		 // so here just execute that inputdata.
 		InputData undoInput = mUndoBin.getUndoInputData();
 		return execute(undoInput);
 	}
@@ -182,6 +185,9 @@ public class Engine {
 		output.setExecutionStatus(saveOutput.getExecutionStatus());
 		return output;
 	}
+	
+	
+	
 
 	// ********* helper methods ******* //
 

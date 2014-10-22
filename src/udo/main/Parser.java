@@ -6,7 +6,9 @@ import udo.util.parser.ParserDelete;
 import udo.util.parser.ParserEdit;
 import udo.util.parser.ParserExit;
 import udo.util.parser.ParserList;
+import udo.util.parser.ParserMark;
 import udo.util.parser.ParserSave;
+import udo.util.parser.ParserToggleDone;
 import udo.util.parser.ParserTrash;
 import udo.util.parser.ParserUndo;
 import udo.util.shared.Command;
@@ -41,7 +43,7 @@ public class Parser {
 	
 	private Command determineCommandType(String input) {
 		String parts[] = input.split(" ");
-		String command = parts[1];
+		String command = parts[0];
 		switch (command) {
 			case "add":
 				return Command.ADD;
@@ -57,6 +59,10 @@ public class Parser {
 				return Command.UNDO;
 			case "edit":
 				return Command.EDIT;
+			case "done":
+				return Command.MARK_DONE;
+			case "toggle":
+				return Command.TOGGLE_DONE;
 			default:
 				return Command.NULL;
 			}
@@ -78,13 +84,29 @@ public class Parser {
 				return undo(commandType, details);
 			case EDIT:
 				return edit(commandType, details);
+			case TOGGLE_DONE:
+				return toggle_done(commandType, details);
+			case MARK_DONE:
+				return mark(commandType, details);
 			case NULL:
-				return parsingTrash(commandType, details);
+				return trash(commandType, details);
 			default:
 				return null; // parsing status fail
 			}
 	}
 	
+	private InputData mark(Command type, String details) {
+		ParserCommand mark = new ParserMark();
+		InputData data = mark.run(type, details);
+		return data;
+	}
+
+	private InputData toggle_done(Command type, String details) {
+		ParserCommand toggleDone = new ParserToggleDone();
+		InputData data = toggleDone.run(type, details);
+		return data;
+	}
+
 	private InputData add(Command type, String details) {
 		ParserCommand add = new ParserAdd();
 		InputData data = add.run(type, details);
@@ -108,7 +130,7 @@ public class Parser {
 		return data;
 	}
 	
-	private InputData parsingTrash(Command type, String details) {
+	private InputData trash(Command type, String details) {
 		ParserCommand trash = new ParserTrash();
 		InputData data = trash.run(type);
 		return data;

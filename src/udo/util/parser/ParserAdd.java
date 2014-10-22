@@ -1,5 +1,9 @@
 package udo.util.parser;
 
+import udo.util.parser.add.ParserAddCommand;
+import udo.util.parser.add.ParserAddEvent;
+import udo.util.parser.add.ParserAddPlan;
+import udo.util.parser.add.ParserAddTask;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 
@@ -37,7 +41,7 @@ public class ParserAdd implements ParserCommand {
 			event.fill(details, data);
 		} else if (isTask(details)) {
 			data = new InputData(Command.ADD_TASK);
-			ParserAddCommand task = new ParserAddEvent();
+			ParserAddCommand task = new ParserAddTask();
 			task.fill(details, data);
 		} else {
 			data = new InputData(Command.ADD_PLAN);

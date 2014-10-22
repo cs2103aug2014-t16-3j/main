@@ -1,25 +1,20 @@
 package udo.util.parser;
 
 import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
 
-public class ParserDelete implements ParserCommand {
+public class ParserToggleDone implements ParserCommand {
 
-	public ParserDelete() {
+	public ParserToggleDone() {
 		
 	}
 
 	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-	
-	@Override
 	public InputData run(Command type, String input) {
 		InputData data = new InputData(type);
-		if (isValidDelete(input)) {
+		if (isValidDone(input)) {
 			int uid = extractUid(input);
 			data.put(Keys.UID, uid);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
@@ -29,11 +24,18 @@ public class ParserDelete implements ParserCommand {
 		return data;
 	}
 
-	// standardLenght is the assumed length the input without space should be. "delete12345"
-	private boolean isValidDelete(String input) {
-		String deleteString = input.replaceAll("\\s","");
-		int standardLength = 11;
-		if (deleteString.length() == standardLength) {
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	// check if user wrote any uid (5 digit)
+	// check if uid is an integer
+	// standardLenght is the assumed length the input without space should be. "toggledone12345"
+	private boolean isValidDone(String input) {
+		String doneString = input.replaceAll("\\s","");
+		int standardLength = 15;
+		if (doneString.length() == standardLength) {
 			int uid = extractUid(input);
 			if (uid != -1) {
 				return true;
@@ -53,8 +55,8 @@ public class ParserDelete implements ParserCommand {
 	
 	private int extractUid(String input) {
 		String parts[] = input.split(" ");
-		if (parts.length >= 2) {
-			String uid = parts[1];
+		if (parts.length >= 3) {
+			String uid = parts[2];
 			if (isInteger(uid)) {
 				int id = Integer.parseInt(uid);
 				return id;

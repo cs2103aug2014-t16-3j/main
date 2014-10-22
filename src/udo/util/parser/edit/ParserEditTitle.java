@@ -1,28 +1,43 @@
-package udo.util.parser;
+package udo.util.parser.edit;
 
 import java.util.ArrayList;
 
-import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
 import udo.util.shared.InputData;
-import udo.util.shared.ListQuery;
 import udo.util.shared.ParsingStatus;
 
-public class ParserListHashtag implements ParserListCommand {
+public class ParserEditTitle implements ParserEditCommand {
 
-	public ParserListHashtag() {
-		// TODO Auto-generated constructor stub
+	public ParserEditTitle() {
+		
 	}
 
 	@Override
-	public void fill(Command type, String details, InputData data) {
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
-		if (!tags.isEmpty()) {
-			data.put(Keys.HASHTAG, tags.get(0));
-			data.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+		if (title != null && !title.isEmpty()) {
+			data.put(Keys.FIELD, EditField.TITLE);
+			data.put(Keys.VALUE, title);
+			data.put(Keys.HASHTAGS, tags);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+	
+	// need to take in tags as well
+	// returns the new title if it exists
+	// otherwise returns null
+	private String getTitle(String details) {
+		int startingIndex = 17; // new info starts after "edit 12345 title "
+		if (details.length() > startingIndex) {
+			String title = details.substring(startingIndex);
+			title = title.replaceAll("#", "");
+			return title;
+		} else {
+			return null;
 		}
 	}
 	

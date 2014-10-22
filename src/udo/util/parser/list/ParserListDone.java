@@ -1,21 +1,22 @@
-package udo.util.parser;
+package udo.util.parser.list;
 
 import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
 import udo.util.shared.InputData;
 import udo.util.shared.ListQuery;
 import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
 
-public class ParserListAll implements ParserListCommand {
+public class ParserListDone implements ParserListCommand {
 
-	public ParserListAll() {
+	public ParserListDone() {
 		
 	}
-	
+
 	@Override
 	public void fill(Command type, String details, InputData data) {
-		data.put(Keys.QUERY_TYPE, ListQuery.ALL);
+		data.put(Keys.QUERY_TYPE, ListQuery.DONE);
 		data.setParsingStatus(ParsingStatus.SUCCESS);
+
 	}
 
 }
