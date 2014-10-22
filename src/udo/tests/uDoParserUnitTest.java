@@ -8,7 +8,6 @@ import java.util.Calendar;
 import org.junit.Test;
 
 import udo.main.Parser;
-import udo.util.parser.ParserAdd;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
@@ -19,6 +18,46 @@ import udo.util.shared.ParsingStatus;
 public class uDoParserUnitTest {
 
 	Parser p = new Parser();
+	
+	@Test
+	public void testDelete() {
+		String delete = "delete 12359";
+		InputData data = p.getInputData(delete);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand(); 
+		int uid = (int) data.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.DELETE, type);
+		assertEquals(12359, uid);
+	}
+	
+	@Test
+	public void testMarkDone() {
+		String done = "done 12359";
+		InputData data = p.getInputData(done);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand(); 
+		int uid = (int) data.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.MARK_DONE, type);
+		assertEquals(12359, uid);
+	}
+	
+	@Test
+	public void testToggleDone() {
+		String toggleDone = "toggle done 12359 ";
+		InputData data = p.getInputData(toggleDone);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand(); 
+		int uid = (int) data.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.TOGGLE_DONE, type);
+		assertEquals(12359, uid);
+		
+	}
 	
 	@Test
 	public void testEditDueDate() {
@@ -199,6 +238,18 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.LIST, data.getCommand());
 		assertEquals(ListQuery.ALL, type);
+	}
+	
+	@Test
+	public void testListDone() {
+		String listDone = "list done";
+		InputData data = p.getInputData(listDone);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.DONE, type);
 	}
 	
 	@Test

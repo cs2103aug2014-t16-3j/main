@@ -3,6 +3,7 @@ package udo.util.parser;
 import udo.util.parser.list.ParserListAll;
 import udo.util.parser.list.ParserListCommand;
 import udo.util.parser.list.ParserListDate;
+import udo.util.parser.list.ParserListDone;
 import udo.util.parser.list.ParserListHashtag;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
@@ -24,6 +25,9 @@ public class ParserList implements ParserCommand {
 			list.fill(type, details, data);
 		} else if (lowerCaseDetails.contains("all")){
 			list = new ParserListAll();
+			list.fill(type, details, data);
+		} else if (lowerCaseDetails.contains("done")){
+			list = new ParserListDone();
 			list.fill(type, details, data);
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
