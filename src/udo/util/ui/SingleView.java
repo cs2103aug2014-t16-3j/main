@@ -67,22 +67,31 @@ public class SingleView extends JPanel {
 
 	private void initEdit(ItemData item) {
 		// TODO Auto-generated method stub
-		mMessage.setText("<html>You have edited: " + item.get(Keys.FIELD) 
-							+ "<br>from: " 
-							+ "<br>to: </html>" 
-							+ item.get(Keys.VALUE));
+		mMessage.setText("<html>"
+							+ "<br><br>"
+							+ "You have edited: <font color=\"blue\">" + item.get(Keys.FIELD) 
+							+ "</font><br>from: <font color=\"blue\">" + "\"" + item.get(Keys.OLD_VALUE) + "\""
+							+ "</font><br>to: <font color=\"blue\">" + "\"" + item.get((String) item.get(Keys.FIELD)) + "\""
+							+ "</font>. <br>This is the edited item: "
+							+ "</html>");
 		add(mMessage);
 	}
 
 	private void initAdd() {
-		mMessage.setText("You have successfully added: ");
+		mMessage.setText("<html>"
+							+"<br><br>"
+							+ "You have successfully added: "
+							+ "</html>");
 		add(mMessage);
 		// TODO Auto-generated method stub
 		
 	}
 
 	private void initDelete() {
-		mMessage.setText("You have successfully deleted: ");
+		mMessage.setText("<html>"
+							+"<br><br>"
+							+ "You have successfully deleted: "
+							+ "</html>");
 		add(mMessage);
 		// TODO Auto-generated method stub
 		
@@ -90,7 +99,10 @@ public class SingleView extends JPanel {
 
 	private void initUndo() {
 		// TODO Auto-generated method stub
-		mMessage.setText("You have undone a command: ");
+		mMessage.setText("<html>"
+							+"<br><br>"
+							+ "You have successfully added: "
+							+ "</html>");
 		add(mMessage);
 	}
 	

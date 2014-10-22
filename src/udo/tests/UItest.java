@@ -37,10 +37,10 @@ public class UItest {
 //		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-//		testEditItem();
+		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
-		testToggleDone();	
+//		testToggleDone();	
 		
 		/**
 		 * Testing side screens
@@ -148,7 +148,7 @@ public class UItest {
 		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		item.put(Keys.FIELD, Keys.TITLE);
-		item.put(Keys.VALUE, "Edited Item");
+		item.put(Keys.OLD_VALUE, "old title");
 		output.put(Keys.ITEM, item);
 		ui.show(output);
 		
