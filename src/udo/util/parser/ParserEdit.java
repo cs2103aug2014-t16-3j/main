@@ -46,20 +46,27 @@ public class ParserEdit {
 		switch (field) {
 		case "title":
 			setTitle(data, details);
+			break;
 		case "start time":
 			setStartTime(data, details);
+			break;
 		case "end time":
 			setEndTime(data, details);
+			break;
 		case "start date":
 			setStartDate(data, details);
+			break;
 		case "end date":
 			setEndDate(data, details);
+			break;
 		case "due time":
 			setDueTime(data, details);
+			break;
 		case "due date":
 			setDueDate(data, details);
+			break;
 		default:
-			;
+			break;
 		}
 	}
 	// check whether any of the value returned is null

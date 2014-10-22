@@ -35,7 +35,7 @@ public class ParserAddTask implements ParserAddCommand {
 	public String getTitle(String input) {
 		String title = input.replaceAll("#", "");
 		int startingIndex = 4;						// start after "add "
-		int endingIndex = title.indexOf("by") - 2; // trim ending white space
+		int endingIndex = title.indexOf("by") - 1; // trim ending white space
 		title = title.substring(startingIndex, endingIndex);
 		return title;
 	}

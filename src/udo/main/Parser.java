@@ -41,7 +41,7 @@ public class Parser {
 	
 	private Command determineCommandType(String input) {
 		String parts[] = input.split(" ");
-		String command = parts[1];
+		String command = parts[0];
 		switch (command) {
 			case "add":
 				return Command.ADD;

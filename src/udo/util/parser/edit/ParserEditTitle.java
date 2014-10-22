@@ -34,7 +34,7 @@ public class ParserEditTitle implements ParserEditCommand {
 		int startingIndex = 17; // new info starts after "edit 12345 title "
 		if (details.length() > startingIndex) {
 			String title = details.substring(startingIndex);
-			title.replaceAll("#", "");
+			title = title.replaceAll("#", "");
 			return title;
 		} else {
 			return null;
