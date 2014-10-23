@@ -21,6 +21,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testDelete() {
+		
 		//testing within acceptance region
 		String delete1 = "delete 12359";
 		InputData data1 = p.getInputData(delete1);
@@ -59,6 +60,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testMarkDone() {
+		//testing within acceptance region
 		String done = "done 12359";
 		InputData data = p.getInputData(done);
 		ParsingStatus status = data.getStatus();
@@ -68,10 +70,36 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.MARK_DONE, type);
 		assertEquals(12359, uid);
+		
+		// The boundary for delete uid is 00000 to 99999
+		// Testing boundary case 00000 and 99999
+		done = "done 99999";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		uid = (int) data.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(99999, uid);
+		
+		// Testing outside boundary case
+		done = "done 0";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+
+		// Testing boundary for string
+		done = "done insta";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
 	}
 	
 	@Test
 	public void testToggleDone() {
+		//testing within acceptance region
 		String toggleDone = "toggle done 12359 ";
 		InputData data = p.getInputData(toggleDone);
 		ParsingStatus status = data.getStatus();
@@ -81,6 +109,13 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.TOGGLE_DONE, type);
 		assertEquals(12359, uid);
+		
+		//testing typo command
+		toggleDone = "toggledone 12359 ";
+		data = p.getInputData(toggleDone);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
 		
 	}
 	
@@ -212,6 +247,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testEditTitle() {
+		//within test boundary
 		String editTitle = "edit 72384 title hello #everybody";
 		InputData data = p.getInputData(editTitle);
 		ParsingStatus status = data.getStatus();
@@ -226,6 +262,47 @@ public class uDoParserUnitTest {
 		assertEquals("hello everybody", title);
 		assertEquals("[everybody]", tags.toString());
 		
+		//boundary case of unfilled hashtag
+		editTitle = "edit 72384 title hello #";
+		data = p.getInputData(editTitle);
+		status = data.getStatus();
+		type = data.getCommand();
+		field = (EditField) data.get(Keys.FIELD);
+		title = data.get(Keys.VALUE);
+		tags = (ArrayList<String>) data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.TITLE, field);
+		assertEquals("hello ", title);
+		assertEquals("[]", tags.toString());
+		
+		//boundary case of incorrect field -------------------WATCH OUT
+		editTitle = "edit 72384 titles hello #everybody";
+		data = p.getInputData(editTitle);
+		status = data.getStatus();
+		type = data.getCommand();
+		field = (EditField) data.get(Keys.FIELD);
+		title = data.get(Keys.VALUE);
+		tags = (ArrayList<String>) data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.TITLE, field);
+		assertEquals(" hello everybody", title);
+		assertEquals("[everybody]", tags.toString());
+		
+		//boundary case of unfilled edit
+		editTitle = "edit 72384 title ";
+		data = p.getInputData(editTitle);
+		status = data.getStatus();
+		type = data.getCommand();
+		field = (EditField) data.get(Keys.FIELD);
+		title = data.get(Keys.VALUE);
+		tags = (ArrayList<String>) data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
 	}
 	
 	@Test
@@ -239,6 +316,11 @@ public class uDoParserUnitTest {
 		assertEquals(Command.LIST, data.getCommand());
 		assertEquals(ListQuery.SINGLE_HASHTAG, type);
 		
+		listTag = "list #";
+		data = p.getInputData(listTag);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
 	}
 	
 	@Test
@@ -251,6 +333,7 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.LIST, data.getCommand());
 		assertEquals(ListQuery.DATE, type);
+		
 	}
 	
 	@Test
@@ -263,6 +346,12 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.LIST, data.getCommand());
 		assertEquals(ListQuery.ALL, type);
+		
+		listAll = "list";
+		data = p.getInputData(listAll);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
 	}
 	
 	@Test
@@ -275,6 +364,18 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.LIST, data.getCommand());
 		assertEquals(ListQuery.DONE, type);
+		
+		listDone = "list DoNe";
+		data = p.getInputData(listDone);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		
+		listDone = "list Do";
+		data = p.getInputData(listDone);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
 	}
 	
 	@Test
