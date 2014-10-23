@@ -9,6 +9,7 @@ import udo.main.Engine;
 import udo.main.UserInterface;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
@@ -28,7 +29,7 @@ public class UItest {
 		 */
 //		testListAll();
 //		testListDone();
-		testListSingleDate();
+//		testListSingleDate();
 //		testListSingleHashtag();
 	
 		/**
@@ -37,7 +38,7 @@ public class UItest {
 //		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-//		testEditItem();
+		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
 //		testToggleDone();	
@@ -157,8 +158,8 @@ public class UItest {
 		item.put(Keys.START, Calendar.getInstance());
 		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
-		item.put(Keys.FIELD, Keys.TITLE);
-		item.put(Keys.OLD_VALUE, "old title");
+		output.put(Keys.FIELD, EditField.TITLE);
+		output.put(Keys.OLD_VALUE, "some old value");
 		output.put(Keys.ITEM, item);
 		ui.show(output);
 		

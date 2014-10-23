@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
+import udo.util.shared.EditField;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 import udo.util.shared.OutputData;
@@ -70,11 +71,37 @@ public class SingleView extends JPanel {
 	private void initEdit(OutputData output) {
 		// TODO Auto-generated method stub
 		ItemData item = (ItemData) output.get(Keys.ITEM);
+		EditField field = (EditField) output.get(Keys.FIELD);
+		String fieldString = "";
+		String oldValue = "";
+		String newValue = "";
+		switch(field) {
+			case DUE_DATE:
+				break;
+			case DUE_TIME:
+				break;
+			case END_DATE:
+				break;
+			case END_TIME:
+				break;
+			case START_DATE:
+				break;
+			case START_TIME:
+				break;
+			case TITLE:
+				fieldString = "Title";
+				oldValue = (String) output.get(Keys.OLD_VALUE);
+				newValue = (String) item.get(Keys.TITLE);
+				break;
+			default:
+				break;
+			
+		}
 		mMessage.setText("<html>"
 							+ "<br><br>"
-							+ "You have edited: <font color=\"blue\">" + output.get(Keys.FIELD) 
-							+ "</font><br>from: <font color=\"blue\">" + "\"" + output.get(Keys.OLD_VALUE) + "\""
-							+ "</font><br>to: <font color=\"blue\">" + "\"" + item.get((String) output.get(Keys.FIELD)) + "\""
+							+ "You have edited: <font color=\"blue\">" + fieldString
+							+ "</font><br>from: <font color=\"blue\">" + "\"" + oldValue + "\""
+							+ "</font><br>to: <font color=\"blue\">" + "\"" + newValue + "\""
 							+ "</font>. <br>This is the edited item: "
 							+ "</html>");
 		add(mMessage);
