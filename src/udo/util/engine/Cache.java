@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
+import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
@@ -34,27 +35,34 @@ public class Cache {
 
 	public boolean addAll(ArrayList<ItemData> list) {
 		for (ItemData item : list) {
-			add(item);
+			addItem(item);
 		}
 		return true;
 	}
 
-	public boolean add(ItemData item) {
+	public boolean addItem(ItemData item) {
 		if (isLocked()) {
 			return false;
 		}
 		trackUID(item);
 		ItemType type = item.getItemType();
 		switch (type) {
-		case EVENT:
+		case EVENT :
 			mEvents.add(item);
+			return true;
+		case TASK :
+			mTasks.add(item);
+			return true;
+		case PLAN :
+			mPlans.add(item);
 			return true;
 		default:
 			return false;
 		}
 	}
 
-	public ItemData getItem(int uid) {
+	public ItemData getItem(int uid) throws ItemNotFoundException {
+		// TODO throw exception when item not found
 		ArrayList<ItemData> items = getAllItems();
 		ItemData result = null;
 		for (ItemData item : items) {
@@ -64,6 +72,11 @@ public class Cache {
 				break;
 			}
 		}
+		
+		if (result == null) {
+			throw new ItemNotFoundException();
+		}
+		
 		return result;
 	}
 	
@@ -87,6 +100,19 @@ public class Cache {
 		}
 		Collections.sort(allTasks);
 		return allTasks;
+	}
+	
+	public ArrayList<ItemData> getAllItemsWithHashtag(String tag) {
+		ArrayList<ItemData> result = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			@SuppressWarnings("unchecked")
+			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
+			if (tags.contains(tag)) {
+				result.add(item);
+			}
+		}
+		Collections.sort(result);
+		return result;
 	}
 
 	public ArrayList<ItemData> getAllEvents() {
@@ -125,12 +151,32 @@ public class Cache {
 		return allPlans;
 	}
 
+	/**
+	 * returns a list of both tasks and plans
+	 * @return
+	 */
 	public ArrayList<ItemData> getAllTodo() {
 		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
 		allTasksAndPlans.addAll(getAllTasks());
 		allTasksAndPlans.addAll(getAllPlans());
 		Collections.sort(allTasksAndPlans);
 		return allTasksAndPlans;
+	}
+	
+	/**
+	 * returns a list of items marked as done.
+	 * items can only be of task or plan type.
+	 * @return the list of done items
+	 */
+	public ArrayList<ItemData> getAllDone() {
+		ArrayList<ItemData> allDone = new ArrayList<ItemData>();
+		for (ItemData item : getAllTodo()) {
+			if ((boolean) item.get(Keys.DONE)) {
+				allDone.add(item);
+			}
+		}
+		Collections.sort(allDone);
+		return allDone;
 	}
 
 	public ArrayList<ItemData> getAllItems() {
@@ -248,7 +294,7 @@ public class Cache {
 
 	private boolean isBetweenDates(Calendar itemCal, Calendar from, Calendar to) {
 		// compare from 0:00 to 23:59 of the date range
-		from.set(Calendar.HOUR, 0);
+		from.set(Calendar.HOUR_OF_DAY, 0);
 		from.set(Calendar.MINUTE, 0);
 		from.set(Calendar.SECOND, 0);
 		to.set(Calendar.HOUR_OF_DAY, 23);

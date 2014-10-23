@@ -31,17 +31,15 @@ public class uDo {
 	boolean mIsRunning;
 
 	public uDo() {
-		mUI = new UserInterface(); // the UI is shown when init-ed
+		mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
 		mParser = new Parser();
-		mEngine = new Engine();
+		mEngine = Engine.getInstance(); // Engine is a Singleton pattern
 		mIsRunning = true;
 	}
 
 	private boolean run(String[] args) {
 
 		manageArgs(args);
-
-		mEngine.loadFile();
 		
 		runMainLoop();
 
@@ -61,8 +59,8 @@ public class uDo {
 			
 			String inputString = mUI.getInput();
 			OutputData outputData = parseAndExecute(inputString);
-			checkForExitCommand(outputData);
 			mUI.show(outputData);
+			checkForExitCommand(outputData);
 		}
 		System.exit(EXIT_STATUS_OK);
 	}
@@ -90,7 +88,7 @@ public class uDo {
 		}
 	}
 
-	OutputData parseAndExecute(String input) {
+	private OutputData parseAndExecute(String input) {
 		InputData inputData = mParser.getInputData(input);
 		OutputData outputData = mEngine.execute(inputData);
 		return outputData;

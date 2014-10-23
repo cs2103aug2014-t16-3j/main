@@ -7,8 +7,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
+import udo.util.exceptions.WritingToStorageFailedException;
 import udo.util.shared.Constants.StorageIndices;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.StorageStrings;
@@ -17,13 +19,23 @@ import udo.util.shared.ItemType;
 
 public class FileManager {
 
+	private String mFilename;
+	
 	private BufferedReader mReader;
 	private ItemData mNextItem;
 	private boolean mIsReading;
+	
 	private BufferedWriter mWriter;
 	private boolean mIsWriting;
 
 	public FileManager() {
+		mFilename = StorageStrings.FILENAME;
+		mIsReading = false;
+		mIsWriting = false;
+	}
+	
+	public FileManager(String filename) {
+		mFilename = filename;
 		mIsReading = false;
 		mIsWriting = false;
 	}
@@ -31,6 +43,7 @@ public class FileManager {
 	public ArrayList<ItemData> getFromFile() throws IOException {
 		startReadMode();
 		if (!isReading()) {
+			System.out.println("not readinf");
 			return null;
 		}
 		ArrayList<ItemData> result = new ArrayList<ItemData>();
@@ -42,7 +55,7 @@ public class FileManager {
 		return result;
 	}
 
-	public boolean writeToFile(ArrayList<ItemData> list) {
+	public boolean writeToFile(ArrayList<ItemData> list) throws WritingToStorageFailedException {
 		startWriteMode();
 		for (ItemData item : list) {
 			write(item);
@@ -53,20 +66,23 @@ public class FileManager {
 
 	private boolean startReadMode() {
 		if (isWriting()) {
+			System.out.println("iswriting");
 			return false;
 		}
 		try {
 			mReader = new BufferedReader(
-					new FileReader(StorageStrings.FILENAME));
+					new FileReader(mFilename));
 			String nextLine = mReader.readLine();
 			mNextItem = getItemData(nextLine);
 		} catch (FileNotFoundException e) {
 			// if there's no existing file, create the file.
 			// then try opening it again.
-			createNewFile(StorageStrings.FILENAME);
+			System.out.println("fnf");
+			createNewFile(mFilename);
 			startReadMode();
 		} catch (IOException e) {
 			// if unable to read the nextline
+			System.out.println("io ex");
 			return false;
 		}
 		setReading(true);
@@ -120,47 +136,110 @@ public class FileManager {
 			return null;
 		}
 		String[] lineArray = getStringArray(line);
-		/*
-		 * event [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime,
-		 * 7<tags>]
-		 */
 
 		// this method is meant to be wordy
-		// should extract to separate class
+		// TODO should extract to separate class
 		
 		ItemType type = getItemType(lineArray[StorageIndices.TYPE]);
+		switch (type) {
+			case EVENT :
+				return getEventItemData(lineArray);
+			case TASK :
+				return getTaskItemData(lineArray);
+			case PLAN :
+				return getPlanItemData(lineArray);
+			default:
+				return null;
+			
+		}
+	}
+	
+	private ItemData getPlanItemData(String[] lineArray) {
+		// [0uid, 1type, 2title, 3<tags>]
 
-		ItemData item = new ItemData(type);
+		ItemData item = new ItemData(ItemType.PLAN);
 
 		int uid = Integer.parseInt(lineArray[StorageIndices.UID]);
 		item.put(Keys.UID,
 				uid);
-		item.put(Keys.TITLE,
-				lineArray[StorageIndices.TITLE]);
 		
-		if (type.equals(ItemType.EVENT)) {
-			String startDate = lineArray[StorageIndices.START_DATE];
-			String startTime = lineArray[StorageIndices.START_TIME];
-			Calendar startCal = getCalendar(startDate, startTime);
-			item.put(Keys.START, startCal);
+		String title = lineArray[StorageIndices.TITLE];
+		item.put(Keys.TITLE,
+				title);
+		
+		boolean done = Boolean.parseBoolean(lineArray[StorageIndices.PLAN_DONE]);
+		item.put(Keys.DONE, 
+				done);
 
-			String endDate = lineArray[StorageIndices.END_DATE];
-			String endTime = lineArray[StorageIndices.END_TIME];
-			Calendar endCal = getCalendar(endDate, endTime);
-			item.put(Keys.END, endCal);
+		String tagsString = lineArray[StorageIndices.PLAN_HASHTAGS];
+		ArrayList<String> tagsList = getList(tagsString);
+		item.put(Keys.HASHTAGS, 
+				tagsList);
 
-			String tagsString = lineArray[StorageIndices.HASHTAGS];
-			ArrayList<String> tagsList = getList(tagsString);
-			item.put(Keys.HASHTAGS, tagsList);
+		return item;
+	}
 
-		} else if (type.equals(ItemType.TASK)) {
-			// TODO
-		} else if (type.equals(ItemType.PLAN)) {
-			// TODO
-		} else {
+	private ItemData getTaskItemData(String[] lineArray) {
+		// [0uid, 1type, 2title, 3ddate, 4dtime, 5<tags>]
 
-		}
+		ItemData item = new ItemData(ItemType.TASK);
 
+		int uid = Integer.parseInt(lineArray[StorageIndices.UID]);
+		item.put(Keys.UID,
+				uid);
+		
+		String title = lineArray[StorageIndices.TITLE];
+		item.put(Keys.TITLE,
+				title);
+
+		String dueDate = lineArray[StorageIndices.DUE_DATE];
+		String dueTime = lineArray[StorageIndices.DUE_TIME];
+		Calendar dueCal = getCalendar(dueDate, dueTime);
+		item.put(Keys.DUE, 
+				dueCal);
+		
+		boolean done = Boolean.parseBoolean(lineArray[StorageIndices.TASK_DONE]);
+		item.put(Keys.DONE, 
+				done);
+		
+		String tagsString = lineArray[StorageIndices.TASK_HASHTAGS];
+		ArrayList<String> tagsList = getList(tagsString);
+		item.put(Keys.HASHTAGS, 
+				tagsList);
+		
+		return item;
+	}
+
+	private ItemData getEventItemData(String[] lineArray) {
+		 // [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime, 7<tags>]
+		
+		ItemData item = new ItemData(ItemType.EVENT);
+
+		int uid = Integer.parseInt(lineArray[StorageIndices.UID]);
+		item.put(Keys.UID,
+				uid);
+		
+		String title = lineArray[StorageIndices.TITLE];
+		item.put(Keys.TITLE,
+				title);
+
+		String startDate = lineArray[StorageIndices.START_DATE];
+		String startTime = lineArray[StorageIndices.START_TIME];
+		Calendar startCal = getCalendar(startDate, startTime);
+		item.put(Keys.START, 
+				startCal);
+
+		String endDate = lineArray[StorageIndices.END_DATE];
+		String endTime = lineArray[StorageIndices.END_TIME];
+		Calendar endCal = getCalendar(endDate, endTime);
+		item.put(Keys.END, 
+				endCal);
+
+		String tagsString = lineArray[StorageIndices.EVENT_HASHTAGS];
+		ArrayList<String> tagsList = getList(tagsString);
+		item.put(Keys.HASHTAGS, 
+				tagsList);
+		
 		return item;
 	}
 
@@ -173,6 +252,10 @@ public class FileManager {
 			return null;
 		} else if (typeString.equals(StorageStrings.TYPE_EVENT)) {
 			return ItemType.EVENT;
+		} else if (typeString.equals(StorageStrings.TYPE_TASK)) {
+			return ItemType.TASK;
+		} else if (typeString.equals(StorageStrings.TYPE_PLAN)) {
+			return ItemType.PLAN;
 		} else {
 			return null;
 		}
@@ -184,9 +267,7 @@ public class FileManager {
 		String[] timeArray = time.split(StorageStrings.TIME_DELIMITER);
 		String[] dateArray = date.split(StorageStrings.DATE_DELIMITER);
 		int day = Integer.parseInt(dateArray[0]);
-		int month = Integer.parseInt(dateArray[1]) - 1; // convert from 1-based
-														// to 0-based for
-														// calendar
+		int month = Integer.parseInt(dateArray[1]) - 1; // to offset the 0-based month in calendar
 		int year = Integer.parseInt(dateArray[2]);
 		int hour = Integer.parseInt(timeArray[0]);
 		int minute = Integer.parseInt(timeArray[1]);
@@ -196,18 +277,22 @@ public class FileManager {
 
 	private ArrayList<String> getList(String tagsString) {
 		ArrayList<String> list = new ArrayList<String>();
-		String[] tagsArray = tagsString.split(",");
-		for (int i = 0; i < tagsArray.length; i++) {
-			list.add(tagsArray[i]);
+		if (tagsString == null || tagsString.length() == 0) {
+			return list;
+		} else {
+			String[] tagsArray = tagsString.split(",");
+			for (int i = 0; i < tagsArray.length; i++) {
+				list.add(tagsArray[i]);
+			}
+			return list;
 		}
-		return list;
 	}
 
 	private boolean startWriteMode() {
 		try {
 			// will overwrite the current file with the new data.
 			mWriter = new BufferedWriter(
-					new FileWriter(StorageStrings.FILENAME));
+					new FileWriter(mFilename));
 		} catch (IOException e) {
 			return false;
 		}
@@ -222,19 +307,18 @@ public class FileManager {
 		} catch (IOException e) {
 			return false;
 		}
-		setWriting(true);
+		setWriting(false);
 		return true;
 	}
 
-	private boolean write(ItemData item) {
+	private void write(ItemData item) throws WritingToStorageFailedException {
 		String itemString = item.toString();
 		try {
 			mWriter.append(itemString);
 			mWriter.newLine();
 		} catch (IOException e) {
-			return false;
+			throw new WritingToStorageFailedException();
 		}
-		return true;
 	}
 
 	private boolean isWriting() {

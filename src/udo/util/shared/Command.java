@@ -1,8 +1,17 @@
 package udo.util.shared;
 
 public enum Command {
-	ADD_EVENT, // have a start and end time/date
-	ADD_TASK, // have a deadline
-	ADD_PLAN, // have no deadlines
-	LIST, DELETE, EDIT, SAVE, EXIT, UNDO, NULL
+	ADD,
+	ADD_EVENT, 
+	ADD_TASK, 
+	ADD_PLAN, 
+	LIST, 
+	DELETE, 
+	EDIT,
+	MARK_DONE,
+	TOGGLE_DONE,
+	SAVE, 
+	EXIT, 
+	UNDO, 
+	NULL
 }

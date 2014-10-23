@@ -2,6 +2,7 @@ package udo.util.shared;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.text.SimpleDateFormat;
 
 /**
  * 
@@ -33,6 +34,10 @@ public class Constants {
 		public static final String ITEMS = "items";
 		public static final String QUERY_TYPE = "query type";
 		public static final String QUERY = "query string";
+		public static final String FIELD = "field";
+		public static final String VALUE = "value";
+		public static final String DATE = "date";
+		public static final String OLD_VALUE = "Old value";
 	}
 
 	/**
@@ -45,14 +50,24 @@ public class Constants {
 	 * 
 	 */
 	public static final class StorageIndices {
+		// all
 		public static final int UID = 0;
 		public static final int TYPE = 1;
 		public static final int TITLE = 2;
+		// event
 		public static final int START_DATE = 3;
 		public static final int START_TIME = 4;
 		public static final int END_DATE = 5;
 		public static final int END_TIME = 6;
-		public static final int HASHTAGS = 7;
+		public static final int EVENT_HASHTAGS = 7;
+		// task
+		public static final int DUE_DATE = 3;
+		public static final int DUE_TIME = 4;
+		public static final int TASK_DONE = 5;
+		public static final int TASK_HASHTAGS = 6;
+		//plan
+		public static final int PLAN_DONE = 3;
+		public static final int PLAN_HASHTAGS = 4;
 	}
 
 	/**
@@ -71,25 +86,75 @@ public class Constants {
 		public static final String TYPE_EVENT = "EVENT";
 		public static final String TYPE_TASK = "TASK";
 		public static final String TYPE_PLAN = "PLAN";
+		public static final String UNFORMATTED_STRING_EVENT = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$d/%10$d/%11$d|||%12$d:%13$d|||%14$s|||;";
+		public static final String UNFORMATTED_STRING_TASK = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$b|||%10$s|||;";
+		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
 	}
 	
 	/**
 	 * 
-	 * This class holds UI-related attributes such as fonts, measurements and colours.
+	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
 	 *
 	 */
 	public static final class UI {
-		public static final Font HEADER_FONT = new Font("Ubuntu", Font.PLAIN, 24);
-		public static final Font SUBHEADER_FONT = new Font("Ubuntu", Font.PLAIN, 18);
+		public static final int FONTSIZE_24 = 24;
+		public static final int FONTSIZE_20 = 20;
+		public static final int FONTSIZE_18 = 18;
+		public static final int FONTSIZE_16 = 16;
+		public static final int FONTSIZE_14 = 14;
+		public static final int FONTSIZE_12 = 12;
+		public static final Font FONT_24 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_24);
+		public static final Font FONT_20 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_20);
+		public static final Font FONT_18 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_18);
+		public static final Font FONT_16 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_16);
+		public static final Font FONT_14 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
+		public static final Font FONT_12 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_12);
+		public static final Font FONT_20_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_20);
+		public static final Font FONT_12_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_12);
+		
+		public static final SimpleDateFormat DD_MM_YY = new SimpleDateFormat("dd/MM/yy");
+		public static final SimpleDateFormat DD_MMMM_YYYY = new SimpleDateFormat("dd MMMM yyyy");
+		public static final SimpleDateFormat DD_MMMM = new SimpleDateFormat("dd MMMM");
+		public static final SimpleDateFormat DD_MMM = new SimpleDateFormat(" dd MMM ");
+		public static final SimpleDateFormat DD = new SimpleDateFormat("dd");
+		public static final SimpleDateFormat MMM = new SimpleDateFormat("MMM");
+		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
+		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
 		
 		public static final int MAIN_WIDTH = 400;
 		public static final int MAIN_HEIGHT = 600;
 		public static final int SUBVIEW_WIDTH = 360;
 		public static final int SUBVIEW_HEIGHT = 550;
-		public static final int SUBVIEW_HEADER_LINEY = 33;
+		public static final int SUBVIEW_HEADER_LINEY = 40;
 		public static final int SIDEVIEW_PADDING = 30;
+		
+		public static final int DAYVIEW_HEADER_HEIGHT = 100;
+		public static final String TICKER_IMAGE_DIR = "img/dayViewTicker2.png";
+		public static final int TICKER_Y = 18;
+
+		public static final int TODOVIEW_HEADER_HEIGHT = 40;
+		
+		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
+		public static final int ENTRY_SEPARATOR_WIDTH = -5;
+		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
+		
+		public static final String ENTRY_ALL = "ALL";
+		public static final String ENTRY_EVENT = "EVENT";
+		public static final String ENTRY_TASK = "TASK";
+		public static final String ENTRY_PLAN = "PLAN";
 		
 		public static final Color MAIN_COLOR = new Color(255,255,255);
 		//public static final Color SUBVIEW_COLOR = new Color();
+		public static final Color ENTRY_BGCOLOR = new Color(255,255,255);
+		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
+		public static final Color ENTRY_DATE_COLOR = new Color(150,150,150);
+		public static final Color ENTRY_HASHTAGS_COLOR = new Color(28,134,238);
+		
+		public static final Color UID_COLOR = new Color(238,238,238);
+		public static final Color SEPARATOR_COLOR = new Color(100,100,100);
+		
+		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
+		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
+		
 	}
 }

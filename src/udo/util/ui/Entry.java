@@ -1,13 +1,22 @@
 package udo.util.ui;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+
+
+
+
+
 
 
 
@@ -19,7 +28,9 @@ import javax.swing.JTextArea;
  import javax.swing.text.StyleContext;
  */
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
 
 public class Entry extends JPanel {
 
@@ -27,140 +38,210 @@ public class Entry extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private JPanel mDetailPanel = new JPanel();
+	private JTextArea mExtraDesc = new JTextArea();
+	private JTextArea mDescription = new JTextArea();
+	private JTextArea mHashtags = new JTextArea();
+	// TODO maybe put a JTextPane here
+	private JLabel mUid = new JLabel();
+	private JLabel mDate;
+	private JLabel mMonth = new JLabel();
+	private JPanel mTimePanel = new JPanel();
+	private JPanel mSeparator = new JPanel();
+	private int mHorizontalRemainder;
 
-	private JTextArea mTextArea = new JTextArea();
-
-	private static final Color ENTRY_COLOR = new Color(50, 255, 125);
-	private static final Color ENTRY_BORDER = new Color(45, 215, 105);
-
-	public Entry(ItemData item, String type) {
-		setBorder(BorderFactory.createLineBorder(ENTRY_BORDER));
-		setBackground(ENTRY_COLOR);
-		mTextArea.setLineWrap(true);
-		mTextArea.setWrapStyleWord(true);
-		mTextArea.setEditable(false);
-		mTextArea.setOpaque(false);
+	public Entry(ItemData item, ItemType type) {
+		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
+		setBackground(UI.ENTRY_BGCOLOR);
+		
+		mUid.setFont(UI.FONT_12);
+		mUid.setOpaque(true);
+		mUid.setBackground(UI.UID_COLOR);
+		
+		mTimePanel.setOpaque(false);
+		mTimePanel.setLayout(new BorderLayout());
+		
+		mDetailPanel.setLayout(new BoxLayout(mDetailPanel, BoxLayout.PAGE_AXIS));
+		mDetailPanel.setOpaque(false);
+		
+		mDescription.setFont(UI.FONT_20);
+		mDescription.setEditable(false);
+		mDescription.setWrapStyleWord(true);
+		mDescription.setLineWrap(true);
+		
+		mExtraDesc.setFont(UI.FONT_14);
+		mExtraDesc.setForeground(UI.ENTRY_DATE_COLOR);
+		mExtraDesc.setEditable(false);
+		mExtraDesc.setWrapStyleWord(true);
+		mExtraDesc.setLineWrap(true);
+		
+		mHashtags.setFont(UI.FONT_14);
+		mHashtags.setForeground(UI.ENTRY_HASHTAGS_COLOR);
+		mHashtags.setEditable(false);
+		mHashtags.setWrapStyleWord(true);
+		mHashtags.setLineWrap(true);
+		
 		switch(type) {
-		case "allDetails":
-			initText(item);
-			break;
-		case "noDate":
-			initTextNoDate(item);
-			break;
-		case "endDate":
-			initTextToDo(item);
-			break;
-		default:
-			break;
+			case EVENT:
+				initEvent(item);
+				break;
+			case TASK:
+				initTask(item);
+				break;
+			case PLAN:
+				initPlan(item);
+				break;
+			default:
+				break;
 		}
-		mTextArea.setSize(300, 1); // to make sure the width is fixed at 300
-		add(mTextArea);
 	}
 
 	@SuppressWarnings("unchecked")
-	/*
-	 * private void initText(ItemData item) { appendToPane(textArea,
-	 * String.valueOf(item.get(Keys.UID)), Color.RED); appendToPane(textArea,
-	 * item.get(Keys.START) + " - ", Color.BLACK ); appendToPane(textArea,
-	 * item.get(Keys.END) + "\n", Color.black ); appendToPane(textArea,
-	 * item.get(Keys.TITLE) + "\n", Color.BLACK); ArrayList<String> hashtags =
-	 * ((ArrayList<String>) item.get(Keys.HASHTAGS)); for(int i=0;
-	 * i<hashtags.size(); i++){ appendToPane(textArea, "#" + hashtags.get(i) +
-	 * " ", Color.blue); } }
-	 */
-	private void initText(ItemData item) {
-		mTextArea.append("[" + item.get(Keys.UID) + "] ");
-		mTextArea.append(calToString((Calendar) item.get(Keys.START),
-				(Calendar) item.get(Keys.END)));
-		ArrayList<String> hashtags = ((ArrayList<String>) item
-				.get(Keys.HASHTAGS));
-		appendTitleAndTags((String) item.get(Keys.TITLE), hashtags );
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void initTextNoDate(ItemData item) {
-		mTextArea.append("[" + item.get(Keys.UID) + "] ");
-		mTextArea.append(calToStringHoursOnly((Calendar) item.get(Keys.START),
-				(Calendar) item.get(Keys.END)));
-		ArrayList<String> hashtags = ((ArrayList<String>) item
-				.get(Keys.HASHTAGS));
-		appendTitleAndTags((String) item.get(Keys.TITLE), hashtags );
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void initTextToDo(ItemData item) {
-		mTextArea.append("[" + item.get(Keys.UID) + "] ");
-		if(item.get(Keys.END)!= null ) {
-			mTextArea.append(calToStringToDo((Calendar) item.get(Keys.END)));
-		}
-		ArrayList<String> hashtags = ((ArrayList<String>) item
-				.get(Keys.HASHTAGS));
-		appendTitleAndTags((String) item.get(Keys.TITLE), hashtags );
+	private void initPlan(ItemData item) {
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.CENTER);
+//		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
+//				0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
+		add(mTimePanel);
+		add(initSeparator());
+		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
+		
 	}
 
-	private String calToStringToDo(Calendar endCal) {
-		String calString = "";
-		SimpleDateFormat sdf;
-		sdf = new SimpleDateFormat("EEE dd/MM/yy kk:mm"); // will kk:mm be needed?
-		calString += sdf.format(endCal.getTime());
-		calString += "\n";
-		return calString;
-	}
-	
-	private String calToString(Calendar startCal, Calendar endCal) {
-		String calString = "";
-		SimpleDateFormat sdf, sdf2;
-		sdf = new SimpleDateFormat("EEE dd/MM/yy kk:mm");
-		sdf2 = new SimpleDateFormat("kk:mm");
-		calString += sdf.format(startCal.getTime());
-		calString += " - ";
-		if (startCal.get(Calendar.DAY_OF_YEAR) == endCal
-				.get(Calendar.DAY_OF_YEAR)) {
-			calString += sdf2.format(endCal.getTime());
-		} else {
-			calString += sdf.format(endCal.getTime());
-		}
-		calString += "\n";
-		return calString;
-	}
-	
-	private String calToStringHoursOnly(Calendar startCal, Calendar endCal) {
-		String calString = "";
-		SimpleDateFormat sdf, sdf2;
-		sdf = new SimpleDateFormat("EEE dd/MM/yy kk:mm");
-		sdf2 = new SimpleDateFormat("kk:mm");
-		calString += sdf2.format(startCal.getTime());
-		calString += " - ";
-		if (startCal.get(Calendar.DAY_OF_YEAR) == endCal
-				.get(Calendar.DAY_OF_YEAR)) {
-			calString += sdf2.format(endCal.getTime());
-		} else {
-			calString += sdf.format(endCal.getTime());
-		}
-		calString += "\n";
-		return calString;
+	@SuppressWarnings("unchecked")
+	private void initTask(ItemData item) {
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
+		mTimePanel.add(initDate((Calendar) item.get(Keys.DUE)), BorderLayout.CENTER);
+//		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
+//															0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
+		add(mTimePanel);
+		add(initSeparator());
+		add(initDetails((Calendar) item.get(Keys.DUE), (String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 
-	private void appendTitleAndTags(String title, ArrayList<String> hashtags ) {
-		String titleAndTag = title + "\n";
-		for (int i = 0; i < hashtags.size(); i++) {
-			titleAndTag += "#" + hashtags.get(i) + " ";
-		}
-		mTextArea.append(titleAndTag);
+	@SuppressWarnings("unchecked")
+	private void initEvent(ItemData item) {
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
+		mTimePanel.add(initDate((Calendar) item.get(Keys.START)), BorderLayout.CENTER);
+		add(mTimePanel);
+		add(initSeparator());
+		add(initDetails((Calendar) item.get(Keys.START),
+						(Calendar) item.get(Keys.END),
+						(String) item.get(Keys.TITLE), 
+						(ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 	
-	/*
-	 * private void appendToPane(JTextPane tp, String msg, Color c) {
-	 * StyleContext sc = StyleContext.getDefaultStyleContext(); AttributeSet
-	 * aset = sc.addAttribute(SimpleAttributeSet.EMPTY,
-	 * StyleConstants.Foreground, c);
-	 * 
-	 * aset = sc.addAttribute(aset, StyleConstants.FontFamily,
-	 * "Lucida Console"); aset = sc.addAttribute(aset, StyleConstants.Alignment,
-	 * StyleConstants.ALIGN_JUSTIFIED);
-	 * 
-	 * int len = tp.getDocument().getLength(); tp.setCaretPosition(len);
-	 * tp.setCharacterAttributes(aset, false); tp.replaceSelection(msg); }
-	 */
+	private JPanel initDetails(Calendar dueTime, String title, ArrayList<String> hashtags) {
+		mExtraDesc.append(initTime(dueTime));
+		return initDetails(title,hashtags);
+	}
+	
+	private JPanel initDetails(Calendar startTime, Calendar endTime, String title, ArrayList<String> hashtags) {
+		mExtraDesc.append(initTime(startTime, endTime));
+		return initDetails(title,hashtags);
+	}
+	
+	private JPanel initDetails(String title, ArrayList<String> hashtags) {
+		mHorizontalRemainder = UI.SUBVIEW_WIDTH - (int) getPreferredSize().getWidth();
+		mDescription.setSize(mHorizontalRemainder ,1);
+		mDescription.append(title);
+		for(int i = 0; i< hashtags.size(); i++) {
+			mHashtags.append("#" + hashtags.get(i) + " ");
+		}
+		mDetailPanel.add(mDescription);
+		mDetailPanel.add(mExtraDesc);
+		mDetailPanel.add(mHashtags);
+		return mDetailPanel;
+	}
+
+	private JLabel initUid(Integer uid) {
+		mUid.setText(uid.toString());
+		mUid.setHorizontalAlignment(SwingConstants.CENTER);
+		return mUid;
+	}
+	
+	private String initTime(Calendar cal) {
+		String time = "by ";
+		time += getDay(cal);
+		time += UI.HOUR_12.format(cal.getTime());
+		return time;
+	}
+	
+	private String initTime(Calendar startCal, Calendar endCal) {
+		String time = getDay(startCal);
+		time += UI.HOUR_12.format(startCal.getTime()) + " - ";
+		if(getDayDiff(startCal, endCal) != 0) {
+			time += getDay(endCal);
+			time += UI.DD_MMM.format(endCal.getTime());
+		}
+		time += UI.HOUR_12.format(endCal.getTime());
+		return time;
+	}
+	
+	private String getDay(Calendar cal) {
+		String day = "";
+		Calendar today = Calendar.getInstance();
+		int dayDiff = getDayDiff(today, cal);
+		switch(dayDiff) {
+			case -1:
+				day = "yesterday ";
+				break;
+			case 0:
+				if(cal.get(Calendar.HOUR_OF_DAY) > 17) {
+					day = "tonight ";
+				}else{
+					day = "today ";
+				}
+				break;
+			case 1:
+				day = "tomorrow ";
+				break;
+			case -6:
+			case -5:
+			case -4:
+			case -3:
+			case -2:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				day = UI.DAY_NAME.format(cal.getTime()) + " ";
+			default:
+				break;
+		}
+		return day;
+	}
+	
+	private int getDayDiff(Calendar start, Calendar end) {
+		int tempYear = end.get(Calendar.YEAR);
+		int endDays = end.get(Calendar.DAY_OF_YEAR);
+		
+		while(tempYear > start.get(Calendar.YEAR)) {
+			tempYear--;
+			Calendar offsetYear = new GregorianCalendar(tempYear, Calendar.DECEMBER, 31);
+			endDays += offsetYear.get(Calendar.DAY_OF_YEAR);
+		}
+		return endDays - start.get(Calendar.DAY_OF_YEAR);
+	}
+	
+	private JPanel initDate(Calendar cal) {
+		JPanel time = new JPanel();
+		time.setOpaque(false);
+		time.setLayout(new BoxLayout(time, BoxLayout.PAGE_AXIS));
+		mDate = new JLabel(UI.DD.format(cal.getTime()));
+		mMonth = new JLabel(UI.MMM.format(cal.getTime()));
+		mDate.setFont(UI.FONT_20_BOLD);
+		mMonth.setFont(UI.FONT_16);
+		time.add(mDate);
+		time.add(mMonth);
+		return time;
+	}
+	
+	private JPanel initSeparator() {
+		mSeparator.setBackground(UI.SEPARATOR_COLOR);
+		mSeparator.setBorder(BorderFactory.createEmptyBorder(UI.ENTRY_SEPARATOR_HEIGHT, UI.ENTRY_SEPARATOR_WIDTH, 0, 0));
+		return mSeparator;
+	}
 
 }

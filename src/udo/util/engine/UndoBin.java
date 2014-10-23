@@ -1,14 +1,12 @@
 package udo.util.engine;
 
-import udo.util.shared.Command;
 import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
 
 /**
  * only for engine to use.
  */
 public class UndoBin {
-	InputData mInputData;
+	private InputData mInputData;
 
 	public UndoBin() {
 		mInputData = null;
@@ -18,7 +16,11 @@ public class UndoBin {
 		mInputData = input;
 	}
 
-	public InputData getInputData() {
+	public InputData getUndoInputData() {
 		return mInputData;
+	}
+
+	public void clear() {
+		mInputData = null;
 	}
 }

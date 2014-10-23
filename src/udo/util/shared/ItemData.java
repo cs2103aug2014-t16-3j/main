@@ -14,127 +14,25 @@ import udo.util.shared.Constants.StorageStrings;
  * keys from the Constants.Keys class.
  * 
  */
-public class ItemData implements Comparable<ItemData> {
+public class ItemData extends DataHolder implements Comparable<ItemData> {
 
 	private ItemType mType;
-	private HashMap<String, Object> mData;
+	
+	public ItemData() {
+		mType = ItemType.PLAN; // a default value
+	}
 
 	public ItemData(ItemType type) {
+		super();
 		mType = type;
-		mData = new HashMap<String, Object>();
 	}
-
-	@Override
-	public String toString() {
-		// TODO need to revise
-		switch (mType) {
-		case EVENT:
-			return makeEventString();
-		default:
-			return null;
-		}
-	}
-
-	private String makeEventString() {
-		Calendar startCal = (Calendar) mData.get(Keys.START);
-		Calendar endCal = (Calendar) mData.get(Keys.END);
-		@SuppressWarnings("unchecked")
-		String tagsString = getString((ArrayList<String>) mData
-				.get(Keys.HASHTAGS));
-
-		String eventInfo = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d"
-				+ "|||%7$d:%8$d|||%9$d/%10$d/%11$d" + "|||%12$d:%13$d|||%14$s";
-		String result = String.format(
-				eventInfo,
-				mData.get(Keys.UID),
-				mType.toString(),
-				mData.get(Keys.TITLE),
-				startCal.get(Calendar.DAY_OF_MONTH),
-				startCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in
-													// cal object
-				startCal.get(Calendar.YEAR),
-				startCal.get(Calendar.HOUR_OF_DAY),
-				startCal.get(Calendar.MINUTE),
-				endCal.get(Calendar.DAY_OF_MONTH),
-				endCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in
-												// cal object
-				endCal.get(Calendar.YEAR), endCal.get(Calendar.HOUR_OF_DAY),
-				endCal.get(Calendar.MINUTE), tagsString);
-		return result;
-	}
-
-	private String getString(ArrayList<String> list) {
-		String result = new String();
-		for (int i = 0; i < list.size(); i++) {
-			result = result.concat(list.get(i));
-			if (i != list.size() - 1 /* not last element */) {
-				result = result.concat(StorageStrings.TAG_DELIMITER);
-			}
-		}
-		return result;
+	
+	public void setItemType(ItemType type) {
+		mType = type;
 	}
 
 	public ItemType getItemType() {
 		return mType;
-	}
-
-	/**
-	 * Associates the specified item with the specified key An existing item of
-	 * the same key will be replaced. The item inserted cannot be {@code null}.
-	 * 
-	 * @param key
-	 *            The key of the item.
-	 * @param item
-	 *            The item to be put inside
-	 * @return {@code true} when the operation is successful, or {@code false}
-	 *         when the inserted item is null
-	 */
-	public boolean put(String key, Object item) {
-		if (item != null) {
-			mData.put(key, item);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Retrieves the item that is associated with the key.
-	 * 
-	 * @param key
-	 *            The key of the item to retrieve
-	 * @return The item, or {@code null} if the key is not mapped.
-	 */
-	public Object get(String key) {
-		if (mData.containsKey(key)) {
-			return mData.get(key);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns a boolean value describing if the named item exists inside.
-	 * 
-	 * @param key
-	 *            The key of the item to check.
-	 * @return {@code true} if the item exists, or {@code false} otherwise.
-	 */
-	public boolean contains(String key) {
-		return mData.containsKey(key);
-	}
-
-	/**
-	 * Returns a {@link Set} view of the keys contained in this object.
-	 * 
-	 * @return the keyset
-	 */
-	public Set<String> getKeys() {
-		return mData.keySet();
-	}
-
-	public HashMap<String, Object> getData() {
-		return mData;
 	}
 
 	@Override
@@ -165,6 +63,20 @@ public class ItemData implements Comparable<ItemData> {
 				return false;
 			}
 			return true;
+		}
+	}
+
+	@Override
+	public String toString() {
+		switch (mType) {
+		case EVENT :
+			return makeEventString();
+		case TASK : 
+			return makeTaskString();
+		case PLAN : 
+			return makePlanString();
+		default:
+			return null;
 		}
 	}
 
@@ -208,5 +120,84 @@ public class ItemData implements Comparable<ItemData> {
 			// this should not happen
 			return 0;
 		}
+	}
+
+	private String getTagString(ArrayList<String> list) {
+		String result = new String();
+		for (int i = 0; i < list.size(); i++) {
+			result = result.concat(list.get(i));
+			if (i != list.size() - 1) { //not last element 
+				result = result.concat(StorageStrings.TAG_DELIMITER);
+			}
+		}
+		result.concat(";");
+		// postcondition
+		assert (result != null);
+		return result;
+	}
+
+	private String makeEventString() {
+		// uid | type | title | sdate | stime | edate | etime | tags
+		Calendar startCal = (Calendar) mData.get(Keys.START);
+		Calendar endCal = (Calendar) mData.get(Keys.END);
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_EVENT,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				startCal.get(Calendar.DAY_OF_MONTH),
+				startCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				startCal.get(Calendar.YEAR),
+				startCal.get(Calendar.HOUR_OF_DAY),
+				startCal.get(Calendar.MINUTE),
+				endCal.get(Calendar.DAY_OF_MONTH),
+				endCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				endCal.get(Calendar.YEAR), 
+				endCal.get(Calendar.HOUR_OF_DAY),
+				endCal.get(Calendar.MINUTE), 
+				tagsString);
+		return result;
+	}
+
+	private String makeTaskString() {
+		// uid | type | title | ddate | dtime | done | tags
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		Calendar dueCal = (Calendar) mData.get(Keys.DUE);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_TASK,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				dueCal.get(Calendar.DAY_OF_MONTH),
+				dueCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				dueCal.get(Calendar.YEAR),
+				dueCal.get(Calendar.HOUR_OF_DAY),
+				dueCal.get(Calendar.MINUTE), 
+				mData.get(Keys.DONE),
+				tagsString);
+		return result;
+	}
+	
+	private String makePlanString() {
+		// uid | type | title | done | tags
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_PLAN,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				mData.get(Keys.DONE),
+				tagsString);
+		return result;
 	}
 }

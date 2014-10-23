@@ -19,6 +19,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -26,13 +27,17 @@ import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.ui.Feedback;
+import udo.util.ui.WrapLayout;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
 
+	private static UserInterface mUserInterface;
+	
 	private JFrame mFrame = new JFrame("uDo");
 	private JLayeredPane mLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
+	private JScrollPane mScrollPane = new JScrollPane();
 	private JPanel mTextArea = new JPanel();
 	private JPanel mTodayView = new JPanel();
 	private JPanel mToDoView = new JPanel();
@@ -46,21 +51,27 @@ public class UserInterface implements ActionListener {
 
 	private Feedback fb;
 
-	public UserInterface() {
+	public static UserInterface getInstance() {
+		if(mUserInterface == null) {
+			mUserInterface = new UserInterface();
+		}
+		return mUserInterface;
+	}
+	private UserInterface() {
 
 
 		fb = new Feedback();
 		initUI();
 	}
 
-	public void initUI() {
+	private void initUI() {
 		/**
 		 * Sets up font
 		 */
 		try {
 		     GraphicsEnvironment ge = 
 		         GraphicsEnvironment.getLocalGraphicsEnvironment();
-		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("Ubuntu-R.TTF")));
+		     ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("fonts/Ubuntu-R.TTF")));
 		} catch (IOException|FontFormatException e) {
 		     //Handle exception
 		}
@@ -73,8 +84,9 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up textArea
 		 */
-		mTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-		mTextArea.setBackground(UI.MAIN_COLOR);
+		mTextArea.setOpaque(false);
+		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
+		mScrollPane.getViewport().add(mTextArea);
 
 		/**
 		 * Sets up textField
@@ -82,8 +94,7 @@ public class UserInterface implements ActionListener {
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
 		mTextField.setBackground(UI.MAIN_COLOR);
-		Font newFont = mTextField.getFont().deriveFont(Font.PLAIN, 16f);
-		mTextField.setFont(newFont);
+		mTextField.setFont(UI.FONT_16);
 		mTextField.requestFocus();
 
 		/**
@@ -95,10 +106,10 @@ public class UserInterface implements ActionListener {
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0.5;
+		c.weightx = 1;
 		c.weighty = 0.5;
 
-		mTextPanel.add(mTextArea, c);
+		mTextPanel.add(mScrollPane, c);
 
 		c.gridy = 1;
 		c.weighty = 0;
@@ -186,20 +197,9 @@ public class UserInterface implements ActionListener {
 		fb.process(output);
 		String outputString = fb.getCommand();
 		
-		mLayer.remove(mTextArea);
-		mTextArea = fb.getFinalView();	
-		mLayer.add(mTextArea, new Integer(1));
-		
-		/**
-		 * testing side views
-		 *
-		mToDoView.removeAll();
-		mToDoView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
-		mTodayView.removeAll();
-		mTodayView.init((ArrayList<ItemData>) output.get(Keys.ITEMS));
-		/**
-		 * testing ends
-		 */
+		mScrollPane.getViewport().removeAll();
+		mTextArea = fb.getFinalView();
+		mScrollPane.getViewport().add(mTextArea);
 
 		showPopup(outputString);
 	}
@@ -210,7 +210,7 @@ public class UserInterface implements ActionListener {
 	 * @param text
 	 *            it is the text to be shown to user (from FeedBack class)
 	 */
-	public void showPopup(String text) {
+	private void showPopup(String text) {
 
 		FontMetrics fm = mPopup.getFontMetrics(mPopup.getFont());
 		int padding = 5;
@@ -224,7 +224,7 @@ public class UserInterface implements ActionListener {
 		fadePopup();
 	}
 
-	public void fadePopup() {
+	private void fadePopup() {
 		if (mExistingTimer != null)
 			mExistingTimer.stop();
 		mTimer = new Timer(10, new ActionListener() {
@@ -241,7 +241,7 @@ public class UserInterface implements ActionListener {
 						fade++;
 					}
 				} else if (fade == 0) {
-					mTimer.setDelay(1500);
+					mTimer.setDelay(3000);
 					fade++;
 				} else {
 					mTimer.setDelay(10);
