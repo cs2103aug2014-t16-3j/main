@@ -28,7 +28,7 @@ public class UItest {
 		 */
 //		testListAll();
 //		testListDone();
-		testListSingleDate();
+//		testListSingleDate();
 //		testListSingleHashtag();
 	
 		/**
@@ -37,7 +37,7 @@ public class UItest {
 //		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-//		testEditItem();
+		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
 //		testToggleDone();	
@@ -157,8 +157,8 @@ public class UItest {
 		item.put(Keys.START, Calendar.getInstance());
 		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
-		item.put(Keys.FIELD, Keys.TITLE);
-		item.put(Keys.OLD_VALUE, "old title");
+		output.put(Keys.FIELD, Keys.TITLE);
+		output.put(Keys.OLD_VALUE, "old title");
 		output.put(Keys.ITEM, item);
 		ui.show(output);
 		
