@@ -9,6 +9,7 @@ import udo.main.Engine;
 import udo.main.UserInterface;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
@@ -157,8 +158,8 @@ public class UItest {
 		item.put(Keys.START, Calendar.getInstance());
 		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
-		output.put(Keys.FIELD, Keys.TITLE);
-		output.put(Keys.OLD_VALUE, "old title");
+		output.put(Keys.FIELD, EditField.TITLE);
+		output.put(Keys.OLD_VALUE, "some old value");
 		output.put(Keys.ITEM, item);
 		ui.show(output);
 		
