@@ -103,7 +103,7 @@ public class Feedback {
 	private void toggle_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
-		mSingleView.init(item, Command.TOGGLE_DONE);
+		mSingleView.init(output, Command.TOGGLE_DONE);
 		mFinalView = mSingleView;
 		mCommand = "Toggled completion status of " + item.get(Keys.TITLE);
 	}
@@ -111,7 +111,7 @@ public class Feedback {
 	private void mark_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
-		mSingleView.init(item, Command.MARK_DONE);
+		mSingleView.init(output, Command.MARK_DONE);
 		mFinalView = mSingleView;
 		mCommand = "Marked " + item.get(Keys.TITLE) + " as done";
 	}
@@ -119,7 +119,7 @@ public class Feedback {
 	private void add_entry(OutputData output, Command type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
-		mSingleView.init(item, type);
+		mSingleView.init(output, type);
 		mFinalView = mSingleView;
 		mCommand = "Added " + item.get(Keys.TITLE);
 	}
@@ -127,7 +127,7 @@ public class Feedback {
 	private void delete_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
-		mSingleView.init(item, Command.DELETE);
+		mSingleView.init(output, Command.DELETE);
 		mFinalView = mSingleView;
 		mCommand = "Deleted " + item.get(Keys.TITLE);
 	}
@@ -135,7 +135,7 @@ public class Feedback {
 	private void edit_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mSingleView.removeAll();
-		mSingleView.init(item, Command.EDIT);
+		mSingleView.init(output, Command.EDIT);
 		mFinalView = mSingleView;
 		mCommand = "Edited " + item.get(Keys.UID);
 		

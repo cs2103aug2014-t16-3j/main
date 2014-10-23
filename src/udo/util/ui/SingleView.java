@@ -10,6 +10,7 @@ import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
+import udo.util.shared.OutputData;
 
 public class SingleView extends JPanel {
 
@@ -25,7 +26,7 @@ public class SingleView extends JPanel {
 		mMessage.setFont(UI.FONT_14);
 	}
 	
-	public void init(ItemData item, Command type) {
+	public void init(OutputData output, Command type) {
 		switch (type) {
 		case ADD_EVENT: 
 		case ADD_PLAN:
@@ -36,7 +37,7 @@ public class SingleView extends JPanel {
 			initDelete();
 			break;
 		case EDIT :
-			initEdit(item);
+			initEdit(output);
 			break;
 		case UNDO :
 			initUndo();
@@ -50,6 +51,7 @@ public class SingleView extends JPanel {
 		default :
 			break;
 		}
+		ItemData item = (ItemData) output.get(Keys.ITEM);
 		addEntry(item);
 	}
 
@@ -65,13 +67,14 @@ public class SingleView extends JPanel {
 		
 	}
 
-	private void initEdit(ItemData item) {
+	private void initEdit(OutputData output) {
 		// TODO Auto-generated method stub
+		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mMessage.setText("<html>"
 							+ "<br><br>"
-							+ "You have edited: <font color=\"blue\">" + item.get(Keys.FIELD) 
-							+ "</font><br>from: <font color=\"blue\">" + "\"" + item.get(Keys.OLD_VALUE) + "\""
-							+ "</font><br>to: <font color=\"blue\">" + "\"" + item.get((String) item.get(Keys.FIELD)) + "\""
+							+ "You have edited: <font color=\"blue\">" + output.get(Keys.FIELD) 
+							+ "</font><br>from: <font color=\"blue\">" + "\"" + output.get(Keys.OLD_VALUE) + "\""
+							+ "</font><br>to: <font color=\"blue\">" + "\"" + item.get((String) output.get(Keys.FIELD)) + "\""
 							+ "</font>. <br>This is the edited item: "
 							+ "</html>");
 		add(mMessage);
