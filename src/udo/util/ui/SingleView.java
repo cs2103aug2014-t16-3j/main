@@ -83,6 +83,9 @@ public class SingleView extends JPanel {
 				newValue = UI.DD_MM_YY.format(((Calendar)item.get(Keys.DUE)).getTime());
 				break;
 			case DUE_TIME:
+				fieldString = "Due time";
+				oldValue = UI.HOUR_12.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.HOUR_12.format(((Calendar)item.get(Keys.DUE)).getTime());
 				break;
 			case END_DATE:
 				break;

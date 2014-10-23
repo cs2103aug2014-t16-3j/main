@@ -161,7 +161,7 @@ public class UItest {
 //		item.put(Keys.END, date);
 		item.put(Keys.DUE, oldDate);
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
-		output.put(Keys.FIELD, EditField.DUE_DATE);
+		output.put(Keys.FIELD, EditField.DUE_TIME);
 		newDate.set(2014, Calendar.DECEMBER, 14);
 		output.put(Keys.OLD_VALUE, newDate);
 		output.put(Keys.ITEM, item);
