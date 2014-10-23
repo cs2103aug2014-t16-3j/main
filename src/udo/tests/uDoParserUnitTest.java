@@ -21,15 +21,40 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testDelete() {
-		String delete = "delete 12359";
-		InputData data = p.getInputData(delete);
-		ParsingStatus status = data.getStatus();
-		Command type = data.getCommand(); 
-		int uid = (int) data.get(Keys.UID);
+		//testing within acceptance region
+		String delete1 = "delete 12359";
+		InputData data1 = p.getInputData(delete1);
+		ParsingStatus status1 = data1.getStatus();
+		Command type1 = data1.getCommand(); 
+		int uid1 = (int) data1.get(Keys.UID);
 		
-		assertEquals(ParsingStatus.SUCCESS, status);
-		assertEquals(Command.DELETE, type);
-		assertEquals(12359, uid);
+		assertEquals(ParsingStatus.SUCCESS, status1);
+		assertEquals(Command.DELETE, type1);
+		assertEquals(12359, uid1);
+		
+		// The boundary for delete uid is 00000 to 99999
+		// Testing boundary case 00000 and 99999
+		String delete2 = "delete 00000";
+		InputData data2 = p.getInputData(delete2);
+		ParsingStatus status2 = data2.getStatus();
+		int uid2 = (int) data2.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status2);
+		assertEquals(00000, uid2);
+		
+		// Testing outside boundary case
+		String delete3 = "delete 0000";
+		InputData data3 = p.getInputData(delete3);
+		ParsingStatus status3 = data3.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status3);
+		
+		// Testing boundary for string
+		String delete4 = "delete delet";
+		InputData data4 = p.getInputData(delete4);
+		ParsingStatus status4 = data4.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status4);
 	}
 	
 	@Test
