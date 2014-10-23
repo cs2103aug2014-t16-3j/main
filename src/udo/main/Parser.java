@@ -44,6 +44,7 @@ public class Parser {
 	private Command determineCommandType(String input) {
 		String parts[] = input.split(" ");
 		String command = parts[0];
+		command = command.toLowerCase();
 		switch (command) {
 			case "add":
 				return Command.ADD;
@@ -88,10 +89,8 @@ public class Parser {
 				return toggle_done(commandType, details);
 			case MARK_DONE:
 				return mark(commandType, details);
-			case NULL:
-				return trash(commandType, details);
 			default:
-				return null; // parsing status fail
+				return trash(commandType, details);
 			}
 	}
 	
