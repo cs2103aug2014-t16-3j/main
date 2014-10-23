@@ -57,6 +57,7 @@ public class RunnerEdit extends Runner {
 							ExecutionStatus.FAIL);
 			}
 			output.put(Keys.ITEM, itemToEdit);
+			output.put(Keys.FIELD, field);
 			return output;
 			
 		} catch (ItemNotFoundException e) {
@@ -75,24 +76,6 @@ public class RunnerEdit extends Runner {
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, oldTitle);
-		return output;
-	}
-	
-	private OutputData runEditDueTime(ItemData item, Calendar timeCal) {
-		if (item.getItemType() != ItemType.TASK) {
-			return new OutputData(Command.EDIT, 
-					ParsingStatus.SUCCESS,
-					ExecutionStatus.FAIL);
-		}
-		Calendar dueCal = (Calendar) item.get(Keys.DUE);
-		Calendar calToStore = (Calendar) dueCal.clone();
-		setTime(dueCal, timeCal);
-		int uid = (int) item.get(Keys.UID);
-		storeUndo(uid, EditField.DUE_TIME, calToStore);
-		OutputData output = new OutputData(Command.EDIT, 
-				ParsingStatus.SUCCESS,
-				ExecutionStatus.SUCCESS);
-		output.put(Keys.OLD_VALUE, calToStore);
 		return output;
 	}
 	
@@ -132,25 +115,17 @@ public class RunnerEdit extends Runner {
 		return output;
 	}
 
-	private OutputData setTime(Calendar itemCal, Calendar timeCal) {
-		itemCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
-		itemCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
-		return new OutputData(Command.EDIT, 
-				ParsingStatus.SUCCESS,
-				ExecutionStatus.SUCCESS);
-	}
-
-	private OutputData runEditDueDate(ItemData item, Calendar dateCal) {
-		if (item.getItemType() != ItemType.TASK) {
+	private OutputData runEditStartDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.EVENT) {
 			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
-		Calendar dueCal = (Calendar) item.get(Keys.DUE);
+		Calendar dueCal = (Calendar) item.get(Keys.START);
 		Calendar calToStore = (Calendar) dueCal.clone();
 		setDate(dueCal, dateCal);
 		int uid = (int) item.get(Keys.UID);
-		storeUndo(uid, EditField.DUE_DATE, calToStore);
+		storeUndo(uid, EditField.START_DATE, calToStore);
 		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
@@ -176,29 +151,49 @@ public class RunnerEdit extends Runner {
 		return output;
 	}
 	
-	private OutputData runEditStartDate(ItemData item, Calendar dateCal) {
-		if (item.getItemType() != ItemType.EVENT) {
+	private OutputData runEditDueTime(ItemData item, Calendar timeCal) {
+		if (item.getItemType() != ItemType.TASK) {
 			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
 		}
-		Calendar dueCal = (Calendar) item.get(Keys.START);
+		Calendar dueCal = (Calendar) item.get(Keys.DUE);
 		Calendar calToStore = (Calendar) dueCal.clone();
-		setDate(dueCal, dateCal);
+		setTime(dueCal, timeCal);
 		int uid = (int) item.get(Keys.UID);
-		storeUndo(uid, EditField.START_DATE, calToStore);
+		storeUndo(uid, EditField.DUE_TIME, calToStore);
 		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, calToStore);
 		return output;
 	}
-	
-	
-	
-	
-	
-	
+
+	private OutputData runEditDueDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.TASK) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.DUE);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setDate(dueCal, dateCal);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.DUE_DATE, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
+	}
+
+	private OutputData setTime(Calendar itemCal, Calendar timeCal) {
+		itemCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+		itemCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+		return new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+	}
 
 	private void setDate(Calendar itemCal, Calendar dateCal) {
 		itemCal.set(Calendar.YEAR, dateCal.get(Calendar.YEAR));
