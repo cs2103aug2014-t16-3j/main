@@ -28,13 +28,20 @@ public class uDoEngineUnitTest {
 	private static final int EVENT_UID = 12345;
 	
 	@Test
-	// The boundary for delete uid is 00000 to 99999
-	// within that range, it is split into uid exist and do not exist.
+	// delete uid is split into:
+		// positive uid
+		// negative uid (invalid)
+	// The positive uid is split into:
+		// from 00000 to 99999 (valid)
+		// above 100000 and above
+	// within the valid range, it is also partitioned into: 
+		// 1. uid exist 
+		// 2. uid do not exist
 	public void testEngineDeleteBoundaryCasesForUID() {
 		Engine e = Engine.getInstance();
 		InputData input = new InputData(Command.DELETE, ParsingStatus.SUCCESS);
 		
-		// this is the boundary case for negative value partition 
+		// this is the boundary case for negative uid partition 
 		input.put(Keys.UID, -1);
 		OutputData output = e.execute(input);
 		
@@ -45,9 +52,9 @@ public class uDoEngineUnitTest {
 				ExecutionStatus.FAIL,
 				output.getExecutionStatus());
 		
-		// this is the lower boundary case for the "within range" partition
+		// this is the lower boundary case for the positive uid partition
 		// this uid also does not exist
-		input.put(Keys.UID, 00000);
+		input.put(Keys.UID, 00000); // also equal to the integer 0
 		output = e.execute(input);
 		
 		assertFalse("output not null",
@@ -57,7 +64,7 @@ public class uDoEngineUnitTest {
 				ExecutionStatus.FAIL,
 				output.getExecutionStatus());
 		
-		// this is the upper boundary case for the "within range" partition
+		// this is the upper boundary case for the positive uid partition
 		// this uid also does not exist
 		input.put(Keys.UID, 99999);
 		output = e.execute(input);
@@ -69,7 +76,7 @@ public class uDoEngineUnitTest {
 				ExecutionStatus.FAIL,
 				output.getExecutionStatus());
 
-		// this is a case for the "exists" partition
+		// this is a case for the positive and exists partition
 		input.put(Keys.UID, EVENT_UID);
 		output = e.execute(input);
 		
@@ -78,6 +85,17 @@ public class uDoEngineUnitTest {
 		
 		assertEquals("execution should be success",
 				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		// this is the lower boundary case for the positive partition above 100000
+		input.put(Keys.UID, 100000);
+		output = e.execute(input);
+
+		assertFalse("output not null",
+				null == output);
+
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
 				output.getExecutionStatus());
 	}
 	
