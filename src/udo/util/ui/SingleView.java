@@ -1,6 +1,7 @@
 package udo.util.ui;
 
 import java.awt.Dimension;
+import java.util.Calendar;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -77,6 +78,9 @@ public class SingleView extends JPanel {
 		String newValue = "";
 		switch(field) {
 			case DUE_DATE:
+				fieldString = "Due date";
+				oldValue = UI.DD_MM_YY.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.DD_MM_YY.format(((Calendar)item.get(Keys.DUE)).getTime());
 				break;
 			case DUE_TIME:
 				break;

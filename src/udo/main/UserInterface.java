@@ -241,7 +241,7 @@ public class UserInterface implements ActionListener {
 						fade++;
 					}
 				} else if (fade == 0) {
-					mTimer.setDelay(1500);
+					mTimer.setDelay(3000);
 					fade++;
 				} else {
 					mTimer.setDelay(10);

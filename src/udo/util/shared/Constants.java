@@ -2,6 +2,7 @@ package udo.util.shared;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.text.SimpleDateFormat;
 
 /**
  * 
@@ -110,6 +111,15 @@ public class Constants {
 		public static final Font FONT_12 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_12);
 		public static final Font FONT_20_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_20);
 		public static final Font FONT_12_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_12);
+		
+		public static final SimpleDateFormat DD_MM_YY = new SimpleDateFormat("dd/MM/yy");
+		public static final SimpleDateFormat DD_MMMM_YYYY = new SimpleDateFormat("dd MMMM yyyy");
+		public static final SimpleDateFormat DD_MMMM = new SimpleDateFormat("dd MMMM");
+		public static final SimpleDateFormat DD_MMM = new SimpleDateFormat(" dd MMM ");
+		public static final SimpleDateFormat DD = new SimpleDateFormat("dd");
+		public static final SimpleDateFormat MMM = new SimpleDateFormat("MMM");
+		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
+		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
 		
 		public static final int MAIN_WIDTH = 400;
 		public static final int MAIN_HEIGHT = 600;

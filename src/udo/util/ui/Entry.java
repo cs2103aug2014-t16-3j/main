@@ -162,28 +162,24 @@ public class Entry extends JPanel {
 	
 	private String initTime(Calendar cal) {
 		String time = "by ";
-		SimpleDateFormat dfHour = new SimpleDateFormat("hh:mm a");
 		time += getDay(cal);
-		time += dfHour.format(cal.getTime());
+		time += UI.HOUR_12.format(cal.getTime());
 		return time;
 	}
 	
 	private String initTime(Calendar startCal, Calendar endCal) {
 		String time = getDay(startCal);
-		SimpleDateFormat dfHour = new SimpleDateFormat("hh:mm a");
-		time += dfHour.format(startCal.getTime()) + " - ";
+		time += UI.HOUR_12.format(startCal.getTime()) + " - ";
 		if(getDayDiff(startCal, endCal) != 0) {
 			time += getDay(endCal);
-			SimpleDateFormat dfEndDate = new SimpleDateFormat(" dd MMM ");
-			time += dfEndDate.format(endCal.getTime());
+			time += UI.DD_MMM.format(endCal.getTime());
 		}
-		time += dfHour.format(endCal.getTime());
+		time += UI.HOUR_12.format(endCal.getTime());
 		return time;
 	}
 	
 	private String getDay(Calendar cal) {
 		String day = "";
-		SimpleDateFormat sdfDay = new SimpleDateFormat("EEEE");
 		Calendar today = Calendar.getInstance();
 		int dayDiff = getDayDiff(today, cal);
 		switch(dayDiff) {
@@ -210,7 +206,7 @@ public class Entry extends JPanel {
 			case 4:
 			case 5:
 			case 6:
-				day = sdfDay.format(cal.getTime()) + " ";
+				day = UI.DAY_NAME.format(cal.getTime()) + " ";
 			default:
 				break;
 		}
@@ -233,10 +229,8 @@ public class Entry extends JPanel {
 		JPanel time = new JPanel();
 		time.setOpaque(false);
 		time.setLayout(new BoxLayout(time, BoxLayout.PAGE_AXIS));
-		SimpleDateFormat dfDate = new SimpleDateFormat("dd");
-		mDate = new JLabel(dfDate.format(cal.getTime()));
-		SimpleDateFormat dfMonth = new SimpleDateFormat("MMM");
-		mMonth = new JLabel(dfMonth.format(cal.getTime()));
+		mDate = new JLabel(UI.DD.format(cal.getTime()));
+		mMonth = new JLabel(UI.MMM.format(cal.getTime()));
 		mDate.setFont(UI.FONT_20_BOLD);
 		mMonth.setFont(UI.FONT_16);
 		time.add(mDate);

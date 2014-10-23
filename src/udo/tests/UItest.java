@@ -152,14 +152,18 @@ public class UItest {
 
 	private static void testEditItem() {
 		OutputData output = new OutputData(Command.EDIT, ParsingStatus.SUCCESS, ExecutionStatus.SUCCESS);
-		ItemData item = new ItemData(ItemType.EVENT);
+		ItemData item = new ItemData(ItemType.TASK);
+		Calendar oldDate = Calendar.getInstance();
+		Calendar newDate = Calendar.getInstance();
 		item.put(Keys.UID, 1);
 		item.put(Keys.TITLE, "sample EditedItem");
-		item.put(Keys.START, Calendar.getInstance());
-		item.put(Keys.END, Calendar.getInstance());
+//		item.put(Keys.START, date);
+//		item.put(Keys.END, date);
+		item.put(Keys.DUE, oldDate);
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
-		output.put(Keys.FIELD, EditField.TITLE);
-		output.put(Keys.OLD_VALUE, "some old value");
+		output.put(Keys.FIELD, EditField.DUE_DATE);
+		newDate.set(2014, Calendar.DECEMBER, 14);
+		output.put(Keys.OLD_VALUE, newDate);
 		output.put(Keys.ITEM, item);
 		ui.show(output);
 		
