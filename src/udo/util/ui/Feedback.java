@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
@@ -19,7 +20,6 @@ import udo.util.ui.ListView;
 public class Feedback {
 
 	private String mCommand;
-	private String mStatus;
 	private Object mData;
 
 	private DayView mDayView;
@@ -30,6 +30,8 @@ public class Feedback {
 	private ToDoView mMainToDoView;
 
 	private JPanel mFinalView = new JPanel();
+	
+	private boolean mIsListView = false;
 
 	public Feedback() {
 		mListView = new ListView();
@@ -179,16 +181,19 @@ public class Feedback {
 	
 	private void setToListView() {
 		mListView.populateView((ArrayList<ItemData>) mData);
+		mIsListView = true;
 		mFinalView = mListView;
 	}
 	
 	private void setToDayVIew(Date date) {
 		mDayView.init(date, (ArrayList<ItemData>) mData);
+		mIsListView = false;
 		mFinalView = mDayView;
 	}
 	
 	private void setToToDoView() {
 		mToDoView.init((ArrayList<ItemData>) mData);
+		mIsListView = false;
 		mFinalView = mToDoView;
 	}
 
@@ -196,7 +201,19 @@ public class Feedback {
 		return mCommand;
 	}
 
+	public boolean getIsListView() {
+		return mIsListView;
+	}
+	
 	public JPanel getFinalView() {
 		return mFinalView;
+	}
+	
+	public JScrollPane getLeftScrollPane() {
+		return mMainToDoView.getScrollPane();
+	}
+	
+	public JScrollPane getRightScrollPane() {
+		return mMainTodayView.getScrollPane();
 	}
 }
