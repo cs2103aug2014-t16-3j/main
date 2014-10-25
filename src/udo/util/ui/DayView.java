@@ -211,6 +211,10 @@ public class DayView extends JPanel{
 		mTickerCoordsWH.clear();
 	}
 	
+	public JScrollPane getScrollPane() {
+		return mScrollPane;
+	}
+	
 	/**
 	 * The following override of paint method is to add the line separator
 	 * between the date and the day

@@ -27,7 +27,7 @@ public class UItest {
 		/**
 		 * Testing listing items in main screen
 		 */
-//		testListAll();
+		testListAll();
 //		testListDone();
 //		testListSingleDate();
 //		testListSingleHashtag();
@@ -38,7 +38,7 @@ public class UItest {
 //		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-		testEditItem();
+//		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
 //		testToggleDone();	
@@ -176,7 +176,7 @@ public class UItest {
 		ArrayList<String> tags = new ArrayList<String>();
 		tags.add("Asd");
 		tags.add("jkl");
-		for(int i = 0; i<4; i++) {
+		for(int i = 0; i<14; i++) {
 			ItemData input = new ItemData(ItemType.EVENT);
 			input.put(Keys.UID, i);
 			input.put(Keys.TITLE, "dummyEvent" + i);
@@ -191,7 +191,7 @@ public class UItest {
 	public static void testPermaToDoScreen() {
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
 		Calendar date = Calendar.getInstance();
-		for(int i = 0; i<2; i++) {
+		for(int i = 0; i<12; i++) {
 			ItemData input = new ItemData(ItemType.TASK);
 			input.put(Keys.UID, i);
 			input.put(Keys.TITLE, "dummyTask" + i);

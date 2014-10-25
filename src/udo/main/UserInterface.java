@@ -10,15 +10,21 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.AbstractAction;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -41,6 +47,9 @@ public class UserInterface implements ActionListener {
 	private JPanel mLeftView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
+	
+	private boolean altA_Down = false;
+	private boolean altD_Down = false;
 
 	private Timer mTimer;
 	private Timer mExistingTimer;
@@ -93,6 +102,7 @@ public class UserInterface implements ActionListener {
 		mTextField.addActionListener(this);
 		mTextField.setBackground(UI.MAIN_COLOR);
 		mTextField.setFont(UI.FONT_16);
+		setKeyBinds();
 		mTextField.requestFocus();
 
 		/**
@@ -147,6 +157,80 @@ public class UserInterface implements ActionListener {
 		mFrame.setVisible(true);
 	}
 
+	private void setKeyBinds() {
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_Q,
+                "altQ" );
+		mTextField.getActionMap().put("altQ", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			
+			public void actionPerformed(ActionEvent e) {
+				final JScrollBar bar = getLeftSPane().getVerticalScrollBar();
+				int currentValue = bar.getValue();
+				bar.setValue(currentValue - UI.SCROLLBAR_INCREMENT);
+			}
+		});
+		
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_A,
+				"altA" );
+		mTextField.getActionMap().put("altA", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			
+			public void actionPerformed(ActionEvent e) {
+				final JScrollBar bar = getLeftSPane().getVerticalScrollBar();
+				int currentValue = bar.getValue();
+				bar.setValue(currentValue + UI.SCROLLBAR_INCREMENT);
+			}
+		});
+		
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_W,
+                "altW" );
+		mTextField.getActionMap().put("altW", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			
+			public void actionPerformed(ActionEvent e) {
+				final JScrollBar bar = getMainSPane().getVerticalScrollBar();
+				int currentValue = bar.getValue();
+				bar.setValue(currentValue - UI.SCROLLBAR_INCREMENT);
+			}
+		});
+		
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_S,
+                "altS" );
+		mTextField.getActionMap().put("altS", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			
+			public void actionPerformed(ActionEvent e) {
+				final JScrollBar bar = getMainSPane().getVerticalScrollBar();
+				int currentValue = bar.getValue();
+				bar.setValue(currentValue + UI.SCROLLBAR_INCREMENT);
+			}
+		});
+		
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_E,
+                "altE" );
+		mTextField.getActionMap().put("altE", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			
+			public void actionPerformed(ActionEvent e) {
+				final JScrollBar bar = getRightSPane().getVerticalScrollBar();
+				int currentValue = bar.getValue();
+				bar.setValue(currentValue - UI.SCROLLBAR_INCREMENT);
+			}
+		});
+		
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_D,
+                "altD" );
+		mTextField.getActionMap().put("altD", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			
+			public void actionPerformed(ActionEvent e) {
+				final JScrollBar bar = getRightSPane().getVerticalScrollBar();
+				int currentValue = bar.getValue();
+				bar.setValue(currentValue + UI.SCROLLBAR_INCREMENT);
+			}
+		});
+	}
+	
 	@Override
 	/**
 	 * actionPerformed when user press enter on textField.
@@ -257,6 +341,22 @@ public class UserInterface implements ActionListener {
 		mExistingTimer = mTimer;
 		mTimer.start();
 
+	}
+	
+	private JScrollPane getLeftSPane() {
+		return fb.getLeftScrollPane();
+	}
+	
+	private JScrollPane getRightSPane() {
+		return fb.getRightScrollPane();
+	}
+	
+	private JScrollPane getMainSPane() {
+		if(fb.getIsListView()) {
+			return mScrollPane;
+		} else {
+			return mScrollPane;
+		}
 	}
 
 }

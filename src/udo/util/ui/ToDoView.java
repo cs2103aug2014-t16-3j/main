@@ -92,6 +92,10 @@ public class ToDoView extends JPanel {
 		}
 	}
 	
+	public JScrollPane getScrollPane() {
+		return mScrollPane;
+	}
+	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
