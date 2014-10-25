@@ -10,13 +10,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
-import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -24,7 +22,6 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
@@ -47,9 +44,6 @@ public class UserInterface implements ActionListener {
 	private JPanel mLeftView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
-	
-	private boolean altA_Down = false;
-	private boolean altD_Down = false;
 
 	private Timer mTimer;
 	private Timer mExistingTimer;
@@ -352,10 +346,10 @@ public class UserInterface implements ActionListener {
 	}
 	
 	private JScrollPane getMainSPane() {
-		if(fb.getIsListView()) {
+		if(fb.getMainScrollPane() == null) {
 			return mScrollPane;
 		} else {
-			return mScrollPane;
+			return fb.getMainScrollPane();
 		}
 	}
 

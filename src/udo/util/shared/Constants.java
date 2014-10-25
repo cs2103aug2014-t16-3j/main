@@ -167,7 +167,7 @@ public class Constants {
 		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
 		
-		public static final int SCROLLBAR_INCREMENT = 240;
+		public static final int SCROLLBAR_INCREMENT = 135;
 		
 	}
 }

@@ -31,7 +31,7 @@ public class Feedback {
 
 	private JPanel mFinalView = new JPanel();
 	
-	private boolean mIsListView = false;
+	private JScrollPane mMainScrollPane;
 
 	public Feedback() {
 		mListView = new ListView();
@@ -179,21 +179,24 @@ public class Feedback {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setToListView() {
 		mListView.populateView((ArrayList<ItemData>) mData);
-		mIsListView = true;
+		mMainScrollPane = null;
 		mFinalView = mListView;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setToDayVIew(Date date) {
 		mDayView.init(date, (ArrayList<ItemData>) mData);
-		mIsListView = false;
+		mMainScrollPane = mDayView.getScrollPane();
 		mFinalView = mDayView;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setToToDoView() {
 		mToDoView.init((ArrayList<ItemData>) mData);
-		mIsListView = false;
+		mMainScrollPane = mToDoView.getScrollPane();
 		mFinalView = mToDoView;
 	}
 
@@ -201,16 +204,16 @@ public class Feedback {
 		return mCommand;
 	}
 
-	public boolean getIsListView() {
-		return mIsListView;
-	}
-	
 	public JPanel getFinalView() {
 		return mFinalView;
 	}
 	
 	public JScrollPane getLeftScrollPane() {
 		return mMainToDoView.getScrollPane();
+	}
+	
+	public JScrollPane getMainScrollPane() {
+		return mMainScrollPane;
 	}
 	
 	public JScrollPane getRightScrollPane() {
