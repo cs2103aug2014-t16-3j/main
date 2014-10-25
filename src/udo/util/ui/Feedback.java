@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
@@ -19,7 +20,6 @@ import udo.util.ui.ListView;
 public class Feedback {
 
 	private String mCommand;
-	private String mStatus;
 	private Object mData;
 
 	private DayView mDayView;
@@ -30,6 +30,8 @@ public class Feedback {
 	private ToDoView mMainToDoView;
 
 	private JPanel mFinalView = new JPanel();
+	
+	private JScrollPane mMainScrollPane;
 
 	public Feedback() {
 		mListView = new ListView();
@@ -38,18 +40,16 @@ public class Feedback {
 		mSingleView = new SingleView();
 		mMainTodayView = new DayView();
 		mMainToDoView = new ToDoView();
-		mMainToDoView.setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
-		mMainToDoView.setLayout(new WrapLayout());
 	}
 
-	public JPanel initTodayView(ArrayList<ItemData> data) {
+	public JPanel getTodayView(ArrayList<ItemData> data) {
 		mMainTodayView.removeAll();
 		mMainTodayView.init(data);
 		mMainTodayView.revalidate();
 		return mMainTodayView;
 	}
 
-	public JPanel initToDoView(ArrayList<ItemData> data) {
+	public JPanel getToDoView(ArrayList<ItemData> data) {
 		mMainToDoView.removeAll();
 		mMainToDoView.init(data);
 		mMainToDoView.revalidate();
@@ -179,18 +179,24 @@ public class Feedback {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setToListView() {
 		mListView.populateView((ArrayList<ItemData>) mData);
+		mMainScrollPane = null;
 		mFinalView = mListView;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setToDayVIew(Date date) {
 		mDayView.init(date, (ArrayList<ItemData>) mData);
+		mMainScrollPane = mDayView.getScrollPane();
 		mFinalView = mDayView;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void setToToDoView() {
 		mToDoView.init((ArrayList<ItemData>) mData);
+		mMainScrollPane = mToDoView.getScrollPane();
 		mFinalView = mToDoView;
 	}
 
@@ -200,5 +206,17 @@ public class Feedback {
 
 	public JPanel getFinalView() {
 		return mFinalView;
+	}
+	
+	public JScrollPane getLeftScrollPane() {
+		return mMainToDoView.getScrollPane();
+	}
+	
+	public JScrollPane getMainScrollPane() {
+		return mMainScrollPane;
+	}
+	
+	public JScrollPane getRightScrollPane() {
+		return mMainTodayView.getScrollPane();
 	}
 }

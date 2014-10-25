@@ -2,7 +2,10 @@ package udo.util.shared;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
+
+import javax.swing.KeyStroke;
 
 /**
  * 
@@ -91,12 +94,20 @@ public class Constants {
 		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
 	}
 	
+	//@Author: Leonardo Sjahputra
 	/**
 	 * 
 	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
 	 *
 	 */
 	public static final class UI {
+		public static final KeyStroke ALT_Q = KeyStroke.getKeyStroke("alt Q");
+		public static final KeyStroke ALT_A = KeyStroke.getKeyStroke("alt A");
+		public static final KeyStroke ALT_W = KeyStroke.getKeyStroke("alt W");
+		public static final KeyStroke ALT_S = KeyStroke.getKeyStroke("alt S");
+		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
+		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
+		
 		public static final int FONTSIZE_24 = 24;
 		public static final int FONTSIZE_20 = 20;
 		public static final int FONTSIZE_18 = 18;
@@ -155,6 +166,8 @@ public class Constants {
 		
 		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
+		
+		public static final int SCROLLBAR_INCREMENT = 135;
 		
 	}
 }

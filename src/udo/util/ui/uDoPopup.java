@@ -2,7 +2,6 @@ package udo.util.ui;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -13,6 +12,10 @@ import udo.util.shared.Constants.UI;
 
 public class uDoPopup extends JLabel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private float alpha;
 
 	public uDoPopup() {

@@ -1,6 +1,6 @@
-12347|||PLAN|||simple|||true|||sample,test,play,work|||;
-53423|||PLAN|||hello world!|||false||||||;
 24901|||PLAN|||go drinking with mates today|||false|||drinking|||;
+53423|||PLAN|||hello world!|||false||||||;
+12347|||PLAN|||sample plan|||true|||sample,test,play,work|||;
 33703|||EVENT|||new item|||12/12/2012|||4:0|||12/12/2012|||6:0|||new|||;
 88040|||TASK|||asd|||12/12/2012|||13:30|||false||||||;
 87141|||EVENT|||new item|||13/12/2012|||4:0|||12/12/2012|||6:0|||new|||;

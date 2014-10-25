@@ -11,7 +11,6 @@ import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.EditField;
 import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
 import udo.util.shared.OutputData;
 
 public class SingleView extends JPanel {
