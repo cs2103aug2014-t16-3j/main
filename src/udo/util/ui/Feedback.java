@@ -38,18 +38,16 @@ public class Feedback {
 		mSingleView = new SingleView();
 		mMainTodayView = new DayView();
 		mMainToDoView = new ToDoView();
-		mMainToDoView.setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
-		mMainToDoView.setLayout(new WrapLayout());
 	}
 
-	public JPanel initTodayView(ArrayList<ItemData> data) {
+	public JPanel getTodayView(ArrayList<ItemData> data) {
 		mMainTodayView.removeAll();
 		mMainTodayView.init(data);
 		mMainTodayView.revalidate();
 		return mMainTodayView;
 	}
 
-	public JPanel initToDoView(ArrayList<ItemData> data) {
+	public JPanel getToDoView(ArrayList<ItemData> data) {
 		mMainToDoView.removeAll();
 		mMainToDoView.init(data);
 		mMainToDoView.revalidate();

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -27,7 +26,6 @@ import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.ui.Feedback;
-import udo.util.ui.WrapLayout;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
@@ -35,12 +33,12 @@ public class UserInterface implements ActionListener {
 	private static UserInterface mUserInterface;
 	
 	private JFrame mFrame = new JFrame("uDo");
-	private JLayeredPane mLayer = new JLayeredPane();
+	private JLayeredPane mMainViewLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
 	private JScrollPane mScrollPane = new JScrollPane();
-	private JPanel mTextArea = new JPanel();
-	private JPanel mTodayView = new JPanel();
-	private JPanel mToDoView = new JPanel();
+	private JPanel mMainView = new JPanel();
+	private JPanel mRightView = new JPanel();
+	private JPanel mLeftView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
 
@@ -79,14 +77,14 @@ public class UserInterface implements ActionListener {
 		/**
 		 * Sets up layer
 		 */
-		mLayer.setPreferredSize(new Dimension(UI.MAIN_WIDTH, UI.MAIN_HEIGHT));
+		mMainViewLayer.setPreferredSize(new Dimension(UI.MAIN_WIDTH, UI.MAIN_HEIGHT));
 
 		/**
 		 * Sets up textArea
 		 */
-		mTextArea.setOpaque(false);
+		mMainView.setOpaque(false);
 		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
-		mScrollPane.getViewport().add(mTextArea);
+		mScrollPane.getViewport().add(mMainView);
 
 		/**
 		 * Sets up textField
@@ -117,33 +115,33 @@ public class UserInterface implements ActionListener {
 		mTextPanel.add(mTextField, c);
 		mTextPanel.setBackground(UI.MAIN_COLOR);
 
-		mLayer.add(mTextPanel, new Integer(0));
+		mMainViewLayer.add(mTextPanel, new Integer(0));
 
 		/**
 		 * Sets up popup
 		 */
 
-		mLayer.add(mPopup, new Integer(2));
+		mMainViewLayer.add(mPopup, new Integer(2));
 		
 
 		/**
 		 * Sets up ToDoView
 		 */
-		mToDoView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
+		mLeftView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
 
 		/**
 		 * Sets up todayView
 		 */
-		mTodayView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
+		mRightView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
 		
 		/**
 		 * Sets up the frame
 		 */
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// mFrame.setUndecorated(true);
-		mFrame.add(mToDoView, BorderLayout.WEST);
-		mFrame.add(mLayer, BorderLayout.CENTER);
-		mFrame.add(mTodayView, BorderLayout.EAST);
+		mFrame.add(mLeftView, BorderLayout.WEST);
+		mFrame.add(mMainViewLayer, BorderLayout.CENTER);
+		mFrame.add(mRightView, BorderLayout.EAST);
 		mFrame.pack();
 		mFrame.setLocationRelativeTo(null);
 		mFrame.setVisible(true);
@@ -177,16 +175,16 @@ public class UserInterface implements ActionListener {
 	}
 
 	public void updateTodayScreen(ArrayList<ItemData> data) {
-		mFrame.remove(mTodayView);
-		mTodayView.add(fb.initTodayView(data), BorderLayout.CENTER);
-		mFrame.add(mTodayView, BorderLayout.EAST);
+		mFrame.remove(mRightView);
+		mRightView.add(fb.getTodayView(data), BorderLayout.CENTER);
+		mFrame.add(mRightView, BorderLayout.EAST);
 		mFrame.revalidate();
 	}
 	
 	public void updateTodoScreen(ArrayList<ItemData> data) {
-		mFrame.remove(mToDoView);
-		mToDoView.add(fb.initToDoView(data), BorderLayout.CENTER);
-		mFrame.add(mToDoView, BorderLayout.WEST);
+		mFrame.remove(mLeftView);
+		mLeftView.add(fb.getToDoView(data), BorderLayout.CENTER);
+		mFrame.add(mLeftView, BorderLayout.WEST);
 		mFrame.revalidate();
 	}
 	
@@ -198,8 +196,8 @@ public class UserInterface implements ActionListener {
 		String outputString = fb.getCommand();
 		
 		mScrollPane.getViewport().removeAll();
-		mTextArea = fb.getFinalView();
-		mScrollPane.getViewport().add(mTextArea);
+		mMainView = fb.getFinalView();
+		mScrollPane.getViewport().add(mMainView);
 
 		showPopup(outputString);
 	}
