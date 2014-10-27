@@ -1,6 +1,7 @@
 package udo.util.engine.runners;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import udo.util.engine.Cache;
 import udo.util.engine.UndoBin;
@@ -44,11 +45,17 @@ public class RunnerList extends Runner {
 				break;
 
 			case SINGLE_HASHTAG :
-				String hashtag = (String) mInput.get(Keys.HASHTAG);
+				String hashtag = (String) mInput.get(Keys.QUERY_VALUE);
 				result = mCache.getAllItemsWithHashtag(hashtag);
 				output.put(Keys.QUERY_VALUE, hashtag);
 				break;
-
+				
+			case DATE :
+				Calendar dateCal = (Calendar) mInput.get(Keys.QUERY_VALUE);
+				result = mCache.getAllItemsOn(dateCal);
+				output.put(Keys.QUERY_VALUE, dateCal);
+				break;
+				
 			default :
 				// unrecognised list query type.
 				return new OutputData(Command.LIST,

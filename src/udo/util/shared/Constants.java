@@ -2,7 +2,6 @@ package udo.util.shared;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 
 import javax.swing.KeyStroke;

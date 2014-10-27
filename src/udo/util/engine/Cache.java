@@ -80,6 +80,17 @@ public class Cache {
 		return result;
 	}
 	
+	public ArrayList<ItemData> getAllItemsOn(Calendar date) {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			if (isSameDateAs(item, date)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+	
 	public ArrayList<ItemData> getAllEventsOn(Calendar date) {
 		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
 		for (ItemData item : getAllEvents()) {
@@ -250,7 +261,9 @@ public class Cache {
 	private boolean isSameDateAs(ItemData item, Calendar date) {
 		Calendar itemCal;
 		ItemType itemType = item.getItemType();
-		if (itemType.equals(ItemType.EVENT)) {
+		if (itemType == null) {
+			return false;
+		} else if (itemType.equals(ItemType.EVENT)) {
 			itemCal = (Calendar) item.get(Keys.START);
 		} else if (itemType.equals(ItemType.TASK)) {
 			itemCal = (Calendar) item.get(Keys.DUE);

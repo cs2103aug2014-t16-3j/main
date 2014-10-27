@@ -2,8 +2,6 @@ package udo.util.shared;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Set;
 
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.StorageStrings;
@@ -105,16 +103,16 @@ public class ItemData extends DataHolder implements Comparable<ItemData> {
 			// they are equal if nothing to compare
 			return 0;
 		} else if (thisCal == null && otherCal != null) {
-			// this object is less than the other
+			// this is placed behind the other
 			// if the other has a date and this doesnt.
-			return -1;
-		} else if (thisCal != null && otherCal == null) {
-			// the other object is less than this object
-			// if this object has a date and the other doesnt.
 			return 1;
+		} else if (thisCal != null && otherCal == null) {
+			// this is placed in front of the other 
+			// if this has a date and the other doesnt.
+			return -1;
 		} else if (thisCal != null && otherCal != null) {
-			// if both are not null, then can just return
-			// the comparision to the
+			// if both are not null, then just 
+			// return the comparision to the other
 			return thisCal.compareTo(otherCal);
 		} else {
 			// this should not happen

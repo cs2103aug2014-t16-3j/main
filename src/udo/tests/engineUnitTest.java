@@ -22,7 +22,7 @@ import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
 
-public class uDoEngineUnitTest {
+public class engineUnitTest {
 	
 	private static final int TASK_UID = 12346;
 	private static final int EVENT_UID = 12345;
@@ -49,7 +49,7 @@ public class uDoEngineUnitTest {
 		assertFalse("list not null",
 				null == list);
 		
-		System.out.println(list);
+		System.out.println("list by date " + list);
 	}
 	
 	
@@ -355,7 +355,7 @@ public class uDoEngineUnitTest {
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
-		input.put(Keys.HASHTAG, "meeting");
+		input.put(Keys.QUERY_VALUE, "meeting");
 		OutputData o = e.execute(input);
 		
 		assertFalse("output object cant be null",

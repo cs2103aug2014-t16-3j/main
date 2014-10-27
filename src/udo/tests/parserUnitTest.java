@@ -15,7 +15,7 @@ import udo.util.shared.InputData;
 import udo.util.shared.ListQuery;
 import udo.util.shared.ParsingStatus;
 
-public class uDoParserUnitTest {
+public class parserUnitTest {
 
 	Parser p = new Parser();
 	

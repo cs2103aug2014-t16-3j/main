@@ -7,12 +7,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 import udo.util.exceptions.WritingToStorageFailedException;
-import udo.util.shared.Constants.StorageIndices;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.StorageIndices;
 import udo.util.shared.Constants.StorageStrings;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;

@@ -21,7 +21,7 @@ public class ParserListDate implements ParserListCommand {
 		Calendar date = listDate.getDate(details);
 		if (date != null) {
 			data.put(Keys.QUERY_TYPE, ListQuery.DATE);
-			data.put(Keys.DATE, date);	
+			data.put(Keys.QUERY_VALUE, date);	
 			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
