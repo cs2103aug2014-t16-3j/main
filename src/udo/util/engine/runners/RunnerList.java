@@ -46,7 +46,7 @@ public class RunnerList extends Runner {
 			case SINGLE_HASHTAG :
 				String hashtag = (String) mInput.get(Keys.HASHTAG);
 				result = mCache.getAllItemsWithHashtag(hashtag);
-				output.put(Keys.QUERY, hashtag);
+				output.put(Keys.QUERY_VALUE, hashtag);
 				break;
 
 			default :

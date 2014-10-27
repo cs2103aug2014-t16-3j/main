@@ -122,7 +122,7 @@ public class UItest {
 		Engine engine = Engine.getInstance();
 		InputData input = new InputData(Command.LIST);
 		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
-		input.put(Keys.QUERY, "test");
+		input.put(Keys.QUERY_VALUE, "test");
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData output = engine.execute(input);
 		ui.show(output);
@@ -134,7 +134,7 @@ public class UItest {
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
 		Calendar date = Calendar.getInstance();
 		output.put(Keys.QUERY_TYPE, ListQuery.DATE);
-		output.put(Keys.QUERY, Calendar.getInstance());
+		output.put(Keys.QUERY_VALUE, Calendar.getInstance());
 		for(int i = 0; i<9; i++) {
 			ItemData input = new ItemData(ItemType.EVENT);
 			input.put(Keys.UID, i);

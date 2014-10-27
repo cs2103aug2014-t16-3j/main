@@ -158,7 +158,7 @@ public class Feedback {
 					setToListView();
 					break;
 				case SINGLE_HASHTAG:
-					query = "#" + (String) output.get(Keys.QUERY);
+					query = "#" + (String) output.get(Keys.QUERY_VALUE);
 					setToListView();
 					break;
 				case DONE:
@@ -166,7 +166,7 @@ public class Feedback {
 					setToListView();
 					break;
 				case DATE:
-					Date date = ((Calendar) output.get(Keys.QUERY)).getTime();
+					Date date = ((Calendar) output.get(Keys.QUERY_VALUE)).getTime();
 					query = "items on " + UI.DD_MMMM_YYYY.format(date);
 					setToDayVIew(date);
 					break;

@@ -28,6 +28,32 @@ public class uDoEngineUnitTest {
 	private static final int EVENT_UID = 12345;
 	
 	@Test
+	public void testEngineListByDate() {
+		Engine e = Engine.getInstance();
+		Calendar queryCal = Calendar.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DATE);
+		input.put(Keys.QUERY_VALUE, queryCal);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println(list);
+	}
+	
+	
+	@Test
 	// delete uid is split into:
 		// positive uid
 		// negative uid (invalid)

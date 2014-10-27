@@ -36,7 +36,7 @@ public class Constants {
 		public static final String ITEM = "item";
 		public static final String ITEMS = "items";
 		public static final String QUERY_TYPE = "query type";
-		public static final String QUERY = "query string";
+		public static final String QUERY_VALUE = "query value";
 		public static final String FIELD = "field";
 		public static final String VALUE = "value";
 		public static final String DATE = "date";
