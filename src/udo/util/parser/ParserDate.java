@@ -7,10 +7,20 @@ import java.util.Date;
 
 public class ParserDate {
 
-	private Calendar mDate;
+	private static Calendar mDate;
+	private String mDays[] = {"mon", "tue", "wed", "thu", "fri", "sat", "sun", 
+							"today", "tomorrow"};
 	
 	public ParserDate() {
-		mDate = Calendar.getInstance();
+		
+	}
+	
+	//Calendar cal = ParserDate.getInstance();
+	public static Calendar getInstance() {
+		if (mDate == null) {
+			mDate = Calendar.getInstance(); 
+		} 
+		return mDate;
 	}
 	
 	/**
@@ -24,117 +34,54 @@ public class ParserDate {
 		return mDate;
 	}
 	
-	/**
-	 * Method checks whether input contains a date string of format "dd/mm/yy"
-	 * @param input
-	 * @return true if date string exist, false otherwise
-	 */
-	public boolean containsDate(String input) {
-		String dateString = getDateString(input);
-		if (dateString != null) {
-			return true;
+	private void decipherText(String input) {
+		if (input.contains("/")) {
+			String dateString = getDateString(input);
 		} else {
-			return false;
-		}
-	}
-	
-	public void decipherText(String input) {
-		String dateString = getDateString(input);
-		if (dateString != null) {
-			Calendar cal = formatDateSubstring(dateString);
-			mDate = cal;
+			// go by day of week
 		}
 	}
 
-	// checks for dateString with the format "dd/mm/yy"
-	// returns the date string with all white spaces trimed if a date string exist
-	// returns the first date string it reads if a date string exist
-	// otherwise return null
-	public String getDateString(String input) {
-		int dayMonthSlashIndex;
-		int monthYearSlashIndex;
-		int dateStringIndexOffset;
-		int dateStringStartingindex;
-		int dateStringEndingIndex;
+	private String getDateString(String input) {
 		String dateSubstring = input;
+		int dayMonthSlashIndex = dateSubstring.indexOf("/");
+		int offset = dayMonthSlashIndex + 1; 
+		int monthYearSlashIndex = dateSubstring.indexOf("/", offset); // gets the second "/" from "dd/mm/yy"
+		int monthDigits = monthYearSlashIndex - dayMonthSlashIndex - 1;
+		boolean dateStringContainsYear = (monthYearSlashIndex != -1 || monthDigits == 1 || monthDigits == 2);
+		int dayIndex = dayMonthSlashIndex - 2;
+		int monthIndex;
+		int yearIndex;
 		
-		while (dateSubstring.contains("/")) {
-			dayMonthSlashIndex = dateSubstring.indexOf("/");
-			dateStringIndexOffset = dayMonthSlashIndex + 1; // gets the second "/" from "dd/mm/yy"
-			monthYearSlashIndex = dateSubstring.indexOf("/", dateStringIndexOffset);
+		if (dateStringContainsYear) {
+			yearIndex = monthYearSlashIndex + 5;
+			dateSubstring = dateSubstring.substring(dayIndex, yearIndex);
+			dateSubstring = removePossibleAlphabets(dateSubstring);
 			
-			if (isValidDateString(dateSubstring, dayMonthSlashIndex, monthYearSlashIndex)) {
-				dateStringStartingindex = dayMonthSlashIndex - 2;
-				dateStringEndingIndex = monthYearSlashIndex + 3;
-				dateSubstring = dateSubstring.substring(dateStringStartingindex, dateStringEndingIndex);
-				return dateSubstring.trim();
-			}
-			dateSubstring = dateSubstring.substring(dateStringIndexOffset);
-		}
-		return null;
-	}
-	
-	public boolean isValidDateString(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
-		if (isSingleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex) ||
-			isDoubleDigitMonth(input, dayMonthSlashIndex, monthYearSlashIndex)) {
-			
-			try { // must check index out of bounds
-				int dayStartingIndex = dayMonthSlashIndex - 2;
-				int monthStartingIndex = dayMonthSlashIndex + 1;
-				int yearStartingIndex = monthYearSlashIndex + 1;
-				int yearEndingIndex = monthYearSlashIndex + 3;
-				
-				String day = input.substring(dayStartingIndex, dayMonthSlashIndex);
-				String month = input.substring(monthStartingIndex, monthYearSlashIndex);
-				String year = input.substring(yearStartingIndex, yearEndingIndex);
-				
-				int dayInt = Integer.parseInt(day.trim());
-				int monthInt = Integer.parseInt(month);
-				int yearInt = Integer.parseInt(year);
-			
-			} catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-				return false;
-			} catch (NumberFormatException numberFormatException) {
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean isSingleDigitMonth(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
-		int oneDigitMonth = 2;
-		if (input.indexOf("/") == dayMonthSlashIndex && 
-			dayMonthSlashIndex + oneDigitMonth == monthYearSlashIndex) {
-			return true;
 		} else {
-			return false;
+			monthIndex = dayMonthSlashIndex + 3;
+			dateSubstring = dateSubstring.substring(dayIndex, monthIndex);
+			dateSubstring = removePossibleAlphabets(dateSubstring);
 		}
+		return dateSubstring;
 	}
-	
-	public boolean isDoubleDigitMonth(String input, int dayMonthSlashIndex, int monthYearSlashIndex) {
-		int twoDigitMonth = 3;
-		if (input.indexOf("/") == dayMonthSlashIndex && 
-			dayMonthSlashIndex + twoDigitMonth == monthYearSlashIndex) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public Calendar formatDateSubstring(String input) {
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
-		Date date;
 
-		try {
-			date = format.parse(input);
-			cal.setTime(date);
-		} catch (ParseException parserException) {
-			// inputData status fail
-			return cal;
+	private String removePossibleAlphabets(String dateSubstring) {
+		String dateString = dateSubstring.replaceAll("\\s+","");
+		String firstChar = dateString.substring(0, 1);
+		String lastChar = dateString.substring(dateString.length() - 1);
+		while (!dateString.isEmpty()) {
+			if (!isInteger(firstChar)) {
+				dateString = dateString.substring(1);
+				firstChar = dateString.substring(0, 1);
+			} else if (!isInteger(lastChar)) {
+				dateString = dateString.substring(0, dateString.length() - 1);
+				lastChar = dateString.substring(dateString.length() - 1);
+			} else {
+				break;
+			}
 		}
-		return cal;
+		return dateString;
 	}
 
 	public boolean isInteger(String input) {
