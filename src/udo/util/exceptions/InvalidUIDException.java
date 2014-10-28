@@ -1,3 +1,4 @@
+//@author A0108358B
 package udo.util.exceptions;
 
 public class InvalidUIDException extends Exception {

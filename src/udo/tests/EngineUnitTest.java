@@ -1,3 +1,4 @@
+//@author A0108358B
 package udo.tests;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +22,7 @@ import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
 
-public class engineUnitTest {
+public class EngineUnitTest {
 	
 	private static final int TASK_UID = 12346;
 	private static final int EVENT_UID = 12345;

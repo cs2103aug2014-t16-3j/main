@@ -1,3 +1,4 @@
+//@author A0108358B
 package udo.util.shared;
 
 import java.awt.Color;
@@ -14,7 +15,8 @@ import javax.swing.KeyStroke;
  * 
  */
 public class Constants {
-
+	
+	//@author A0108358B
 	/**
 	 * 
 	 * This class holds all the keys used for the data storage objects. Please
