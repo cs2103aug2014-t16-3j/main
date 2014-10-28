@@ -11,7 +11,6 @@ import java.util.Calendar;
 import org.junit.Test;
 
 import udo.main.Engine;
-import udo.util.engine.Cache;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;

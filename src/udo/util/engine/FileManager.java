@@ -35,12 +35,24 @@ public class FileManager {
 		mIsWriting = false;
 	}
 	
+	/**
+	 * lets you specify what file to read.
+	 * 
+	 * @param filename the file to read
+	 */
 	public FileManager(String filename) {
 		mFilename = filename;
 		mIsReading = false;
 		mIsWriting = false;
 	}
 
+	/**
+	 * gets an arraylist of data after reading in the file
+	 * 
+	 * @return the list of items
+	 * @throws ReadingFromStorageException if cannot read
+	 * @throws IOException if reading error
+	 */
 	public ArrayList<ItemData> getFromFile() throws ReadingFromStorageException, IOException {
 		startReadMode();
 		if (!isReading()) {
@@ -55,6 +67,12 @@ public class FileManager {
 		return result;
 	}
 
+	/**
+	 * writes a list of items to the file. 
+	 * @param list the list of items to write.
+	 * @throws IOException if writing error or file error.
+	 * @throws WritingToStorageException if cannot write
+	 */
 	public void writeToFile(ArrayList<ItemData> list) throws IOException, WritingToStorageException {
 		startWriteMode();
 		if (!isWriting()) {

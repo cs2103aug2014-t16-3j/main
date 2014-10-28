@@ -44,6 +44,7 @@ public class Constants {
 		public static final String OLD_VALUE = "Old value";
 	}
 
+	//@author A0108358B
 	/**
 	 * 
 	 * This class holds the array index values for the file manager usage. If you
@@ -73,7 +74,8 @@ public class Constants {
 		public static final int PLAN_DONE = 3;
 		public static final int PLAN_HASHTAGS = 4;
 	}
-
+	
+	//@author A0108358B
 	/**
 	 * 
 	 * This class holds the magic strings for the storage and retrieving of data
@@ -82,7 +84,7 @@ public class Constants {
 	 * 
 	 */
 	public static final class StorageStrings {
-		public static final String FILENAME = "uDo_data.txt";
+		public static final String FILENAME = "data/uDo_data.txt";
 		public static final String FIELD_DELIMITER = "\\|\\|\\|";
 		public static final String DATE_DELIMITER = "/";
 		public static final String TIME_DELIMITER = ":";
@@ -95,7 +97,7 @@ public class Constants {
 		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
 	}
 	
-	//@Author: Leonardo Sjahputra
+	//@author: Leonardo Sjahputra
 	/**
 	 * 
 	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
