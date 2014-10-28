@@ -123,7 +123,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testEditDueDate() {
-		String editDueDate = "edit 20430 due date 10/2/34";
+		String editDueDate = "edit 20430 due date 10/2";
 		InputData data = p.getInputData(editDueDate);
 		ParsingStatus status = data.getStatus();
 		Command type = data.getCommand();
@@ -140,7 +140,7 @@ public class ParserUnitTest {
 		
 		assertEquals(10, day);
 		assertEquals(1, month);
-		assertEquals(2034, year);
+		assertEquals(2014, year);
 	}
 	
 	@Test
@@ -165,7 +165,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testEditEndDate() {
-		String editEndDate = "edit 23859 end date 10/1/94";
+		String editEndDate = "edit 23859 end date 1/1";
 		InputData data = p.getInputData(editEndDate);
 		ParsingStatus status = data.getStatus();
 		Command type = data.getCommand();
@@ -180,9 +180,9 @@ public class ParserUnitTest {
 		assertEquals(Command.EDIT, type);
 		assertEquals(EditField.END_DATE, field);
 		
-		assertEquals(10, day);
+		assertEquals(1, day);
 		assertEquals(0, month);
-		assertEquals(1994, year);
+		assertEquals(2014, year);
 	}
 	
 	@Test
@@ -327,7 +327,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testListDate() {
-		String listDate = "list 20/1/2014";
+		String listDate = "list 20/1";
 		InputData data = p.getInputData(listDate);
 		ParsingStatus status = data.getStatus();
 		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
@@ -396,7 +396,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testAddTask() {
-		String task1 = "add Meet jane after #school #by 22/10/14 7:30am";
+		String task1 = "add Meet jane after #school #by 22/10 7:30am";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -423,7 +423,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testAddEvent() {
-		String event1 = "add meet #boss #from 22/10/2014 10:00am to 22/10/14 9:00pm";
+		String event1 = "add meet #boss #from 22/10/2014 10:00am to 22/1 9:00pm";
 		InputData data = p.getInputData(event1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -444,7 +444,7 @@ public class ParserUnitTest {
 		int mins = endEvent.get(Calendar.MINUTE);
 		
 		assertEquals(22, day);
-		assertEquals(9, month);
+		assertEquals(0, month);
 		assertEquals(2014, year);
 		assertEquals(9, hour);
 		assertEquals(0, mins);

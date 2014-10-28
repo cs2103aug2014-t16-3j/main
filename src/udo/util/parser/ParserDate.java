@@ -53,12 +53,19 @@ public class ParserDate {
 
 	private Calendar formatDateSubstring(String input, int dateFormat) {
 		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
 		SimpleDateFormat format = new SimpleDateFormat(mDateFormat[dateFormat]);
 		Date date;
 
 		try {
 			date = format.parse(input);
 			cal.setTime(date);
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
+			
+			if (dateFormat == 0) {
+				cal.set(Calendar.YEAR, year);
+			}
 		} catch (ParseException parserException) {
 			cal = null;
 			return cal;
@@ -83,6 +90,9 @@ public class ParserDate {
 		int dayMonthSlashIndex = input.indexOf("/");
 		int startIndex = dayMonthSlashIndex - 2;
 		int endIndex = dayMonthSlashIndex + 3;
+		if (endIndex > input.length()) {
+			endIndex = input.length();
+		}
 		
 		String dateString = input.substring(startIndex, endIndex);
 		dateString = dateString.replaceAll("\\s+","");
@@ -146,12 +156,16 @@ public class ParserDate {
 	}
 	
 	private boolean hasFourYearDigits(int monthYearSlashIndex, String input) {
+		String year = input;
 		int yearStartIndex = monthYearSlashIndex + 1;
 		int yearEndIndex = monthYearSlashIndex + 5;
+		if (yearEndIndex > year.length()) {
+			yearEndIndex = year.length();
+		}
 		int count = 0;
 		String yearDigit;
 		for (int i = yearStartIndex; i < yearEndIndex; i++) {
-			yearDigit = input.substring(yearStartIndex, yearStartIndex + 1);
+			yearDigit = year.substring(i, i + 1);
 			if (isInteger(yearDigit)) {
 				count++;
 			}

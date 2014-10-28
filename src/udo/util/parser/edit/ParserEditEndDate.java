@@ -21,9 +21,13 @@ public class ParserEditEndDate implements ParserEditCommand {
 		if (details.length() > startingIndex) {
 			ParserDate d = new ParserDate();
 			Calendar endDate = d.getDate(details);
-			data.put(Keys.FIELD, EditField.END_DATE);
-			data.put(Keys.VALUE, endDate);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
+			if (endDate != null) {
+				data.put(Keys.FIELD, EditField.END_DATE);
+				data.put(Keys.VALUE, endDate);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);	
+			}
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}
