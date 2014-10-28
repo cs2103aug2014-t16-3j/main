@@ -8,6 +8,7 @@ import java.util.Calendar;
 import org.junit.Test;
 
 import udo.main.Parser;
+import udo.util.parser.ParserDate;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
@@ -394,7 +395,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testAddTask() {
-		String task1 = "add Meet jane after #school #by #22/10/14 7:30am";
+		String task1 = "add Meet jane after #school #by 22/10/14 7:30am";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -403,7 +404,7 @@ public class ParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.ADD_TASK, data.getCommand());
 		assertEquals("Meet jane after school", title);
-		assertEquals("[school, by, 22/10/14]", hashtags.toString());
+		assertEquals("[school, by]", hashtags.toString());
 		
 		Calendar due = (Calendar) data.get(Keys.DUE);
 		int day = due.get(Calendar.DAY_OF_MONTH);
