@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.util.exceptions.WritingToStorageFailedException;
+import udo.util.exceptions.ReadingFromStorageException;
+import udo.util.exceptions.WritingToStorageException;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.StorageIndices;
 import udo.util.shared.Constants.StorageStrings;
@@ -39,63 +40,29 @@ public class FileManager {
 		mIsWriting = false;
 	}
 
-	public ArrayList<ItemData> getFromFile() throws IOException {
+	public ArrayList<ItemData> getFromFile() throws ReadingFromStorageException, IOException {
 		startReadMode();
 		if (!isReading()) {
-			System.out.println("not readinf");
-			return null;
+			throw new ReadingFromStorageException("read mode cannot be started");
 		}
 		ArrayList<ItemData> result = new ArrayList<ItemData>();
 		while (hasNextItem()) {
 			ItemData item = getNextItem();
 			result.add(item);
 		}
-		closeReadMode();
+		stopReadMode();
 		return result;
 	}
 
-	public boolean writeToFile(ArrayList<ItemData> list) throws WritingToStorageFailedException {
+	public void writeToFile(ArrayList<ItemData> list) throws IOException, WritingToStorageException {
 		startWriteMode();
+		if (!isWriting()) {
+			throw new WritingToStorageException("write mode cannot be started");
+		}
 		for (ItemData item : list) {
 			write(item);
 		}
-		closeWriteMode();
-		return true;
-	}
-
-	private boolean startReadMode() {
-		if (isWriting()) {
-			System.out.println("iswriting");
-			return false;
-		}
-		try {
-			mReader = new BufferedReader(
-					new FileReader(mFilename));
-			String nextLine = mReader.readLine();
-			mNextItem = getItemData(nextLine);
-		} catch (FileNotFoundException e) {
-			// if there's no existing file, create the file.
-			// then try opening it again.
-			System.out.println("fnf");
-			createNewFile(mFilename);
-			startReadMode();
-		} catch (IOException e) {
-			// if unable to read the nextline
-			System.out.println("io ex");
-			return false;
-		}
-		setReading(true);
-		return true;
-	}
-
-	private boolean closeReadMode() {
-		try {
-			mReader.close();
-		} catch (IOException e) {
-			return false;
-		}
-		setReading(false);
-		return true;
+		stopWriteMode();
 	}
 
 	private boolean hasNextItem() {
@@ -135,9 +102,6 @@ public class FileManager {
 			return null;
 		}
 		String[] lineArray = getStringArray(line);
-
-		// this method is meant to be wordy
-		// TODO should extract to separate class
 		
 		ItemType type = getItemType(lineArray[StorageIndices.TYPE]);
 		switch (type) {
@@ -287,37 +251,64 @@ public class FileManager {
 		}
 	}
 
-	private boolean startWriteMode() {
+	private void startReadMode() {
+		if (isWriting()) {
+			setReading(false);
+		}
+		
+		try {
+			mReader = new BufferedReader(
+					new FileReader(mFilename));
+			String nextLine = mReader.readLine();
+			mNextItem = getItemData(nextLine);
+			setReading(true);
+			
+		} catch (FileNotFoundException e) {
+			// if there's no existing file, create the file.
+			// then try opening it again.
+			setReading(false);
+			createNewFile(mFilename);
+			startReadMode();
+			
+		} catch (IOException e) {
+			// if unable to read the nextline
+			setReading(false);
+		}
+	}
+
+	private void stopReadMode() {
+		try {
+			mReader.close();
+			setReading(false);
+		} catch (IOException e) {
+			setReading(true);
+		}
+	}
+
+	private void startWriteMode() {
 		try {
 			// will overwrite the current file with the new data.
 			mWriter = new BufferedWriter(
 					new FileWriter(mFilename));
+			setWriting(true);
 		} catch (IOException e) {
-			return false;
+			setWriting(false);
 		}
-		setWriting(true);
-		return true;
 	}
 
-	private boolean closeWriteMode() {
+	private void stopWriteMode() {
 		try {
 			mWriter.close();
-			mWriter = null;
+			setWriting(false);
 		} catch (IOException e) {
-			return false;
+			setWriting(true);
 		}
-		setWriting(false);
-		return true;
 	}
 
-	private void write(ItemData item) throws WritingToStorageFailedException {
+	private void write(ItemData item) throws IOException {
 		String itemString = item.toString();
-		try {
-			mWriter.append(itemString);
-			mWriter.newLine();
-		} catch (IOException e) {
-			throw new WritingToStorageFailedException();
-		}
+		mWriter.append(itemString);
+		mWriter.newLine();
 	}
 
 	private boolean isWriting() {

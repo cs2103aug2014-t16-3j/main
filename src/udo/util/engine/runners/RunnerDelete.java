@@ -2,6 +2,8 @@ package udo.util.engine.runners;
 
 import udo.util.engine.Cache;
 import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
 import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Command;
 import udo.util.shared.ExecutionStatus;
@@ -25,29 +27,30 @@ public class RunnerDelete extends Runner {
 		OutputData output;
 		
 		try {
-			deletedItem = mCache.getItem(uid);
-			boolean deleteOK = mCache.deleteItem(uid);
+			deletedItem = mCache.deleteItem(uid);
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.SUCCESS);
+			output.put(Keys.ITEM, deletedItem);
+			storeUndo(deletedItem);
 			
-			if (deleteOK) {
-				output = new OutputData(Command.DELETE, 
-						ParsingStatus.SUCCESS, 
-						ExecutionStatus.SUCCESS);
-				output.put(Keys.ITEM, deletedItem);
-				storeUndo(deletedItem);
-			} else {
-				output = new OutputData(Command.DELETE, 
-						ParsingStatus.SUCCESS, 
-						ExecutionStatus.FAIL);
-			}
-
-			return output;
+		} catch (CacheAccessException e) {
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.FAIL);
+			
+		} catch (InvalidUIDException e) {
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.FAIL);
 			
 		} catch (ItemNotFoundException e) {
 			output = new OutputData(Command.DELETE, 
 					ParsingStatus.SUCCESS, 
 					ExecutionStatus.FAIL);
-			return output;
 		}
+
+		return output;
 	}
 
 	private void storeUndo(ItemData item) {

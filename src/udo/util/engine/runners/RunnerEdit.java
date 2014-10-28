@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import udo.util.engine.Cache;
 import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
 import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Command;
 import udo.util.shared.EditField;
@@ -26,9 +28,10 @@ public class RunnerEdit extends Runner {
 		int uid = (int) mInput.get(Keys.UID);
 		try {
 			ItemData itemToEdit = mCache.getItem(uid);
-			EditField field = (EditField) mInput.get(Keys.FIELD);
 			Object value = mInput.get(Keys.VALUE);
 			OutputData output;
+
+			EditField field = (EditField) mInput.get(Keys.FIELD);
 			switch (field) {
 				case DUE_DATE :
 					output = runEditDueDate(itemToEdit, (Calendar) value);
@@ -60,10 +63,21 @@ public class RunnerEdit extends Runner {
 			output.put(Keys.FIELD, field);
 			return output;
 			
+		} catch (CacheAccessException e) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
 		} catch (ItemNotFoundException e) {
 			return new OutputData(Command.EDIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
+			
+		} catch (InvalidUIDException e) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
 		}
 	}
 

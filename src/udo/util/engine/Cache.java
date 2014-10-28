@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
 import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ItemData;
@@ -33,36 +35,43 @@ public class Cache {
 		mUIDs = new HashSet<Integer>();
 	}
 
-	public boolean addAll(ArrayList<ItemData> list) {
+	public void addAll(ArrayList<ItemData> list) throws CacheAccessException {
 		for (ItemData item : list) {
 			addItem(item);
 		}
-		return true;
 	}
 
-	public boolean addItem(ItemData item) {
+	public void addItem(ItemData item) throws CacheAccessException {
 		if (isLocked()) {
-			return false;
+			throw new CacheAccessException("cache is locked");
 		}
+		
 		trackUID(item);
+		
 		ItemType type = item.getItemType();
 		switch (type) {
-		case EVENT :
-			mEvents.add(item);
-			return true;
-		case TASK :
-			mTasks.add(item);
-			return true;
-		case PLAN :
-			mPlans.add(item);
-			return true;
-		default:
-			return false;
+			case EVENT :
+				mEvents.add(item);
+				break;
+
+			case TASK :
+				mTasks.add(item);
+				break;
+
+			case PLAN :
+				mPlans.add(item);
+				break;
+
+			default:
+
 		}
 	}
 
-	public ItemData getItem(int uid) throws ItemNotFoundException {
-		// TODO throw exception when item not found
+	public ItemData getItem(int uid) throws CacheAccessException, ItemNotFoundException, InvalidUIDException {
+		if (uid < 0) {
+			throw new InvalidUIDException();
+		}
+		
 		ArrayList<ItemData> items = getAllItems();
 		ItemData result = null;
 		for (ItemData item : items) {
@@ -73,136 +82,14 @@ public class Cache {
 			}
 		}
 		
-		if (result == null) {
-			throw new ItemNotFoundException();
+		return result;
+	}
+	
+	public ItemData deleteItem(int uid) throws CacheAccessException, InvalidUIDException, ItemNotFoundException {
+		if (uid < 0) {
+			throw new InvalidUIDException("negative number");
 		}
 		
-		return result;
-	}
-	
-	public ArrayList<ItemData> getAllItemsOn(Calendar date) {
-		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
-		for (ItemData item : getAllItems()) {
-			if (isSameDateAs(item, date)) {
-				allEvents.add(item);
-			}
-		}
-		Collections.sort(allEvents);
-		return allEvents;
-	}
-	
-	public ArrayList<ItemData> getAllEventsOn(Calendar date) {
-		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
-		for (ItemData item : getAllEvents()) {
-			if (isSameDateAs(item, date)) {
-				allEvents.add(item);
-			}
-		}
-		Collections.sort(allEvents);
-		return allEvents;
-	}
-
-	public ArrayList<ItemData> getAllTasksBetween(Calendar from, Calendar to) {
-		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
-		for (ItemData item : getAllTasks()) {
-			if (isBetweenDates(item, from, to)) {
-				allTasks.add(item);
-			}
-		}
-		Collections.sort(allTasks);
-		return allTasks;
-	}
-	
-	public ArrayList<ItemData> getAllItemsWithHashtag(String tag) {
-		ArrayList<ItemData> result = new ArrayList<ItemData>();
-		for (ItemData item : getAllItems()) {
-			@SuppressWarnings("unchecked")
-			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
-			if (tags.contains(tag)) {
-				result.add(item);
-			}
-		}
-		Collections.sort(result);
-		return result;
-	}
-
-	public ArrayList<ItemData> getAllEvents() {
-		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
-		for (ItemData item : getAllItems()) {
-			ItemType itemType = item.getItemType();
-			if (itemType.equals(ItemType.EVENT)) {
-				allEvents.add(item);
-			}
-		}
-		Collections.sort(allEvents);
-		return allEvents;
-	}
-
-	public ArrayList<ItemData> getAllTasks() {
-		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
-		for (ItemData item : getAllItems()) {
-			ItemType itemType = item.getItemType();
-			if (itemType.equals(ItemType.TASK)) {
-				allTasks.add(item);
-			}
-		}
-		Collections.sort(allTasks);
-		return allTasks;
-	}
-	
-	public ArrayList<ItemData> getAllPlans() {
-		ArrayList<ItemData> allPlans = new ArrayList<ItemData>();
-		for (ItemData item : getAllItems()) {
-			ItemType itemType = item.getItemType();
-			if (itemType.equals(ItemType.PLAN)) {
-				allPlans.add(item);
-			}
-		}
-		Collections.sort(allPlans);
-		return allPlans;
-	}
-
-	/**
-	 * returns a list of both tasks and plans
-	 * @return
-	 */
-	public ArrayList<ItemData> getAllTodo() {
-		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
-		allTasksAndPlans.addAll(getAllTasks());
-		allTasksAndPlans.addAll(getAllPlans());
-		Collections.sort(allTasksAndPlans);
-		return allTasksAndPlans;
-	}
-	
-	/**
-	 * returns a list of items marked as done.
-	 * items can only be of task or plan type.
-	 * @return the list of done items
-	 */
-	public ArrayList<ItemData> getAllDone() {
-		ArrayList<ItemData> allDone = new ArrayList<ItemData>();
-		for (ItemData item : getAllTodo()) {
-			if ((boolean) item.get(Keys.DONE)) {
-				allDone.add(item);
-			}
-		}
-		Collections.sort(allDone);
-		return allDone;
-	}
-
-	public ArrayList<ItemData> getAllItems() {
-		lock();
-		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
-		while (hasNextItem()) {
-			allItems.add(getNextItem());
-		}
-		unlock();
-		Collections.sort(allItems);
-		return allItems;
-	}
-
-	public boolean deleteItem(int uid) {
-		// TODO
 		ArrayList<ItemData> items = getAllItems();
 		ItemData toDelete = null;
 		for (ItemData item : items) {
@@ -212,23 +99,27 @@ public class Cache {
 				break;
 			}
 		}
-		if (toDelete != null) {
-			ItemType type = toDelete.getItemType();
-			switch (type) {
-				case EVENT:
-					mEvents.remove(toDelete);
-					break;
-				case TASK:
-					mTasks.remove(toDelete);
-					break;
-				case PLAN:
-					mPlans.remove(toDelete);
-					break;
-				default:
-					return false;
-			}
+		
+		if (toDelete == null) {
+			throw new ItemNotFoundException();
 		}
-		return true;
+
+		ItemType type = toDelete.getItemType();
+		switch (type) {
+			case EVENT:
+				mEvents.remove(toDelete);
+				break;
+			case TASK:
+				mTasks.remove(toDelete);
+				break;
+			case PLAN:
+				mPlans.remove(toDelete);
+				break;
+			default:
+				throw new ItemNotFoundException();
+		}
+
+		return toDelete;
 	}
 
 	public int size() {
@@ -239,9 +130,9 @@ public class Cache {
 		return totalSize;
 	}
 
-	public void clear() {
+	public void clear() throws CacheAccessException {
 		if (isLocked()) {
-			return;
+			throw new CacheAccessException();
 		}
 		mEvents.clear();
 		mTasks.clear();
@@ -256,6 +147,134 @@ public class Cache {
 		} else {
 			return uid;
 		}
+	}
+
+	public ArrayList<ItemData> getAllItemsOn(Calendar date) throws CacheAccessException {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			if (isSameDateAs(item, date)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+	
+	public ArrayList<ItemData> getAllEventsOn(Calendar date) throws CacheAccessException {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllEvents()) {
+			if (isSameDateAs(item, date)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+
+	public ArrayList<ItemData> getAllTasksBetween(Calendar from, Calendar to) throws CacheAccessException {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllTasks()) {
+			if (isBetweenDates(item, from, to)) {
+				allTasks.add(item);
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+	
+	public ArrayList<ItemData> getAllItemsWithHashtag(String tag) throws CacheAccessException {
+		ArrayList<ItemData> result = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			@SuppressWarnings("unchecked")
+			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
+			if (tags.contains(tag)) {
+				result.add(item);
+			}
+		}
+		Collections.sort(result);
+		return result;
+	}
+
+	public ArrayList<ItemData> getAllEvents() throws CacheAccessException {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.EVENT)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+
+	public ArrayList<ItemData> getAllTasks() throws CacheAccessException {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.TASK)) {
+				allTasks.add(item);
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+	
+	public ArrayList<ItemData> getAllPlans() throws CacheAccessException {
+		ArrayList<ItemData> allPlans = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.PLAN)) {
+				allPlans.add(item);
+			}
+		}
+		Collections.sort(allPlans);
+		return allPlans;
+	}
+
+	/**
+	 * returns a list of both tasks and plans
+	 * @return
+	 * @throws CacheAccessException 
+	 */
+	public ArrayList<ItemData> getAllTodo() throws CacheAccessException {
+		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
+		allTasksAndPlans.addAll(getAllTasks());
+		allTasksAndPlans.addAll(getAllPlans());
+		Collections.sort(allTasksAndPlans);
+		return allTasksAndPlans;
+	}
+	
+	/**
+	 * returns a list of items marked as done.
+	 * items can only be of task or plan type.
+	 * @return the list of done items
+	 * @throws CacheAccessException 
+	 */
+	public ArrayList<ItemData> getAllDone() throws CacheAccessException {
+		ArrayList<ItemData> allDone = new ArrayList<ItemData>();
+		for (ItemData item : getAllTodo()) {
+			if ((boolean) item.get(Keys.DONE)) {
+				allDone.add(item);
+			}
+		}
+		Collections.sort(allDone);
+		return allDone;
+	}
+
+	public ArrayList<ItemData> getAllItems() throws CacheAccessException {
+		lock();
+		if (!isLocked()) {
+			throw new CacheAccessException("cache not locked");
+		}
+		
+		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
+		while (hasNextItem()) {
+			allItems.add(getNextItem());
+		}
+		
+		Collections.sort(allItems);
+		unlock();
+		return allItems;
 	}
 
 	private boolean isSameDateAs(ItemData item, Calendar date) {
@@ -321,16 +340,22 @@ public class Cache {
 		}
 	}
 
-	private boolean isLocked() {
-		return mIsLocked;
-	}
-
-	private boolean lock() {
+	private void lock() {
 		mIsLocked = true;
 		mEventsIterator = mEvents.iterator();
 		mTasksIterator = mTasks.iterator();
 		mPlansIterator = mPlans.iterator();
-		return true;
+	}
+
+	private void unlock() {
+		mIsLocked = false;
+		mEventsIterator = null;
+		mTasksIterator = null;
+		mPlansIterator = null;
+	}
+
+	private boolean isLocked() {
+		return mIsLocked;
 	}
 
 	private boolean hasNextItem() {
@@ -355,14 +380,6 @@ public class Cache {
 		} else {
 			return null;
 		}
-	}
-
-	private boolean unlock() {
-		mIsLocked = false;
-		mEventsIterator = null;
-		mTasksIterator = null;
-		mPlansIterator = null;
-		return true;
 	}
 
 	private void trackUID(ItemData item) {

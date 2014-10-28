@@ -2,6 +2,8 @@ package udo.util.engine.runners;
 
 import udo.util.engine.Cache;
 import udo.util.engine.UndoBin;
+import udo.util.exceptions.AddToCacheException;
+import udo.util.exceptions.CacheAccessException;
 import udo.util.shared.Command;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
@@ -26,39 +28,51 @@ public class RunnerAdd extends Runner {
 		
 		boolean cacheAddOK = false;
 		
-		ItemData item = addGeneric(mInput);
+		ItemData genericItem = makeGenericItem(mInput);
+		ItemData itemToAdd;
 		
 		// carry out specific add for each itemtype.
 		// also adds the final item to the cache.
 		switch (cmd) {
 			case ADD_EVENT :
-				cacheAddOK = addEvent(mInput, item);
+				itemToAdd = addEvent(mInput, genericItem);
 				break;
+				
 			case ADD_TASK :
-				cacheAddOK = addTask(mInput, item);
+				itemToAdd = addTask(mInput, genericItem);
 				break;
+				
 			case ADD_PLAN :
-				cacheAddOK = addPlan(mInput, item);
+				itemToAdd = addPlan(mInput, genericItem);
 				break;
+				
 			default :
+				itemToAdd = null;
 				break;
 		}
-
-		if (cacheAddOK) {
-			// if added item successfully
-			// make output object with the event data inside
-			// also store undo command.
-			output.setExecutionStatus(ExecutionStatus.SUCCESS);
-			output.put(Keys.ITEM, item);
-			storeUndo(item);
-		} else {
+		
+		if (itemToAdd == null) {
+			// item is null, item type was not correct
+			// fail the execution
 			output.setExecutionStatus(ExecutionStatus.FAIL);
+			
+		} else {
+			try {
+				mCache.addItem(itemToAdd);
+				output.setExecutionStatus(ExecutionStatus.SUCCESS);
+				output.put(Keys.ITEM, itemToAdd);
+				storeUndo(itemToAdd);
+				
+			} catch (CacheAccessException e) {
+				output.setExecutionStatus(ExecutionStatus.FAIL);
+			}
+			
 		}
 		
 		return output;
 	}
 	
-	private ItemData addGeneric(InputData input) {
+	private ItemData makeGenericItem(InputData input) {
 		// extract data from inputdata to make an event
 		ItemData item = new ItemData();
 		
@@ -80,7 +94,7 @@ public class RunnerAdd extends Runner {
 		return item;
 	}
 	
-	private boolean addEvent(InputData input, ItemData event) {
+	private ItemData addEvent(InputData input, ItemData event) {
 		event.setItemType(ItemType.EVENT);
 		
 		event.put(Keys.START, 
@@ -88,10 +102,10 @@ public class RunnerAdd extends Runner {
 		event.put(Keys.END, 
 				input.get(Keys.END));
 
-		return mCache.addItem(event);
+		return event;
 	}
 
-	private boolean addTask(InputData input, ItemData task) {
+	private ItemData addTask(InputData input, ItemData task) {
 		task.setItemType(ItemType.TASK);
 		
 		task.put(Keys.DUE, 
@@ -100,17 +114,17 @@ public class RunnerAdd extends Runner {
 				false);
 		
 		//add to cache
-		return mCache.addItem(task);
+		return task;
 	}
 	
-	private boolean addPlan(InputData input, ItemData plan) {
+	private ItemData addPlan(InputData input, ItemData plan) {
 		plan.setItemType(ItemType.PLAN);
 		
 		plan.put(Keys.DONE, 
 				false);
 		
 		//add to cache
-		return mCache.addItem(plan);
+		return plan;
 	}
 	
 	private void storeUndo(ItemData item) {

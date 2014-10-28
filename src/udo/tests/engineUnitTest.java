@@ -10,7 +10,6 @@ import java.util.Calendar;
 import org.junit.Test;
 
 import udo.main.Engine;
-import udo.util.engine.Cache;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
@@ -430,8 +429,8 @@ public class engineUnitTest {
 		assertFalse("out should not be null", null == out);
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
 	}
-
-	@Test
+	
+	/*@Test
 	public void testCacheAddItemSizeIncrease() {
 		Cache c = new Cache();
 		int oldSize = c.size();
@@ -443,7 +442,7 @@ public class engineUnitTest {
 		assertTrue("add success", c.addItem(ii));
 		assertEquals("the new size should be larger than old size by 2",
 				c.size(), oldSize + 2);
-	}
+	}*/
 
 	@Test
 	public void testItemDataMatch() {

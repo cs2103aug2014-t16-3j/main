@@ -14,6 +14,9 @@ import udo.util.engine.runners.RunnerDone;
 import udo.util.engine.runners.RunnerEdit;
 import udo.util.engine.runners.RunnerList;
 import udo.util.engine.runners.RunnerSave;
+import udo.util.exceptions.AddToCacheException;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.ReadingFromStorageException;
 import udo.util.shared.Command;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
@@ -53,7 +56,22 @@ public class Engine {
 		if (ENGINE_INSTANCE == null) {
 			ENGINE_INSTANCE = new Engine();
 		}
-		ENGINE_INSTANCE.loadFile();
+		
+		try {
+			ENGINE_INSTANCE.loadFile();
+			
+		} catch (ReadingFromStorageException e) {
+			ENGINE_INSTANCE = null;
+			return getInstance();
+			
+		} catch (IOException e) {
+			ENGINE_INSTANCE = null;
+			return getInstance();
+			
+		} catch (CacheAccessException e) {
+			ENGINE_INSTANCE = null;
+			return getInstance();
+		}
 		return ENGINE_INSTANCE;
 	}
 
@@ -65,7 +83,11 @@ public class Engine {
 	 * @return an arraylist of events that occur on the specified day
 	 */
 	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
-		return mCache.getAllEventsOn(todayCal);
+		try {
+			return mCache.getAllEventsOn(todayCal);
+		} catch (CacheAccessException e) {
+			return null;
+		}
 	}
 	
 	/**
@@ -75,7 +97,11 @@ public class Engine {
 	 * @return an arraylist of tasks that occur between the dates.
 	 */
 	public ArrayList<ItemData> getTodoScreenItems(Calendar fromCal, Calendar toCal) {
-		return mCache.getAllTasksBetween(fromCal, toCal);
+		try {
+			return mCache.getAllTasksBetween(fromCal, toCal);
+		} catch (CacheAccessException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -191,14 +217,9 @@ public class Engine {
 
 	// ********* helper methods ******* //
 
-	private boolean loadFile() {
+	private void loadFile() throws ReadingFromStorageException, IOException, CacheAccessException {
 		mCache.clear();
-		try {
-			ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
-			mCache.addAll(itemsFromFile);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
+		ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
+		mCache.addAll(itemsFromFile);
 	}
 }
