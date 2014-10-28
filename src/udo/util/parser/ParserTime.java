@@ -9,9 +9,10 @@ import java.util.Date;
 public class ParserTime {
 
 	private Calendar mTime;
+	private String mTimeFormat[] = {"hh:mma", "hha"};
 
 	public ParserTime() {
-		mTime = Calendar.getInstance();
+		
 	}
 	
 	/**
@@ -25,24 +26,51 @@ public class ParserTime {
 		return mTime;
 	}
 	
-	/**
-	 * Method checks whether input contains a time string of format "hh:mma"
-	 * @param input
-	 * @return true if time string exist, false otherwise
-	 */
-	public boolean containsTime(String input) {
-		if (getTimeString(input) != null) {
-			return true;
+	public void decipherText(String input) {
+		int timeFormat = getTimeFormat(input);
+		if (timeFormat == 0 || timeFormat == 1) {
+			String timeString = getTimeString(input, timeFormat);
+			mTime = formatTimeSubstring(timeString, timeFormat);
 		} else {
-			return false;
+			mTime = null;
 		}
 	}
-	
-	public void decipherText(String input) {
-		String timeString = getTimeString(input);
-		if (timeString != null) {
-			Calendar cal = formatTimeSubstring(timeString);
-			mTime = cal;
+
+	private String getTimeString(String input, int timeFormat) {
+		switch (timeFormat) {
+			case 0:
+				return extractTimeWithMinutes(input);
+			case 1:
+				return extractTimeWithoutMinutes(input);
+			default:
+				return null;
+		}
+	}
+
+	private String extractTimeWithMinutes(String input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String extractTimeWithoutMinutes(String input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Calendar formatTimeSubstring(String timeString, int timeFormat) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private int getTimeFormat(String input) {
+		String timeString = input.toUpperCase();
+		if (timeString.contains(":")) {
+			return 0;
+		} else if (timeString.contains("AM") ||
+				timeString.contains("PM")) {
+			return 1;
+		} else {
+			return -1;
 		}
 	}
 
