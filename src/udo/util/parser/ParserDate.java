@@ -1,3 +1,4 @@
+//@author A0114847B
 package udo.util.parser;
 
 import java.text.ParseException;
@@ -116,8 +117,8 @@ public class ParserDate {
 		if (input.contains("/")) {
 			int dayMonthSlashIndex = input.indexOf("/");
 			int offset = dayMonthSlashIndex + 1; 
-			int monthYearSlashIndex = input.indexOf("/", offset); // gets the second "/" from "dd/mm/yy"
-			
+			int monthYearSlashIndex = input.indexOf("/", offset); // gets the second "/" from "dd/mm/yy" 
+
 			if (monthYearSlashIndex == -1) { // dd/MM format
 				return 0;
 			} else if (isValidDate(dayMonthSlashIndex, monthYearSlashIndex) &&
