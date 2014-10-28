@@ -31,16 +31,28 @@ public class Cache {
 		mEvents = new HashSet<ItemData>();
 		mTasks = new HashSet<ItemData>();
 		mPlans = new HashSet<ItemData>();
-		mIsLocked = false;
 		mUIDs = new HashSet<Integer>();
+		mIsLocked = false;
 	}
 
+	/**
+	 * adds a list of items
+	 * 
+	 * @param list the list of items to add
+	 * @throws CacheAccessException if adding one of the items failed
+	 */
 	public void addAll(ArrayList<ItemData> list) throws CacheAccessException {
 		for (ItemData item : list) {
 			addItem(item);
 		}
 	}
 
+	/**
+	 * adds an item
+	 * 
+	 * @param item the item to add
+	 * @throws CacheAccessException if cache is locked when trying to add
+	 */
 	public void addItem(ItemData item) throws CacheAccessException {
 		if (isLocked()) {
 			throw new CacheAccessException("cache is locked");
@@ -66,7 +78,16 @@ public class Cache {
 
 		}
 	}
-
+	
+	/**
+	 * gets an item by the uid
+	 * 
+	 * @param uid the uid of the item to get
+	 * @return the item matching the uid
+	 * @throws CacheAccessException if cache cannot be accessed
+	 * @throws ItemNotFoundException if item not found
+	 * @throws InvalidUIDException if uid invalid
+	 */
 	public ItemData getItem(int uid) throws CacheAccessException, ItemNotFoundException, InvalidUIDException {
 		if (uid < 0) {
 			throw new InvalidUIDException();
@@ -82,9 +103,22 @@ public class Cache {
 			}
 		}
 		
+		if (result == null) {
+			throw new ItemNotFoundException();
+		}
+		
 		return result;
 	}
 	
+	/**
+	 * deletes an item via the uid
+	 * 
+	 * @param uid the uid of the item to delete
+	 * @return the deleted item.
+	 * @throws CacheAccessException if cache cannot be accessed
+	 * @throws InvalidUIDException if uid wrong
+	 * @throws ItemNotFoundException if item not found
+	 */
 	public ItemData deleteItem(int uid) throws CacheAccessException, InvalidUIDException, ItemNotFoundException {
 		if (uid < 0) {
 			throw new InvalidUIDException("negative number");
@@ -122,6 +156,11 @@ public class Cache {
 		return toDelete;
 	}
 
+	/**
+	 * gives the size of the cache
+	 * 
+	 * @return the size
+	 */
 	public int size() {
 		int eventSize = mEvents.size();
 		int taskSize = mTasks.size();
@@ -130,6 +169,12 @@ public class Cache {
 		return totalSize;
 	}
 
+	/**
+	 * clears all items in the cache.
+	 * does NOT invoke the delete command. it's a simple clear.
+	 * 
+	 * @throws CacheAccessException if cache is locked when trying to clear
+	 */
 	public void clear() throws CacheAccessException {
 		if (isLocked()) {
 			throw new CacheAccessException();
@@ -139,6 +184,10 @@ public class Cache {
 		mPlans.clear();
 	}
 
+	/**
+	 * generates a random uid between 10000 and 99999
+	 * @return a random uid between 10000 and 99999
+	 */
 	public int generateUID() {
 		Random r = new Random(System.currentTimeMillis());
 		int uid = 10000 + r.nextInt(90000);
@@ -233,8 +282,9 @@ public class Cache {
 
 	/**
 	 * returns a list of both tasks and plans
-	 * @return
-	 * @throws CacheAccessException 
+	 * 
+	 * @return a list of both tasks and plans
+	 * @throws CacheAccessException if cache is locked 
 	 */
 	public ArrayList<ItemData> getAllTodo() throws CacheAccessException {
 		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
@@ -247,8 +297,9 @@ public class Cache {
 	/**
 	 * returns a list of items marked as done.
 	 * items can only be of task or plan type.
+	 * 
 	 * @return the list of done items
-	 * @throws CacheAccessException 
+	 * @throws CacheAccessException if cache is locked
 	 */
 	public ArrayList<ItemData> getAllDone() throws CacheAccessException {
 		ArrayList<ItemData> allDone = new ArrayList<ItemData>();
@@ -261,11 +312,27 @@ public class Cache {
 		return allDone;
 	}
 
+	/**
+	 * returns a list of all the items
+	 * 
+	 * @return a list of all the items
+	 * @throws CacheAccessException if the cache is locked
+	 */
 	public ArrayList<ItemData> getAllItems() throws CacheAccessException {
-		lock();
-		if (!isLocked()) {
+		if (isLocked()) {
 			throw new CacheAccessException("cache not locked");
 		}
+		
+		return collateItems();
+	}
+	
+	/**
+	 * locks cache, makes an arraylist of items, then unlocks cache.
+	 * 
+	 * @return the list of items in the cache at this point.
+	 */
+	private ArrayList<ItemData> collateItems() {
+		lock();
 		
 		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
 		while (hasNextItem()) {
@@ -273,6 +340,7 @@ public class Cache {
 		}
 		
 		Collections.sort(allItems);
+		
 		unlock();
 		return allItems;
 	}

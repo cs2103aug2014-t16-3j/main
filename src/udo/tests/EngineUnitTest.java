@@ -24,8 +24,8 @@ import udo.util.shared.ParsingStatus;
 
 public class EngineUnitTest {
 	
-	private static final int TASK_UID = 12346;
 	private static final int EVENT_UID = 12345;
+	private static final int TASK_UID = 12346;
 	
 	@Test
 	public void testEngineListByDate() {
@@ -399,7 +399,7 @@ public class EngineUnitTest {
 				null == s);
 	}
 
-	@Test // contains buggy save
+	@Test 
 	public void testEngineExecuteExit() {
 		Engine e = Engine.getInstance();
 		 
@@ -430,20 +430,6 @@ public class EngineUnitTest {
 		assertFalse("out should not be null", null == out);
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
 	}
-	
-	/*@Test
-	public void testCacheAddItemSizeIncrease() {
-		Cache c = new Cache();
-		int oldSize = c.size();
-		ItemData i = new ItemData(ItemType.EVENT);
-		i.put("title", "asd");
-		ItemData ii = new ItemData(ItemType.EVENT);
-		ii.put("title", "asdasd");
-		assertTrue("add success", c.addItem(i));
-		assertTrue("add success", c.addItem(ii));
-		assertEquals("the new size should be larger than old size by 2",
-				c.size(), oldSize + 2);
-	}*/
 
 	@Test
 	public void testItemDataMatch() {
