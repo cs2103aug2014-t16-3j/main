@@ -3,10 +3,13 @@ package udo.util.engine;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -277,7 +280,9 @@ public class FileManager {
 		
 		try {
 			mReader = new BufferedReader(
-					new FileReader(mFilename));
+					new InputStreamReader(
+							new FileInputStream(mFilename),
+							"UTF-8"));
 			String nextLine = mReader.readLine();
 			mNextItem = getItemData(nextLine);
 			setReading(true);
@@ -308,7 +313,9 @@ public class FileManager {
 		try {
 			// will overwrite the current file with the new data.
 			mWriter = new BufferedWriter(
-					new FileWriter(mFilename));
+					new OutputStreamWriter(
+							new FileOutputStream(mFilename),
+							"UTF-8"));
 			setWriting(true);
 		} catch (IOException e) {
 			setWriting(false);
