@@ -93,5 +93,10 @@ public class uDo {
 		OutputData outputData = mEngine.execute(inputData);
 		return outputData;
 	}
+	
+	public OutputData testParseAndExecute(String input) {
+		OutputData output = parseAndExecute(input);
+		return output;
+	}
 
 }
