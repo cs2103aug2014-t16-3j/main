@@ -26,7 +26,7 @@ public class ParserTime {
 		return mTime;
 	}
 	
-	public void decipherText(String input) {
+	private void decipherText(String input) {
 		int timeFormat = getTimeFormat(input);
 		if (timeFormat == 0 || timeFormat == 1) {
 			String timeString = getTimeString(input, timeFormat);
@@ -46,25 +46,42 @@ public class ParserTime {
 				return null;
 		}
 	}
+	
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
 	private String extractTimeWithMinutes(String input) {
-		String timeString = input.toUpperCase();
-		int colonIndex = timeString.indexOf(":");
-		int amMarkerIndex = timeString.indexOf("AM");
-		int pmMarkerIndex = timeString.indexOf("PM");
-		int amPmIndex = -1;
-		if (amMarkerIndex != -1) {
-			amPmIndex = amMarkerIndex;
-		} else {
-			amPmIndex = pmMarkerIndex;
+		int colonIndex = input.indexOf(":");
+		int startIndex = colonIndex - 2;
+		int endIndex = colonIndex + 5;
+		if (endIndex < input.length() && startIndex > -1) {
+			String timeString = input.substring(startIndex, endIndex);
+			String firstDigit = timeString.substring(0, 1);
+			String amPmMarker = timeString.substring(timeString.length() - 1);
+			amPmMarker = amPmMarker.toUpperCase();
+			
+			if (!isInteger(firstDigit)) {
+				timeString = timeString.substring(1); //remove non-digit hour in timeString
+			}
+			
+			if (!amPmMarker.equals("M")) {
+				return null;
+			} else {
+				return timeString;
+			}
 		}
-		
-		
 		return null;
 	}
 
 	private String extractTimeWithoutMinutes(String input) {
-		// TODO Auto-generated method stub
+		String parts[] = input.split(" ");
+		//
 		return null;
 	}
 

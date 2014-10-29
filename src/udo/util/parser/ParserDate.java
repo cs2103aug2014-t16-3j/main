@@ -17,16 +17,6 @@ public class ParserDate {
 		
 	}
 	
-	//Calendar cal = ParserDate.getInstance();
-	/*
-	public static Calendar getInstance() {
-		if (mDate == null) {
-			mDate = Calendar.getInstance(); 
-		} 
-		return mDate;
-	}
-	*/
-	
 	/**
 	 * Method returns the first date it reads from input.
 	 * Detects date by "/" character
