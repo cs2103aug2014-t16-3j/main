@@ -48,7 +48,18 @@ public class ParserTime {
 	}
 
 	private String extractTimeWithMinutes(String input) {
-		// TODO Auto-generated method stub
+		String timeString = input.toUpperCase();
+		int colonIndex = timeString.indexOf(":");
+		int amMarkerIndex = timeString.indexOf("AM");
+		int pmMarkerIndex = timeString.indexOf("PM");
+		int amPmIndex = -1;
+		if (amMarkerIndex != -1) {
+			amPmIndex = amMarkerIndex;
+		} else {
+			amPmIndex = pmMarkerIndex;
+		}
+		
+		
 		return null;
 	}
 
@@ -64,14 +75,20 @@ public class ParserTime {
 
 	private int getTimeFormat(String input) {
 		String timeString = input.toUpperCase();
-		if (timeString.contains(":")) {
+		if (timeString.contains(":") && isValidDate(input)) {
 			return 0;
-		} else if (timeString.contains("AM") ||
-				timeString.contains("PM")) {
+		} else if ((timeString.contains("AM") || timeString.contains("PM")) 
+					&& isValidDate(input)) {
 			return 1;
 		} else {
 			return -1;
 		}
+	}
+
+	// checks if ":" and "AM" or "PM" is from the same time string
+	private boolean isValidDate(String input) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	// checks for dateString with the format "hh:mma"
