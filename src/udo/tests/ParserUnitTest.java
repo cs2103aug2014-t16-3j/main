@@ -429,7 +429,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testAddEvent() {
-		String event1 = "add meet #boss #from 10:00am to 22/1 9:00pm";
+		String event1 = "add meet #boss #from 13/2 10:00am to 22/1 9:00pm";
 		InputData data = p.getInputData(event1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -443,17 +443,29 @@ public class ParserUnitTest {
 		Calendar startEvent = (Calendar) data.get(Keys.START);
 		Calendar endEvent = (Calendar) data.get(Keys.END);
 		
-		int day = startEvent.get(Calendar.DAY_OF_MONTH);
-		int month = startEvent.get(Calendar.MONTH);
-		int year = startEvent.get(Calendar.YEAR);
-		int hour = startEvent.get(Calendar.HOUR);
-		int mins = startEvent.get(Calendar.MINUTE);
+		int startDay = startEvent.get(Calendar.DAY_OF_MONTH);
+		int startMonth = startEvent.get(Calendar.MONTH);
+		int startYear = startEvent.get(Calendar.YEAR);
+		int startHour = startEvent.get(Calendar.HOUR);
+		int startMins = startEvent.get(Calendar.MINUTE);
 		
-		assertEquals(22, day);
-		assertEquals(0, month);
-		assertEquals(2014, year);
-		assertEquals(10, hour);
-		assertEquals(0, mins);
+		assertEquals(13, startDay);
+		assertEquals(1, startMonth);
+		assertEquals(2014, startYear);
+		assertEquals(10, startHour);
+		assertEquals(0, startMins);
+		
+		int endDay = endEvent.get(Calendar.DAY_OF_MONTH);
+		int endMonth = endEvent.get(Calendar.MONTH);
+		int endYear = endEvent.get(Calendar.YEAR);
+		int endHour = endEvent.get(Calendar.HOUR);
+		int endMins = endEvent.get(Calendar.MINUTE);
+		
+		assertEquals(22, endDay);
+		assertEquals(0, endMonth);
+		assertEquals(2014, endYear);
+		assertEquals(9, endHour);
+		assertEquals(0, endMins);
 	}
 	
 }
