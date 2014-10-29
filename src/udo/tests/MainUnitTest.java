@@ -43,4 +43,24 @@ public class MainUnitTest {
 						"new",
 						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddPlan() {
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("add #new Plan");
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		hashtags.add("new");
+		// The following will check the attributes of the added plan
+		assertEquals("item name should be new Event",
+						"new Plan",
+						item.get(Keys.TITLE));
+		assertEquals("hashtags will contain one object, 'new'",
+						hashtags.size(),
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		assertEquals("the object is 'new'",
+						"new",
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
+	}
 }
