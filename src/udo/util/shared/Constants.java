@@ -97,7 +97,7 @@ public class Constants {
 		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
 	}
 	
-	//@author: Leonardo Sjahputra
+	//@author A0114088H
 	/**
 	 * 
 	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.

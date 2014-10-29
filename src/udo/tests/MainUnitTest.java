@@ -1,6 +1,5 @@
+//@author a0114088H
 package udo.tests;
-
-//@Author A0114088H
 
 import static org.junit.Assert.assertEquals;
 
