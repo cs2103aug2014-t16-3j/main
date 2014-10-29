@@ -9,8 +9,8 @@ import java.util.Date;
 public class ParserDate {
 
 	private static Calendar mDate;
-	private String mDays[] = {"mon", "tue", "wed", "thu", "fri", "sat", "sun", 
-							"today", "tomorrow", ""};
+	private String mDays[] = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY", 
+							"TODAY", "TOMORROW", ""};
 	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
 	
 	public ParserDate() {
@@ -32,13 +32,39 @@ public class ParserDate {
 	private void decipherText(String input) {
 		int dateFormat = getDateFormat(input);
 		if (dateFormat == -1) {
-			//day
+			String day = getDay(input);
+			mDate = formatDaySubstring(day);
 		} else if (dateFormat != 3) {
 			String dateString = getDateString(input, dateFormat);
 			mDate = formatDateSubstring(dateString, dateFormat);
 		} else {
 			mDate = null;
 		}
+	}
+
+	private Calendar formatDaySubstring(String day) {
+		if (day != null) {
+			Calendar cal = Calendar.getInstance();
+			if (day.equals("TOMORROW")) {
+				cal.add(Calendar.DATE, 1);
+				return cal;
+			} else if (day.equals("TODAY")) {
+				return cal;
+			} else {
+				return null; // other days
+			}
+		}
+		return null;
+	}
+
+	private String getDay(String input) {
+		String dayString = input.toUpperCase();
+		for (int i = 0; i < mDays.length; i++) {
+			if (dayString.contains(mDays[i])) {
+				return mDays[i];
+			}
+		}
+		return null;
 	}
 
 	private Calendar formatDateSubstring(String input, int dateFormat) {

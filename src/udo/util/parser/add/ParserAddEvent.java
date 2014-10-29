@@ -76,22 +76,24 @@ public class ParserAddEvent implements ParserAddCommand {
 			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
 			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
 			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return start;
 		}
-		return start;
+		return null;
 	}
 	
 	public Calendar setSecondTimeAndDate(String details) {
 		int toStringIndex = details.indexOf("to");
-		assert(toStringIndex != -1);
 		String endingTimeDateString = details.substring(toStringIndex);
 		Calendar end = getTime(endingTimeDateString);
 		Calendar date = getDate(endingTimeDateString);
-		assert(end != null);
-		assert(date != null);
-		end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-		end.set(Calendar.MONTH, date.get(Calendar.MONTH));
-		end.set(Calendar.YEAR, date.get(Calendar.YEAR));
-		return end;
+		if (end != null && date != null) {
+			end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			end.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return end;
+		} else {
+			return null;
+		}
 	}
 
 }
