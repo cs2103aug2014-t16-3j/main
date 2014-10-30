@@ -71,6 +71,7 @@ public class DayView extends JPanel{
 	}
 	
 	public void init(Date newDate, ArrayList<ItemData> data) {
+		removeAll();
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.DAYVIEW_HEADER_HEIGHT));
 //		try {
@@ -130,11 +131,12 @@ public class DayView extends JPanel{
 			add(noItems);
 		} else {
 			
-			
+			int eventCount = 0;
 			for(int i = 0; i<data.size(); i++) {
 				ItemData item = data.get(i);
 				if(item.getItemType().equals(ItemType.EVENT)) {
-					fillTicker(item, i);
+					fillTicker(item, eventCount);
+					eventCount++;
 				}
 			}
 			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
