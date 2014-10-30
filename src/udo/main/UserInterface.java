@@ -8,6 +8,8 @@ import java.awt.FontMetrics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -143,6 +146,12 @@ public class UserInterface implements ActionListener {
 		 */
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// mFrame.setUndecorated(true);
+		List<Image> icons = new ArrayList<Image>();
+		icons.add(new ImageIcon("img/uDoLogo_16x16.png").getImage());
+		icons.add(new ImageIcon("img/uDoLogo_32x32.png").getImage());
+		icons.add(new ImageIcon("img/uDoLogo_64x64.png").getImage());
+		icons.add(new ImageIcon("img/uDoLogo_256x256.png").getImage());
+		mFrame.setIconImages(icons);
 		mFrame.add(mLeftView, BorderLayout.WEST);
 		mFrame.add(mMainViewLayer, BorderLayout.CENTER);
 		mFrame.add(mRightView, BorderLayout.EAST);
@@ -150,7 +159,7 @@ public class UserInterface implements ActionListener {
 		mFrame.setLocationRelativeTo(null);
 		mFrame.setVisible(true);
 	}
-
+	
 	private void setKeyBinds() {
 		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_Q,
                 "altQ" );

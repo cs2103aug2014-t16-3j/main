@@ -165,9 +165,9 @@ public class Constants {
 		public static final Color ENTRY_HASHTAGS_COLOR = new Color(28,134,238);
 		
 		public static final Color UID_COLOR = new Color(238,238,238);
-		public static final Color SEPARATOR_COLOR_EVENT = new Color(100,0,100);
-		public static final Color SEPARATOR_COLOR_TASK = new Color(0,100,100);
-		public static final Color SEPARATOR_COLOR_PLAN = new Color(100,100,0);
+		public static final Color SEPARATOR_COLOR_EVENT = new Color(150,0,150);
+		public static final Color SEPARATOR_COLOR_PLAN = new Color(0,150,150);
+		public static final Color SEPARATOR_COLOR_TASK = new Color(150,150,0);
 		
 		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
