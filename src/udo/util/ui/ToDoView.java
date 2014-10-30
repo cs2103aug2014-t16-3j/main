@@ -1,3 +1,4 @@
+//@author A0114088H
 package udo.util.ui;
 
 import java.awt.Dimension;
@@ -90,6 +91,10 @@ public class ToDoView extends JPanel {
 			
 			add(mScrollPane);
 		}
+	}
+	
+	public JScrollPane getScrollPane() {
+		return mScrollPane;
 	}
 	
 	@Override

@@ -1,3 +1,4 @@
+//@author A0114847B
 package udo.util.parser.add;
 
 import java.util.ArrayList;
@@ -73,8 +74,10 @@ public class ParserAddTask implements ParserAddCommand {
 			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
 			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
 			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return start;
+		} else {
+			return null;
 		}
-		return start;
 	}
 
 }

@@ -6,6 +6,11 @@ import java.util.Calendar;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
+/**
+ * should not be in production code
+ * 
+ *
+ */
 public class RandomTesting {
 
 	public static void main(String[] args) {
@@ -16,6 +21,7 @@ public class RandomTesting {
 		String[] sa = s.split("\\|\\|\\|");
 		String[] ssa = ss.split(":");
 		String[] sssa = sss.split(", ");
+		ssa.toString(); sssa.toString();
 		System.out.println(Arrays.toString(sa));
 
 		c.set(Calendar.YEAR, 2001);

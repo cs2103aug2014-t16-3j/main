@@ -1,3 +1,4 @@
+//@author A0114088H
 package udo.util.ui;
 
 import java.awt.BorderLayout;
@@ -103,7 +104,7 @@ public class Entry extends JPanel {
 //		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
 //				0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
 		add(mTimePanel);
-		add(initSeparator());
+		add(initSeparator(item.getItemType()));
 		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 		
 	}
@@ -115,7 +116,7 @@ public class Entry extends JPanel {
 //		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
 //															0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
 		add(mTimePanel);
-		add(initSeparator());
+		add(initSeparator(item.getItemType()));
 		add(initDetails((Calendar) item.get(Keys.DUE), (String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
 	}
 
@@ -124,7 +125,7 @@ public class Entry extends JPanel {
 		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
 		mTimePanel.add(initDate((Calendar) item.get(Keys.START)), BorderLayout.CENTER);
 		add(mTimePanel);
-		add(initSeparator());
+		add(initSeparator(item.getItemType()));
 		add(initDetails((Calendar) item.get(Keys.START),
 						(Calendar) item.get(Keys.END),
 						(String) item.get(Keys.TITLE), 
@@ -238,8 +239,14 @@ public class Entry extends JPanel {
 		return time;
 	}
 	
-	private JPanel initSeparator() {
-		mSeparator.setBackground(UI.SEPARATOR_COLOR);
+	private JPanel initSeparator(ItemType type) {
+		if(type.equals(ItemType.EVENT)) {
+			mSeparator.setBackground(UI.SEPARATOR_COLOR_EVENT);
+		} else if(type.equals(ItemType.TASK)) {
+			mSeparator.setBackground(UI.SEPARATOR_COLOR_TASK);
+		}else if(type.equals(ItemType.PLAN)){
+			mSeparator.setBackground(UI.SEPARATOR_COLOR_PLAN);
+		}
 		mSeparator.setBorder(BorderFactory.createEmptyBorder(UI.ENTRY_SEPARATOR_HEIGHT, UI.ENTRY_SEPARATOR_WIDTH, 0, 0));
 		return mSeparator;
 	}

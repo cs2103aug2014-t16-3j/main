@@ -1,3 +1,4 @@
+//@author A0114088H
 package udo.util.ui;
 
 import java.awt.Color;
@@ -24,6 +25,7 @@ import javax.swing.SwingConstants;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
 
 public class DayView extends JPanel{
 
@@ -69,6 +71,7 @@ public class DayView extends JPanel{
 	}
 	
 	public void init(Date newDate, ArrayList<ItemData> data) {
+		removeAll();
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.DAYVIEW_HEADER_HEIGHT));
 //		try {
@@ -127,39 +130,13 @@ public class DayView extends JPanel{
 			noItems.setHorizontalAlignment(JLabel.CENTER);
 			add(noItems);
 		} else {
-			int hour, min, total;
-			Point xy,wh;
-			Point redXY, redWH;
-			xy = new Point();
-			wh = new Point();
-			int currItem_startX = 0;
-			int lastItem_endX = 0;
 			
+			int eventCount = 0;
 			for(int i = 0; i<data.size(); i++) {
-				hour = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
-				min = ((Calendar) data.get(i).get(Keys.START)).get(Calendar.MINUTE);
-				total = hour+min;
-				xy = new Point(Math.max (1, (int) Math.floor(total/4d)), UI.TICKER_Y); //minimum x pixel is 1
-				mTickerCoordsXY.add(xy);
-				if(i>0) {
-					currItem_startX = xy.x;
-					lastItem_endX = mTickerCoordsXY.get(i-1).x + mTickerCoordsWH.get(i-1).x;
-				}
-				hour = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
-				min = ((Calendar) data.get(i).get(Keys.END)).get(Calendar.MINUTE);
-				total = hour+min;
-				wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
-				mTickerCoordsWH.add(wh);
-				int currItem_endX = xy.x + wh.x;
-				if(currItem_startX < lastItem_endX) {
-					redXY = new Point(xy.x, xy.y);
-					mRedTickCoordsXY.add(redXY);
-					if(currItem_endX > lastItem_endX) {
-						redWH = new Point(lastItem_endX - currItem_startX, 10);
-					}else{
-						redWH = new Point(currItem_endX - currItem_startX, 10);
-					}
-					mRedTickCoordsWH.add(redWH);
+				ItemData item = data.get(i);
+				if(item.getItemType().equals(ItemType.EVENT)) {
+					fillTicker(item, eventCount);
+					eventCount++;
 				}
 			}
 			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -177,6 +154,41 @@ public class DayView extends JPanel{
 			
 		}
 //		logger.exiting(getClass().getName(), "populateView");
+	}
+
+	private void fillTicker(ItemData item, int i) {
+		int hour, min, total;
+		Point xy,wh;
+		Point redXY, redWH;
+		xy = new Point();
+		wh = new Point();
+		int currItem_startX = 0;
+		int lastItem_endX = 0;
+		hour = ((Calendar) item.get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
+		min = ((Calendar) item.get(Keys.START)).get(Calendar.MINUTE);
+		total = hour+min;
+		xy = new Point(Math.max (1, (int) Math.floor(total/4d)), UI.TICKER_Y); //minimum x pixel is 1
+		mTickerCoordsXY.add(xy);
+		if(i>0) {
+			currItem_startX = xy.x;
+			lastItem_endX = mTickerCoordsXY.get(i-1).x + mTickerCoordsWH.get(i-1).x;
+		}
+		hour = ((Calendar) item.get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
+		min = ((Calendar) item.get(Keys.END)).get(Calendar.MINUTE);
+		total = hour+min;
+		wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
+		mTickerCoordsWH.add(wh);
+		int currItem_endX = xy.x + wh.x;
+		if(currItem_startX < lastItem_endX) {
+			redXY = new Point(xy.x, xy.y);
+			mRedTickCoordsXY.add(redXY);
+			if(currItem_endX > lastItem_endX) {
+				redWH = new Point(lastItem_endX - currItem_startX, 10);
+			}else{
+				redWH = new Point(currItem_endX - currItem_startX, 10);
+			}
+			mRedTickCoordsWH.add(redWH);
+		}
 	}
 	
 	private void initHeader(Date newDate) {
@@ -209,6 +221,10 @@ public class DayView extends JPanel{
 		mHeader.removeAll();
 		mTickerCoordsXY.clear();
 		mTickerCoordsWH.clear();
+	}
+	
+	public JScrollPane getScrollPane() {
+		return mScrollPane;
 	}
 	
 	/**

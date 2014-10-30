@@ -1,3 +1,4 @@
+//@author A0108358B
 package udo.main;
 
 import java.util.ArrayList;
@@ -46,9 +47,8 @@ public class uDo {
 		return true;
 	}
 
-	private boolean manageArgs(String[] args) {
+	private void manageArgs(String[] args) {
 		// in case we decide to handle any arguments
-		return true;
 	}
 
 	private void runMainLoop() {
@@ -92,6 +92,12 @@ public class uDo {
 		InputData inputData = mParser.getInputData(input);
 		OutputData outputData = mEngine.execute(inputData);
 		return outputData;
+	}
+	
+	//@author A0114088H
+	public OutputData testParseAndExecute(String input) {
+		OutputData output = parseAndExecute(input);
+		return output;
 	}
 
 }

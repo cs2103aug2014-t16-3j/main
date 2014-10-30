@@ -1,9 +1,12 @@
+//@author A0108358B
 package udo.util.engine.runners;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import udo.util.engine.Cache;
 import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
@@ -33,30 +36,38 @@ public class RunnerList extends Runner {
 		OutputData output = new OutputData(Command.LIST,
 				ParsingStatus.SUCCESS, 
 				ExecutionStatus.SUCCESS);
+		try {
+			switch (queryType) {
+				case ALL :
+					result = mCache.getAllItems();
+					break;
 
-		switch (queryType) {
-			case ALL :
-				result = mCache.getAllItems();
-				break;
+				case DONE :
+					result = mCache.getAllDone();
+					break;
 
-			case DONE :
-				result = mCache.getAllDone();
-				break;
+				case SINGLE_HASHTAG :
+					String hashtag = (String) mInput.get(Keys.QUERY_VALUE);
+					result = mCache.getAllItemsWithHashtag(hashtag);
+					output.put(Keys.QUERY_VALUE, hashtag);
+					break;
 
-			case SINGLE_HASHTAG :
-				String hashtag = (String) mInput.get(Keys.HASHTAG);
-				result = mCache.getAllItemsWithHashtag(hashtag);
-				output.put(Keys.QUERY, hashtag);
-				break;
+				case DATE :
+					Calendar dateCal = (Calendar) mInput.get(Keys.QUERY_VALUE);
+					result = mCache.getAllItemsOn(dateCal);
+					output.put(Keys.QUERY_VALUE, dateCal);
+					break;
 
-			default :
-				// unrecognised list query type.
-				return new OutputData(Command.LIST,
-						ParsingStatus.SUCCESS,
-						ExecutionStatus.FAIL);
+				default :
+					result = null;
+					output.setExecutionStatus(ExecutionStatus.FAIL);
+			}
+			output.put(Keys.QUERY_TYPE, queryType);
+			output.put(Keys.ITEMS, result);
+
+		} catch (CacheAccessException e) {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
 		}
-		output.put(Keys.QUERY_TYPE, queryType);
-		output.put(Keys.ITEMS, result);
 
 		return output;
 	}

@@ -1,3 +1,4 @@
+//@author A0114847B
 package udo.tests;
 
 import static org.junit.Assert.assertEquals;
@@ -8,6 +9,7 @@ import java.util.Calendar;
 import org.junit.Test;
 
 import udo.main.Parser;
+import udo.util.parser.ParserDate;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
@@ -15,7 +17,7 @@ import udo.util.shared.InputData;
 import udo.util.shared.ListQuery;
 import udo.util.shared.ParsingStatus;
 
-public class uDoParserUnitTest {
+public class ParserUnitTest {
 
 	Parser p = new Parser();
 	
@@ -121,7 +123,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testEditDueDate() {
-		String editDueDate = "edit 20430 due date 10/2/34";
+		String editDueDate = "edit 20430 due date 10/2";
 		InputData data = p.getInputData(editDueDate);
 		ParsingStatus status = data.getStatus();
 		Command type = data.getCommand();
@@ -138,7 +140,7 @@ public class uDoParserUnitTest {
 		
 		assertEquals(10, day);
 		assertEquals(1, month);
-		assertEquals(2034, year);
+		assertEquals(2014, year);
 	}
 	
 	@Test
@@ -163,7 +165,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testEditEndDate() {
-		String editEndDate = "edit 23859 end date 10/1/94";
+		String editEndDate = "edit 23859 end date 1/1";
 		InputData data = p.getInputData(editEndDate);
 		ParsingStatus status = data.getStatus();
 		Command type = data.getCommand();
@@ -178,9 +180,9 @@ public class uDoParserUnitTest {
 		assertEquals(Command.EDIT, type);
 		assertEquals(EditField.END_DATE, field);
 		
-		assertEquals(10, day);
+		assertEquals(1, day);
 		assertEquals(0, month);
-		assertEquals(1994, year);
+		assertEquals(2014, year);
 	}
 	
 	@Test
@@ -325,7 +327,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testListDate() {
-		String listDate = "list 20/1/2014";
+		String listDate = "list 20/1";
 		InputData data = p.getInputData(listDate);
 		ParsingStatus status = data.getStatus();
 		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
@@ -394,7 +396,7 @@ public class uDoParserUnitTest {
 	
 	@Test
 	public void testAddTask() {
-		String task1 = "add Meet jane after #school #by #22/10/14 7:30am";
+		String task1 = "add Meet jane after #school #by tomorrow 7am";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -403,7 +405,7 @@ public class uDoParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.ADD_TASK, data.getCommand());
 		assertEquals("Meet jane after school", title);
-		assertEquals("[school, by, 22/10/14]", hashtags.toString());
+		assertEquals("[school, by]", hashtags.toString());
 		
 		Calendar due = (Calendar) data.get(Keys.DUE);
 		int day = due.get(Calendar.DAY_OF_MONTH);
@@ -412,16 +414,22 @@ public class uDoParserUnitTest {
 		int hour = due.get(Calendar.HOUR);
 		int mins = due.get(Calendar.MINUTE);
 		
-		assertEquals(22, day);
+		assertEquals(31, day);
 		assertEquals(9, month);
 		assertEquals(2014, year);
 		assertEquals(7, hour);
-		assertEquals(30, mins);
+		assertEquals(00, mins);
+		
+		task1 = "add Meet jane after #school #by 7am";
+		data = p.getInputData(task1);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
 	}
 	
 	@Test
 	public void testAddEvent() {
-		String event1 = "add meet #boss #from 22/10/2014 10:00am to 22/10/14 9:00pm";
+		String event1 = "add meet #boss #from 13/2 10:00am to 22/1 9:00pm";
 		InputData data = p.getInputData(event1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -435,17 +443,29 @@ public class uDoParserUnitTest {
 		Calendar startEvent = (Calendar) data.get(Keys.START);
 		Calendar endEvent = (Calendar) data.get(Keys.END);
 		
-		int day = endEvent.get(Calendar.DAY_OF_MONTH);
-		int month = endEvent.get(Calendar.MONTH);
-		int year = endEvent.get(Calendar.YEAR);
-		int hour = endEvent.get(Calendar.HOUR);
-		int mins = endEvent.get(Calendar.MINUTE);
+		int startDay = startEvent.get(Calendar.DAY_OF_MONTH);
+		int startMonth = startEvent.get(Calendar.MONTH);
+		int startYear = startEvent.get(Calendar.YEAR);
+		int startHour = startEvent.get(Calendar.HOUR);
+		int startMins = startEvent.get(Calendar.MINUTE);
 		
-		assertEquals(22, day);
-		assertEquals(9, month);
-		assertEquals(2014, year);
-		assertEquals(9, hour);
-		assertEquals(0, mins);
+		assertEquals(13, startDay);
+		assertEquals(1, startMonth);
+		assertEquals(2014, startYear);
+		assertEquals(10, startHour);
+		assertEquals(0, startMins);
+		
+		int endDay = endEvent.get(Calendar.DAY_OF_MONTH);
+		int endMonth = endEvent.get(Calendar.MONTH);
+		int endYear = endEvent.get(Calendar.YEAR);
+		int endHour = endEvent.get(Calendar.HOUR);
+		int endMins = endEvent.get(Calendar.MINUTE);
+		
+		assertEquals(22, endDay);
+		assertEquals(0, endMonth);
+		assertEquals(2014, endYear);
+		assertEquals(9, endHour);
+		assertEquals(0, endMins);
 	}
 	
 }

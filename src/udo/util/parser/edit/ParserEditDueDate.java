@@ -1,3 +1,4 @@
+//@author A0114847B
 package udo.util.parser.edit;
 
 import java.util.Calendar;
@@ -20,9 +21,13 @@ public class ParserEditDueDate implements ParserEditCommand {
 		if (details.length() > startingIndex) {
 			ParserDate date = new ParserDate();
 			Calendar dueDate = date.getDate(details);
-			data.put(Keys.FIELD, EditField.DUE_DATE);
-			data.put(Keys.VALUE, dueDate);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
+			if (dueDate != null) {
+				data.put(Keys.FIELD, EditField.DUE_DATE);
+				data.put(Keys.VALUE, dueDate);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);
+			}
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}

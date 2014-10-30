@@ -1,3 +1,4 @@
+//@author A0108358B
 package udo.util.shared;
 
 import java.util.HashMap;
@@ -5,7 +6,7 @@ import java.util.Set;
 
 public class DataHolder {
 	
-	protected HashMap<String, Object> mData;
+	protected final HashMap<String, Object> mData;
 	
 	public DataHolder() {
 		mData = new HashMap<String, Object>();

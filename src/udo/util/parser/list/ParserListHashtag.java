@@ -1,3 +1,4 @@
+//@author A0114847B
 package udo.util.parser.list;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class ParserListHashtag implements ParserListCommand {
 	public void fill(Command type, String details, InputData data) {
 		ArrayList<String> tags = getTags(details);
 		if (!tags.isEmpty()) {
-			data.put(Keys.HASHTAG, tags.get(0));
+			data.put(Keys.QUERY_VALUE, tags.get(0));
 			data.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {

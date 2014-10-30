@@ -1,6 +1,6 @@
+//@author A0108358B
 package udo.util.shared;
 
-import java.util.HashMap;
 
 /**
  * This class carries information from the engine to the UI. The information
@@ -24,18 +24,15 @@ public class OutputData extends DataHolder {
 	
 	public OutputData(Command cmd) {
 		mCommand = cmd;
-		mData = new HashMap<String, Object>();
 	}
 	
 	public OutputData(Command cmd, ParsingStatus pStatus) {
 		mCommand = cmd;
-		mData = new HashMap<String, Object>();
 		mParsingStatus = pStatus;
 	}
 
 	public OutputData(Command cmd, ParsingStatus pStatus, ExecutionStatus eStatus) {
 		mCommand = cmd;
-		mData = new HashMap<String, Object>();
 		mParsingStatus = pStatus;
 		mExecutionStatus = eStatus;
 	}
@@ -50,9 +47,9 @@ public class OutputData extends DataHolder {
 	}
 	
 	/**
-	 * Retrieves the {@code ExecutionStatus} value
+	 * Retrieves the {@code ParsingStatus} value
 	 * 
-	 * @return the {@code ExecutionStatus} value
+	 * @return the {@code ParsingStatus} value
 	 */
 	public ParsingStatus getParsingStatus() {
 		return mParsingStatus;
@@ -68,7 +65,8 @@ public class OutputData extends DataHolder {
 	}
 
 	/**
-	 * Retrieves the {@code ExecutionStatus} value
+	 * sets the {@code ExecutionStatus} value
+	 * @param status the status
 	 * 
 	 * @return the {@code ExecutionStatus} value
 	 */
@@ -78,6 +76,7 @@ public class OutputData extends DataHolder {
 	
 	/**
 	 * Retrieves the {@code ExecutionStatus} value
+	 * @param status the status
 	 * 
 	 * @return the {@code ExecutionStatus} value
 	 */

@@ -1,8 +1,11 @@
+//@author A0108358B
 package udo.util.shared;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
+
+import javax.swing.KeyStroke;
 
 /**
  * 
@@ -12,7 +15,8 @@ import java.text.SimpleDateFormat;
  * 
  */
 public class Constants {
-
+	
+	//@author A0108358B
 	/**
 	 * 
 	 * This class holds all the keys used for the data storage objects. Please
@@ -33,13 +37,14 @@ public class Constants {
 		public static final String ITEM = "item";
 		public static final String ITEMS = "items";
 		public static final String QUERY_TYPE = "query type";
-		public static final String QUERY = "query string";
+		public static final String QUERY_VALUE = "query value";
 		public static final String FIELD = "field";
 		public static final String VALUE = "value";
 		public static final String DATE = "date";
 		public static final String OLD_VALUE = "Old value";
 	}
 
+	//@author A0108358B
 	/**
 	 * 
 	 * This class holds the array index values for the file manager usage. If you
@@ -69,7 +74,8 @@ public class Constants {
 		public static final int PLAN_DONE = 3;
 		public static final int PLAN_HASHTAGS = 4;
 	}
-
+	
+	//@author A0108358B
 	/**
 	 * 
 	 * This class holds the magic strings for the storage and retrieving of data
@@ -78,7 +84,7 @@ public class Constants {
 	 * 
 	 */
 	public static final class StorageStrings {
-		public static final String FILENAME = "uDo_data.txt";
+		public static final String FILENAME = "data/uDo_data.txt";
 		public static final String FIELD_DELIMITER = "\\|\\|\\|";
 		public static final String DATE_DELIMITER = "/";
 		public static final String TIME_DELIMITER = ":";
@@ -91,12 +97,20 @@ public class Constants {
 		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
 	}
 	
+	//@author A0114088H
 	/**
 	 * 
 	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
 	 *
 	 */
 	public static final class UI {
+		public static final KeyStroke ALT_Q = KeyStroke.getKeyStroke("alt Q");
+		public static final KeyStroke ALT_A = KeyStroke.getKeyStroke("alt A");
+		public static final KeyStroke ALT_W = KeyStroke.getKeyStroke("alt W");
+		public static final KeyStroke ALT_S = KeyStroke.getKeyStroke("alt S");
+		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
+		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
+		
 		public static final int FONTSIZE_24 = 24;
 		public static final int FONTSIZE_20 = 20;
 		public static final int FONTSIZE_18 = 18;
@@ -151,10 +165,14 @@ public class Constants {
 		public static final Color ENTRY_HASHTAGS_COLOR = new Color(28,134,238);
 		
 		public static final Color UID_COLOR = new Color(238,238,238);
-		public static final Color SEPARATOR_COLOR = new Color(100,100,100);
+		public static final Color SEPARATOR_COLOR_EVENT = new Color(100,0,100);
+		public static final Color SEPARATOR_COLOR_TASK = new Color(0,100,100);
+		public static final Color SEPARATOR_COLOR_PLAN = new Color(100,100,0);
 		
 		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
+		
+		public static final int SCROLLBAR_INCREMENT = 135;
 		
 	}
 }

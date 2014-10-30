@@ -1,7 +1,10 @@
+//@author A0108358B
 package udo.util.engine.runners;
 
 import udo.util.engine.Cache;
 import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
 import udo.util.exceptions.ItemNotFoundException;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
@@ -59,10 +62,21 @@ public class RunnerDone extends Runner {
 			
 			return output;
 			
+		} catch (CacheAccessException e) {
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
 		} catch (ItemNotFoundException e) {
 			return new OutputData(Command.EXIT, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
+			
+		} catch (InvalidUIDException e) {
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
 		}
 	}
 

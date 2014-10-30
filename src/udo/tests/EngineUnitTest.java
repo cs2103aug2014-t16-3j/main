@@ -1,3 +1,4 @@
+//@author A0108358B
 package udo.tests;
 
 import static org.junit.Assert.assertEquals;
@@ -10,7 +11,6 @@ import java.util.Calendar;
 import org.junit.Test;
 
 import udo.main.Engine;
-import udo.util.engine.Cache;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
@@ -22,10 +22,36 @@ import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
 
-public class uDoEngineUnitTest {
+public class EngineUnitTest {
 	
-	private static final int TASK_UID = 12346;
 	private static final int EVENT_UID = 12345;
+	private static final int TASK_UID = 12346;
+	
+	@Test
+	public void testEngineListByDate() {
+		Engine e = Engine.getInstance();
+		Calendar queryCal = Calendar.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DATE);
+		input.put(Keys.QUERY_VALUE, queryCal);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("list by date " + list);
+	}
+	
 	
 	@Test
 	// delete uid is split into:
@@ -329,7 +355,7 @@ public class uDoEngineUnitTest {
 		InputData input = new InputData(Command.LIST);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
-		input.put(Keys.HASHTAG, "meeting");
+		input.put(Keys.QUERY_VALUE, "meeting");
 		OutputData o = e.execute(input);
 		
 		assertFalse("output object cant be null",
@@ -373,7 +399,7 @@ public class uDoEngineUnitTest {
 				null == s);
 	}
 
-	@Test // contains buggy save
+	@Test 
 	public void testEngineExecuteExit() {
 		Engine e = Engine.getInstance();
 		 
@@ -403,20 +429,6 @@ public class uDoEngineUnitTest {
 		OutputData out = e.execute(in);
 		assertFalse("out should not be null", null == out);
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
-	}
-
-	@Test
-	public void testCacheAddItemSizeIncrease() {
-		Cache c = new Cache();
-		int oldSize = c.size();
-		ItemData i = new ItemData(ItemType.EVENT);
-		i.put("title", "asd");
-		ItemData ii = new ItemData(ItemType.EVENT);
-		ii.put("title", "asdasd");
-		assertTrue("add success", c.addItem(i));
-		assertTrue("add success", c.addItem(ii));
-		assertEquals("the new size should be larger than old size by 2",
-				c.size(), oldSize + 2);
 	}
 
 	@Test

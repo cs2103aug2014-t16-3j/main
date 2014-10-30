@@ -1,6 +1,6 @@
+//@author A0108358B
 package udo.util.shared;
 
-import java.util.HashMap;
 
 /**
  * This class carries information parsed from the input string. This class
@@ -15,13 +15,11 @@ public class InputData extends DataHolder {
 
 	public InputData(Command cmd) {
 		mCommand = cmd;
-		mData = new HashMap<String, Object>();
 	}
 	
 	public InputData(Command cmd, ParsingStatus status) {
 		mCommand = cmd;
 		mParsingStatus = status;
-		mData = new HashMap<String, Object>();
 	}
 
 	/**
