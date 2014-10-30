@@ -20,7 +20,7 @@ public class MainUnitTest {
 	public void testAddEvent() {
 		uDo udo = new uDo();
 		// checking hours and minutes from the start and end dates
-		OutputData output = udo.testParseAndExecute("add #new Event from 28/10/14 3pm to 29/10/14 4:23pm");
+		OutputData output = udo.testParseAndExecute("add #new Event from 28/10/14 3:00pm to 29/10/14 4:23pm");
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		Calendar time = Calendar.getInstance();
 		time.set(2014, Calendar.OCTOBER, 28, 15, 0);
@@ -30,16 +30,24 @@ public class MainUnitTest {
 		assertEquals("item name should be new Event",
 						"new Event",
 						item.get(Keys.TITLE));
-		assertEquals("start date should be 29/10/14 3pm",
-						time,
-						item.get(Keys.START));
+		
+		// to leo: do this kind of testing. 
+		// test each value, dont use equals for calendar.
+		// the reason is that they wont be equal because the seconds and miliseconds 
+		// are not accounted for
+		assertEquals("start hour should be 3", // do the same for minutes, day, month.. so on
+						time.get(Calendar.HOUR),
+						((Calendar)item.get(Keys.START)).get(Calendar.HOUR));
+		
 		time.set(2014, Calendar.OCTOBER, 29, 16, 23);
-		assertEquals("end date should be 29/10/14 4pm",
-						time,
-						item.get(Keys.END));
+		assertEquals("end hour 4",
+						time.get(Calendar.HOUR),
+						((Calendar)item.get(Keys.END)).get(Calendar.HOUR));
+		
 		assertEquals("hashtags will contain one object, 'new'",
 						hashtags.size(),
 						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		
 		assertEquals("the object is 'new'",
 						"new",
 						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
@@ -57,12 +65,12 @@ public class MainUnitTest {
 		ArrayList<String> hashtags = new ArrayList<String>();
 		hashtags.add("new");
 		// The following will check the attributes of the added plan
-		assertEquals("item name should be new Event",
-						"new Plan",
+		assertEquals("item name should be new task",
+						"new Task",
 						item.get(Keys.TITLE));
-		assertEquals("due date should be 29/10/14 4pm",
-				time,
-				item.get(Keys.DUE));
+		assertEquals("due hour 4",
+				time.get(Calendar.HOUR),
+				((Calendar)item.get(Keys.DUE)).get(Calendar.HOUR));
 		assertEquals("hashtags will contain one object, 'new'",
 						hashtags.size(),
 						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
