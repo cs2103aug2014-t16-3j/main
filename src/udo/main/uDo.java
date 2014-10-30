@@ -93,5 +93,11 @@ public class uDo {
 		OutputData outputData = mEngine.execute(inputData);
 		return outputData;
 	}
+	
+	//@author A0114088H
+	public OutputData testParseAndExecute(String input) {
+		OutputData output = parseAndExecute(input);
+		return output;
+	}
 
 }
