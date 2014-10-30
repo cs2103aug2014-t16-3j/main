@@ -23,6 +23,7 @@ public class uDo {
 	}
 
 	public static final int EXIT_STATUS_OK = 0;
+	public static final int EXIT_STATUS_NOT_OK = -1;
 	public static final int DAYS_IN_ADVANCE = 3;
 
 	private UserInterface mUI;
@@ -38,13 +39,18 @@ public class uDo {
 		mIsRunning = true;
 	}
 
-	private boolean run(String[] args) {
+	private void run(String[] args) {
 
 		manageArgs(args);
 		
-		runMainLoop();
-
-		return true;
+		try {
+			
+			runMainLoop();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(EXIT_STATUS_NOT_OK);
+		}
 	}
 
 	private void manageArgs(String[] args) {
