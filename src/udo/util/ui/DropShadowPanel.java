@@ -7,6 +7,7 @@ package udo.util.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
@@ -22,7 +23,8 @@ public class DropShadowPanel extends JPanel {
         this.pixels = pix;
         Border border = BorderFactory.createEmptyBorder(pixels, pixels, pixels, pixels);
         this.setBorder(BorderFactory.createCompoundBorder(this.getBorder(), border));
-        this.setLayout(new BorderLayout());
+        setOpaque(false);
+        setLayout(new BorderLayout());
     }
 
     @Override

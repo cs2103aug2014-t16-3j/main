@@ -9,9 +9,9 @@
 81531|||TASK|||prepare visa application documents to japan|||1/11/2014|||22:0|||false|||japan|||;
 59702|||EVENT|||finalise day 1 itinerary to japan|||1/11/2014|||23:0|||1/11/2014|||23:0|||japan|||;
 51354|||EVENT|||breakinus prac|||2/11/2014|||16:0|||2/11/2014|||18:0||||||;
-91624|||TASK|||prepare sequence diag for jiawei cs2103|||2/11/2014|||16:0|||false|||cs2103|||;
-63572|||TASK|||update and spread is1103 survey|||2/11/2014|||16:0|||false|||is1103|||;
 96513|||TASK|||refactor cs2103 code|||2/11/2014|||16:0|||false|||cs2103|||;
+63572|||TASK|||update and spread is1103 survey|||2/11/2014|||16:0|||false|||is1103|||;
+91624|||TASK|||prepare sequence diag for jiawei cs2103|||2/11/2014|||16:0|||false|||cs2103|||;
 90857|||TASK|||finish cs2101 videos|||2/11/2014|||16:0|||false|||cs2101|||;
 40335|||TASK|||prepare cs2101 OP2 script|||2/11/2014|||16:0|||false|||cs2101|||;
 29268|||EVENT|||AUG prac|||2/11/2014|||18:0|||2/11/2014|||22:0||||||;

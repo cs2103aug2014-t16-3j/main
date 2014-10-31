@@ -44,8 +44,8 @@ public class UItest {
 		/**
 		 * Testing side screens
 		 */
-		testPermaToDoScreen();
-		testPermaTodayScreen();
+//		testPermaToDoScreen();
+//		testPermaTodayScreen();
 	}
 	
 	private static void testToggleDone() {

@@ -30,6 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import com.sun.awt.AWTUtilities;
+
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
@@ -173,12 +175,11 @@ public class UserInterface implements ActionListener {
 		icons.add(new ImageIcon("img/uDoLogo_64x64.png").getImage());
 		icons.add(new ImageIcon("img/uDoLogo_256x256.png").getImage());
 		mFrame.setIconImages(icons);
-//		mShadowPanel.add(mLeftView, BorderLayout.WEST);
-//		mShadowPanel.add(mMainViewLayer, BorderLayout.CENTER);
-//		mShadowPanel.add(mRightView, BorderLayout.EAST);
-		mFrame.add(mLeftView, BorderLayout.WEST);
-		mFrame.add(mMainViewLayer, BorderLayout.CENTER);
-		mFrame.add(mRightView, BorderLayout.EAST);
+		mShadowPanel.add(mLeftView, BorderLayout.WEST);
+		mShadowPanel.add(mMainViewLayer, BorderLayout.CENTER);
+		mShadowPanel.add(mRightView, BorderLayout.EAST);
+		mFrame.add(mShadowPanel);
+		AWTUtilities.setWindowOpaque ( mFrame, false );
 		mFrame.pack();
 		mFrame.setLocationRelativeTo(null);
 		mFrame.setVisible(true);
@@ -296,16 +297,16 @@ public class UserInterface implements ActionListener {
 	}
 
 	public void updateTodayScreen(ArrayList<ItemData> data) {
-		mFrame.remove(mRightView);
+		mShadowPanel.remove(mRightView);
 		mRightView.add(fb.getTodayView(data), BorderLayout.CENTER);
-		mFrame.add(mRightView, BorderLayout.EAST);
+		mShadowPanel.add(mRightView, BorderLayout.EAST);
 		mFrame.revalidate();
 	}
 	
 	public void updateTodoScreen(ArrayList<ItemData> data) {
-		mFrame.remove(mLeftView);
+		mShadowPanel.remove(mLeftView);
 		mLeftView.add(fb.getToDoView(data), BorderLayout.CENTER);
-		mFrame.add(mLeftView, BorderLayout.WEST);
+		mShadowPanel.add(mLeftView, BorderLayout.WEST);
 		mFrame.revalidate();
 	}
 	
