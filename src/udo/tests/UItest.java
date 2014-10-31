@@ -175,7 +175,7 @@ public class UItest {
 		ArrayList<String> tags = new ArrayList<String>();
 		tags.add("Asd");
 		tags.add("jkl");
-		for(int i = 0; i<1; i++) {
+		for(int i = 0; i<12; i++) {
 			ItemData input = new ItemData(ItemType.EVENT);
 			input.put(Keys.UID, i);
 			input.put(Keys.TITLE, "dummyEvent" + i);

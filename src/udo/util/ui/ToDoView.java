@@ -26,8 +26,8 @@ public class ToDoView extends JPanel {
 	private ListView mEntryView = new ListView();
 	private JScrollPane mScrollPane = new JScrollPane();
 	
-	private static final Logger logger =
-	        Logger.getLogger(udo.util.ui.DayView.class.getName());
+//	private static final Logger logger =
+//	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
 	public ToDoView() {
 		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
@@ -45,15 +45,15 @@ public class ToDoView extends JPanel {
 	public void init(ArrayList<ItemData> data) {
 		initHeader();
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.TODOVIEW_HEADER_HEIGHT));
-		try {
-			logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
+//		} catch (SecurityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		populateView(data);
 	}
 	
@@ -84,12 +84,12 @@ public class ToDoView extends JPanel {
 					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
 			mScrollPane.getViewport().add(mEntryView);
 			mEntryView.populateView(data);
-			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
-				logger.info("TODO mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
-			} else {
-				logger.fine("TODO mEntryView's preferredSize is contained in mScrollPane");
-			}
-			
+//			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
+//				logger.info("TODO mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
+//			} else {
+//				logger.fine("TODO mEntryView's preferredSize is contained in mScrollPane");
+//			}
+//			
 			add(mScrollPane);
 		}
 	}
