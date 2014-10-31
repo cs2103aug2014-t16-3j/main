@@ -44,8 +44,8 @@ public class UItest {
 		/**
 		 * Testing side screens
 		 */
-//		testPermaToDoScreen();
-//		testPermaTodayScreen();
+		testPermaToDoScreen();
+		testPermaTodayScreen();
 	}
 	
 	private static void testToggleDone() {
@@ -171,15 +171,17 @@ public class UItest {
 	public static void testPermaTodayScreen() {
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
 		Calendar date = Calendar.getInstance();
+		Calendar date2 = Calendar.getInstance();
 		ArrayList<String> tags = new ArrayList<String>();
 		tags.add("Asd");
 		tags.add("jkl");
-		for(int i = 0; i<14; i++) {
+		for(int i = 0; i<1; i++) {
 			ItemData input = new ItemData(ItemType.EVENT);
 			input.put(Keys.UID, i);
 			input.put(Keys.TITLE, "dummyEvent" + i);
 			input.put(Keys.START, date);
-			input.put(Keys.END, date);
+			date2.set(2104,Calendar.NOVEMBER,1,23,00);
+			input.put(Keys.END, date2);
 			input.put(Keys.HASHTAGS, tags);
 			data.add(input);
 		}

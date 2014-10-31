@@ -153,7 +153,7 @@ public class Constants {
 		public static final String CLOSE_BUTTON_HOVER = "img/closeButtonHover.png";
 		
 		public static final int DAYVIEW_HEADER_HEIGHT = 100;
-		public static final String TICKER_IMAGE_DIR = "img/dayViewTicker2.png";
+		public static final String TICKER_IMAGE_DIR = "img/dayViewTicker.png";
 		public static final int TICKER_Y = 18;
 
 		public static final int TODOVIEW_HEADER_HEIGHT = 40;

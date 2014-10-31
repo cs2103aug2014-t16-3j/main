@@ -112,6 +112,10 @@ public class DayView extends JPanel{
 								mRedTickCoordsWH.get(i).x, 
 								mRedTickCoordsWH.get(i).y);
 				}
+				g.setFont(UI.FONT_18);
+				g.setColor(UI.EVENT_COLOR);
+				g.drawString("AM", 76, 30);
+				g.drawString("PM", 257, 30);
 			}
 			
 		};
