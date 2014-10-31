@@ -128,7 +128,6 @@ public class UserInterface implements ActionListener {
 		mTextField.setBackground(UI.MAIN_COLOR);
 		mTextField.setFont(UI.FONT_16);
 		setKeyBinds();
-		mTextField.requestFocus();
 
 		/**
 		 * Sets up textPanel
@@ -202,6 +201,7 @@ public class UserInterface implements ActionListener {
 		mFrame.add(mShadowPanel);
 		AWTUtilities.setWindowOpaque ( mFrame, false );
 		mFrame.pack();
+		mTextField.requestFocus();
 		mFrame.setLocationRelativeTo(null);
 		mFrame.setVisible(true);
 	}
@@ -218,6 +218,7 @@ public class UserInterface implements ActionListener {
         {
           public void actionPerformed(ActionEvent e)
           {
+            mFrame.dispose();
             System.exit(0);
           }
         });

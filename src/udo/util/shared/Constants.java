@@ -2,6 +2,7 @@
 package udo.util.shared;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
 
@@ -160,6 +161,7 @@ public class Constants {
 		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
 		public static final int ENTRY_SEPARATOR_WIDTH = -5;
 		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
+		public static final Dimension EMPTY_DATE = new Dimension(28,44);
 		
 		public static final String ENTRY_ALL = "ALL";
 		public static final String ENTRY_EVENT = "EVENT";

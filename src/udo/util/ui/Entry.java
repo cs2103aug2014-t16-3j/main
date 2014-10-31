@@ -102,9 +102,11 @@ public class Entry extends JPanel {
 
 	@SuppressWarnings("unchecked")
 	private void initPlan(ItemData item) {
-		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.CENTER);
-//		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
-//				0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
+		JPanel emptyPanel = new JPanel();
+		emptyPanel.setOpaque(false);
+		emptyPanel.setPreferredSize(UI.EMPTY_DATE);
+		mTimePanel.add(emptyPanel);
 		add(mTimePanel);
 		add(initSeparator(item.getItemType()));
 		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
@@ -240,6 +242,7 @@ public class Entry extends JPanel {
 		mMonth.setFont(UI.FONT_16);
 		time.add(mDate);
 		time.add(mMonth);
+		System.out.println(time.getPreferredSize());
 		return time;
 	}
 	
