@@ -92,7 +92,6 @@ public class DayView extends JPanel{
 		} catch (IOException ex) {
 			// handle exception...
 		}
-//		mTicker = new JLabel(new ImageIcon(mTickerImg));
 		mTicker = new JLabel(new ImageIcon(mTickerImg)){
 			private static final long serialVersionUID = 1L;
 			

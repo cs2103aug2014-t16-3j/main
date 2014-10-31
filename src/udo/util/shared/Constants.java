@@ -143,6 +143,14 @@ public class Constants {
 		public static final int SUBVIEW_HEADER_LINEY = 40;
 		public static final int SIDEVIEW_PADDING = 30;
 		
+		public static final String UDO_LOGO_IMG_DIR_256 = "img/uDoLogo_256x256.png";
+		public static final String UDO_LOGO_IMG_DIR_64 = "img/uDoLogo_64x64.png";
+		public static final String UDO_LOGO_IMG_DIR_32 = "img/uDoLogo_32x32.png";
+		public static final String UDO_LOGO_IMG_DIR_16 = "img/uDoLogo_16x16.png";
+		
+		public static final String CLOSE_BUTTON = "img/closeButton.png";
+		public static final String CLOSE_BUTTON_HOVER = "img/closeButtonHover.png";
+		
 		public static final int DAYVIEW_HEADER_HEIGHT = 100;
 		public static final String TICKER_IMAGE_DIR = "img/dayViewTicker2.png";
 		public static final int TICKER_Y = 18;

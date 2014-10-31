@@ -1,6 +1,7 @@
 package udo.main;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -14,15 +15,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -48,11 +54,16 @@ public class UserInterface implements ActionListener {
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
 	private JScrollPane mScrollPane = new JScrollPane();
 	private DropShadowPanel mShadowPanel = new DropShadowPanel(10);
+	private JPanel mTopBar = new JPanel();
 	private JPanel mMainView = new JPanel();
 	private JPanel mRightView = new JPanel();
 	private JPanel mLeftView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
+	
+	private BufferedImage mUdoImg;
+	private JLabel mUdoLogo;
+	private JButton mCloseButton = new JButton();
 	
 	private int mPosX = 0, mPosY = 0;
 
@@ -62,6 +73,7 @@ public class UserInterface implements ActionListener {
 	private String mUserInput;
 
 	private Feedback fb;
+
 
 	public static UserInterface getInstance() {
 		if(mUserInterface == null) {
@@ -87,6 +99,14 @@ public class UserInterface implements ActionListener {
 		} catch (IOException|FontFormatException e) {
 		     //Handle exception
 		}
+		
+		/**
+		 * Sets up the bar at the top
+		 */
+		mTopBar.setLayout(new BorderLayout());
+		mTopBar.setBackground(UI.SUB_COLOR);
+		initUdoLogo();
+		initCloseButton();
 		
 		/**
 		 * Sets up layer
@@ -170,11 +190,12 @@ public class UserInterface implements ActionListener {
 		});
 		
 		List<Image> icons = new ArrayList<Image>();
-		icons.add(new ImageIcon("img/uDoLogo_16x16.png").getImage());
-		icons.add(new ImageIcon("img/uDoLogo_32x32.png").getImage());
-		icons.add(new ImageIcon("img/uDoLogo_64x64.png").getImage());
-		icons.add(new ImageIcon("img/uDoLogo_256x256.png").getImage());
+		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_256).getImage());
+		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_64).getImage());
+		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_32).getImage());
+		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_16).getImage());
 		mFrame.setIconImages(icons);
+		mShadowPanel.add(mTopBar, BorderLayout.NORTH);
 		mShadowPanel.add(mLeftView, BorderLayout.WEST);
 		mShadowPanel.add(mMainViewLayer, BorderLayout.CENTER);
 		mShadowPanel.add(mRightView, BorderLayout.EAST);
@@ -185,6 +206,36 @@ public class UserInterface implements ActionListener {
 		mFrame.setVisible(true);
 	}
 	
+	private void initCloseButton() {
+		mCloseButton.setBorderPainted(false); 
+        mCloseButton.setContentAreaFilled(false); 
+        mCloseButton.setFocusPainted(false); 
+        mCloseButton.setOpaque(false);
+		mCloseButton.setPreferredSize(new Dimension(32,32));
+        mCloseButton.setIcon(new ImageIcon(UI.CLOSE_BUTTON));
+        mCloseButton.setRolloverIcon(new ImageIcon(UI.CLOSE_BUTTON_HOVER));
+        mCloseButton.addActionListener(new ActionListener()
+        {
+          public void actionPerformed(ActionEvent e)
+          {
+            System.exit(0);
+          }
+        });
+		mTopBar.add(mCloseButton, BorderLayout.EAST);
+		
+	}
+	private void initUdoLogo() {
+		try {                
+			mUdoImg = ImageIO.read(new File(UI.UDO_LOGO_IMG_DIR_32));
+		} catch (IOException ex) {
+			// handle exception...
+		}
+		mUdoLogo = new JLabel(new ImageIcon(mUdoImg));
+		int padding = 4;
+		mUdoLogo.setPreferredSize(new Dimension(mUdoImg.getWidth(), mUdoImg.getHeight()+padding));
+		mTopBar.add(mUdoLogo);
+		
+	}
 	private void setKeyBinds() {
 		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put( UI.ALT_Q,
                 "altQ" );
