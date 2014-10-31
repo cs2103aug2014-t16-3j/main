@@ -12,6 +12,8 @@ import java.awt.Image;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ public class UserInterface implements ActionListener {
 	private JPanel mLeftView = new JPanel();
 	private JFormattedTextField mTextField = new JFormattedTextField();
 	private uDoPopup mPopup = new uDoPopup();
+	
+	private int mPosX = 0, mPosY = 0;
 
 	private Timer mTimer;
 	private Timer mExistingTimer;
@@ -147,7 +151,20 @@ public class UserInterface implements ActionListener {
 		 * Sets up the frame
 		 */
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// mFrame.setUndecorated(true);
+		mFrame.setUndecorated(true);
+		mFrame.addMouseListener(new MouseAdapter() {
+		   public void mousePressed(MouseEvent e) {
+		      mPosX=e.getX();
+		      mPosY=e.getY();
+		   }
+		});
+		mFrame.addMouseMotionListener(new MouseAdapter() {
+		     public void mouseDragged(MouseEvent evt) {
+				//sets frame position when mouse dragged			
+				mFrame.setLocation (evt.getXOnScreen()-mPosX,evt.getYOnScreen()-mPosY);
+		     }
+		});
+		
 		List<Image> icons = new ArrayList<Image>();
 		icons.add(new ImageIcon("img/uDoLogo_16x16.png").getImage());
 		icons.add(new ImageIcon("img/uDoLogo_32x32.png").getImage());
