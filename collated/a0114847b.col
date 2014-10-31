@@ -1,0 +1,2531 @@
+//@author: a0114847b
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\main\Parser.java
+	 */
+
+package udo.main;
+
+import udo.util.parser.ParserAdd;
+import udo.util.parser.ParserCommand;
+import udo.util.parser.ParserDelete;
+import udo.util.parser.ParserEdit;
+import udo.util.parser.ParserExit;
+import udo.util.parser.ParserList;
+import udo.util.parser.ParserMark;
+import udo.util.parser.ParserSave;
+import udo.util.parser.ParserToggleDone;
+import udo.util.parser.ParserTrash;
+import udo.util.parser.ParserUndo;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+
+/**
+ * This class parses information from the input string and package it 
+ * as an InputData object. 
+ * <p>
+ * It reads in ADD, LIST, DELETE, EDIT, SAVE, EXIT and UNDO commands.
+ * Parser stores the keys using Keys class constants. 
+ */
+
+public class Parser {
+	
+	public Parser() {
+		//implement singleton pattern
+	}
+	
+	/**
+	 * Parses raw user's input and return it as an InputData object.
+	 * Fields are filled accordingly to it's Commands 
+	 * 
+	 * @param input string 
+	 * @return InputData object
+	 */
+	public InputData getInputData(String input) {
+		Command type = determineCommandType(input);
+		InputData data = processCommandType(type, input);
+		return data;
+	}
+	
+	private Command determineCommandType(String input) {
+		String parts[] = input.split(" ");
+		String command = parts[0];
+		command = command.toLowerCase();
+		switch (command) {
+			case "add":
+				return Command.ADD;
+			case "list":
+				return Command.LIST;
+			case "delete":
+				return Command.DELETE;
+			case "save":
+				return Command.SAVE;
+			case "exit":
+				return Command.EXIT;
+			case "undo":
+				return Command.UNDO;
+			case "edit":
+				return Command.EDIT;
+			case "done":
+				return Command.MARK_DONE;
+			case "toggle":
+				return Command.TOGGLE_DONE;
+			default:
+				return Command.NULL;
+			}
+	}
+
+	private InputData processCommandType(Command commandType, String details) {
+		switch (commandType) {
+			case ADD:
+				return add(commandType, details);
+			case LIST:
+				return list(commandType, details);
+			case DELETE:
+				return delete(commandType, details);
+			case SAVE:
+				return save(commandType, details);
+			case EXIT:
+				return exit(commandType, details);
+			case UNDO:
+				return undo(commandType, details);
+			case EDIT:
+				return edit(commandType, details);
+			case TOGGLE_DONE:
+				return toggle_done(commandType, details);
+			case MARK_DONE:
+				return mark(commandType, details);
+			default:
+				return trash(commandType, details);
+			}
+	}
+	
+	private InputData mark(Command type, String details) {
+		ParserCommand mark = new ParserMark();
+		InputData data = mark.run(type, details);
+		return data;
+	}
+
+	private InputData toggle_done(Command type, String details) {
+		ParserCommand toggleDone = new ParserToggleDone();
+		InputData data = toggleDone.run(type, details);
+		return data;
+	}
+
+	private InputData add(Command type, String details) {
+		ParserCommand add = new ParserAdd();
+		InputData data = add.run(type, details);
+		return data;
+	}
+	
+	private InputData list(Command type, String details) {
+		ParserCommand list = new ParserList();
+		InputData data = list.run(type, details);
+		return data;
+	}
+
+	private InputData edit(Command type, String details) {
+		ParserEdit activity = new ParserEdit();
+		return activity.edit(type, details);
+	}
+	
+	private InputData delete(Command type, String details) {
+		ParserCommand delete = new ParserDelete();
+		InputData data = delete.run(type, details);
+		return data;
+	}
+	
+	private InputData trash(Command type, String details) {
+		ParserCommand trash = new ParserTrash();
+		InputData data = trash.run(type);
+		return data;
+	}
+
+	private InputData undo(Command type, String details) {
+		ParserCommand undo = new ParserUndo();
+		InputData data = undo.run(type);
+		return data;
+	}
+
+	private InputData save(Command type, String details) {
+		ParserCommand save = new ParserSave();
+		InputData data = save.run(type);
+		return data;
+	}
+
+	private InputData exit(Command type, String details) {
+		ParserCommand exit = new ParserExit();
+		InputData data = exit.run(type);
+		return data;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\main\Parser.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\tests\ParserUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.junit.Test;
+
+import udo.main.Parser;
+import udo.util.parser.ParserDate;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.ParsingStatus;
+
+public class ParserUnitTest {
+
+	Parser p = new Parser();
+	
+	@Test
+	public void testDelete() {
+		
+		//testing within acceptance region
+		String delete1 = "delete 12359";
+		InputData data1 = p.getInputData(delete1);
+		ParsingStatus status1 = data1.getStatus();
+		Command type1 = data1.getCommand(); 
+		int uid1 = (int) data1.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status1);
+		assertEquals(Command.DELETE, type1);
+		assertEquals(12359, uid1);
+		
+		// The boundary for delete uid is 00000 to 99999
+		// Testing boundary case 00000 and 99999
+		String delete2 = "delete 00000";
+		InputData data2 = p.getInputData(delete2);
+		ParsingStatus status2 = data2.getStatus();
+		int uid2 = (int) data2.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status2);
+		assertEquals(00000, uid2);
+		
+		// Testing outside boundary case
+		String delete3 = "delete 0000";
+		InputData data3 = p.getInputData(delete3);
+		ParsingStatus status3 = data3.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status3);
+		
+		// Testing boundary for string
+		String delete4 = "delete delet";
+		InputData data4 = p.getInputData(delete4);
+		ParsingStatus status4 = data4.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status4);
+	}
+	
+	@Test
+	public void testMarkDone() {
+		//testing within acceptance region
+		String done = "done 12359";
+		InputData data = p.getInputData(done);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand(); 
+		int uid = (int) data.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.MARK_DONE, type);
+		assertEquals(12359, uid);
+		
+		// The boundary for delete uid is 00000 to 99999
+		// Testing boundary case 00000 and 99999
+		done = "done 99999";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		uid = (int) data.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(99999, uid);
+		
+		// Testing outside boundary case
+		done = "done 0";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+
+		// Testing boundary for string
+		done = "done insta";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+	}
+	
+	@Test
+	public void testToggleDone() {
+		//testing within acceptance region
+		String toggleDone = "toggle done 12359 ";
+		InputData data = p.getInputData(toggleDone);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand(); 
+		int uid = (int) data.get(Keys.UID);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.TOGGLE_DONE, type);
+		assertEquals(12359, uid);
+		
+		//testing typo command
+		toggleDone = "toggledone 12359 ";
+		data = p.getInputData(toggleDone);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+	}
+	
+	@Test
+	public void testEditDueDate() {
+		String editDueDate = "edit 20430 due date 10/2";
+		InputData data = p.getInputData(editDueDate);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH);
+		int year = date.get(Calendar.YEAR);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.DUE_DATE, field);
+		
+		assertEquals(10, day);
+		assertEquals(1, month);
+		assertEquals(2014, year);
+	}
+	
+	@Test
+	public void testEditDueTime() {
+		String editDueTime = "edit 30953 due time 12:10am";
+		InputData data = p.getInputData(editDueTime);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int hour = date.get(Calendar.HOUR);
+		int mins = date.get(Calendar.MINUTE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.DUE_TIME, field);
+
+		assertEquals(0, hour);
+		assertEquals(10, mins);
+	}
+	
+	@Test
+	public void testEditEndDate() {
+		String editEndDate = "edit 23859 end date 1/1";
+		InputData data = p.getInputData(editEndDate);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH);
+		int year = date.get(Calendar.YEAR);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.END_DATE, field);
+		
+		assertEquals(1, day);
+		assertEquals(0, month);
+		assertEquals(2014, year);
+	}
+	
+	@Test
+	public void testEditEndTime() {
+		String editEndTime = "edit 23535 end time 10:12pm";
+		InputData data = p.getInputData(editEndTime);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int hour = date.get(Calendar.HOUR);
+		int mins = date.get(Calendar.MINUTE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.END_TIME, field);
+
+		assertEquals(10, hour);
+		assertEquals(12, mins);
+	}
+	
+	@Test
+	public void testEditStartDate() {
+		String editStartDate = "edit 21345 start date 9/12/13";
+		InputData data = p.getInputData(editStartDate);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int day = date.get(Calendar.DAY_OF_MONTH);
+		int month = date.get(Calendar.MONTH);
+		int year = date.get(Calendar.YEAR);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.START_DATE, field);
+		
+		assertEquals(9, day);
+		assertEquals(11, month);
+		assertEquals(2013, year);
+	}
+	
+	@Test
+	public void testEditStartTime() {
+		String editStartTime = "edit 23834 start time 9:00am";
+		InputData data = p.getInputData(editStartTime);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Calendar date = (Calendar) data.get(Keys.VALUE);
+		
+		int hour = date.get(Calendar.HOUR);
+		int mins = date.get(Calendar.MINUTE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.START_TIME, field);
+
+		assertEquals(9, hour);
+		assertEquals(0, mins);
+	}
+	
+	@Test
+	public void testEditTitle() {
+		//within test boundary
+		String editTitle = "edit 72384 title hello #everybody";
+		InputData data = p.getInputData(editTitle);
+		ParsingStatus status = data.getStatus();
+		Command type = data.getCommand();
+		EditField field = (EditField) data.get(Keys.FIELD);
+		Object title = data.get(Keys.VALUE);
+		ArrayList<String> tags = (ArrayList<String>) data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.TITLE, field);
+		assertEquals("hello everybody", title);
+		assertEquals("[everybody]", tags.toString());
+		
+		//boundary case of unfilled hashtag
+		editTitle = "edit 72384 title hello #";
+		data = p.getInputData(editTitle);
+		status = data.getStatus();
+		type = data.getCommand();
+		field = (EditField) data.get(Keys.FIELD);
+		title = data.get(Keys.VALUE);
+		tags = (ArrayList<String>) data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.TITLE, field);
+		assertEquals("hello ", title);
+		assertEquals("[]", tags.toString());
+		
+		//boundary case of incorrect field -------------------WATCH OUT
+		editTitle = "edit 72384 titles hello #everybody";
+		data = p.getInputData(editTitle);
+		status = data.getStatus();
+		type = data.getCommand();
+		field = (EditField) data.get(Keys.FIELD);
+		title = data.get(Keys.VALUE);
+		tags = (ArrayList<String>) data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.EDIT, type);
+		assertEquals(EditField.TITLE, field);
+		assertEquals(" hello everybody", title);
+		assertEquals("[everybody]", tags.toString());
+		
+		//boundary case of unfilled edit
+		editTitle = "edit 72384 title ";
+		data = p.getInputData(editTitle);
+		status = data.getStatus();
+		type = data.getCommand();
+		field = (EditField) data.get(Keys.FIELD);
+		title = data.get(Keys.VALUE);
+		tags = (ArrayList<String>) data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+	}
+	
+	@Test
+	public void testListHashtag() {
+		String listTag = "list #lala";
+		InputData data = p.getInputData(listTag);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.SINGLE_HASHTAG, type);
+		
+		listTag = "list #";
+		data = p.getInputData(listTag);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+	}
+	
+	@Test
+	public void testListDate() {
+		String listDate = "list 20/1";
+		InputData data = p.getInputData(listDate);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.DATE, type);
+		
+	}
+	
+	@Test
+	public void testListAll() {
+		String listAll = "list ALL";
+		InputData data = p.getInputData(listAll);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.ALL, type);
+		
+		listAll = "list";
+		data = p.getInputData(listAll);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+	}
+	
+	@Test
+	public void testListDone() {
+		String listDone = "list done";
+		InputData data = p.getInputData(listDone);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.DONE, type);
+		
+		listDone = "list DoNe";
+		data = p.getInputData(listDone);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		
+		listDone = "list Do";
+		data = p.getInputData(listDone);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+	}
+	
+	@Test
+	public void testAddPlan() {
+		String plan1 = "add finish #cs2103 stuff";
+		InputData data = p.getInputData(plan1);
+		ParsingStatus status = data.getStatus();
+		Object title = data.get(Keys.TITLE);
+		Object hashtags = data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.ADD_PLAN, data.getCommand());
+		assertEquals("finish cs2103 stuff", title);
+		assertEquals("[cs2103]", hashtags.toString());
+	}
+	
+	@Test
+	public void testAddTask() {
+		String task1 = "add Meet jane after #school #by tomorrow 7am";
+		InputData data = p.getInputData(task1);
+		ParsingStatus status = data.getStatus();
+		Object title = data.get(Keys.TITLE);
+		Object hashtags = data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.ADD_TASK, data.getCommand());
+		assertEquals("Meet jane after school", title);
+		assertEquals("[school, by]", hashtags.toString());
+		
+		Calendar due = (Calendar) data.get(Keys.DUE);
+		int day = due.get(Calendar.DAY_OF_MONTH);
+		int month = due.get(Calendar.MONTH);
+		int year = due.get(Calendar.YEAR);
+		int hour = due.get(Calendar.HOUR);
+		int mins = due.get(Calendar.MINUTE);
+		
+		assertEquals(31, day);
+		assertEquals(9, month);
+		assertEquals(2014, year);
+		assertEquals(7, hour);
+		assertEquals(00, mins);
+		
+		task1 = "add Meet jane after #school #by 7am";
+		data = p.getInputData(task1);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+	}
+	
+	@Test
+	public void testAddEvent() {
+		String event1 = "add meet #boss #from 13/2 10:00am to 22/1 9:00pm";
+		InputData data = p.getInputData(event1);
+		ParsingStatus status = data.getStatus();
+		Object title = data.get(Keys.TITLE);
+		Object hashtags = data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.ADD_EVENT, data.getCommand());
+		assertEquals("meet boss", title);
+		assertEquals("[boss, from]", hashtags.toString());
+		
+		Calendar startEvent = (Calendar) data.get(Keys.START);
+		Calendar endEvent = (Calendar) data.get(Keys.END);
+		
+		int startDay = startEvent.get(Calendar.DAY_OF_MONTH);
+		int startMonth = startEvent.get(Calendar.MONTH);
+		int startYear = startEvent.get(Calendar.YEAR);
+		int startHour = startEvent.get(Calendar.HOUR);
+		int startMins = startEvent.get(Calendar.MINUTE);
+		
+		assertEquals(13, startDay);
+		assertEquals(1, startMonth);
+		assertEquals(2014, startYear);
+		assertEquals(10, startHour);
+		assertEquals(0, startMins);
+		
+		int endDay = endEvent.get(Calendar.DAY_OF_MONTH);
+		int endMonth = endEvent.get(Calendar.MONTH);
+		int endYear = endEvent.get(Calendar.YEAR);
+		int endHour = endEvent.get(Calendar.HOUR);
+		int endMins = endEvent.get(Calendar.MINUTE);
+		
+		assertEquals(22, endDay);
+		assertEquals(0, endMonth);
+		assertEquals(2014, endYear);
+		assertEquals(9, endHour);
+		assertEquals(0, endMins);
+	}
+	
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\tests\ParserUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddCommand.java
+	 */
+
+package udo.util.parser.add;
+
+import java.util.ArrayList;
+
+import udo.util.shared.InputData;
+
+public interface ParserAddCommand {
+
+	public void fill(String details, InputData data);
+	public String getTitle(String input);
+	public ArrayList<String> getTags(String input);
+	
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddCommand.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddEvent.java
+	 */
+
+package udo.util.parser.add;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.util.parser.ParserDate;
+import udo.util.parser.ParserTime;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserAddEvent implements ParserAddCommand {
+
+	public ParserAddEvent() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		Calendar start = setFirstTimeAndDate(details);
+		Calendar end = setSecondTimeAndDate(details);
+		if (!title.isEmpty() && start != null && end != null) {
+			data.put(Keys.TITLE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.put(Keys.START, start);
+			data.put(Keys.END, end);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+	@Override
+	public String getTitle(String input) {
+		String title = input.replaceAll("#", "");
+		int startingIndex = 4; 							// start after "add "
+		int endingIndex = title.indexOf("from") - 1; // trim ending white space
+		title = title.substring(startingIndex, endingIndex);
+		return title;
+	}
+
+	@Override
+	public ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+	
+	public Calendar getDate(String input) {
+		ParserDate date = new ParserDate();
+		return date.getDate(input);
+	}
+	
+	public Calendar getTime(String input) {
+		ParserTime time = new ParserTime();
+		return time.getTime(input);
+	}
+	
+	public Calendar setFirstTimeAndDate(String details) {
+		Calendar start = getTime(details);
+		Calendar date = getDate(details);
+		if (start != null && date != null) {
+			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return start;
+		}
+		return null;
+	}
+	
+	public Calendar setSecondTimeAndDate(String details) {
+		int toStringIndex = details.indexOf("to");
+		String endingTimeDateString = details.substring(toStringIndex);
+		Calendar end = getTime(endingTimeDateString);
+		Calendar date = getDate(endingTimeDateString);
+		if (end != null && date != null) {
+			end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			end.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return end;
+		} else {
+			return null;
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddEvent.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddPlan.java
+	 */
+
+package udo.util.parser.add;
+
+import java.util.ArrayList;
+
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
+
+public class ParserAddPlan implements ParserAddCommand {
+
+	public ParserAddPlan() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		int startingIndex = 4;
+		String title = details.substring(startingIndex);
+		title = title.replaceAll("#", "");
+		ArrayList<String> tags = getTags(details);
+		if (!title.isEmpty()) {
+			data.put(Keys.TITLE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+	@Override
+	public String getTitle(String input) {
+		return null;
+	}
+
+	// Returns an ArrayList of tags. Tags do not contain "#"
+	// If no tags are found, retun an empty ArrayList
+	@Override
+	public ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			if (word.startsWith("#")) {
+				tag = word.replaceFirst("#", "");
+				assert(!tag.isEmpty());
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddPlan.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddTask.java
+	 */
+
+package udo.util.parser.add;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.util.parser.ParserDate;
+import udo.util.parser.ParserTime;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserAddTask implements ParserAddCommand {
+
+	public ParserAddTask() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		Calendar end = setFirstTimeAndDate(details);
+		if (!title.isEmpty() && end != null) {
+			data.put(Keys.TITLE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.put(Keys.DUE, end);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}	
+	}
+
+	@Override
+	public String getTitle(String input) {
+		String title = input.replaceAll("#", "");
+		int startingIndex = 4;						// start after "add "
+		int endingIndex = title.indexOf("by") - 1; // trim ending white space
+		title = title.substring(startingIndex, endingIndex);
+		return title;
+	}
+
+	@Override
+	public ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+	
+	public Calendar getDate(String input) {
+		ParserDate date = new ParserDate();
+		return date.getDate(input);
+	}
+	
+	public Calendar getTime(String input) {
+		ParserTime time = new ParserTime();
+		return time.getTime(input);
+	}
+	
+	public Calendar setFirstTimeAndDate(String details) {
+		Calendar start = getTime(details);
+		Calendar date = getDate(details);
+		if (start != null && date != null) {
+			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return start;
+		} else {
+			return null;
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\add\ParserAddTask.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditCommand.java
+	 */
+
+package udo.util.parser.edit;
+
+import udo.util.shared.InputData;
+
+public interface ParserEditCommand {
+	
+	public void fill(String details, InputData data);
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditCommand.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditDueDate.java
+	 */
+
+package udo.util.parser.edit;
+
+import java.util.Calendar;
+
+import udo.util.parser.ParserDate;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserEditDueDate implements ParserEditCommand {
+
+	public ParserEditDueDate() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		int startingIndex = 20; // new info starts after "edit 12345 due date "
+		if (details.length() > startingIndex) {
+			ParserDate date = new ParserDate();
+			Calendar dueDate = date.getDate(details);
+			if (dueDate != null) {
+				data.put(Keys.FIELD, EditField.DUE_DATE);
+				data.put(Keys.VALUE, dueDate);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);
+			}
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditDueDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditDueTime.java
+	 */
+
+package udo.util.parser.edit;
+
+import java.util.Calendar;
+
+import udo.util.parser.ParserTime;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserEditDueTime implements ParserEditCommand {
+
+	public ParserEditDueTime() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		int startingIndex = 20; // new info starts after "edit 12345 due time "
+		if (details.length() > startingIndex) {
+			ParserTime time = new ParserTime();
+			Calendar dueTime = time.getTime(details);
+			data.put(Keys.FIELD, EditField.DUE_TIME);
+			data.put(Keys.VALUE, dueTime);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditDueTime.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditEndDate.java
+	 */
+
+package udo.util.parser.edit;
+
+import java.util.Calendar;
+
+import udo.util.parser.ParserDate;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserEditEndDate implements ParserEditCommand {
+
+	public ParserEditEndDate() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		int startingIndex = 20; // new info starts after "edit 12345 end date "
+		if (details.length() > startingIndex) {
+			ParserDate d = new ParserDate();
+			Calendar endDate = d.getDate(details);
+			if (endDate != null) {
+				data.put(Keys.FIELD, EditField.END_DATE);
+				data.put(Keys.VALUE, endDate);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);	
+			}
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditEndDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditEndTime.java
+	 */
+
+package udo.util.parser.edit;
+
+import java.util.Calendar;
+
+import udo.util.parser.ParserTime;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserEditEndTime implements ParserEditCommand {
+
+	public ParserEditEndTime() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		int startingIndex = 20; // new info starts after "edit 12345 end time "
+		if (details.length() > startingIndex) {
+			ParserTime time = new ParserTime();
+			Calendar endTime = time.getTime(details);
+			if (endTime != null) {
+				data.put(Keys.FIELD, EditField.END_TIME);
+				data.put(Keys.VALUE, endTime);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);
+			}
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditEndTime.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditStartDate.java
+	 */
+
+package udo.util.parser.edit;
+
+import java.util.Calendar;
+
+import udo.util.parser.ParserDate;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserEditStartDate implements ParserEditCommand {
+
+	public ParserEditStartDate() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		int startingIndex = 22; // new info starts after "edit 12345 start date "
+		if (details.length() > startingIndex) {
+			ParserDate d = new ParserDate();
+			Calendar startDate = d.getDate(details);
+			if (startDate != null) {
+				data.put(Keys.FIELD, EditField.START_DATE);
+				data.put(Keys.VALUE, startDate);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);
+			}
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditStartDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditStartTime.java
+	 */
+
+package udo.util.parser.edit;
+
+import java.util.Calendar;
+
+import udo.util.parser.ParserTime;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserEditStartTime implements ParserEditCommand {
+
+	public ParserEditStartTime() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		int startingIndex = 22; // new info starts after "edit 12345 start time "
+		if (details.length() > startingIndex) {
+			ParserTime time = new ParserTime();
+			Calendar startTime = time.getTime(details);
+			data.put(Keys.FIELD, EditField.START_TIME);
+			data.put(Keys.VALUE, startTime);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditStartTime.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditTitle.java
+	 */
+
+package udo.util.parser.edit;
+
+import java.util.ArrayList;
+
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserEditTitle implements ParserEditCommand {
+
+	public ParserEditTitle() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		if (title != null && !title.isEmpty()) {
+			data.put(Keys.FIELD, EditField.TITLE);
+			data.put(Keys.VALUE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+	
+	// need to take in tags as well
+	// returns the new title if it exists
+	// otherwise returns null
+	private String getTitle(String details) {
+		int startingIndex = 17; // new info starts after "edit 12345 title "
+		if (details.length() > startingIndex) {
+			String title = details.substring(startingIndex);
+			title = title.replaceAll("#", "");
+			return title;
+		} else {
+			return null;
+		}
+	}
+	
+	// Returns an ArrayList of tags. Tags do not contain "#"
+	// If no tags are found, retun an empty ArrayList
+	private ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\edit\ParserEditTitle.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListAll.java
+	 */
+
+package udo.util.parser.list;
+
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.ParsingStatus;
+
+public class ParserListAll implements ParserListCommand {
+
+	public ParserListAll() {
+		
+	}
+	
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		data.put(Keys.QUERY_TYPE, ListQuery.ALL);
+		data.setParsingStatus(ParsingStatus.SUCCESS);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListAll.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListCommand.java
+	 */
+
+package udo.util.parser.list;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+
+public interface ParserListCommand {
+
+	public void fill(Command type, String details, InputData data);
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListCommand.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListDate.java
+	 */
+
+package udo.util.parser.list;
+
+import java.util.Calendar;
+
+import udo.util.parser.ParserDate;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.ParsingStatus;
+
+public class ParserListDate implements ParserListCommand {
+
+	public ParserListDate() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		ParserDate listDate = new ParserDate();
+		Calendar date = listDate.getDate(details);
+		if (date != null) {
+			data.put(Keys.QUERY_TYPE, ListQuery.DATE);
+			data.put(Keys.QUERY_VALUE, date);	
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListDone.java
+	 */
+
+package udo.util.parser.list;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
+
+public class ParserListDone implements ParserListCommand {
+
+	public ParserListDone() {
+		
+	}
+
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		data.put(Keys.QUERY_TYPE, ListQuery.DONE);
+		data.setParsingStatus(ParsingStatus.SUCCESS);
+
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListHashtag.java
+	 */
+
+package udo.util.parser.list;
+
+import java.util.ArrayList;
+
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.ParsingStatus;
+
+public class ParserListHashtag implements ParserListCommand {
+
+	public ParserListHashtag() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		ArrayList<String> tags = getTags(details);
+		if (!tags.isEmpty()) {
+			data.put(Keys.QUERY_VALUE, tags.get(0));
+			data.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+	
+	// Returns an ArrayList of tags. Tags do not contain "#"
+	// If no tags are found, retun an empty ArrayList
+	private ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\list\ParserListHashtag.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserAdd.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.parser.add.ParserAddCommand;
+import udo.util.parser.add.ParserAddEvent;
+import udo.util.parser.add.ParserAddPlan;
+import udo.util.parser.add.ParserAddTask;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+
+
+/** 
+ * This class takes in ADD commands and break them into the following:
+ * ADD_EVENT, ADD_TASK, ADD_PLAN
+ * <p>
+ * ADD_EVENT command is for events. Events contain a starting time and an ending time.
+ * ADD_TASK command is for tasks. Tasks contain 1 deadline.
+ * ADD_PLAN command is for plans. Plans have no deadlines nor starting and ending time.
+ */
+
+public class ParserAdd implements ParserCommand {
+	
+	public ParserAdd() {
+		
+	}
+	
+	/**
+	 * This method takes in user input and returns an InputData of the following 
+	 * CommandType: ADD_EVENT, ADD_TASK, ADD_PLAN
+	 * and the stores them in the necessary fields.
+	 * 
+	 * @param type
+	 * @param details
+	 * @return an InputData
+	 */
+	@Override
+	public InputData run(Command type, String details) {
+		InputData data;
+		if (isEvent(details)) {
+			data = new InputData(Command.ADD_EVENT);
+			ParserAddCommand event = new ParserAddEvent();
+			event.fill(details, data);
+		} else if (isTask(details)) {
+			data = new InputData(Command.ADD_TASK);
+			ParserAddCommand task = new ParserAddTask();
+			task.fill(details, data);
+		} else {
+			data = new InputData(Command.ADD_PLAN);
+			ParserAddCommand plan = new ParserAddPlan();
+			plan.fill(details, data);
+		} 
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+
+	// checks if there is 2 date or 2 time in input
+	private boolean isEvent(String details) {
+		if (details.contains("from") &&
+			details.contains("to")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// checks if there is 1 time or 1 date in input
+	private boolean isTask(String details) {
+		if (details.contains("by")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserCommand.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+
+public interface ParserCommand {
+	
+	public InputData run(Command type, String input);
+	public InputData run(Command type);
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserCommand.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserDate.java
+	 */
+
+package udo.util.parser;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class ParserDate {
+
+	private static Calendar mDate;
+	private String mDays[] = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY", 
+							"TODAY", "TOMORROW", ""};
+	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
+	
+	public ParserDate() {
+		
+	}
+	
+	/**
+	 * Method returns the first date it reads from input.
+	 * Detects date by "/" character
+	 * @param input string
+	 * @return Calendar date object
+	 */
+	public Calendar getDate(String input) {
+		decipherText(input);
+		return mDate;
+	}
+	
+	// facilitates how all instructions are run
+	private void decipherText(String input) {
+		int dateFormat = getDateFormat(input);
+		if (dateFormat == -1) {
+			String day = getDay(input);
+			mDate = formatDaySubstring(day);
+		} else if (dateFormat != 3) {
+			String dateString = getDateString(input, dateFormat);
+			mDate = formatDateSubstring(dateString, dateFormat);
+		} else {
+			mDate = null;
+		}
+	}
+
+	private Calendar formatDaySubstring(String day) {
+		if (day != null) {
+			Calendar cal = Calendar.getInstance();
+			if (day.equals("TOMORROW")) {
+				cal.add(Calendar.DATE, 1);
+				return cal;
+			} else if (day.equals("TODAY")) {
+				return cal;
+			} else {
+				return null; // other days
+			}
+		}
+		return null;
+	}
+
+	private String getDay(String input) {
+		String dayString = input.toUpperCase();
+		for (int i = 0; i < mDays.length; i++) {
+			if (dayString.contains(mDays[i])) {
+				return mDays[i];
+			}
+		}
+		return null;
+	}
+
+	private Calendar formatDateSubstring(String input, int dateFormat) {
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		SimpleDateFormat format = new SimpleDateFormat(mDateFormat[dateFormat]);
+		Date date;
+
+		try {
+			date = format.parse(input);
+			cal.setTime(date);
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
+			
+			if (dateFormat == 0) {
+				cal.set(Calendar.YEAR, year);
+			}
+		} catch (ParseException parserException) {
+			cal = null;
+			return cal;
+		}
+		return cal;
+	}
+
+	private String getDateString(String input, int dateFormat) {
+		switch (dateFormat) {
+			case 0:
+				return extractDateWithNoYears(input);
+			case 1:
+				return extractDateWithTwoYears(input);
+			case 2:
+				return extractDateWithFourYears(input);
+			default:
+				return null;
+		}
+	}
+
+	private String extractDateWithNoYears(String input) {
+		int dayMonthSlashIndex = input.indexOf("/");
+		int startIndex = dayMonthSlashIndex - 2;
+		int endIndex = dayMonthSlashIndex + 3;
+		if (endIndex > input.length()) {
+			endIndex = input.length();
+		}
+		
+		String dateString = input.substring(startIndex, endIndex);
+		dateString = dateString.replaceAll("\\s+","");
+		return dateString;
+	}
+
+	private String extractDateWithTwoYears(String input) {
+		int dayMonthSlashIndex = input.indexOf("/");
+		int offset = dayMonthSlashIndex + 1; 
+		int monthYearSlashIndex = input.indexOf("/", offset);
+		int startIndex = dayMonthSlashIndex - 2;
+		int endIndex = monthYearSlashIndex + 3;
+		
+		String dateString = input.substring(startIndex, endIndex);
+		dateString = dateString.replaceAll("\\s+","");
+		return dateString;
+	}
+
+	private String extractDateWithFourYears(String input) {
+		int dayMonthSlashIndex = input.indexOf("/");
+		int offset = dayMonthSlashIndex + 1; 
+		int monthYearSlashIndex = input.indexOf("/", offset);
+		int startIndex = dayMonthSlashIndex - 2;
+		int endIndex = monthYearSlashIndex + 5;
+		
+		String dateString = input.substring(startIndex, endIndex);
+		dateString = dateString.replaceAll("\\s+","");
+		return dateString;
+	}
+
+	private int getDateFormat(String input) {
+		if (input.contains("/")) {
+			int dayMonthSlashIndex = input.indexOf("/");
+			int offset = dayMonthSlashIndex + 1; 
+			int monthYearSlashIndex = input.indexOf("/", offset); // gets the second "/" from "dd/mm/yy" 
+
+			if (monthYearSlashIndex == -1) { // dd/MM format
+				return 0;
+			} else if (isValidDate(dayMonthSlashIndex, monthYearSlashIndex) &&
+						!hasFourYearDigits(monthYearSlashIndex, input)) {
+				return 1;
+			} else if (isValidDate(dayMonthSlashIndex, monthYearSlashIndex) &&
+					hasFourYearDigits(monthYearSlashIndex, input)) {
+				return 2;
+			} else {
+				return 3;
+			}
+		} else {
+			return -1;
+		}
+	}
+	
+	// checks if the first "/" and second "/" are of the same date string
+	private boolean isValidDate(int dayMonthSlashIndex, int monthYearSlashIndex) {
+		int difference = monthYearSlashIndex - dayMonthSlashIndex;
+		if (difference == 2 || difference == 3) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean hasFourYearDigits(int monthYearSlashIndex, String input) {
+		String year = input;
+		int yearStartIndex = monthYearSlashIndex + 1;
+		int yearEndIndex = monthYearSlashIndex + 5;
+		if (yearEndIndex > year.length()) {
+			yearEndIndex = year.length();
+		}
+		int count = 0;
+		String yearDigit;
+		for (int i = yearStartIndex; i < yearEndIndex; i++) {
+			yearDigit = year.substring(i, i + 1);
+			if (isInteger(yearDigit)) {
+				count++;
+			}
+		}
+		
+		if (count == 4) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserDelete.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserDelete implements ParserCommand {
+
+	public ParserDelete() {
+		
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	@Override
+	public InputData run(Command type, String input) {
+		InputData data = new InputData(type);
+		if (isValidDelete(input)) {
+			int uid = extractUid(input);
+			data.put(Keys.UID, uid);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+		return data;
+	}
+
+	// standardLenght is the assumed length the input without space should be. "delete12345"
+	private boolean isValidDelete(String input) {
+		String deleteString = input.replaceAll("\\s","");
+		int standardLength = 11;
+		if (deleteString.length() == standardLength) {
+			int uid = extractUid(input);
+			if (uid != -1) {
+				return true;
+			} 
+		} 
+		return false;
+	}
+
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private int extractUid(String input) {
+		String parts[] = input.split(" ");
+		if (parts.length >= 2) {
+			String uid = parts[1];
+			if (isInteger(uid)) {
+				int id = Integer.parseInt(uid);
+				return id;
+			}
+		} 
+		return -1;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserEdit.java
+	 */
+
+package udo.util.parser;
+
+import java.util.ArrayList;
+
+import udo.util.parser.edit.ParserEditCommand;
+import udo.util.parser.edit.ParserEditDueDate;
+import udo.util.parser.edit.ParserEditDueTime;
+import udo.util.parser.edit.ParserEditEndDate;
+import udo.util.parser.edit.ParserEditEndTime;
+import udo.util.parser.edit.ParserEditStartDate;
+import udo.util.parser.edit.ParserEditStartTime;
+import udo.util.parser.edit.ParserEditTitle;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+/**
+ * This class handles all editing done by the user.
+ * Input recieve by this class is in the format: 
+ * "edit <<uid>> <<field to edit>> <<new info>>"
+ */
+
+public class ParserEdit {
+
+	public ParserEdit() {
+	
+	}
+	
+	//edit <uid> <field> <new-info>
+	public InputData edit(Command type, String details) {
+		InputData data = new InputData(type);
+		int uid = getUid(details);
+		String field = getField(details);
+		
+		if (uid != -1 && field != null) {
+			data.put(Keys.UID, uid);
+			updateField(field, data, details);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+		return data;
+	}
+	
+	private void updateField(String field, InputData data, String details) {
+		switch (field) {
+		case "title":
+			setTitle(data, details);
+			break;
+		case "start time":
+			setStartTime(data, details);
+			break;
+		case "end time":
+			setEndTime(data, details);
+			break;
+		case "start date":
+			setStartDate(data, details);
+			break;
+		case "end date":
+			setEndDate(data, details);
+			break;
+		case "due time":
+			setDueTime(data, details);
+			break;
+		case "due date":
+			setDueDate(data, details);
+			break;
+		default:
+			break;
+		}
+	}
+	// check whether any of the value returned is null
+	private void setTitle(InputData data, String details) {
+		ParserEditCommand title = new ParserEditTitle();
+		title.fill(details, data);
+	}
+	
+	private void setStartTime(InputData data, String details) {
+		ParserEditCommand startTime = new ParserEditStartTime();
+		startTime.fill(details, data);
+	}
+	
+	private void setEndTime(InputData data, String details) {
+		ParserEditCommand endTime = new ParserEditEndTime();
+		endTime.fill(details, data);
+	}
+	
+	private void setStartDate(InputData data, String details) {
+		ParserEditCommand startDate = new ParserEditStartDate();
+		startDate.fill(details, data);
+	}
+	
+	private void setEndDate(InputData data, String details) {
+		ParserEditCommand endDate = new ParserEditEndDate();
+		endDate.fill(details, data);
+	}
+	
+	private void setDueTime(InputData data, String details) {
+		ParserEditCommand dueTime = new ParserEditDueTime();
+		dueTime.fill(details, data);
+	}
+	
+	private void setDueDate(InputData data, String details) {
+		ParserEditCommand dueDate = new ParserEditDueDate();
+		dueDate.fill(details, data);
+	}
+	// returns uid if it exists
+	// otherwise returns -1
+	private int getUid(String details) {
+		String[] words = details.split(" ");
+		if (words.length > 1) {
+			String uidString = words[1];
+			int uid = -1;
+			try {
+				 uid = Integer.parseInt(uidString);
+			} catch (NumberFormatException nfe) {
+				
+			}
+			return uid;
+		} else {
+			return -1;
+		}
+	}
+	
+	// returns one of the fields if it exists
+	// otherwise returns null
+	private String getField(String details) {
+		String[] fields = {"title",
+				"start time", "end time", 
+				"start date", "end date",
+				"due time", "due date"};
+		details = details.toLowerCase();
+		for (int i = 0; i < fields.length; i++) {
+			if (details.contains(fields[i])) {
+				return fields[i];
+			}
+		}
+		return null;
+	}
+	
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserExit.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserExit  implements ParserCommand {
+
+	public ParserExit() {
+
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData exitInputData = new InputData(type);
+		exitInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return exitInputData;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserExit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserList.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.parser.list.ParserListAll;
+import udo.util.parser.list.ParserListCommand;
+import udo.util.parser.list.ParserListDate;
+import udo.util.parser.list.ParserListDone;
+import udo.util.parser.list.ParserListHashtag;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserList implements ParserCommand {
+
+	@Override
+	public InputData run(Command type, String details) {
+		InputData data = new InputData(type);
+		String lowerCaseDetails = details.toLowerCase();
+		ParserListCommand list;
+		
+		if (details.contains("#")) {
+			list = new ParserListHashtag();
+			list.fill(type, details, data);
+		} else if (details.contains("/") || lowerCaseDetails.contains("day")) {
+			list = new ParserListDate();
+			list.fill(type, details, data);
+		} else if (lowerCaseDetails.contains("all")){
+			list = new ParserListAll();
+			list.fill(type, details, data);
+		} else if (lowerCaseDetails.contains("done")){
+			list = new ParserListDone();
+			list.fill(type, details, data);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserMark.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
+
+public class ParserMark implements ParserCommand {
+
+	public ParserMark() {
+		
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		InputData data = new InputData(type);
+		if (isValidMark(input)) {
+			int uid = extractUid(input);
+			data.put(Keys.UID, uid);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	// standardLenght is the assumed length the input without space should be. "mark12345"
+	private boolean isValidMark(String input) {
+		String details = input.replaceAll("\\s","");
+		int standardLength = 9;
+		if (details.length() == standardLength) {
+			int uid = extractUid(input);
+			if (uid != -1) {
+				return true;
+			} 
+		}
+		return false;
+	}
+	
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private int extractUid(String input) {
+		String parts[] = input.split(" ");
+		if (parts.length >= 2) {
+			String uid = parts[1];
+			if (isInteger(uid)) {
+				int id = Integer.parseInt(uid);
+				return id;
+			}
+		} 
+		return -1;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserMark.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserSave.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserSave implements ParserCommand {
+
+	public ParserSave() {
+
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData saveInputData = new InputData(type);
+		saveInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return saveInputData;
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserSave.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserTime.java
+	 */
+
+package udo.util.parser;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class ParserTime {
+
+	private Calendar mTime;
+	private String mTimeFormat[] = {"hh:mma", "hha"};
+
+	public ParserTime() {
+		
+	}
+	
+	/**
+	 * Method returns the first time it reads from input.
+	 * Time must be entered in the right format to be detected
+	 * @param input
+	 * @return Calendar time object
+	 */
+	public Calendar getTime(String input) {
+		decipherText(input);
+		return mTime;
+	}
+	
+	private void decipherText(String input) {
+		int timeFormat = getTimeFormat(input);
+		if (timeFormat == 0 || timeFormat == 1) {
+			String timeString = getTimeString(input, timeFormat);
+			mTime = formatTimeSubstring(timeString, timeFormat);
+		} else {
+			mTime = null;
+		}
+	}
+
+	private String getTimeString(String input, int timeFormat) {
+		switch (timeFormat) {
+			case 0:
+				return extractTimeWithMinutes(input);
+			case 1:
+				return extractTimeWithoutMinutes(input);
+			default:
+				return null;
+		}
+	}
+	
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private String extractTimeWithMinutes(String input) {
+		String timeString = input.toUpperCase();
+		String time[] = timeString.split(" ");
+		for (int i = 0; i < time.length; i++) {
+			if (isValidTime(time[i])) {
+				return time[i];
+			}
+		}
+		return null;
+	}
+
+	private String extractTimeWithoutMinutes(String input) {
+		String time[] = input.split(" ");
+		for (int i = 0; i < time.length; i++) {
+			if (isValidTime(time[i])){
+				return time[i];
+			}
+		}
+		return null;
+	}
+
+	// position of time and am pm marker is right
+	private boolean isValidTime(String time) {
+		time = time.toUpperCase();
+		if (time.length() == 3 || time.length() == 4) {
+			String amPmString = time.substring(time.length() - 1);
+			String hour = time.substring(0, 1);
+			if (isInteger(hour) && amPmString.equals("M")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if (time.length() == 6 || time.length() == 7) {
+			String amPmString = time.substring(time.length() - 1);
+			String hour = time.substring(0, 1);
+			if (isInteger(hour) && amPmString.equals("M")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	private Calendar formatTimeSubstring(String timeString, int timeFormat) {
+		Calendar cal = null;
+		SimpleDateFormat format = new SimpleDateFormat(mTimeFormat[timeFormat]);
+		Date date;
+		if (timeString != null) {
+			try {
+				date = format.parse(timeString);
+				cal = Calendar.getInstance();
+				cal.setTime(date);
+			} catch (ParseException parserException) {
+				cal = null;
+				return cal;
+			}
+		}
+		return cal;
+	}
+
+	private int getTimeFormat(String input) {
+		String timeString = input.toUpperCase();
+		if (timeString.contains(":")) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserTime.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserToggleDone.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
+
+public class ParserToggleDone implements ParserCommand {
+
+	public ParserToggleDone() {
+		
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		InputData data = new InputData(type);
+		if (isValidDone(input)) {
+			int uid = extractUid(input);
+			data.put(Keys.UID, uid);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	// check if user wrote any uid (5 digit)
+	// check if uid is an integer
+	// standardLenght is the assumed length the input without space should be. "toggledone12345"
+	private boolean isValidDone(String input) {
+		String doneString = input.replaceAll("\\s","");
+		int standardLength = 15;
+		if (doneString.length() == standardLength) {
+			int uid = extractUid(input);
+			if (uid != -1) {
+				return true;
+			} 
+		} 
+		return false;
+	}
+
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private int extractUid(String input) {
+		String parts[] = input.split(" ");
+		if (parts.length >= 3) {
+			String uid = parts[2];
+			if (isInteger(uid)) {
+				int id = Integer.parseInt(uid);
+				return id;
+			}
+		} 
+		return -1;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserToggleDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserTrash.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserTrash implements ParserCommand {
+
+	public ParserTrash() {
+
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData trashInputData = new InputData(type);
+		trashInputData.setParsingStatus(ParsingStatus.FAIL);
+		return trashInputData;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserTrash.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserUndo.java
+	 */
+
+package udo.util.parser;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ParsingStatus;
+
+public class ParserUndo implements ParserCommand {
+
+	public ParserUndo() {
+		
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData undoInputData = new InputData(type);
+		undoInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return undoInputData;
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\parser\ParserUndo.java
+
+
+
+
+

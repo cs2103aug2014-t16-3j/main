@@ -1,4 +1,4 @@
-//@author Nicholas
+//@author A0108358B
 package udo.util.engine;
 
 import java.util.ArrayList;
