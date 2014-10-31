@@ -242,7 +242,6 @@ public class Entry extends JPanel {
 		mMonth.setFont(UI.FONT_16);
 		time.add(mDate);
 		time.add(mMonth);
-		System.out.println(time.getPreferredSize());
 		return time;
 	}
 	
