@@ -157,17 +157,18 @@ public class Constants {
 		public static final String ENTRY_TASK = "TASK";
 		public static final String ENTRY_PLAN = "PLAN";
 		
-		public static final Color MAIN_COLOR = new Color(255,255,255);
-		//public static final Color SUBVIEW_COLOR = new Color();
-		public static final Color ENTRY_BGCOLOR = new Color(255,255,255);
+		public static final Color MAIN_COLOR = Color.decode("#FFFFFF");
+		public static final Color SUB_COLOR = Color.decode("#F4F4FF");
+		public static final Color ENTRY_BGCOLOR = Color.decode("#FFFFFF");
 		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
-		public static final Color ENTRY_DATE_COLOR = new Color(150,150,150);
-		public static final Color ENTRY_HASHTAGS_COLOR = new Color(28,134,238);
+		public static final Color ENTRY_TITLE_COLOR = new Color(0,0,0);
+		public static final Color ENTRY_HASHTAGS_COLOR = new Color(150,150,150);
+		public static final Color ENTRY_DATE_COLOR = new Color(100,100,0);
 		
-		public static final Color UID_COLOR = new Color(238,238,238);
-		public static final Color SEPARATOR_COLOR_EVENT = new Color(150,0,150);
-		public static final Color SEPARATOR_COLOR_PLAN = new Color(0,150,150);
-		public static final Color SEPARATOR_COLOR_TASK = new Color(150,150,0);
+		public static final Color UID_COLOR = Color.decode("#F4F4FF");
+		public static final Color EVENT_COLOR = Color.decode("#6A828A");
+		public static final Color PLAN_COLOR = Color.decode("#CDFF00");
+		public static final Color TASK_COLOR = Color.decode("#FF3B77");
 		
 		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);

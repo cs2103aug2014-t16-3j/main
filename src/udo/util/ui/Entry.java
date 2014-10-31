@@ -2,7 +2,6 @@
 package udo.util.ui;
 
 import java.awt.BorderLayout;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -44,7 +43,6 @@ public class Entry extends JPanel {
 	private JTextArea mExtraDesc = new JTextArea();
 	private JTextArea mDescription = new JTextArea();
 	private JTextArea mHashtags = new JTextArea();
-	// TODO maybe put a JTextPane here
 	private JLabel mUid = new JLabel();
 	private JLabel mDate;
 	private JLabel mMonth = new JLabel();
@@ -67,18 +65,22 @@ public class Entry extends JPanel {
 		mDetailPanel.setOpaque(false);
 		
 		mDescription.setFont(UI.FONT_20);
+		mDescription.setForeground(UI.ENTRY_TITLE_COLOR);
+		mDescription.setOpaque(false);
 		mDescription.setEditable(false);
 		mDescription.setWrapStyleWord(true);
 		mDescription.setLineWrap(true);
 		
 		mExtraDesc.setFont(UI.FONT_14);
 		mExtraDesc.setForeground(UI.ENTRY_DATE_COLOR);
+		mExtraDesc.setOpaque(false);
 		mExtraDesc.setEditable(false);
 		mExtraDesc.setWrapStyleWord(true);
 		mExtraDesc.setLineWrap(true);
 		
 		mHashtags.setFont(UI.FONT_14);
 		mHashtags.setForeground(UI.ENTRY_HASHTAGS_COLOR);
+		mHashtags.setOpaque(false);
 		mHashtags.setEditable(false);
 		mHashtags.setWrapStyleWord(true);
 		mHashtags.setLineWrap(true);
@@ -134,11 +136,13 @@ public class Entry extends JPanel {
 	
 	private JPanel initDetails(Calendar dueTime, String title, ArrayList<String> hashtags) {
 		mExtraDesc.append(initTime(dueTime));
+		mExtraDesc.setForeground(UI.TASK_COLOR);
 		return initDetails(title,hashtags);
 	}
 	
 	private JPanel initDetails(Calendar startTime, Calendar endTime, String title, ArrayList<String> hashtags) {
 		mExtraDesc.append(initTime(startTime, endTime));
+		mExtraDesc.setForeground(UI.EVENT_COLOR);
 		return initDetails(title,hashtags);
 	}
 	
@@ -241,11 +245,11 @@ public class Entry extends JPanel {
 	
 	private JPanel initSeparator(ItemType type) {
 		if(type.equals(ItemType.EVENT)) {
-			mSeparator.setBackground(UI.SEPARATOR_COLOR_EVENT);
+			mSeparator.setBackground(UI.EVENT_COLOR);
 		} else if(type.equals(ItemType.TASK)) {
-			mSeparator.setBackground(UI.SEPARATOR_COLOR_TASK);
+			mSeparator.setBackground(UI.TASK_COLOR);
 		}else if(type.equals(ItemType.PLAN)){
-			mSeparator.setBackground(UI.SEPARATOR_COLOR_PLAN);
+			mSeparator.setBackground(UI.PLAN_COLOR);
 		}
 		mSeparator.setBorder(BorderFactory.createEmptyBorder(UI.ENTRY_SEPARATOR_HEIGHT, UI.ENTRY_SEPARATOR_WIDTH, 0, 0));
 		return mSeparator;

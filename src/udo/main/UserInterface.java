@@ -132,14 +132,16 @@ public class UserInterface implements ActionListener {
 		
 
 		/**
-		 * Sets up ToDoView
+		 * Sets up LeftView
 		 */
 		mLeftView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
+		mLeftView.setBackground(UI.SUB_COLOR);
 
 		/**
-		 * Sets up todayView
+		 * Sets up RightView
 		 */
 		mRightView.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.SIDEVIEW_PADDING, UI.MAIN_HEIGHT));
+		mRightView.setBackground(UI.SUB_COLOR);
 		
 		/**
 		 * Sets up the frame
