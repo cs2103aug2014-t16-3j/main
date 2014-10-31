@@ -33,6 +33,7 @@ import javax.swing.Timer;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
+import udo.util.ui.DropShadowPanel;
 import udo.util.ui.Feedback;
 import udo.util.ui.uDoPopup;
 
@@ -44,6 +45,7 @@ public class UserInterface implements ActionListener {
 	private JLayeredPane mMainViewLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
 	private JScrollPane mScrollPane = new JScrollPane();
+	private DropShadowPanel mShadowPanel = new DropShadowPanel(10);
 	private JPanel mMainView = new JPanel();
 	private JPanel mRightView = new JPanel();
 	private JPanel mLeftView = new JPanel();
@@ -171,6 +173,9 @@ public class UserInterface implements ActionListener {
 		icons.add(new ImageIcon("img/uDoLogo_64x64.png").getImage());
 		icons.add(new ImageIcon("img/uDoLogo_256x256.png").getImage());
 		mFrame.setIconImages(icons);
+//		mShadowPanel.add(mLeftView, BorderLayout.WEST);
+//		mShadowPanel.add(mMainViewLayer, BorderLayout.CENTER);
+//		mShadowPanel.add(mRightView, BorderLayout.EAST);
 		mFrame.add(mLeftView, BorderLayout.WEST);
 		mFrame.add(mMainViewLayer, BorderLayout.CENTER);
 		mFrame.add(mRightView, BorderLayout.EAST);
@@ -249,6 +254,16 @@ public class UserInterface implements ActionListener {
 				final JScrollBar bar = getRightSPane().getVerticalScrollBar();
 				int currentValue = bar.getValue();
 				bar.setValue(currentValue + UI.SCROLLBAR_INCREMENT);
+			}
+		});
+		
+		mFrame.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put( UI.ENTER,
+                "EnterPressed" );
+		mFrame.getRootPane().getActionMap().put("EnterPressed", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			
+			public void actionPerformed(ActionEvent e) {
+				mTextField.requestFocus();
 			}
 		});
 	}

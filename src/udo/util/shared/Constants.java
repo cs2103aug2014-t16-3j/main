@@ -110,6 +110,7 @@ public class Constants {
 		public static final KeyStroke ALT_S = KeyStroke.getKeyStroke("alt S");
 		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
 		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
+		public static final KeyStroke ENTER = KeyStroke.getKeyStroke("ENTER");
 		
 		public static final int FONTSIZE_24 = 24;
 		public static final int FONTSIZE_20 = 20;
