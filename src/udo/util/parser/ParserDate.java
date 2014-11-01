@@ -6,11 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import udo.util.shared.Command;
+
 public class ParserDate {
 
 	private static Calendar mDate;
-	private String mDays[] = {"MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY", 
-							"TODAY", "TOMORROW", ""};
+	private String mDays[] = {"TODAY", "SUNDAY", "MONDAY", 
+							"TUESDAY", "WEDNESDAY", "THURSDAY", 
+							"FRIDAY", "SATURDAY", "TOMORROW"};
 	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
 	
 	public ParserDate() {
@@ -32,7 +35,7 @@ public class ParserDate {
 	private void decipherText(String input) {
 		int dateFormat = getDateFormat(input);
 		if (dateFormat == -1) {
-			String day = getDay(input);
+			int day = getDay(input);
 			mDate = formatDaySubstring(day);
 		} else if (dateFormat != 3) {
 			String dateString = getDateString(input, dateFormat);
@@ -42,115 +45,19 @@ public class ParserDate {
 		}
 	}
 
-	private Calendar formatDaySubstring(String day) {
-		if (day != null) {
-			Calendar cal = Calendar.getInstance();
-			if (day.equals("TOMORROW")) {
-				cal.add(Calendar.DATE, 1);
-				return cal;
-			} else if (day.equals("TODAY")) {
-				return cal;
-			} else {
-				return null; // other days
-			}
-		}
-		return null;
-	}
-
-	private String getDay(String input) {
-		String dayString = input.toUpperCase();
-		for (int i = 0; i < mDays.length; i++) {
-			if (dayString.contains(mDays[i])) {
-				return mDays[i];
-			}
-		}
-		return null;
-	}
-
-	private Calendar formatDateSubstring(String input, int dateFormat) {
-		Calendar cal = Calendar.getInstance();
-		int year = cal.get(Calendar.YEAR);
-		SimpleDateFormat format = new SimpleDateFormat(mDateFormat[dateFormat]);
-		Date date;
-
-		try {
-			date = format.parse(input);
-			cal.setTime(date);
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			cal.set(Calendar.MINUTE, 59);
-			
-			if (dateFormat == 0) {
-				cal.set(Calendar.YEAR, year);
-			}
-		} catch (ParseException parserException) {
-			cal = null;
-			return cal;
-		}
-		return cal;
-	}
-
-	private String getDateString(String input, int dateFormat) {
-		switch (dateFormat) {
-			case 0:
-				return extractDateWithNoYears(input);
-			case 1:
-				return extractDateWithTwoYears(input);
-			case 2:
-				return extractDateWithFourYears(input);
-			default:
-				return null;
-		}
-	}
-
-	private String extractDateWithNoYears(String input) {
-		int dayMonthSlashIndex = input.indexOf("/");
-		int startIndex = dayMonthSlashIndex - 2;
-		int endIndex = dayMonthSlashIndex + 3;
-		if (endIndex > input.length()) {
-			endIndex = input.length();
-		}
-		
-		String dateString = input.substring(startIndex, endIndex);
-		dateString = dateString.replaceAll("\\s+","");
-		return dateString;
-	}
-
-	private String extractDateWithTwoYears(String input) {
-		int dayMonthSlashIndex = input.indexOf("/");
-		int offset = dayMonthSlashIndex + 1; 
-		int monthYearSlashIndex = input.indexOf("/", offset);
-		int startIndex = dayMonthSlashIndex - 2;
-		int endIndex = monthYearSlashIndex + 3;
-		
-		String dateString = input.substring(startIndex, endIndex);
-		dateString = dateString.replaceAll("\\s+","");
-		return dateString;
-	}
-
-	private String extractDateWithFourYears(String input) {
-		int dayMonthSlashIndex = input.indexOf("/");
-		int offset = dayMonthSlashIndex + 1; 
-		int monthYearSlashIndex = input.indexOf("/", offset);
-		int startIndex = dayMonthSlashIndex - 2;
-		int endIndex = monthYearSlashIndex + 5;
-		
-		String dateString = input.substring(startIndex, endIndex);
-		dateString = dateString.replaceAll("\\s+","");
-		return dateString;
-	}
-
 	private int getDateFormat(String input) {
 		if (input.contains("/")) {
 			int dayMonthSlashIndex = input.indexOf("/");
 			int offset = dayMonthSlashIndex + 1; 
 			int monthYearSlashIndex = input.indexOf("/", offset); // gets the second "/" from "dd/mm/yy" 
-
-			if (monthYearSlashIndex == -1) { // dd/MM format
+	
+			if (monthYearSlashIndex == -1 ||
+				!containsYear(dayMonthSlashIndex, monthYearSlashIndex)) { // dd/MM format
 				return 0;
-			} else if (isValidDate(dayMonthSlashIndex, monthYearSlashIndex) &&
+			} else if (containsYear(dayMonthSlashIndex, monthYearSlashIndex) &&
 						!hasFourYearDigits(monthYearSlashIndex, input)) {
 				return 1;
-			} else if (isValidDate(dayMonthSlashIndex, monthYearSlashIndex) &&
+			} else if (containsYear(dayMonthSlashIndex, monthYearSlashIndex) &&
 					hasFourYearDigits(monthYearSlashIndex, input)) {
 				return 2;
 			} else {
@@ -160,17 +67,17 @@ public class ParserDate {
 			return -1;
 		}
 	}
-	
+
 	// checks if the first "/" and second "/" are of the same date string
-	private boolean isValidDate(int dayMonthSlashIndex, int monthYearSlashIndex) {
+	private boolean containsYear(int dayMonthSlashIndex, int monthYearSlashIndex) {
 		int difference = monthYearSlashIndex - dayMonthSlashIndex;
-		if (difference == 2 || difference == 3) {
+		if (difference == 2 || difference == 3) { // xx/x/xx or xx/xx/xx (one month or 2 months)
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	private boolean hasFourYearDigits(int monthYearSlashIndex, String input) {
 		String year = input;
 		int yearStartIndex = monthYearSlashIndex + 1;
@@ -193,7 +100,106 @@ public class ParserDate {
 			return false;
 		}
 	}
-	
+
+	private String getDateString(String input, int dateFormat) {
+		switch (dateFormat) {
+			case 0:
+				return extractDateWithNoYears(input);
+			case 1:
+				return extractDateWithTwoYears(input);
+			case 2:
+				return extractDateWithFourYears(input);
+			default:
+				return null;
+		}
+	}
+
+	private String extractDateWithNoYears(String input) {
+		String dateString = input.toUpperCase();
+		String dateStringArr[] = dateString.split(" ");
+		boolean isOfValidLength;
+		String dayFirstDigit;
+		String monthLastDigit;
+		for (int i = 0; i < dateStringArr.length; i++) {
+			isOfValidLength = (dateStringArr[i].length() >= 3 && dateStringArr[i].length() <= 5); // d/m to dd/mm
+			dayFirstDigit = dateStringArr[i].substring(0, 1);
+			monthLastDigit = dateStringArr[i].substring(dateStringArr[i].length() - 1);
+			if (dateStringArr[i].contains("/") &&
+				isOfValidLength &&
+				isInteger(dayFirstDigit) &&
+				isInteger(monthLastDigit)) { 
+				return dateStringArr[i];
+			}
+		}
+		return null;
+	}
+
+	private String extractDateWithTwoYears(String input) {
+		String dateString = input.toUpperCase();
+		String dateStringArr[] = dateString.split(" ");
+		boolean isOfValidLength;
+		String dayFirstDigit;
+		String yearLastDigit;
+		for (int i = 0; i < dateStringArr.length; i++) {
+			isOfValidLength = (dateStringArr[i].length() >= 6 && dateStringArr[i].length() <=8);
+			dayFirstDigit = dateStringArr[i].substring(0, 1);
+			yearLastDigit = dateStringArr[i].substring(dateStringArr[i].length() - 1);
+			if (dateStringArr[i].contains("/") &&
+				isOfValidLength &&
+				isInteger(dayFirstDigit) &&
+				isInteger(yearLastDigit)) { 
+				return dateStringArr[i];
+			}
+		}
+		return null;
+	}
+
+	private String extractDateWithFourYears(String input) {
+		String dateString = input.toUpperCase();
+		String dateStringArr[] = dateString.split(" ");
+		boolean isOfValidLength;
+		String dayFirstDigit;
+		String yearLastDigit;
+		for (int i = 0; i < dateStringArr.length; i++) {
+			isOfValidLength = (dateStringArr[i].length() >= 8 && dateStringArr[i].length() <=10);
+			dayFirstDigit = dateStringArr[i].substring(0, 1);
+			yearLastDigit = dateStringArr[i].substring(dateStringArr[i].length() - 1);
+			if (dateStringArr[i].contains("/") &&
+				isOfValidLength &&
+				isInteger(dayFirstDigit) &&
+				isInteger(yearLastDigit)) { 
+				return dateStringArr[i];
+			}
+		}
+		return null;
+	}
+
+	private Calendar formatDateSubstring(String input, int dateFormat) {
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		SimpleDateFormat format = new SimpleDateFormat(mDateFormat[dateFormat]);
+		Date date;
+		if (input != null) {
+			try {
+				date = format.parse(input);
+				cal.setTime(date);
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				
+				if (dateFormat == 0) {
+					cal.set(Calendar.YEAR, year);
+				}
+			} catch (ParseException parserException) {
+				cal = null;
+				return cal;
+			}
+			return cal;
+		} else {
+			cal = null;
+			return cal;
+		}
+	}
+
 	private boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -201,6 +207,44 @@ public class ParserDate {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	private int getDay(String input) {
+		String dayString = input.toUpperCase();
+		for (int i = 0; i < mDays.length; i++) {
+			if (dayString.contains(mDays[i])) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private Calendar formatDaySubstring(int day) {
+		Calendar cal = Calendar.getInstance();
+		int difference = getDayNextWeek(day, cal);
+		if (day == 0) {
+			return cal;
+		} else if (day == 8) {
+			cal.add(Calendar.DATE, 1);
+			return cal;
+		} else if (day > 0 && day < 8) {
+			cal.add(Calendar.DAY_OF_MONTH, difference);
+			return cal;
+		} else {
+			cal = null;
+			return cal;
+		}
+	}
+
+	private int getDayNextWeek(int day, Calendar cal) {
+		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+		int difference = day - dayOfWeek;
+		if (difference < 0) {
+			difference = 7 + difference;
+		} else if (difference == 0) {
+			difference = 7;
+		}
+		return difference;
 	}
 
 }

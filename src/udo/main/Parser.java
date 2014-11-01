@@ -67,7 +67,7 @@ public class Parser {
 				return Command.TOGGLE_DONE;
 			default:
 				return Command.NULL;
-			}
+		}
 	}
 
 	private InputData processCommandType(Command commandType, String details) {

@@ -80,7 +80,7 @@ public class ParserTime {
 	// position of time and am pm marker is right
 	private boolean isValidTime(String time) {
 		time = time.toUpperCase();
-		if (time.length() == 3 || time.length() == 4) {
+		if (time.length() == 3 || time.length() == 4) { // 3pm, 12am
 			String amPmString = time.substring(time.length() - 1);
 			String hour = time.substring(0, 1);
 			if (isInteger(hour) && amPmString.equals("M")) {
@@ -88,7 +88,7 @@ public class ParserTime {
 			} else {
 				return false;
 			}
-		} else if (time.length() == 6 || time.length() == 7) {
+		} else if (time.length() == 6 || time.length() == 7) { // 3:45am, 12:45pm
 			String amPmString = time.substring(time.length() - 1);
 			String hour = time.substring(0, 1);
 			if (isInteger(hour) && amPmString.equals("M")) {

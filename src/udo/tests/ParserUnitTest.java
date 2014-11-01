@@ -396,7 +396,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testAddTask() {
-		String task1 = "add Meet jane after #school #by tomorrow 7am";
+		String task1 = "add Meet jane after #school by saturday 7:55pm"; // test for short forms
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -405,7 +405,7 @@ public class ParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.ADD_TASK, data.getCommand());
 		assertEquals("Meet jane after school", title);
-		assertEquals("[school, by]", hashtags.toString());
+		assertEquals("[school]", hashtags.toString());
 		
 		Calendar due = (Calendar) data.get(Keys.DUE);
 		int day = due.get(Calendar.DAY_OF_MONTH);
@@ -414,11 +414,11 @@ public class ParserUnitTest {
 		int hour = due.get(Calendar.HOUR);
 		int mins = due.get(Calendar.MINUTE);
 		
-		assertEquals(31, day);
-		assertEquals(9, month);
+		assertEquals(8, day);
+		assertEquals(10, month);
 		assertEquals(2014, year);
 		assertEquals(7, hour);
-		assertEquals(00, mins);
+		assertEquals(55, mins);
 		
 		task1 = "add Meet jane after #school #by 7am";
 		data = p.getInputData(task1);
@@ -429,7 +429,7 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testAddEvent() {
-		String event1 = "add meet #boss #from 13/2 10:00am to 22/1 9:00pm";
+		String event1 = "add meet #boss from 13/2 10:00am to 22/1 9:00pm";
 		InputData data = p.getInputData(event1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -438,7 +438,7 @@ public class ParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.ADD_EVENT, data.getCommand());
 		assertEquals("meet boss", title);
-		assertEquals("[boss, from]", hashtags.toString());
+		assertEquals("[boss]", hashtags.toString());
 		
 		Calendar startEvent = (Calendar) data.get(Keys.START);
 		Calendar endEvent = (Calendar) data.get(Keys.END);
