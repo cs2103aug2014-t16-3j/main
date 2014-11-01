@@ -21,9 +21,13 @@ public class ParserEditStartTime implements ParserEditCommand {
 		if (details.length() > startingIndex) {
 			ParserTime time = new ParserTime();
 			Calendar startTime = time.getTime(details);
-			data.put(Keys.FIELD, EditField.START_TIME);
-			data.put(Keys.VALUE, startTime);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
+			if (startTime != null) {
+				data.put(Keys.FIELD, EditField.START_TIME);
+				data.put(Keys.VALUE, startTime);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);
+			}
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}

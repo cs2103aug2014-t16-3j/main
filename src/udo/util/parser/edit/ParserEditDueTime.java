@@ -21,9 +21,13 @@ public class ParserEditDueTime implements ParserEditCommand {
 		if (details.length() > startingIndex) {
 			ParserTime time = new ParserTime();
 			Calendar dueTime = time.getTime(details);
-			data.put(Keys.FIELD, EditField.DUE_TIME);
-			data.put(Keys.VALUE, dueTime);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
+			if (dueTime != null) {
+				data.put(Keys.FIELD, EditField.DUE_TIME);
+				data.put(Keys.VALUE, dueTime);
+				data.setParsingStatus(ParsingStatus.SUCCESS);
+			} else {
+				data.setParsingStatus(ParsingStatus.FAIL);
+			}
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}
