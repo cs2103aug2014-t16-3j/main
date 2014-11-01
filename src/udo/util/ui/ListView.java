@@ -20,14 +20,5 @@ public class ListView extends View {
 		setSize(new Dimension(UI.SUBVIEW_WIDTH, 1));
 	}
 
-	public void populateView(ArrayList<ItemData> data) {
-		removeAll();
-		for (int i = 0; i < data.size(); i++) {
-			Entry entry = new Entry(data.get(i), data.get(i).getItemType());
-			add(entry);
-		}
-	}
-	
-
 
 }

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import udo.util.shared.Command;
 import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
 
 public class View extends JPanel {
 
@@ -25,6 +27,10 @@ public class View extends JPanel {
 	protected void addEntry(ItemData item) {
 		Entry entry = new Entry(item, item.getItemType());
 		add(entry);
+	}
+	
+	protected void init(OutputData output, Command type) {
+		//TODO also a stub
 	}
 
 }

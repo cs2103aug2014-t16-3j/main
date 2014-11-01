@@ -16,7 +16,6 @@ import udo.util.shared.ItemData;
 import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
-import udo.util.ui.ListView;
 
 public class Feedback {
 
@@ -24,9 +23,7 @@ public class Feedback {
 	private Object mData;
 
 	private Screen mDayView;
-	private ListView mListView;
 	private Screen mToDoView;
-	private SingleView mSingleView;
 	private Screen mCenterView;
 	private Screen mMainTodayView;
 	private Screen mMainToDoView;
@@ -37,10 +34,8 @@ public class Feedback {
 
 	public Feedback() {
 		mCenterView = new MainScreen();
-		mListView = new ListView();
 		mDayView = new DayScreen();
 		mToDoView = new ToDoScreen();
-		mSingleView = new SingleView();
 		mMainTodayView = new DayScreen();
 		mMainToDoView = new ToDoScreen();
 	}
@@ -104,41 +99,42 @@ public class Feedback {
 
 	private void toggle_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.TOGGLE_DONE);
-		mFinalView = mSingleView;
+		mCenterView.removeAll();
+		mCenterView.init(output, Command.TOGGLE_DONE);
+		mFinalView = mCenterView;
 		mCommand = "Toggled completion status of " + item.get(Keys.TITLE);
 	}
 
 	private void mark_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.MARK_DONE);
-		mFinalView = mSingleView;
+		mCenterView.removeAll();
+		mCenterView.init(output, Command.MARK_DONE);
+		mFinalView = mCenterView;
 		mCommand = "Marked " + item.get(Keys.TITLE) + " as done";
 	}
 
 	private void add_entry(OutputData output, Command type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, type);
-		mFinalView = mSingleView;
+		mCenterView.removeAll();
+		mCenterView.init(output, type);
+		mFinalView = mCenterView;
 		mCommand = "Added " + item.get(Keys.TITLE);
 	}
 
 	private void delete_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.DELETE);
-		mFinalView = mSingleView;
+		mCenterView.removeAll();
+		mCenterView.init(output, Command.DELETE);
+		mFinalView = mCenterView;
 		mCommand = "Deleted " + item.get(Keys.TITLE);
 	}
 	
 	private void edit_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.EDIT);
-		mFinalView = mSingleView;
+		mCenterView.removeAll();
+		mCenterView.init(output, Command.EDIT);
+		
+		mFinalView = mCenterView;
 		mCommand = "Edited " + item.get(Keys.UID);
 		
 	}

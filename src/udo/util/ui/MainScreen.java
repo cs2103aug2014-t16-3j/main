@@ -21,6 +21,7 @@ public class MainScreen extends Screen {
 	
 	@Override
 	public void init(ArrayList<ItemData> data) {
+		mEntryView = new ListView();
 		mScrollPane.setPreferredSize(new Dimension(UI.MAIN_WIDTH - UI.MAIN_PADDING,
 				UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT));
 		mScrollPane.getViewport().add(mEntryView);

@@ -8,7 +8,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import udo.util.shared.Command;
 import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
 import udo.util.shared.Constants.UI;
 
 public class Screen extends JPanel {
@@ -17,7 +19,7 @@ public class Screen extends JPanel {
 
 	protected JPanel mHeader = new JPanel();
 	protected JScrollPane mScrollPane = new JScrollPane();
-	protected View mEntryView = new ListView();
+	protected View mEntryView;
 	protected WrapLayout mLayout = new WrapLayout();
 	
 	public Screen() {
@@ -31,6 +33,7 @@ public class Screen extends JPanel {
 	}
 	
 	protected void init(ArrayList<ItemData> data) {
+		mEntryView = new ListView();
 		mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
 				UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height - UI.TEXTFIELD_HEIGHT));
 		mScrollPane.getViewport().add(mEntryView);
@@ -42,6 +45,12 @@ public class Screen extends JPanel {
 		}
 		
 		add(mScrollPane);
+	}
+	
+	protected void init(OutputData output, Command type) {
+		mEntryView = new SingleView();
+		mEntryView.init(output, type);
+		add(mEntryView);
 	}
 	
 	public JScrollPane getScrollPane() {
