@@ -10,7 +10,6 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +17,6 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
@@ -27,15 +25,11 @@ import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
-public class DayView extends JPanel{
+public class DayView extends Screen{
 
 	private static final long serialVersionUID = -1690972274647306472L;
-	private JPanel mHeader = new JPanel();
-	private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd MMMM yyyy");
-	private SimpleDateFormat mDayFormat = new SimpleDateFormat("EEEE");  
 	private BufferedImage mTickerImg;
 	private JLabel mTicker;
-	private JScrollPane mScrollPane = new JScrollPane();
 	private ListView mEntryView = new ListView();
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
 	private ArrayList<Point> mTickerCoordsWH; // stores width and height of each ticker
@@ -46,17 +40,13 @@ public class DayView extends JPanel{
 //	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
 	public DayView(){
-
-		mHeader.setOpaque(false);
+		
+		super();
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
 		mRedTickCoordsXY = new ArrayList<Point>();
 		mRedTickCoordsWH = new ArrayList<Point>();
-		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
-		setLayout(new WrapLayout());
-		setOpaque(false);
 		loadTicker();
-		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
 	}
 
 	public void init(ArrayList<ItemData> data) {
@@ -195,7 +185,7 @@ public class DayView extends JPanel{
 	}
 	
 	private void initHeader(Date newDate) {
-		String dateString = mDateFormat.format(newDate);
+		String dateString = UI.DD_MMMM_YYYY.format(newDate);
 		JLabel date = new JLabel(dateString);
 		date.setFont(UI.FONT_24);
 		FontMetrics fm = date.getFontMetrics(date.getFont());
@@ -203,7 +193,7 @@ public class DayView extends JPanel{
 		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH , height));
 		date.setHorizontalAlignment(JLabel.LEFT);
 
-		String dayString = mDayFormat.format(newDate);
+		String dayString = UI.DAY_NAME.format(newDate);
 		JLabel day = new JLabel(dayString);
 		day.setFont(UI.FONT_18);
 		fm = day.getFontMetrics(day.getFont());
@@ -224,10 +214,6 @@ public class DayView extends JPanel{
 		mHeader.removeAll();
 		mTickerCoordsXY.clear();
 		mTickerCoordsWH.clear();
-	}
-	
-	public JScrollPane getScrollPane() {
-		return mScrollPane;
 	}
 	
 	/**

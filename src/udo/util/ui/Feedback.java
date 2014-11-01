@@ -23,12 +23,12 @@ public class Feedback {
 	private String mCommand;
 	private Object mData;
 
-	private DayView mDayView;
+	private Screen mDayView;
 	private ListView mListView;
-	private ToDoView mToDoView;
+	private Screen mToDoView;
 	private SingleView mSingleView;
-	private DayView mMainTodayView;
-	private ToDoView mMainToDoView;
+	private Screen mMainTodayView;
+	private Screen mMainToDoView;
 
 	private JPanel mFinalView = new JPanel();
 	

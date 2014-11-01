@@ -9,29 +9,21 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
-public class ToDoView extends JPanel {
+public class ToDoView extends Screen {
 
 	private static final long serialVersionUID = 1L;
-	
-	private JPanel mHeader = new JPanel();
 	private ListView mEntryView = new ListView();
-	private JScrollPane mScrollPane = new JScrollPane();
 	
 //	private static final Logger logger =
 //	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
 	public ToDoView() {
-		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
-		setLayout(new WrapLayout());
-		setOpaque(false);
-		mHeader.setOpaque(false);
-		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
+		super();
 	}
 	
 	public void init() {
@@ -90,10 +82,7 @@ public class ToDoView extends JPanel {
 			add(mScrollPane);
 		}
 	}
-	
-	public JScrollPane getScrollPane() {
-		return mScrollPane;
-	}
+
 	
 	@Override
 	public void paint(Graphics g) {

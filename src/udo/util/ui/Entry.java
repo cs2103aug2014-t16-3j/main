@@ -52,7 +52,7 @@ public class Entry extends JPanel {
 
 	public Entry(ItemData item, ItemType type) {
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
-		setBackground(UI.ENTRY_BGCOLOR);
+		setOpaque(false);
 		
 		mUid.setFont(UI.FONT_12);
 		mUid.setOpaque(true);
