@@ -29,7 +29,6 @@ public class DayScreen extends Screen{
 	private static final long serialVersionUID = -1690972274647306472L;
 	private BufferedImage mTickerImg;
 	private JLabel mTicker;
-	private ListView mEntryView = new ListView();
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
 	private ArrayList<Point> mTickerCoordsWH; // stores width and height of each ticker
 	private ArrayList<Point> mRedTickCoordsXY; // stores x and y coords of overlapped start
@@ -41,6 +40,7 @@ public class DayScreen extends Screen{
 	public DayScreen(){
 		
 		super();
+		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
 		mRedTickCoordsXY = new ArrayList<Point>();
@@ -48,6 +48,7 @@ public class DayScreen extends Screen{
 		loadTicker();
 	}
 
+	@Override
 	public void init(ArrayList<ItemData> data) {
 		Date date = new Date();
 		init(date, data);
@@ -59,6 +60,7 @@ public class DayScreen extends Screen{
 		init(date,data);
 	}
 	
+	@Override
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		removeAll();
 		initHeader(newDate);
@@ -112,7 +114,6 @@ public class DayScreen extends Screen{
 	}
 	
 	private void populateView(ArrayList<ItemData> data) {
-		//logger.entering(getClass().getName(), "populateView");
 		if (data.size() == 0) {
 			JLabel noItems = new JLabel("You are free today!");
 			noItems.setFont(UI.FONT_14);
@@ -131,21 +132,9 @@ public class DayScreen extends Screen{
 					eventCount++;
 				}
 			}
-			
-			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
-					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
-			mScrollPane.getViewport().add(mEntryView);
-			mEntryView.populateView(data);
-			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
-//				logger.info("TODAY mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
-			} else {
-//				logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
-			}
-			
-			add(mScrollPane);
+			super.init(data);
 			
 		}
-//		logger.exiting(getClass().getName(), "populateView");
 	}
 
 	private void fillTicker(ItemData item, int i) {

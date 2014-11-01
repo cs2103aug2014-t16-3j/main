@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -33,6 +34,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 import com.sun.awt.AWTUtilities;
 
@@ -41,6 +43,7 @@ import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.ui.DropShadowPanel;
 import udo.util.ui.Feedback;
+import udo.util.ui.WrapLayout;
 import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
@@ -50,7 +53,6 @@ public class UserInterface implements ActionListener {
 	private JFrame mFrame = new JFrame("uDo");
 	private JLayeredPane mMainViewLayer = new JLayeredPane();
 	private JPanel mTextPanel = new JPanel(new GridBagLayout());
-	private JScrollPane mScrollPane = new JScrollPane();
 	private DropShadowPanel mShadowPanel = new DropShadowPanel(10);
 	private JPanel mTopBar = new JPanel();
 	private JPanel mMainView = new JPanel();
@@ -115,8 +117,12 @@ public class UserInterface implements ActionListener {
 		 * Sets up textArea
 		 */
 		mMainView.setOpaque(false);
-		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
-		mScrollPane.getViewport().add(mMainView);
+		WrapLayout wl = new WrapLayout();
+		wl.setVgap(0);
+		mMainView.setLayout(wl);
+		Border lineBorder = BorderFactory.createLineBorder(UI.MAIN_BORDER_COLOR);
+		Border padding = BorderFactory.createEmptyBorder(0, UI.MAIN_PADDING, 0, 0);
+		mMainView.setBorder(BorderFactory.createCompoundBorder(lineBorder, padding));
 
 		/**
 		 * Sets up textField
@@ -139,13 +145,14 @@ public class UserInterface implements ActionListener {
 		c.weightx = 1;
 		c.weighty = 0.5;
 
-		mTextPanel.add(mScrollPane, c);
+		mTextPanel.add(mMainView, c);
 
 		c.gridy = 1;
 		c.weighty = 0;
 
 		mTextPanel.add(mTextField, c);
 		mTextPanel.setBackground(UI.MAIN_COLOR);
+		
 
 		mMainViewLayer.add(mTextPanel, new Integer(0));
 
@@ -347,18 +354,14 @@ public class UserInterface implements ActionListener {
 	}
 
 	public void updateTodayScreen(ArrayList<ItemData> data) {
-//		mShadowPanel.remove(mRightView);
 		mRightView.removeAll();
 		mRightView.add(fb.getTodayView(data), BorderLayout.CENTER);
-//		mShadowPanel.add(mRightView, BorderLayout.EAST);
 		mFrame.revalidate();
 	}
 	
 	public void updateTodoScreen(ArrayList<ItemData> data) {
-//		mShadowPanel.remove(mLeftView);
 		mLeftView.removeAll();
 		mLeftView.add(fb.getToDoView(data), BorderLayout.CENTER);
-//		mShadowPanel.add(mLeftView, BorderLayout.WEST);
 		mFrame.revalidate();
 	}
 	
@@ -369,9 +372,9 @@ public class UserInterface implements ActionListener {
 		fb.process(output);
 		String outputString = fb.getCommand();
 		
-		mScrollPane.getViewport().removeAll();
-		mMainView = fb.getFinalView();
-		mScrollPane.getViewport().add(mMainView);
+		mMainView.removeAll();
+		mMainView.add(fb.getFinalView(), BorderLayout.CENTER);
+		mFrame.revalidate();
 
 		showPopup(outputString);
 	}
@@ -442,11 +445,7 @@ public class UserInterface implements ActionListener {
 	}
 	
 	private JScrollPane getMainSPane() {
-		if(fb.getMainScrollPane() == null) {
-			return mScrollPane;
-		} else {
-			return fb.getMainScrollPane();
-		}
+		return fb.getMainScrollPane();
 	}
 
 }

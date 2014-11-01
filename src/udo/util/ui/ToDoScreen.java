@@ -16,13 +16,13 @@ import udo.util.shared.ItemData;
 public class ToDoScreen extends Screen {
 
 	private static final long serialVersionUID = 1L;
-	private ListView mEntryView = new ListView();
 	
 //	private static final Logger logger =
 //	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
 	public ToDoScreen() {
 		super();
+		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 	}
 	
 	public void init() {
@@ -30,6 +30,7 @@ public class ToDoScreen extends Screen {
 		init(data);
 	}
 	
+	@Override
 	public void init(ArrayList<ItemData> data) {
 		initHeader();
 		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.TODOVIEW_HEADER_HEIGHT));
@@ -67,17 +68,7 @@ public class ToDoScreen extends Screen {
 			noItems.setHorizontalAlignment(JLabel.CENTER);
 			add(noItems);
 		} else {
-			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
-					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
-			mScrollPane.getViewport().add(mEntryView);
-			mEntryView.populateView(data);
-//			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
-//				logger.info("TODO mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
-//			} else {
-//				logger.fine("TODO mEntryView's preferredSize is contained in mScrollPane");
-//			}
-//			
-			add(mScrollPane);
+			super.init(data);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package udo.util.ui;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,21 +17,31 @@ public class Screen extends JPanel {
 
 	protected JPanel mHeader = new JPanel();
 	protected JScrollPane mScrollPane = new JScrollPane();
+	protected View mEntryView = new ListView();
+	protected WrapLayout mLayout = new WrapLayout();
 	
 	public Screen() {
 		setOpaque(false);
 		mHeader.setOpaque(false);
-		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
-		setLayout(new WrapLayout());
+		setLayout(mLayout);
 		mScrollPane.getViewport().setOpaque(false);
 		mScrollPane.setOpaque(false);
 		mScrollPane.setBorder(BorderFactory.createEmptyBorder());
 		mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 	
-	public void init(ArrayList<ItemData> data) {
-		//TODO stub method to be overridden by subclasses. consider working around it
-		System.out.println("parent");
+	protected void init(ArrayList<ItemData> data) {
+		mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+				UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height - UI.TEXTFIELD_HEIGHT));
+		mScrollPane.getViewport().add(mEntryView);
+		mEntryView.populateView(data);
+		if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
+//			logger.info("TODAY mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
+		} else {
+//			logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
+		}
+		
+		add(mScrollPane);
 	}
 	
 	public JScrollPane getScrollPane() {

@@ -139,6 +139,8 @@ public class Constants {
 		
 		public static final int MAIN_WIDTH = 400;
 		public static final int MAIN_HEIGHT = 600;
+		public static final int MAIN_PADDING = 8;
+		public static final int TEXTFIELD_HEIGHT = 24;
 		public static final int SUBVIEW_WIDTH = 360;
 		public static final int SUBVIEW_HEIGHT = 550;
 		public static final int SUBVIEW_HEADER_LINEY = 40;
@@ -169,6 +171,7 @@ public class Constants {
 		public static final String ENTRY_PLAN = "PLAN";
 		
 		public static final Color MAIN_COLOR = Color.decode("#FFFFFF");
+		public static final Color MAIN_BORDER_COLOR = Color.decode("#E3E3E3");
 		public static final Color SUB_COLOR = Color.decode("#F4F4FF");
 		public static final Color ENTRY_BGCOLOR = Color.decode("#FFFFFF");
 		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);

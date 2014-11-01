@@ -27,6 +27,7 @@ public class Feedback {
 	private ListView mListView;
 	private Screen mToDoView;
 	private SingleView mSingleView;
+	private Screen mCenterView;
 	private Screen mMainTodayView;
 	private Screen mMainToDoView;
 
@@ -35,6 +36,7 @@ public class Feedback {
 	private JScrollPane mMainScrollPane;
 
 	public Feedback() {
+		mCenterView = new MainScreen();
 		mListView = new ListView();
 		mDayView = new DayScreen();
 		mToDoView = new ToDoScreen();
@@ -182,9 +184,10 @@ public class Feedback {
 	
 	@SuppressWarnings("unchecked")
 	private void setToListView() {
-		mListView.populateView((ArrayList<ItemData>) mData);
-		mMainScrollPane = null;
-		mFinalView = mListView;
+//		mListView.populateView((ArrayList<ItemData>) mData);
+		mCenterView.init((ArrayList<ItemData>) mData);
+		mMainScrollPane = mCenterView.getScrollPane();
+		mFinalView = mCenterView;
 	}
 	
 	@SuppressWarnings("unchecked")
