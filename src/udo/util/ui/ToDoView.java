@@ -5,10 +5,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
