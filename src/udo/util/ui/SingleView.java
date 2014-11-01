@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.util.Calendar;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
@@ -14,7 +13,7 @@ import udo.util.shared.EditField;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 
-public class SingleView extends JPanel {
+public class SingleView extends View {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -153,10 +152,5 @@ public class SingleView extends JPanel {
 							+ "You have successfully added: "
 							+ "</html>");
 		add(mMessage);
-	}
-	
-	private void addEntry(ItemData item) {
-		Entry entry = new Entry(item, item.getItemType());
-		add(entry);
 	}
 }

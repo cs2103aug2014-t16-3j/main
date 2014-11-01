@@ -36,11 +36,11 @@ public class Feedback {
 
 	public Feedback() {
 		mListView = new ListView();
-		mDayView = new DayView();
-		mToDoView = new ToDoView();
+		mDayView = new DayScreen();
+		mToDoView = new ToDoScreen();
 		mSingleView = new SingleView();
-		mMainTodayView = new DayView();
-		mMainToDoView = new ToDoView();
+		mMainTodayView = new DayScreen();
+		mMainToDoView = new ToDoScreen();
 	}
 
 	public JPanel getTodayView(ArrayList<ItemData> data) {

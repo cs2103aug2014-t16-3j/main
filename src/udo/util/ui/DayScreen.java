@@ -17,7 +17,6 @@ import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import udo.util.shared.Constants.Keys;
@@ -25,7 +24,7 @@ import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
-public class DayView extends Screen{
+public class DayScreen extends Screen{
 
 	private static final long serialVersionUID = -1690972274647306472L;
 	private BufferedImage mTickerImg;
@@ -39,7 +38,7 @@ public class DayView extends Screen{
 //	private static final Logger logger =
 //	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
-	public DayView(){
+	public DayScreen(){
 		
 		super();
 		mTickerCoordsXY = new ArrayList<Point>();
@@ -132,7 +131,7 @@ public class DayView extends Screen{
 					eventCount++;
 				}
 			}
-			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			
 			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
 					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
 			mScrollPane.getViewport().add(mEntryView);

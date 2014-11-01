@@ -9,12 +9,11 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
-public class ToDoView extends Screen {
+public class ToDoScreen extends Screen {
 
 	private static final long serialVersionUID = 1L;
 	private ListView mEntryView = new ListView();
@@ -22,7 +21,7 @@ public class ToDoView extends Screen {
 //	private static final Logger logger =
 //	        Logger.getLogger(udo.util.ui.DayView.class.getName());
 	
-	public ToDoView() {
+	public ToDoScreen() {
 		super();
 	}
 	
@@ -68,7 +67,6 @@ public class ToDoView extends Screen {
 			noItems.setHorizontalAlignment(JLabel.CENTER);
 			add(noItems);
 		} else {
-			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
 					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
 			mScrollPane.getViewport().add(mEntryView);

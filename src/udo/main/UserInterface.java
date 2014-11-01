@@ -347,16 +347,18 @@ public class UserInterface implements ActionListener {
 	}
 
 	public void updateTodayScreen(ArrayList<ItemData> data) {
-		mShadowPanel.remove(mRightView);
+//		mShadowPanel.remove(mRightView);
+		mRightView.removeAll();
 		mRightView.add(fb.getTodayView(data), BorderLayout.CENTER);
-		mShadowPanel.add(mRightView, BorderLayout.EAST);
+//		mShadowPanel.add(mRightView, BorderLayout.EAST);
 		mFrame.revalidate();
 	}
 	
 	public void updateTodoScreen(ArrayList<ItemData> data) {
-		mShadowPanel.remove(mLeftView);
+//		mShadowPanel.remove(mLeftView);
+		mLeftView.removeAll();
 		mLeftView.add(fb.getToDoView(data), BorderLayout.CENTER);
-		mShadowPanel.add(mLeftView, BorderLayout.WEST);
+//		mShadowPanel.add(mLeftView, BorderLayout.WEST);
 		mFrame.revalidate();
 	}
 	

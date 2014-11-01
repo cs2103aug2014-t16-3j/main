@@ -25,6 +25,7 @@ public class Screen extends JPanel {
 		mScrollPane.getViewport().setOpaque(false);
 		mScrollPane.setOpaque(false);
 		mScrollPane.setBorder(BorderFactory.createEmptyBorder());
+		mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	}
 	
 	public void init(ArrayList<ItemData> data) {
