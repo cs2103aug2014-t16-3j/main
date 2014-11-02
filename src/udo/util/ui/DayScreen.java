@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -27,7 +28,7 @@ import udo.util.shared.ItemType;
 public class DayScreen extends Screen{
 
 	private static final long serialVersionUID = -1690972274647306472L;
-	private BufferedImage mTickerImg;
+	private Image mTickerImg;
 	private JLabel mTicker;
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
 	private ArrayList<Point> mTickerCoordsWH; // stores width and height of each ticker
@@ -79,7 +80,9 @@ public class DayScreen extends Screen{
 	
 	private void loadTicker() {
 		try {                
-			mTickerImg = ImageIO.read(new File(UI.TICKER_IMAGE_DIR));
+			BufferedImage img = ImageIO.read(new File(UI.TICKER_IMAGE_DIR));
+			mTickerImg = img.getScaledInstance(UI.SUBVIEW_WIDTH, img.getHeight(),
+			        Image.SCALE_SMOOTH);
 		} catch (IOException ex) {
 			// handle exception...
 		}
@@ -110,7 +113,7 @@ public class DayScreen extends Screen{
 			}
 			
 		};
-		mTicker.setPreferredSize(new Dimension(mTickerImg.getWidth(),mTickerImg.getHeight()));
+		//mTicker.setPreferredSize(new Dimension(mTickerImg.getWidth(),mTickerImg.getHeight()));
 	}
 	
 	private void populateView(ArrayList<ItemData> data) {
@@ -143,12 +146,13 @@ public class DayScreen extends Screen{
 		Point redXY, redWH;
 		xy = new Point();
 		wh = new Point();
+		double minPerPixel = (24d*60d)/mTickerImg.getWidth(null);
 		int currItem_startX = 0;
 		int lastItem_endX = 0;
 		hour = ((Calendar) item.get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
 		min = ((Calendar) item.get(Keys.START)).get(Calendar.MINUTE);
 		total = hour+min;
-		xy = new Point(Math.max (1, (int) Math.floor(total/4d)), UI.TICKER_Y); //minimum x pixel is 1
+		xy = new Point(Math.max (1, (int) Math.floor(total/minPerPixel)), UI.TICKER_Y); //minimum x pixel is 1
 		mTickerCoordsXY.add(xy);
 		if(i>0) {
 			currItem_startX = xy.x;
@@ -157,7 +161,7 @@ public class DayScreen extends Screen{
 		hour = ((Calendar) item.get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
 		min = ((Calendar) item.get(Keys.END)).get(Calendar.MINUTE);
 		total = hour+min;
-		wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
+		wh = new Point((int) (Math.ceil(total/minPerPixel)) - xy.x, 10);
 		mTickerCoordsWH.add(wh);
 		int currItem_endX = xy.x + wh.x;
 		if(currItem_startX < lastItem_endX) {
