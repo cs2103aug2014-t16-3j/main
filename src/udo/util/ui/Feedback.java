@@ -180,7 +180,7 @@ public class Feedback {
 	
 	@SuppressWarnings("unchecked")
 	private void setToListView() {
-//		mListView.populateView((ArrayList<ItemData>) mData);
+		mCenterView.removeAll();
 		mCenterView.init((ArrayList<ItemData>) mData);
 		mMainScrollPane = mCenterView.getScrollPane();
 		mFinalView = mCenterView;
@@ -188,6 +188,7 @@ public class Feedback {
 	
 	@SuppressWarnings("unchecked")
 	private void setToDayVIew(Date date) {
+		mCenterView.removeAll();
 		mDayView.init(date, (ArrayList<ItemData>) mData);
 		mMainScrollPane = mDayView.getScrollPane();
 		mFinalView = mDayView;
@@ -195,6 +196,7 @@ public class Feedback {
 	
 	@SuppressWarnings("unchecked")
 	private void setToToDoView() {
+		mCenterView.removeAll();
 		mToDoView.init((ArrayList<ItemData>) mData);
 		mMainScrollPane = mToDoView.getScrollPane();
 		mFinalView = mToDoView;
