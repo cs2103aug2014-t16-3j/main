@@ -1,6 +1,7 @@
 //@author A0114847B
 package udo.main;
 
+import udo.language.language.EnglishCommand;
 import udo.util.parser.ParserAdd;
 import udo.util.parser.ParserCommand;
 import udo.util.parser.ParserDelete;
@@ -26,7 +27,7 @@ import udo.util.shared.InputData;
 public class Parser {
 	
 	public Parser() {
-		//implement singleton pattern
+
 	}
 	
 	/**
@@ -43,27 +44,28 @@ public class Parser {
 	}
 	
 	private Command determineCommandType(String input) {
+		input = input.toLowerCase();
 		String parts[] = input.split(" ");
 		String command = parts[0];
 		command = command.toLowerCase();
 		switch (command) {
-			case "add":
+			case EnglishCommand.ADD:
 				return Command.ADD;
-			case "list":
+			case EnglishCommand.LIST:
 				return Command.LIST;
-			case "delete":
+			case EnglishCommand.DELETE:
 				return Command.DELETE;
-			case "save":
+			case EnglishCommand.SAVE:
 				return Command.SAVE;
-			case "exit":
+			case EnglishCommand.EXIT:
 				return Command.EXIT;
-			case "undo":
+			case EnglishCommand.UNDO:
 				return Command.UNDO;
-			case "edit":
+			case EnglishCommand.EDIT:
 				return Command.EDIT;
-			case "done":
+			case EnglishCommand.DONE:
 				return Command.MARK_DONE;
-			case "toggle":
+			case EnglishCommand.TOGGLE:
 				return Command.TOGGLE_DONE;
 			default:
 				return Command.NULL;
