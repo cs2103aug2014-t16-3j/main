@@ -197,6 +197,12 @@ public class Engine {
 		 // the inputdata to be executed is already stored. 
 		 // so here just execute that inputdata.
 		InputData undoInput = mUndoBin.getUndoInputData();
+		if (undoInput == null) {
+			// nth to undo, dont execute!
+			return new OutputData(Command.UNDO, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
 		return execute(undoInput);
 	}
 
