@@ -123,6 +123,7 @@ public class UserInterface implements ActionListener {
 		Border lineBorder = BorderFactory.createLineBorder(UI.MAIN_BORDER_COLOR);
 		Border padding = BorderFactory.createEmptyBorder(0, UI.MAIN_PADDING, 0, 0);
 		mMainView.setBorder(BorderFactory.createCompoundBorder(lineBorder, padding));
+		setWelcomeScreen();
 
 		/**
 		 * Sets up textField
@@ -448,4 +449,32 @@ public class UserInterface implements ActionListener {
 		return fb.getMainScrollPane();
 	}
 
+	private void setWelcomeScreen() {
+		BufferedImage logoImg = null;
+		try {                
+			logoImg = ImageIO.read(new File(UI.UDO_LOGO_IMG_DIR_256));
+		} catch (IOException ex) {
+			// handle exception...
+		}
+		JLabel logoLabel = new JLabel(new ImageIcon(logoImg));
+		JLabel welcome = new JLabel();
+		welcome.setFont(UI.FONT_20_BOLD);
+		welcome.setText("<html>"
+						+ "<br><br>"
+						+ "Welcome to uDo!"
+						+ "</html>");
+		welcome.setOpaque(false);
+		JLabel welcome2 = new JLabel();
+		welcome2.setFont(UI.FONT_16);
+		welcome2.setForeground(UI.POPUP_BGCOLOR);
+		welcome2.setText("<html>"
+						+ "<br>"
+						+ "Start by typing instruction in the textbox below:"
+						+ "</html>");
+		welcome2.setOpaque(false);
+		mMainView.add(logoLabel);
+		mMainView.add(welcome);
+		mMainView.add(welcome2);
+	}
+	
 }
