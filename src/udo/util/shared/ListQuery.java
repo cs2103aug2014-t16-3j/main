@@ -8,5 +8,8 @@ public enum ListQuery {
 	ALL, 
 	SINGLE_HASHTAG, 
 	DATE, 
-	DONE
+	DONE,
+	EVENT,
+	TASK,
+	PLAN
 }
