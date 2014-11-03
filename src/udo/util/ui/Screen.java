@@ -1,3 +1,4 @@
+//@author A0114088H
 package udo.util.ui;
 
 import java.awt.Dimension;
@@ -61,5 +62,10 @@ public class Screen extends JPanel {
 		// TODO Auto-generated method stub
 		// this is another stub to be overridden by subclass.
 		
+	}
+	
+	@Override
+	public void removeAll() {
+		//TODO also a stub method to be overridden by dayScreen.java
 	}
 }

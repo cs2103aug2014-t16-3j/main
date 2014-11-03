@@ -86,6 +86,35 @@ public class DayScreen extends Screen{
 		} catch (IOException ex) {
 			// handle exception...
 		}
+		drawTicker();
+		
+	}
+	
+	private void populateView(ArrayList<ItemData> data) {
+		if (data.size() == 0) {
+			JLabel noItems = new JLabel("You are free today!");
+			noItems.setFont(UI.FONT_14);
+			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
+			int height = fm.getHeight();
+			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+			noItems.setHorizontalAlignment(JLabel.CENTER);
+			add(noItems);
+		} else {
+			
+			int eventCount = 0;
+			for(int i = 0; i<data.size(); i++) {
+				ItemData item = data.get(i);
+				if(item.getItemType().equals(ItemType.EVENT)) {
+					fillTicker(item, eventCount);
+					eventCount++;
+				}
+			}
+			super.init(data);
+			
+		}
+	}
+	
+	private void drawTicker() {
 		mTicker = new JLabel(new ImageIcon(mTickerImg)){
 			private static final long serialVersionUID = 1L;
 			
@@ -113,31 +142,6 @@ public class DayScreen extends Screen{
 			}
 			
 		};
-		//mTicker.setPreferredSize(new Dimension(mTickerImg.getWidth(),mTickerImg.getHeight()));
-	}
-	
-	private void populateView(ArrayList<ItemData> data) {
-		if (data.size() == 0) {
-			JLabel noItems = new JLabel("You are free today!");
-			noItems.setFont(UI.FONT_14);
-			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
-			int height = fm.getHeight();
-			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
-			noItems.setHorizontalAlignment(JLabel.CENTER);
-			add(noItems);
-		} else {
-			
-			int eventCount = 0;
-			for(int i = 0; i<data.size(); i++) {
-				ItemData item = data.get(i);
-				if(item.getItemType().equals(ItemType.EVENT)) {
-					fillTicker(item, eventCount);
-					eventCount++;
-				}
-			}
-			super.init(data);
-			
-		}
 	}
 
 	private void fillTicker(ItemData item, int i) {
@@ -174,6 +178,7 @@ public class DayScreen extends Screen{
 			}
 			mRedTickCoordsWH.add(redWH);
 		}
+		drawTicker();
 	}
 	
 	private void initHeader(Date newDate) {
