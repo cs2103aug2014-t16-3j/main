@@ -20,3 +20,6 @@
 78257|||TASK|||edit and print laj2201 OP script|||4/11/2014|||14:0|||false|||laj2201|||;
 70856|||PLAN|||tester test|||false|||test|||;
 50377|||PLAN|||watch halo videos|||false||||||;
+12345|||EVENT|||sample event|||23/1/2014|||9:23|||23/1/14|||22:30|||meeting,boss,work|||;
+12346|||TASK|||sample task|||24/1/2014|||13:30|||false|||boss,play,fun,date|||;
+12347|||PLAN|||sample plan|||false|||test,play,work|||;

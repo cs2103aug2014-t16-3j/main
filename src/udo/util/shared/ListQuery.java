@@ -2,11 +2,14 @@
 package udo.util.shared;
 
 /**
- * This class holds the enum type for listing commands
+ * This class holds the enum type for listing queries
  */
 public enum ListQuery {
 	ALL, 
 	SINGLE_HASHTAG, 
 	DATE, 
-	DONE
+	DONE,
+	EVENT,
+	TASK,
+	PLAN
 }

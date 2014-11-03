@@ -48,7 +48,7 @@ public class Cache {
 	}
 
 	/**
-	 * adds an item
+	 * adds an item. 
 	 * 
 	 * @param item the item to add
 	 * @throws CacheAccessException if cache is locked when trying to add
@@ -255,7 +255,7 @@ public class Cache {
 		Collections.sort(allEvents);
 		return allEvents;
 	}
-
+	
 	public ArrayList<ItemData> getAllTasks() throws CacheAccessException {
 		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
 		for (ItemData item : getAllItems()) {
@@ -274,6 +274,36 @@ public class Cache {
 			ItemType itemType = item.getItemType();
 			if (itemType.equals(ItemType.PLAN)) {
 				allPlans.add(item);
+			}
+		}
+		Collections.sort(allPlans);
+		return allPlans;
+	}
+
+	public ArrayList<ItemData> getAllUndoneTasks() throws CacheAccessException {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.TASK)) {
+				boolean taskUndone = !((boolean) item.get(Keys.DONE)); 
+				if (taskUndone) {
+					allTasks.add(item);
+				}
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+
+	public ArrayList<ItemData> getAllUndonePlans() throws CacheAccessException {
+		ArrayList<ItemData> allPlans = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.PLAN)) {
+				boolean planUndone = !((boolean) item.get(Keys.DONE)); 
+				if (planUndone) {
+					allPlans.add(item);
+				}
 			}
 		}
 		Collections.sort(allPlans);

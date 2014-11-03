@@ -14,6 +14,10 @@ import udo.util.shared.ItemType;
 import udo.util.shared.Constants.Keys;
 
 public class CacheUnitTest {
+	// this suite will only test the core crud methods of the cache
+	// other aux methods [e.g. getAllPlans()] are not tested
+	// this is because their success mostly depends on the core methods.
+	// we assume the logic is correct for the aux methods. 
 
 	private static final int PLAN_UID = 12347;
 	private static final int NOT_EXIST_UID = 0;
