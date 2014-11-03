@@ -67,5 +67,6 @@ public class Screen extends JPanel {
 	@Override
 	public void removeAll() {
 		//TODO also a stub method to be overridden by dayScreen.java
+		super.removeAll();
 	}
 }

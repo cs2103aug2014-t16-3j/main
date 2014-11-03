@@ -211,6 +211,8 @@ public class DayScreen extends Screen{
 		mHeader.removeAll();
 		mTickerCoordsXY.clear();
 		mTickerCoordsWH.clear();
+		mRedTickCoordsXY.clear();
+		mRedTickCoordsWH.clear();
 	}
 	
 	/**
