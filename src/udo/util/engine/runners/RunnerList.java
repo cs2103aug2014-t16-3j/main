@@ -57,6 +57,18 @@ public class RunnerList extends Runner {
 					result = mCache.getAllItemsOn(dateCal);
 					output.put(Keys.QUERY_VALUE, dateCal);
 					break;
+					
+				case EVENT :
+					result = mCache.getAllEvents();
+					break;
+					
+				case TASK :
+					result = mCache.getAllUndoneTasks();
+					break;
+					
+				case PLAN :
+					result = mCache.getAllUndonePlans();
+					break;
 
 				default :
 					result = null;
