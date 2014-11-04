@@ -1,7 +1,7 @@
 //@author A0114847B
 package udo.main;
 
-import udo.language.language.EnglishCommand;
+import udo.language.Language.IndonesianCommand;
 import udo.util.parser.ParserAdd;
 import udo.util.parser.ParserCommand;
 import udo.util.parser.ParserDelete;
@@ -49,23 +49,23 @@ public class Parser {
 		String command = parts[0];
 		command = command.toLowerCase();
 		switch (command) {
-			case EnglishCommand.ADD:
+			case IndonesianCommand.ADD:
 				return Command.ADD;
-			case EnglishCommand.LIST:
+			case IndonesianCommand.LIST:
 				return Command.LIST;
-			case EnglishCommand.DELETE:
+			case IndonesianCommand.DELETE:
 				return Command.DELETE;
-			case EnglishCommand.SAVE:
+			case IndonesianCommand.SAVE:
 				return Command.SAVE;
-			case EnglishCommand.EXIT:
+			case IndonesianCommand.EXIT:
 				return Command.EXIT;
-			case EnglishCommand.UNDO:
+			case IndonesianCommand.UNDO:
 				return Command.UNDO;
-			case EnglishCommand.EDIT:
+			case IndonesianCommand.EDIT:
 				return Command.EDIT;
-			case EnglishCommand.DONE:
+			case IndonesianCommand.DONE:
 				return Command.MARK_DONE;
-			case EnglishCommand.TOGGLE:
+			case IndonesianCommand.TOGGLE:
 				return Command.TOGGLE_DONE;
 			default:
 				return Command.NULL;

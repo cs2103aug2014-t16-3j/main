@@ -33,10 +33,10 @@ public class UItest {
 		/**
 		 * Testing single views in main screen
 		 */
-//		testAddEvent();
+		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-		testEditItem();
+//		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
 //		testToggleDone();	
