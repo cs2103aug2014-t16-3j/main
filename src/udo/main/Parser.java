@@ -1,7 +1,7 @@
 //@author A0114847B
 package udo.main;
 
-import udo.language.language.EnglishCommand;
+import udo.language.Language.EnglishCommand;
 import udo.util.parser.ParserAdd;
 import udo.util.parser.ParserCommand;
 import udo.util.parser.ParserDelete;

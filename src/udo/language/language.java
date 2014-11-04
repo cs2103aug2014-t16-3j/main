@@ -1,7 +1,7 @@
 //@author A0114847B
 package udo.language;
 
-public class language {
+public class Language {
 	
 	/**
 	 * This class holds all string commands used by users.
