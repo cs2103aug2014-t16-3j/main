@@ -22,6 +22,47 @@ public class ParserUnitTest {
 	Parser p = new Parser();
 	
 	@Test
+	public void testListPlan() {
+		String listPlan = "list plan";
+		InputData data = p.getInputData(listPlan);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.PLAN, type);
+		
+		listPlan = "listPlan";
+		data = p.getInputData(listPlan);
+		status = data.getStatus();
+		type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		assertEquals(Command.NULL, data.getCommand());
+	}
+	
+	@Test
+	public void testListTask() {
+		String listTask = "list task";
+		InputData data = p.getInputData(listTask);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.TASK, type);
+		
+		listTask = "listTask";
+		data = p.getInputData(listTask);
+		status = data.getStatus();
+		type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		assertEquals(Command.NULL, data.getCommand());
+		
+	}
+	
+	@Test
 	public void testListEvent() {
 		String listEvents = "list Events";
 		InputData data = p.getInputData(listEvents);
@@ -152,10 +193,25 @@ public class ParserUnitTest {
 		assertEquals(Command.ADD_PLAN, data.getCommand());
 		assertEquals("finish cs2103 stuff 9/2", title);
 		assertEquals("[cs2103]", hashtags.toString());
+		
+		// boundary case of unfilled fields
+		plan1 = "add ";
+		data = p.getInputData(plan1);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+		// boundary case of blank title
+		plan1 = "add     ";
+		data = p.getInputData(plan1);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
 	}
 	
 	@Test
 	public void testAddTask() {
+		// boundary case of hashtag keyword
 		String task1 = "add Meet jane after #school #by saturday 7:55pm";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
@@ -180,14 +236,14 @@ public class ParserUnitTest {
 		assertEquals(7, hour);
 		assertEquals(55, mins);
 		
-		// test for no time
+		// test for no time input
 		task1 = "add Meet jane after #school #by tomorrow";
 		data = p.getInputData(task1);
 		status = data.getStatus();
 		
 		assertEquals(ParsingStatus.FAIL, status);
 		
-		// test for no date
+		// test for no date input
 		task1 = "add Meet jane after #school #by 7am";
 		data = p.getInputData(task1);
 		status = data.getStatus();
@@ -197,8 +253,9 @@ public class ParserUnitTest {
 	
 	@Test
 	public void testAddEvent() {
-		String event1 = "add meet #boss from 13/2 10:00am to 22/1 9:00pm";
-		InputData data = p.getInputData(event1);
+		// boundary case of different date and time formats
+		String event = "add meet #boss from 13/2/2013 10:10am to 22/1 9pm";
+		InputData data = p.getInputData(event);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
 		Object hashtags = data.get(Keys.HASHTAGS);
@@ -219,9 +276,9 @@ public class ParserUnitTest {
 		
 		assertEquals(13, startDay);
 		assertEquals(1, startMonth);
-		assertEquals(2014, startYear);
+		assertEquals(2013, startYear);
 		assertEquals(10, startHour);
-		assertEquals(0, startMins);
+		assertEquals(10, startMins);
 		
 		int endDay = endEvent.get(Calendar.DAY_OF_MONTH);
 		int endMonth = endEvent.get(Calendar.MONTH);
@@ -234,6 +291,105 @@ public class ParserUnitTest {
 		assertEquals(2014, endYear);
 		assertEquals(9, endHour);
 		assertEquals(0, endMins);
+		
+		// boundary case of empty title
+		event = "add from 12/12 10am to 12pm";
+		data = p.getInputData(event);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+		// boundary case of 1 empty field
+		event = "add from 10am to 12pm";
+		data = p.getInputData(event);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+		event = "add from 12/12 to 12pm";
+		data = p.getInputData(event);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+		event = "add from 12/12 10am to ";
+		data = p.getInputData(event);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+		// case of days
+		event = "add meet #boss from tomorrow 10am to 9:12am";
+		data = p.getInputData(event);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		
+		startEvent = (Calendar) data.get(Keys.START);
+		endEvent = (Calendar) data.get(Keys.END);
+		
+		startDay = startEvent.get(Calendar.DAY_OF_MONTH);
+		startMonth = startEvent.get(Calendar.MONTH);
+		startYear = startEvent.get(Calendar.YEAR);
+		startHour = startEvent.get(Calendar.HOUR);
+		startMins = startEvent.get(Calendar.MINUTE);
+		
+		assertEquals(5, startDay);
+		assertEquals(10, startMonth);
+		assertEquals(2014, startYear);
+		assertEquals(10, startHour);
+		assertEquals(0, startMins);
+		
+		endDay = endEvent.get(Calendar.DAY_OF_MONTH);
+		endMonth = endEvent.get(Calendar.MONTH);
+		endYear = endEvent.get(Calendar.YEAR);
+		endHour = endEvent.get(Calendar.HOUR);
+		endMins = endEvent.get(Calendar.MINUTE);
+		
+		assertEquals(5, endDay);
+		assertEquals(10, endMonth);
+		assertEquals(2014, endYear);
+		assertEquals(9, endHour);
+		assertEquals(12, endMins);
+		
+		// case of 1 day event
+		event = "add meet #boss from 12/12/12 10am to 9:12am";
+		data = p.getInputData(event);
+		status = data.getStatus();
+		title = data.get(Keys.TITLE);
+		hashtags = data.get(Keys.HASHTAGS);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.ADD_EVENT, data.getCommand());
+		assertEquals("meet boss", title);
+		assertEquals("[boss]", hashtags.toString());
+		
+		startEvent = (Calendar) data.get(Keys.START);
+		endEvent = (Calendar) data.get(Keys.END);
+		
+		startDay = startEvent.get(Calendar.DAY_OF_MONTH);
+		startMonth = startEvent.get(Calendar.MONTH);
+		startYear = startEvent.get(Calendar.YEAR);
+		startHour = startEvent.get(Calendar.HOUR);
+		startMins = startEvent.get(Calendar.MINUTE);
+		
+		assertEquals(12, startDay);
+		assertEquals(11, startMonth);
+		assertEquals(2012, startYear);
+		assertEquals(10, startHour);
+		assertEquals(0, startMins);
+		
+		endDay = endEvent.get(Calendar.DAY_OF_MONTH);
+		endMonth = endEvent.get(Calendar.MONTH);
+		endYear = endEvent.get(Calendar.YEAR);
+		endHour = endEvent.get(Calendar.HOUR);
+		endMins = endEvent.get(Calendar.MINUTE);
+		
+		assertEquals(12, endDay);
+		assertEquals(11, endMonth);
+		assertEquals(2012, endYear);
+		assertEquals(9, endHour);
+		assertEquals(12, endMins);
 	}
 
 	@Test
@@ -413,7 +569,7 @@ public class ParserUnitTest {
 		assertEquals(1111, year);
 		
 		// testing typo command
-		editDueDate = "edit 20430 duedate 28/2/1111";
+		editDueDate = "edit 0 due";
 		data = p.getInputData(editDueDate);
 		status = data.getStatus();
 		assertEquals(ParsingStatus.FAIL, status);
@@ -459,7 +615,7 @@ public class ParserUnitTest {
 		assertEquals(0, mins);
 		
 		// testing typo command
-		editDueTime = "edit 30953 duetime 12am";
+		editDueTime = "edit 30953 due 12am";
 		data = p.getInputData(editDueTime);
 		status = data.getStatus();
 		

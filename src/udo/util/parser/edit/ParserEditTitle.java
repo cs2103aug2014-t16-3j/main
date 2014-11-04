@@ -10,6 +10,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserEditTitle implements ParserEditCommand {
 
+	/**
+	 * This class handles the title field
+	 */
+	
 	public ParserEditTitle() {
 		
 	}

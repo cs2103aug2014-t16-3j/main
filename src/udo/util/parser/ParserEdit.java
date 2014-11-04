@@ -3,6 +3,7 @@ package udo.util.parser;
 
 import java.util.ArrayList;
 
+import udo.language.Language.English;
 import udo.util.parser.edit.ParserEditCommand;
 import udo.util.parser.edit.ParserEditDueDate;
 import udo.util.parser.edit.ParserEditDueTime;
@@ -24,10 +25,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserEdit {
 	
-	String[] mFields = {"title",
-			"start time", "end time", 
-			"start date", "end date",
-			"due time", "due date"};
+	String[] mFields = {English.TITLE,
+			English.START_TIME, English.END_TIME, 
+			English.START_DATE, English.END_DATE,
+			English.DUE_TIME, English.DUE_DATE};
 
 	public ParserEdit() {
 	
@@ -50,25 +51,25 @@ public class ParserEdit {
 	
 	private void updateField(String field, InputData data, String details) {
 		switch (field) {
-		case "title":
+		case English.TITLE :
 			setTitle(data, details);
 			break;
-		case "start time":
+		case English.START_TIME :
 			setStartTime(data, details);
 			break;
-		case "end time":
+		case English.END_TIME :
 			setEndTime(data, details);
 			break;
-		case "start date":
+		case English.START_DATE :
 			setStartDate(data, details);
 			break;
-		case "end date":
+		case English.END_DATE :
 			setEndDate(data, details);
 			break;
-		case "due time":
+		case English.DUE_TIME :
 			setDueTime(data, details);
 			break;
-		case "due date":
+		case English.DUE_DATE :
 			setDueDate(data, details);
 			break;
 		default:

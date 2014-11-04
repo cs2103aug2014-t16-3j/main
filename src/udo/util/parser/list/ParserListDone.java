@@ -9,6 +9,10 @@ import udo.util.shared.Constants.Keys;
 
 public class ParserListDone implements ParserListCommand {
 
+	/**
+	 * This class handles the done field
+	 */
+	
 	public ParserListDone() {
 		
 	}

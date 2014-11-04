@@ -7,6 +7,12 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserUndo implements ParserCommand {
 
+	/**
+	 * This class undo previous commands
+	 * Input recieve by this class is in the format: 
+	 * "undo"
+	 */
+	
 	public ParserUndo() {
 		
 	}

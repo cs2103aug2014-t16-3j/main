@@ -1,7 +1,7 @@
 //@author A0114847B
 package udo.main;
 
-import udo.language.Language.EnglishCommand;
+import udo.language.Language.English;
 import udo.util.parser.ParserAdd;
 import udo.util.parser.ParserCommand;
 import udo.util.parser.ParserDelete;
@@ -20,7 +20,7 @@ import udo.util.shared.InputData;
  * This class parses information from the input string and package it 
  * as an InputData object. 
  * <p>
- * It reads in ADD, LIST, DELETE, EDIT, SAVE, EXIT and UNDO commands.
+ * It reads all enum Command commands.
  * Parser stores the keys using Keys class constants. 
  */
 
@@ -32,7 +32,7 @@ public class Parser {
 	
 	/**
 	 * Parses raw user's input and return it as an InputData object.
-	 * Fields are filled accordingly to it's Commands 
+	 * Fields are filled accordingly to commands, which is the first word in the string
 	 * 
 	 * @param input string 
 	 * @return InputData object
@@ -49,23 +49,23 @@ public class Parser {
 		String command = parts[0];
 		command = command.toLowerCase();
 		switch (command) {
-			case EnglishCommand.ADD:
+			case English.ADD :
 				return Command.ADD;
-			case EnglishCommand.LIST:
+			case English.LIST :
 				return Command.LIST;
-			case EnglishCommand.DELETE:
+			case English.DELETE :
 				return Command.DELETE;
-			case EnglishCommand.SAVE:
+			case English.SAVE :
 				return Command.SAVE;
-			case EnglishCommand.EXIT:
+			case English.EXIT :
 				return Command.EXIT;
-			case EnglishCommand.UNDO:
+			case English.UNDO :
 				return Command.UNDO;
-			case EnglishCommand.EDIT:
+			case English.EDIT :
 				return Command.EDIT;
-			case EnglishCommand.DONE:
+			case English.DONE :
 				return Command.MARK_DONE;
-			case EnglishCommand.TOGGLE:
+			case English.TOGGLE :
 				return Command.TOGGLE_DONE;
 			default:
 				return Command.NULL;
@@ -74,23 +74,23 @@ public class Parser {
 
 	private InputData processCommandType(Command commandType, String details) {
 		switch (commandType) {
-			case ADD:
+			case ADD :
 				return add(commandType, details);
-			case LIST:
+			case LIST :
 				return list(commandType, details);
-			case DELETE:
+			case DELETE :
 				return delete(commandType, details);
-			case SAVE:
+			case SAVE :
 				return save(commandType, details);
-			case EXIT:
+			case EXIT :
 				return exit(commandType, details);
-			case UNDO:
+			case UNDO :
 				return undo(commandType, details);
-			case EDIT:
+			case EDIT :
 				return edit(commandType, details);
-			case TOGGLE_DONE:
+			case TOGGLE_DONE :
 				return toggle_done(commandType, details);
-			case MARK_DONE:
+			case MARK_DONE :
 				return mark(commandType, details);
 			default:
 				return trash(commandType, details);

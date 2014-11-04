@@ -1,6 +1,7 @@
 //@author A0114847B
 package udo.util.parser;
 
+import udo.language.Language.English;
 import udo.util.parser.list.ParserListAll;
 import udo.util.parser.list.ParserListCommand;
 import udo.util.parser.list.ParserListDate;
@@ -14,38 +15,62 @@ import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
 public class ParserList implements ParserCommand {
+	
+	/**
+	 * This class takes in the field to be displayed.
+	 * Input recieve by this class is in the format: 
+	 * "list <<field>>"
+	 */
+	
+	String mFields[] = {"#", English.ALL, English.DONE, 
+						English.EVENT, English.TASK, 
+						English.PLAN, "/", English.DAY, English.TOMORROW};
 
 	@Override
 	public InputData run(Command type, String details) {
 		InputData data = new InputData(type);
-		String lowerCaseDetails = details.toLowerCase();
+		int field = getField(details);
 		ParserListCommand list;
-		
-		if (details.contains("#")) {
-			list = new ParserListHashtag();
-			list.fill(type, details, data);
-		} else if (details.contains("/") 
-				|| lowerCaseDetails.contains("day") 
-				|| lowerCaseDetails.contains("tomorrow")) {
-			list = new ParserListDate();
-			list.fill(type, details, data);
-		} else if (lowerCaseDetails.contains("all")){
-			list = new ParserListAll();
-			list.fill(type, details, data);
-		} else if (lowerCaseDetails.contains("done")){
-			list = new ParserListDone();
-			list.fill(type, details, data);
-		} else if (lowerCaseDetails.contains("event")) {
-			list = new ParserListEvent();
-			list.fill(type, details, data);
-		} else if (lowerCaseDetails.contains("task")) {
-			list = new ParserListTask();
-			list.fill(type, details, data);
-		} else if (lowerCaseDetails.contains("plan")) {
-			list = new ParserListPlan();
-			list.fill(type, details, data);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
+		switch (field) {
+			case 0 :
+				list = new ParserListHashtag();
+				list.fill(type, details, data);
+				break;
+			case 1 :
+				list = new ParserListAll();
+				list.fill(type, details, data);
+				break;
+			case 2 :
+				list = new ParserListDone();
+				list.fill(type, details, data);
+				break;
+			case 3 :
+				list = new ParserListEvent();
+				list.fill(type, details, data);
+				break;
+			case 4 :
+				list = new ParserListTask();
+				list.fill(type, details, data);
+				break;
+			case 5 :
+				list = new ParserListPlan();
+				list.fill(type, details, data);
+				break;
+			case 6 :
+				list = new ParserListDate();
+				list.fill(type, details, data);
+				break;
+			case 7 :
+				list = new ParserListDate();
+				list.fill(type, details, data);
+				break;
+			case 8 :
+				list = new ParserListDate();
+				list.fill(type, details, data);
+				break;
+			default:
+				data.setParsingStatus(ParsingStatus.FAIL);
+				break;
 		}
 		return data;
 	}
@@ -53,6 +78,16 @@ public class ParserList implements ParserCommand {
 	@Override
 	public InputData run(Command type) {
 		return null;
+	}
+	
+	private int getField(String input) {
+		String field = input.toLowerCase();
+		for (int i = 0; i < mFields.length; i++) {
+			if (field.contains(mFields[i])) {
+				return i;
+			}
+		}
+		return 0;
 	}
 
 }

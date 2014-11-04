@@ -7,6 +7,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserTrash implements ParserCommand {
 
+	/**
+	 * This class helps handle all input without command
+	 */
+	
 	public ParserTrash() {
 
 	}

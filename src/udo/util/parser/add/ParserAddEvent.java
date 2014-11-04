@@ -4,6 +4,7 @@ package udo.util.parser.add;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import udo.language.Language.English;
 import udo.util.parser.ParserDate;
 import udo.util.parser.ParserTime;
 import udo.util.shared.Command;
@@ -12,6 +13,11 @@ import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
 public class ParserAddEvent implements ParserAddCommand {
+	
+	/**
+	 * This class handles the raw input for add event. It fills up the InputData
+	 * passed to it.
+	 */
 
 	public ParserAddEvent() {
 		
@@ -23,7 +29,7 @@ public class ParserAddEvent implements ParserAddCommand {
 		ArrayList<String> tags = getTags(details);
 		Calendar start = setFirstTimeAndDate(details);
 		Calendar end = setSecondTimeAndDate(details);
-		if (!title.isEmpty() && start != null && end != null) {
+		if (title != null && start != null && end != null) {
 			data.put(Keys.TITLE, title);
 			data.put(Keys.HASHTAGS, tags);
 			data.put(Keys.START, start);
@@ -37,10 +43,20 @@ public class ParserAddEvent implements ParserAddCommand {
 	@Override
 	public String getTitle(String input) {
 		String title = input.replaceAll("#", "");
-		int startingIndex = 4; 							// start after "add "
-		int endingIndex = title.indexOf("from") - 1; // trim ending white space
-		title = title.substring(startingIndex, endingIndex);
-		return title;
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i = 1; i < parts.length; i++) {
+			if (parts[i].equals(English.FROM)) {
+				break;
+			}
+			newTitle = newTitle + parts[i] + " "; 
+		}
+		if (newTitle.length() != 0) {
+			newTitle = newTitle.trim();
+			return newTitle;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -82,7 +98,7 @@ public class ParserAddEvent implements ParserAddCommand {
 	}
 	
 	public Calendar setSecondTimeAndDate(String details) {
-		int toStringIndex = details.indexOf("to");
+		int toStringIndex = details.lastIndexOf(English.TO);
 		String endingTimeDateString = details.substring(toStringIndex);
 		Calendar end = getTime(endingTimeDateString);
 		Calendar date = getDate(endingTimeDateString);
@@ -91,6 +107,16 @@ public class ParserAddEvent implements ParserAddCommand {
 			end.set(Calendar.MONTH, date.get(Calendar.MONTH));
 			end.set(Calendar.YEAR, date.get(Calendar.YEAR));
 			return end;
+		} else if (end != null) {
+			date = getDate(details);
+			if (date != null) {
+				end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+				end.set(Calendar.MONTH, date.get(Calendar.MONTH));
+				end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+				return end;
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}

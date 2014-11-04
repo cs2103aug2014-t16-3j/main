@@ -11,6 +11,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserEditDueDate implements ParserEditCommand {
 
+	/**
+	 * This class handles the due date field
+	 */
+	
 	public ParserEditDueDate() {
 		
 	}
