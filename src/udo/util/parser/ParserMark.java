@@ -15,12 +15,12 @@ public class ParserMark implements ParserCommand {
 	@Override
 	public InputData run(Command type, String input) {
 		InputData data = new InputData(type);
-		if (isValidMark(input)) {
-			int uid = extractUid(input);
+		int uid = extractUid(input);
+		if (uid == -1) {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		} else {
 			data.put(Keys.UID, uid);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
 		}
 		return data;
 	}
@@ -28,19 +28,6 @@ public class ParserMark implements ParserCommand {
 	@Override
 	public InputData run(Command type) {
 		return null;
-	}
-	
-	// standardLenght is the assumed length the input without space should be. "mark12345"
-	private boolean isValidMark(String input) {
-		String details = input.replaceAll("\\s","");
-		int standardLength = 9;
-		if (details.length() == standardLength) {
-			int uid = extractUid(input);
-			if (uid != -1) {
-				return true;
-			} 
-		}
-		return false;
 	}
 	
 	private boolean isInteger(String input) {

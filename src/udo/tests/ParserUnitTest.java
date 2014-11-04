@@ -239,7 +239,6 @@ public class ParserUnitTest {
 	@Test
 	public void testDelete() {
 		
-		//testing within acceptance region
 		String delete1 = "delete 12359";
 		InputData data1 = p.getInputData(delete1);
 		ParsingStatus status1 = data1.getStatus();
@@ -250,30 +249,15 @@ public class ParserUnitTest {
 		assertEquals(Command.DELETE, type1);
 		assertEquals(12359, uid1);
 		
-		// The boundary for delete uid is 00000 to 99999
-		// Testing boundary case 00000 and 99999
-		String delete2 = "delete 00000";
-		InputData data2 = p.getInputData(delete2);
-		ParsingStatus status2 = data2.getStatus();
-		int uid2 = (int) data2.get(Keys.UID);
-		
-		assertEquals(ParsingStatus.SUCCESS, status2);
-		assertEquals(00000, uid2);
-		
-		delete2 = "delete 99999";
-		data2 = p.getInputData(delete2);
-		status2 = data2.getStatus();
-		uid2 = (int) data2.get(Keys.UID);
-		
-		assertEquals(ParsingStatus.SUCCESS, status2);
-		assertEquals(99999, uid2);
-		
-		// Testing outside boundary case
-		String delete3 = "delete 0000";
+		String delete3 = "delete -0000";
 		InputData data3 = p.getInputData(delete3);
 		ParsingStatus status3 = data3.getStatus();
+		Command type3 = data3.getCommand(); 
+		int uid3 = (int) data3.get(Keys.UID);
 		
-		assertEquals(ParsingStatus.FAIL, status3);
+		assertEquals(ParsingStatus.SUCCESS, status3);
+		assertEquals(Command.DELETE, type3);
+		assertEquals(0, uid3);
 		
 		// Testing boundary for string
 		String delete4 = "delete delet";
@@ -296,33 +280,27 @@ public class ParserUnitTest {
 		assertEquals(Command.MARK_DONE, type);
 		assertEquals(12359, uid);
 		
-		// The boundary for delete uid is 00000 to 99999
-		// Testing boundary case 00000 and 99999
-		done = "done 99999";
-		data = p.getInputData(done);
-		status = data.getStatus();
-		uid = (int) data.get(Keys.UID);
-		
-		assertEquals(ParsingStatus.SUCCESS, status);
-		assertEquals(99999, uid);
-		
-		done = "done 00000";
-		data = p.getInputData(done);
-		status = data.getStatus();
-		uid = (int) data.get(Keys.UID);
-		
-		assertEquals(ParsingStatus.SUCCESS, status);
-		assertEquals(00000, uid);
-		
 		// Testing outside boundary case
-		done = "done 0";
+		done = "done -0";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+	
+		// Testing boundary for string
+		done = "done insta";
 		data = p.getInputData(done);
 		status = data.getStatus();
 		
 		assertEquals(ParsingStatus.FAIL, status);
-	
-		// Testing boundary for string
-		done = "done insta";
+		
+		done = "done ";
+		data = p.getInputData(done);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+		
+		done = "done";
 		data = p.getInputData(done);
 		status = data.getStatus();
 		
@@ -352,7 +330,7 @@ public class ParserUnitTest {
 		
 		// The boundary for delete uid is 00000 to 99999
 		// Testing boundary case 00000 and 99999
-		toggleDone = "toggle done 00000";
+		toggleDone = "toggle done -00000";
 		data = p.getInputData(toggleDone);
 		status = data.getStatus();
 		uid = (int) data.get(Keys.UID);
@@ -360,20 +338,18 @@ public class ParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(00000, uid);
 		
-		toggleDone = "toggle done 99999";
+		toggleDone = "toggle done ";
 		data = p.getInputData(toggleDone);
 		status = data.getStatus();
-		uid = (int) data.get(Keys.UID);
 		
-		assertEquals(ParsingStatus.SUCCESS, status);
-		assertEquals(99999, uid);
+		assertEquals(ParsingStatus.FAIL, status);
 		
 		// Testing outside boundary case
 		toggleDone = "toggle done 723";
 		data = p.getInputData(toggleDone);
 		status = data.getStatus();
 		
-		assertEquals(ParsingStatus.FAIL, status);
+		assertEquals(ParsingStatus.SUCCESS, status);
 		
 		// Testing boundary for string
 		toggleDone = "toggle done ios";

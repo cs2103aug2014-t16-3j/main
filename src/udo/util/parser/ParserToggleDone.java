@@ -15,12 +15,12 @@ public class ParserToggleDone implements ParserCommand {
 	@Override
 	public InputData run(Command type, String input) {
 		InputData data = new InputData(type);
-		if (isValidDone(input)) {
-			int uid = extractUid(input);
+		int uid = extractUid(input);
+		if (uid == -1) {
+			data.setParsingStatus(ParsingStatus.FAIL);	
+		} else {
 			data.put(Keys.UID, uid);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
 		}
 		return data;
 	}
@@ -28,21 +28,6 @@ public class ParserToggleDone implements ParserCommand {
 	@Override
 	public InputData run(Command type) {
 		return null;
-	}
-	
-	// check if user wrote any uid (5 digit)
-	// check if uid is an integer
-	// standardLenght is the assumed length the input without space should be. "toggledone12345"
-	private boolean isValidDone(String input) {
-		String doneString = input.replaceAll("\\s","");
-		int standardLength = 15;
-		if (doneString.length() == standardLength) {
-			int uid = extractUid(input);
-			if (uid != -1) {
-				return true;
-			} 
-		} 
-		return false;
 	}
 
 	private boolean isInteger(String input) {

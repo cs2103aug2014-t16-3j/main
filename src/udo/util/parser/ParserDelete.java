@@ -20,29 +20,16 @@ public class ParserDelete implements ParserCommand {
 	@Override
 	public InputData run(Command type, String input) {
 		InputData data = new InputData(type);
-		if (isValidDelete(input)) {
-			int uid = extractUid(input);
+		int uid = extractUid(input);
+		if (uid == -1) {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		} else {
 			data.put(Keys.UID, uid);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
 		}
 		return data;
 	}
-
-	// standardLenght is the assumed length the input without space should be. "delete12345"
-	private boolean isValidDelete(String input) {
-		String deleteString = input.replaceAll("\\s","");
-		int standardLength = 11;
-		if (deleteString.length() == standardLength) {
-			int uid = extractUid(input);
-			if (uid != -1) {
-				return true;
-			} 
-		} 
-		return false;
-	}
-
+	
 	private boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);

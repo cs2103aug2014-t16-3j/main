@@ -23,6 +23,11 @@ import udo.util.shared.ParsingStatus;
  */
 
 public class ParserEdit {
+	
+	String[] mFields = {"title",
+			"start time", "end time", 
+			"start date", "end date",
+			"due time", "due date"};
 
 	public ParserEdit() {
 	
@@ -126,14 +131,10 @@ public class ParserEdit {
 	// returns one of the fields if it exists
 	// otherwise returns null
 	private String getField(String details) {
-		String[] fields = {"title",
-				"start time", "end time", 
-				"start date", "end date",
-				"due time", "due date"};
 		details = details.toLowerCase();
-		for (int i = 0; i < fields.length; i++) {
-			if (details.contains(fields[i])) {
-				return fields[i];
+		for (int i = 0; i < mFields.length; i++) {
+			if (details.contains(mFields[i])) {
+				return mFields[i];
 			}
 		}
 		return null;
