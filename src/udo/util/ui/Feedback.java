@@ -57,6 +57,7 @@ public class Feedback {
 	public void process(OutputData output) {
 		if (output.getParsingStatus().equals(ParsingStatus.SUCCESS)) {
 			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
+				mCenterView.removeAll();
 				switch (output.getCommand()) {
 					case ADD_EVENT:
 					case ADD_TASK:
@@ -99,7 +100,6 @@ public class Feedback {
 
 	private void toggle_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mCenterView.removeAll();
 		mCenterView.init(output, Command.TOGGLE_DONE);
 		mFinalView = mCenterView;
 		mCommand = "Toggled completion status of " + item.get(Keys.TITLE);
@@ -107,7 +107,6 @@ public class Feedback {
 
 	private void mark_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mCenterView.removeAll();
 		mCenterView.init(output, Command.MARK_DONE);
 		mFinalView = mCenterView;
 		mCommand = "Marked " + item.get(Keys.TITLE) + " as done";
@@ -115,7 +114,6 @@ public class Feedback {
 
 	private void add_entry(OutputData output, Command type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mCenterView.removeAll();
 		mCenterView.init(output, type);
 		mFinalView = mCenterView;
 		mCommand = "Added " + item.get(Keys.TITLE);
@@ -123,7 +121,6 @@ public class Feedback {
 
 	private void delete_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mCenterView.removeAll();
 		mCenterView.init(output, Command.DELETE);
 		mFinalView = mCenterView;
 		mCommand = "Deleted " + item.get(Keys.TITLE);
@@ -131,7 +128,6 @@ public class Feedback {
 	
 	private void edit_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mCenterView.removeAll();
 		mCenterView.init(output, Command.EDIT);
 		
 		mFinalView = mCenterView;
@@ -180,7 +176,6 @@ public class Feedback {
 	
 	@SuppressWarnings("unchecked")
 	private void setToListView() {
-		mCenterView.removeAll();
 		mCenterView.init((ArrayList<ItemData>) mData);
 		mMainScrollPane = mCenterView.getScrollPane();
 		mFinalView = mCenterView;
@@ -188,7 +183,6 @@ public class Feedback {
 	
 	@SuppressWarnings("unchecked")
 	private void setToDayVIew(Date date) {
-		mCenterView.removeAll();
 		mDayView.init(date, (ArrayList<ItemData>) mData);
 		mMainScrollPane = mDayView.getScrollPane();
 		mFinalView = mDayView;
@@ -196,7 +190,6 @@ public class Feedback {
 	
 	@SuppressWarnings("unchecked")
 	private void setToToDoView() {
-		mCenterView.removeAll();
 		mToDoView.init((ArrayList<ItemData>) mData);
 		mMainScrollPane = mToDoView.getScrollPane();
 		mFinalView = mToDoView;
