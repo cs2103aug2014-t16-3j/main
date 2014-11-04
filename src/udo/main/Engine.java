@@ -4,6 +4,9 @@ package udo.main;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import udo.util.engine.Cache;
 import udo.util.engine.FileManager;
@@ -15,7 +18,6 @@ import udo.util.engine.runners.RunnerDone;
 import udo.util.engine.runners.RunnerEdit;
 import udo.util.engine.runners.RunnerList;
 import udo.util.engine.runners.RunnerSave;
-import udo.util.exceptions.AddToCacheException;
 import udo.util.exceptions.CacheAccessException;
 import udo.util.exceptions.ReadingFromStorageException;
 import udo.util.shared.Command;
@@ -24,12 +26,15 @@ import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Logging;
 
 /**
  * This is a facade class for the engine component.<br>
  * It shields and controls the cache, undobin and filemanager.<br>
  * It also creates command runners that execute the commands (command pattern).<br>
  * Only one instance of the Engine can exist (singleton).
+ * 
+ * Engine logs into logs/engineLog.log
  */
 public class Engine {
 	
@@ -38,6 +43,8 @@ public class Engine {
 	private FileManager mFileManager;
 	private Cache mCache;
 	private UndoBin mUndoBin;
+	
+	private Logger mLogger;
 
 	/**
 	 * private constructor. to instantiate this class, use the static getInstance() method.
@@ -46,6 +53,15 @@ public class Engine {
 		mFileManager = new FileManager();
 		mCache = new Cache();
 		mUndoBin = new UndoBin();
+		mLogger = Logger.getLogger(Engine.class.getSimpleName());
+		try {
+			mLogger.addHandler(new FileHandler(Logging.LOGFILE_ENGINE));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mLogger.setLevel(Level.ALL);
 	}
 	
 	/**
@@ -85,8 +101,12 @@ public class Engine {
 	 */
 	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
 		try {
+			logInfo("can get today screen items");
 			return mCache.getAllEventsOn(todayCal);
+			
 		} catch (CacheAccessException e) {
+			
+			logSevere("cannot get today screen items", e);
 			return null;
 		}
 	}
@@ -99,8 +119,10 @@ public class Engine {
 	 */
 	public ArrayList<ItemData> getTodoScreenItems(Calendar fromCal, Calendar toCal) {
 		try {
+			logInfo("can get todo screen items");
 			return mCache.getAllTasksBetween(fromCal, toCal);
 		} catch (CacheAccessException e) {
+			logSevere("cannot get todo screen items", e);
 			return null;
 		}
 	}
@@ -114,7 +136,7 @@ public class Engine {
 	public OutputData execute(InputData input) {
 		// precondition, input cannot be null
 		assert (input != null);
-
+		
 		//preconditions, input must have these components
 		Command cmd = input.getCommand();
 		ParsingStatus parsingStatus = input.getStatus();
@@ -123,6 +145,7 @@ public class Engine {
 		
 		// check if parsing success or not
 		if (parsingStatus.equals(ParsingStatus.FAIL)) {
+			logWarning("parsing failed! not executing...", parsingStatus);
 			OutputData output = new OutputData(cmd, 
 					ParsingStatus.FAIL,
 					ExecutionStatus.NULL);
@@ -159,6 +182,7 @@ public class Engine {
 				
 			case UNDO :
 				// undo uses engine logic hence cannot be abstracted out.
+				logInfo("engine is executing undo without runner");
 				output = runUndo(input);
 				break;
 				
@@ -169,10 +193,12 @@ public class Engine {
 			case EXIT :
 				// exit uses the save runner so cannot be abstracted
 				// into a runner without violating demeter princlepl
+				logInfo("engine is executing exit without runner");
 				output = runExit();
 				break;
 				
 			default:
+				logWarning("command cannot be matched", cmd);
 				return new OutputData(cmd, 
 						ParsingStatus.SUCCESS,
 						ExecutionStatus.NULL);
@@ -197,13 +223,16 @@ public class Engine {
 		 // the inputdata to be executed is already stored. 
 		 // so here just execute that inputdata.
 		InputData undoInput = mUndoBin.getUndoInputData();
+		
 		if (undoInput == null) {
 			// nth to undo, dont execute!
+			logWarning("undoInput is null!", undoInput);
 			return new OutputData(Command.UNDO, 
 					ParsingStatus.SUCCESS,
 					ExecutionStatus.FAIL);
+		} else {
+			return execute(undoInput);
 		}
-		return execute(undoInput);
 	}
 
 	/**
@@ -228,5 +257,17 @@ public class Engine {
 		mCache.clear();
 		ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
 		mCache.addAll(itemsFromFile);
+	}
+	
+	private void logInfo(String message) {
+		mLogger.log(Level.INFO, message);
+	}
+	
+	private void logWarning(String message, Object param) {
+		mLogger.log(Level.WARNING, message, param);
+	}
+	
+	private void logSevere(String message, Object param) {
+		mLogger.log(Level.SEVERE, message, param);
 	}
 }
