@@ -1,3 +1,5 @@
+12345|||EVENT|||sample event|||23/1/2014|||9:23|||23/1/14|||22:30|||meeting,boss,work|||;
+12346|||TASK|||sample task|||24/1/2014|||13:30|||false|||boss,play,fun,date|||;
 55754|||EVENT|||cs2013 software demo|||30/10/2014|||16:0|||30/10/2014|||17:0|||cs2013|||;
 34485|||EVENT|||informal cs2103 meeting|||30/10/2014|||17:0|||30/10/2014|||19:0|||cs2103|||;
 86785|||EVENT|||dance|||30/10/2014|||20:0|||30/10/2014|||22:0||||||;
@@ -12,8 +14,8 @@
 91624|||TASK|||prepare sequence diag for jiawei cs2103|||2/11/2014|||16:0|||false|||cs2103|||;
 29268|||EVENT|||AUG prac|||2/11/2014|||18:0|||2/11/2014|||22:0||||||;
 21264|||TASK|||take passport pic at central lib for japan|||3/11/2014|||12:0|||false|||japan|||;
-46491|||TASK|||print bank statement for japan|||3/11/2014|||12:0|||false|||japan|||;
 30856|||TASK|||photocopy stupass for japan visa app|||3/11/2014|||12:0|||false|||japan|||;
+46491|||TASK|||print bank statement for japan|||3/11/2014|||12:0|||false|||japan|||;
 40335|||TASK|||prepare cs2101 OP2 script|||3/11/2014|||16:0|||false|||cs2101|||;
 78999|||EVENT|||choreo to japan|||3/11/2014|||20:0|||3/11/2014|||22:0|||japan|||;
 56873|||EVENT|||go to japan embassy to submit visa (bring money)|||4/11/2014|||8:0|||4/11/2014|||10:0|||japan|||;
@@ -22,4 +24,3 @@
 84792|||TASK|||cs2101 finish slides|||4/11/2014|||23:30|||false|||cs2101|||;
 89358|||TASK|||cs2101 finish video voice over|||4/11/2014|||23:30|||false|||cs2101|||;
 17695|||TASK|||cs2103 draw sequence diagram and class diagram|||5/11/2014|||16:0|||false|||cs2103|||;
-50377|||PLAN|||watch halo videos|||false||||||;
