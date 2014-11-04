@@ -28,22 +28,21 @@ public class ParserEditTitle implements ParserEditCommand {
 		}
 	}
 	
-	// need to take in tags as well
-	// returns the new title if it exists
-	// otherwise returns null
 	private String getTitle(String details) {
-		int startingIndex = 17; // new info starts after "edit 12345 title "
-		if (details.length() > startingIndex) {
-			String title = details.substring(startingIndex);
-			title = title.replaceAll("#", "");
-			return title;
+		String title = details.replaceAll("#", "");
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i=3; i< parts.length; i++) { 		// "edit 12345 title <new title>"
+			newTitle = newTitle + parts[i] + " ";	// new title starts from index 3
+		}
+		newTitle = newTitle.trim();
+		if (newTitle.length() != 0) {
+			return newTitle;
 		} else {
 			return null;
 		}
 	}
 	
-	// Returns an ArrayList of tags. Tags do not contain "#"
-	// If no tags are found, retun an empty ArrayList
 	private ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
 		String tag;

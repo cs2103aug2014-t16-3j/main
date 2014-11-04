@@ -17,17 +17,12 @@ public class ParserEditDueTime implements ParserEditCommand {
 
 	@Override
 	public void fill(String details, InputData data) {
-		int startingIndex = 20; // new info starts after "edit 12345 due time "
-		if (details.length() > startingIndex) {
-			ParserTime time = new ParserTime();
-			Calendar dueTime = time.getTime(details);
-			if (dueTime != null) {
-				data.put(Keys.FIELD, EditField.DUE_TIME);
-				data.put(Keys.VALUE, dueTime);
-				data.setParsingStatus(ParsingStatus.SUCCESS);
-			} else {
-				data.setParsingStatus(ParsingStatus.FAIL);
-			}
+		ParserTime time = new ParserTime();
+		Calendar dueTime = time.getTime(details);
+		if (dueTime != null) {
+			data.put(Keys.FIELD, EditField.DUE_TIME);
+			data.put(Keys.VALUE, dueTime);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}

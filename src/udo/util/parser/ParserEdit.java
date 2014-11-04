@@ -110,8 +110,7 @@ public class ParserEdit {
 		ParserEditCommand dueDate = new ParserEditDueDate();
 		dueDate.fill(details, data);
 	}
-	// returns uid if it exists
-	// otherwise returns -1
+
 	private int getUid(String details) {
 		String[] words = details.split(" ");
 		if (words.length > 1) {
@@ -128,8 +127,6 @@ public class ParserEdit {
 		}
 	}
 	
-	// returns one of the fields if it exists
-	// otherwise returns null
 	private String getField(String details) {
 		details = details.toLowerCase();
 		for (int i = 0; i < mFields.length; i++) {

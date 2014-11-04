@@ -328,8 +328,6 @@ public class ParserUnitTest {
 		
 		assertEquals(ParsingStatus.FAIL, status);
 		
-		// The boundary for delete uid is 00000 to 99999
-		// Testing boundary case 00000 and 99999
 		toggleDone = "toggle done -00000";
 		data = p.getInputData(toggleDone);
 		status = data.getStatus();
@@ -344,13 +342,6 @@ public class ParserUnitTest {
 		
 		assertEquals(ParsingStatus.FAIL, status);
 		
-		// Testing outside boundary case
-		toggleDone = "toggle done 723";
-		data = p.getInputData(toggleDone);
-		status = data.getStatus();
-		
-		assertEquals(ParsingStatus.SUCCESS, status);
-		
 		// Testing boundary for string
 		toggleDone = "toggle done ios";
 		data = p.getInputData(toggleDone);
@@ -362,7 +353,7 @@ public class ParserUnitTest {
 	@Test
 	public void testEditDueDate() {
 		// testing date boundary of dd/mm
-		String editDueDate = "edit 20430 due date 1/12";
+		String editDueDate = "edit 0 due date 1/12";
 		InputData data = p.getInputData(editDueDate);
 		ParsingStatus status = data.getStatus();
 		Command type = data.getCommand();
@@ -382,7 +373,7 @@ public class ParserUnitTest {
 		assertEquals(2014, year);
 		
 		// testing date boundary of dd/mm/yy
-		editDueDate = "edit 20430 due date 9/9/11";
+		editDueDate = "edit 0430 due date 9/9/11";
 		data = p.getInputData(editDueDate);
 		status = data.getStatus();
 		type = data.getCommand();
@@ -713,7 +704,7 @@ public class ParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.EDIT, type);
 		assertEquals(EditField.TITLE, field);
-		assertEquals("hello ", title);
+		assertEquals("hello", title);
 		assertEquals("[]", tags.toString());
 		
 		editTitle = "edit 72384 titles hello #everybody";
@@ -727,7 +718,7 @@ public class ParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.EDIT, type);
 		assertEquals(EditField.TITLE, field);
-		assertEquals(" hello everybody", title);
+		assertEquals("hello everybody", title);
 		assertEquals("[everybody]", tags.toString());
 		
 		//boundary case of unfilled edit

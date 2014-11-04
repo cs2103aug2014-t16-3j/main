@@ -17,17 +17,12 @@ public class ParserEditStartDate implements ParserEditCommand {
 
 	@Override
 	public void fill(String details, InputData data) {
-		int startingIndex = 22; // new info starts after "edit 12345 start date "
-		if (details.length() > startingIndex) {
-			ParserDate d = new ParserDate();
-			Calendar startDate = d.getDate(details);
-			if (startDate != null) {
-				data.put(Keys.FIELD, EditField.START_DATE);
-				data.put(Keys.VALUE, startDate);
-				data.setParsingStatus(ParsingStatus.SUCCESS);
-			} else {
-				data.setParsingStatus(ParsingStatus.FAIL);
-			}
+		ParserDate d = new ParserDate();
+		Calendar startDate = d.getDate(details);
+		if (startDate != null) {
+			data.put(Keys.FIELD, EditField.START_DATE);
+			data.put(Keys.VALUE, startDate);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}
