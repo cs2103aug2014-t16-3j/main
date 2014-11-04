@@ -4,6 +4,7 @@ package udo.util.parser.add;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import udo.language.Language.English;
 import udo.util.parser.ParserDate;
 import udo.util.parser.ParserTime;
 import udo.util.shared.Command;
@@ -13,6 +14,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserAddTask implements ParserAddCommand {
 
+	/**
+	 * This class handles all Tasks. It fills in the InputData passed to it.
+	 */
+	
 	public ParserAddTask() {
 		
 	}
@@ -38,7 +43,7 @@ public class ParserAddTask implements ParserAddCommand {
 		String parts[] = title.split(" ");
 		String newTitle = "";
 		for (int i = 1; i < parts.length; i++) {
-			if (parts[i].equals("by")) {
+			if (parts[i].equals(English.BY)) {
 				break;
 			}
 			newTitle = newTitle + parts[i] + " "; 

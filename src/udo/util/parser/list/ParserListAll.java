@@ -9,6 +9,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserListAll implements ParserListCommand {
 
+	/**
+	 * This class handles the All field
+	 */
+	
 	public ParserListAll() {
 		
 	}

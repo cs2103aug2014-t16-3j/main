@@ -8,8 +8,12 @@ import udo.util.shared.Constants.Keys;
 
 public class ParserListTask implements ParserListCommand {
 
+	/**
+	 * This class handles the tasks field
+	 */
+	
 	public ParserListTask() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override

@@ -9,6 +9,10 @@ import udo.util.shared.Constants.Keys;
 
 public class ParserAddPlan implements ParserAddCommand {
 
+	/**
+	 * This class handles all Plans. It fills in the InputData passed to it.
+	 */
+	
 	public ParserAddPlan() {
 		
 	}

@@ -4,6 +4,7 @@ package udo.util.parser.add;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import udo.language.Language.English;
 import udo.util.parser.ParserDate;
 import udo.util.parser.ParserTime;
 import udo.util.shared.Command;
@@ -12,6 +13,11 @@ import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
 public class ParserAddEvent implements ParserAddCommand {
+	
+	/**
+	 * This class handles the raw input for add event. It fills up the InputData
+	 * passed to it.
+	 */
 
 	public ParserAddEvent() {
 		
@@ -40,7 +46,7 @@ public class ParserAddEvent implements ParserAddCommand {
 		String parts[] = title.split(" ");
 		String newTitle = "";
 		for (int i = 1; i < parts.length; i++) {
-			if (parts[i].equals("from")) {
+			if (parts[i].equals(English.FROM)) {
 				break;
 			}
 			newTitle = newTitle + parts[i] + " "; 
@@ -92,7 +98,7 @@ public class ParserAddEvent implements ParserAddCommand {
 	}
 	
 	public Calendar setSecondTimeAndDate(String details) {
-		int toStringIndex = details.lastIndexOf("to");
+		int toStringIndex = details.lastIndexOf(English.TO);
 		String endingTimeDateString = details.substring(toStringIndex);
 		Calendar end = getTime(endingTimeDateString);
 		Calendar date = getDate(endingTimeDateString);

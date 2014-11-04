@@ -11,6 +11,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserEditStartTime implements ParserEditCommand {
 
+	/**
+	 * This class handles the start time field
+	 */
+	
 	public ParserEditStartTime() {
 		
 	}

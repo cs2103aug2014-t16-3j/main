@@ -11,6 +11,10 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserEditEndDate implements ParserEditCommand {
 
+	/**
+	 * This class handles the end date field
+	 */
+	
 	public ParserEditEndDate() {
 		
 	}

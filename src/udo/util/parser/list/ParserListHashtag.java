@@ -11,8 +11,12 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserListHashtag implements ParserListCommand {
 
+	/**
+	 * This class handles the hashtag field
+	 */
+	
 	public ParserListHashtag() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
@@ -27,8 +31,6 @@ public class ParserListHashtag implements ParserListCommand {
 		}
 	}
 	
-	// Returns an ArrayList of tags. Tags do not contain "#"
-	// If no tags are found, retun an empty ArrayList
 	private ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();
 		String tag;

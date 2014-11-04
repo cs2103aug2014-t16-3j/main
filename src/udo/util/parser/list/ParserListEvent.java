@@ -8,8 +8,12 @@ import udo.util.shared.Constants.Keys;
 
 public class ParserListEvent implements ParserListCommand {
 
+	/**
+	 * This class handles the event field
+	 */
+	
 	public ParserListEvent() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override

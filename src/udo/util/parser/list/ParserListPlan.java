@@ -8,8 +8,11 @@ import udo.util.shared.Constants.Keys;
 
 public class ParserListPlan implements ParserListCommand {
 
+	/**
+	 * This class handles the plans field
+	 */
 	public ParserListPlan() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override

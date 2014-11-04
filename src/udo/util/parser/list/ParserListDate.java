@@ -12,8 +12,12 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserListDate implements ParserListCommand {
 
+	/**
+	 * This class handles the date field
+	 */
+	
 	public ParserListDate() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
