@@ -23,19 +23,19 @@ import udo.util.shared.ParsingStatus;
  * "edit <<uid>> <<field to edit>> <<new info>>"
  */
 
-public class ParserEdit {
+public class EditAction implements Action {
 	
 	String[] mFields = {English.TITLE,
 			English.START_TIME, English.END_TIME, 
 			English.START_DATE, English.END_DATE,
 			English.DUE_TIME, English.DUE_DATE};
 
-	public ParserEdit() {
+	public EditAction() {
 	
 	}
 	
-	//edit <uid> <field> <new-info>
-	public InputData edit(Command type, String details) {
+	@Override
+	public InputData run(Command type, String details) {
 		InputData data = new InputData(type);
 		int uid = getUid(details);
 		String field = getField(details);
@@ -47,6 +47,11 @@ public class ParserEdit {
 			data.setParsingStatus(ParsingStatus.FAIL);
 		}
 		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
 	}
 	
 	private void updateField(String field, InputData data, String details) {

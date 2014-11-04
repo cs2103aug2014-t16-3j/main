@@ -9,7 +9,7 @@ import java.util.Date;
 import udo.language.Language.English;
 import udo.util.shared.Command;
 
-public class ParserDate {
+public class DateGetter {
 	
 	/**
 	 * This class returns a calendar object set to the first date it reads from 
@@ -24,7 +24,7 @@ public class ParserDate {
 								English.FRIDAY, English.SATURDAY, English.TOMORROW};
 	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
 	
-	public ParserDate() {
+	public DateGetter() {
 		
 	}
 	

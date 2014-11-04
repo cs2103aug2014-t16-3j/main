@@ -5,20 +5,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import udo.language.Language.English;
-import udo.util.parser.ParserDate;
-import udo.util.parser.ParserTime;
-import udo.util.shared.Command;
+import udo.util.parser.DateGetter;
+import udo.util.parser.TimeGetter;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
-public class ParserAddTask implements ParserAddCommand {
+public class AddActionTask implements AddActionType {
 
 	/**
 	 * This class handles all Tasks. It fills in the InputData passed to it.
 	 */
 	
-	public ParserAddTask() {
+	public AddActionTask() {
 		
 	}
 
@@ -73,12 +72,12 @@ public class ParserAddTask implements ParserAddCommand {
 	}
 	
 	public Calendar getDate(String input) {
-		ParserDate date = new ParserDate();
+		DateGetter date = new DateGetter();
 		return date.getDate(input);
 	}
 	
 	public Calendar getTime(String input) {
-		ParserTime time = new ParserTime();
+		TimeGetter time = new TimeGetter();
 		return time.getTime(input);
 	}
 	

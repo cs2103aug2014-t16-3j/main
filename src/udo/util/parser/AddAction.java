@@ -2,10 +2,10 @@
 package udo.util.parser;
 
 import udo.language.Language.English;
-import udo.util.parser.add.ParserAddCommand;
-import udo.util.parser.add.ParserAddEvent;
-import udo.util.parser.add.ParserAddPlan;
-import udo.util.parser.add.ParserAddTask;
+import udo.util.parser.add.AddActionType;
+import udo.util.parser.add.AddActionEvent;
+import udo.util.parser.add.AddActionPlan;
+import udo.util.parser.add.AddActionTask;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 
@@ -25,9 +25,9 @@ import udo.util.shared.InputData;
  * "add <<title>>"
  */
 
-public class ParserAdd implements ParserCommand {
+public class AddAction implements Action {
 	
-	public ParserAdd() {
+	public AddAction() {
 		
 	}
 	
@@ -45,15 +45,15 @@ public class ParserAdd implements ParserCommand {
 		InputData data;
 		if (isEvent(details)) {
 			data = new InputData(Command.ADD_EVENT);
-			ParserAddCommand event = new ParserAddEvent();
+			AddActionType event = new AddActionEvent();
 			event.fill(details, data);
 		} else if (isTask(details)) {
 			data = new InputData(Command.ADD_TASK);
-			ParserAddCommand task = new ParserAddTask();
+			AddActionType task = new AddActionTask();
 			task.fill(details, data);
 		} else {
 			data = new InputData(Command.ADD_PLAN);
-			ParserAddCommand plan = new ParserAddPlan();
+			AddActionType plan = new AddActionPlan();
 			plan.fill(details, data);
 		} 
 		return data;

@@ -14,7 +14,7 @@ import udo.util.shared.Command;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
-public class ParserList implements ParserCommand {
+public class ListAction implements Action {
 	
 	/**
 	 * This class takes in the field to be displayed.

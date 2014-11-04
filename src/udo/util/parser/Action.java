@@ -4,7 +4,7 @@ package udo.util.parser;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 
-public interface ParserCommand {
+public interface Action {
 	
 	public InputData run(Command type, String input);
 	public InputData run(Command type);

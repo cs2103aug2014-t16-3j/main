@@ -2,17 +2,17 @@
 package udo.main;
 
 import udo.language.Language.English;
-import udo.util.parser.ParserAdd;
-import udo.util.parser.ParserCommand;
-import udo.util.parser.ParserDelete;
-import udo.util.parser.ParserEdit;
-import udo.util.parser.ParserExit;
-import udo.util.parser.ParserList;
-import udo.util.parser.ParserMark;
-import udo.util.parser.ParserSave;
-import udo.util.parser.ParserToggleDone;
-import udo.util.parser.ParserTrash;
-import udo.util.parser.ParserUndo;
+import udo.util.parser.Action;
+import udo.util.parser.AddAction;
+import udo.util.parser.DeleteAction;
+import udo.util.parser.EditAction;
+import udo.util.parser.ExitAction;
+import udo.util.parser.ListAction;
+import udo.util.parser.MarkAction;
+import udo.util.parser.SaveAction;
+import udo.util.parser.ToggleDoneAction;
+import udo.util.parser.TrashAction;
+import udo.util.parser.UndoAction;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 
@@ -98,60 +98,61 @@ public class Parser {
 	}
 	
 	private InputData mark(Command type, String details) {
-		ParserCommand mark = new ParserMark();
+		Action mark = new MarkAction();
 		InputData data = mark.run(type, details);
 		return data;
 	}
 
 	private InputData toggle_done(Command type, String details) {
-		ParserCommand toggleDone = new ParserToggleDone();
+		Action toggleDone = new ToggleDoneAction();
 		InputData data = toggleDone.run(type, details);
 		return data;
 	}
 
 	private InputData add(Command type, String details) {
-		ParserCommand add = new ParserAdd();
+		Action add = new AddAction();
 		InputData data = add.run(type, details);
 		return data;
 	}
 	
 	private InputData list(Command type, String details) {
-		ParserCommand list = new ParserList();
+		Action list = new ListAction();
 		InputData data = list.run(type, details);
 		return data;
 	}
 
 	private InputData edit(Command type, String details) {
-		ParserEdit activity = new ParserEdit();
-		return activity.edit(type, details);
+		Action edit = new EditAction();
+		InputData data = edit.run(type, details);
+		return data;
 	}
 	
 	private InputData delete(Command type, String details) {
-		ParserCommand delete = new ParserDelete();
+		Action delete = new DeleteAction();
 		InputData data = delete.run(type, details);
 		return data;
 	}
 	
 	private InputData trash(Command type, String details) {
-		ParserCommand trash = new ParserTrash();
+		Action trash = new TrashAction();
 		InputData data = trash.run(type);
 		return data;
 	}
 
 	private InputData undo(Command type, String details) {
-		ParserCommand undo = new ParserUndo();
+		Action undo = new UndoAction();
 		InputData data = undo.run(type);
 		return data;
 	}
 
 	private InputData save(Command type, String details) {
-		ParserCommand save = new ParserSave();
+		Action save = new SaveAction();
 		InputData data = save.run(type);
 		return data;
 	}
 
 	private InputData exit(Command type, String details) {
-		ParserCommand exit = new ParserExit();
+		Action exit = new ExitAction();
 		InputData data = exit.run(type);
 		return data;
 	}

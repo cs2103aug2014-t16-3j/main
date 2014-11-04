@@ -2,22 +2,26 @@
 package udo.util.parser;
 
 import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
 
-public class ParserMark implements ParserCommand {
-
-	/**
-	 * This class takes in the items that marked completed.
-	 * Input recieve by this class is in the format: 
-	 * "done <<uid>>"
-	 */
+public class DeleteAction implements Action {
 	
-	public ParserMark() {
+	/**
+	 * This class reads in the uid to be deleted.
+	 * Input recieved by this class is in the format: "delete <<uid>>"
+	 */
+
+	public DeleteAction() {
 		
 	}
 
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
 	@Override
 	public InputData run(Command type, String input) {
 		InputData data = new InputData(type);
@@ -29,11 +33,6 @@ public class ParserMark implements ParserCommand {
 			data.setParsingStatus(ParsingStatus.SUCCESS);
 		}
 		return data;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
 	}
 	
 	private boolean isInteger(String input) {
@@ -56,5 +55,4 @@ public class ParserMark implements ParserCommand {
 		} 
 		return -1;
 	}
-
 }

@@ -2,39 +2,40 @@
 package udo.util.parser;
 
 import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
 
-public class ParserDelete implements ParserCommand {
-	
+public class ToggleDoneAction implements Action {
+
 	/**
-	 * This class reads in the uid to be deleted.
-	 * Input recieved by this class is in the format: "delete <<uid>>"
+	 * This class takes in the items that marked as not completed from the completed list.
+	 * Input recieve by this class is in the format: 
+	 * "toggle done <<uid>>"
 	 */
-
-	public ParserDelete() {
+	
+	public ToggleDoneAction() {
 		
 	}
 
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-	
 	@Override
 	public InputData run(Command type, String input) {
 		InputData data = new InputData(type);
 		int uid = extractUid(input);
 		if (uid == -1) {
-			data.setParsingStatus(ParsingStatus.FAIL);
+			data.setParsingStatus(ParsingStatus.FAIL);	
 		} else {
 			data.put(Keys.UID, uid);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
 		}
 		return data;
 	}
-	
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+
 	private boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -46,8 +47,8 @@ public class ParserDelete implements ParserCommand {
 	
 	private int extractUid(String input) {
 		String parts[] = input.split(" ");
-		if (parts.length >= 2) {
-			String uid = parts[1];
+		if (parts.length >= 3) {
+			String uid = parts[2];
 			if (isInteger(uid)) {
 				int id = Integer.parseInt(uid);
 				return id;

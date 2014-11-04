@@ -5,23 +5,23 @@ import udo.util.shared.Command;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
-public class ParserUndo implements ParserCommand {
+public class SaveAction implements Action {
 
 	/**
-	 * This class undo previous commands
+	 * This class handles the save command.
 	 * Input recieve by this class is in the format: 
-	 * "undo"
+	 * "save"
 	 */
 	
-	public ParserUndo() {
-		
+	public SaveAction() {
+
 	}
 
 	@Override
 	public InputData run(Command type) {
-		InputData undoInputData = new InputData(type);
-		undoInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return undoInputData;
+		InputData saveInputData = new InputData(type);
+		saveInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return saveInputData;
 	}
 
 	@Override

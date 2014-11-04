@@ -6,15 +6,15 @@ import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 import udo.util.shared.Constants.Keys;
 
-public class ParserToggleDone implements ParserCommand {
+public class MarkAction implements Action {
 
 	/**
-	 * This class takes in the items that marked as not completed from the completed list.
+	 * This class takes in the items that marked completed.
 	 * Input recieve by this class is in the format: 
-	 * "toggle done <<uid>>"
+	 * "done <<uid>>"
 	 */
 	
-	public ParserToggleDone() {
+	public MarkAction() {
 		
 	}
 
@@ -23,7 +23,7 @@ public class ParserToggleDone implements ParserCommand {
 		InputData data = new InputData(type);
 		int uid = extractUid(input);
 		if (uid == -1) {
-			data.setParsingStatus(ParsingStatus.FAIL);	
+			data.setParsingStatus(ParsingStatus.FAIL);
 		} else {
 			data.put(Keys.UID, uid);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
@@ -35,7 +35,7 @@ public class ParserToggleDone implements ParserCommand {
 	public InputData run(Command type) {
 		return null;
 	}
-
+	
 	private boolean isInteger(String input) {
 		try {
 			Integer.parseInt(input);
@@ -47,8 +47,8 @@ public class ParserToggleDone implements ParserCommand {
 	
 	private int extractUid(String input) {
 		String parts[] = input.split(" ");
-		if (parts.length >= 3) {
-			String uid = parts[2];
+		if (parts.length >= 2) {
+			String uid = parts[1];
 			if (isInteger(uid)) {
 				int id = Integer.parseInt(uid);
 				return id;
@@ -56,4 +56,5 @@ public class ParserToggleDone implements ParserCommand {
 		} 
 		return -1;
 	}
+
 }

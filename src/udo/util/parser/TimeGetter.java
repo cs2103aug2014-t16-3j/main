@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ParserTime {
+public class TimeGetter {
 	
 	/**
 	 * This class takes returns a calendar object set to the first time it reads 
@@ -16,7 +16,7 @@ public class ParserTime {
 	private Calendar mTime;
 	private String mTimeFormat[] = {"hh:mma", "hha"};
 
-	public ParserTime() {
+	public TimeGetter() {
 		
 	}
 	
