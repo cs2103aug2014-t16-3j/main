@@ -98,6 +98,17 @@ public class Constants {
 		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
 	}
 	
+	//@author A0108358B
+	/**
+	 * 
+	 * This class holds the magic strings for the loggers.
+	 * They include filenames
+	 * 
+	 */
+	public static final class Logging {
+		public static final String LOGFILE_ENGINE = "logs/engineLog.log";
+	}
+
 	//@author A0114088H
 	/**
 	 * 
