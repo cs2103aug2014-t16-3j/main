@@ -22,6 +22,25 @@ public class ParserUnitTest {
 	Parser p = new Parser();
 	
 	@Test
+	public void testListEvent() {
+		String listEvents = "list Events";
+		InputData data = p.getInputData(listEvents);
+		ParsingStatus status = data.getStatus();
+		ListQuery type = (ListQuery) data.get(Keys.QUERY_TYPE);
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		assertEquals(Command.LIST, data.getCommand());
+		assertEquals(ListQuery.EVENT, type);
+		
+		String listEvents1 = "listevents";
+		InputData data1 = p.getInputData(listEvents1);
+		ParsingStatus status1 = data1.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status1);
+		assertEquals(Command.NULL, data1.getCommand());
+	}
+	
+	@Test
 	public void testListHashtag() {
 		String listTag = "list #lala";
 		InputData data = p.getInputData(listTag);
@@ -63,6 +82,20 @@ public class ParserUnitTest {
 		status = data.getStatus();
 		
 		assertEquals(ParsingStatus.FAIL, status);
+		
+		// boundary case of days
+		listDate = "list today";
+		data = p.getInputData(listDate);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		
+		//boundary case of no "day" behind
+		listDate = "list tomorrow";
+		data = p.getInputData(listDate);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
 	}
 	
 	@Test
