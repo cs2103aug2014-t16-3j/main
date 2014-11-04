@@ -16,36 +16,37 @@ import udo.util.shared.ItemData;
 public class ToDoScreen extends Screen {
 
 	private static final long serialVersionUID = 1L;
-	
-//	private static final Logger logger =
-//	        Logger.getLogger(udo.util.ui.DayView.class.getName());
-	
+
+	// private static final Logger logger =
+	// Logger.getLogger(udo.util.ui.DayView.class.getName());
+
 	public ToDoScreen() {
 		super();
-		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		setBounds(0, 0, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 	}
-	
+
 	public void init() {
 		ArrayList<ItemData> data = new ArrayList<ItemData>();
 		init(data);
 	}
-	
+
 	@Override
 	public void init(ArrayList<ItemData> data) {
 		initHeader();
-		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.TODOVIEW_HEADER_HEIGHT));
-//		try {
-//			logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
-//		} catch (SecurityException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+				UI.TODOVIEW_HEADER_HEIGHT));
+		// try {
+		// logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
+		// } catch (SecurityException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 		populateView(data);
 	}
-	
+
 	private void initHeader() {
 		JLabel title = new JLabel("To Do");
 		title.setFont(UI.FONT_24);
@@ -57,7 +58,7 @@ public class ToDoScreen extends Screen {
 		mHeader.add(title);
 		add(mHeader);
 	}
-	
+
 	private void populateView(ArrayList<ItemData> data) {
 		if (data.size() == 0) {
 			JLabel noItems = new JLabel("You have no upcoming tasks!");
@@ -72,11 +73,11 @@ public class ToDoScreen extends Screen {
 		}
 	}
 
-	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawLine(UI.SUBVIEW_WIDTH/4, UI.SUBVIEW_HEADER_LINEY, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
+		g2.drawLine(UI.SUBVIEW_WIDTH / 4, UI.SUBVIEW_HEADER_LINEY,
+				UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
 	}
 }

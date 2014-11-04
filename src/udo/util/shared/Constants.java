@@ -186,7 +186,7 @@ public class Constants {
 		public static final Color MAIN_COLOR = Color.decode("#FFFFFF");
 		public static final Color MAIN_BORDER_COLOR = Color.decode("#E3E3E3");
 		public static final Color SUB_COLOR = Color.decode("#F4F4FF");
-		public static final Color ENTRY_BGCOLOR = Color.decode("#FFFFFF");
+		public static final Color ENTRY_DONE_BGCOLOR = Color.decode("#9FFF82");
 		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
 		public static final Color ENTRY_TITLE_COLOR = new Color(0,0,0);
 		public static final Color ENTRY_HASHTAGS_COLOR = new Color(150,150,150);

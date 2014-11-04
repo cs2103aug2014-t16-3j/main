@@ -29,7 +29,7 @@ public class Feedback {
 	private Screen mMainToDoView;
 
 	private JPanel mFinalView = new JPanel();
-	
+
 	private JScrollPane mMainScrollPane;
 
 	public Feedback() {
@@ -59,35 +59,35 @@ public class Feedback {
 			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
 				mCenterView.removeAll();
 				switch (output.getCommand()) {
-					case ADD_EVENT:
-					case ADD_TASK:
-					case ADD_PLAN:
+					case ADD_EVENT :
+					case ADD_TASK :
+					case ADD_PLAN :
 						add_entry(output, output.getCommand());
-						break;						
-					case DELETE:
+						break;
+					case DELETE :
 						delete_entry(output);
 						break;
-					case EXIT:
+					case EXIT :
 						mCommand = "Exit";
 						break;
-					case LIST:
+					case LIST :
 						list_entry(output);
 						break;
-					case UNDO:
+					case UNDO :
 						break;
-					case EDIT:
+					case EDIT :
 						edit_entry(output);
-						break; 
-					case MARK_DONE:
+						break;
+					case MARK_DONE :
 						mark_done(output);
 						break;
-					case TOGGLE_DONE:
+					case TOGGLE_DONE :
 						toggle_done(output);
 						break;
-					case SAVE:
+					case SAVE :
 						mCommand = "Saved ";
 						break;
-					default:
+					default :
 						break;
 				}
 			} else {
@@ -125,16 +125,16 @@ public class Feedback {
 		mFinalView = mCenterView;
 		mCommand = "Deleted " + item.get(Keys.TITLE);
 	}
-	
+
 	private void edit_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mCenterView.init(output, Command.EDIT);
-		
+
 		mFinalView = mCenterView;
 		mCommand = "Edited " + item.get(Keys.UID);
-		
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void list_entry(OutputData output) {
 		// TODO check if query is specified to 1 day, is a todo, or general list
@@ -148,46 +148,47 @@ public class Feedback {
 			ListQuery queryType = (ListQuery) output.get(Keys.QUERY_TYPE);
 			String query = "";
 			switch (queryType) {
-				case ALL:
+				case ALL :
 					query = "all items";
 					setToListView();
 					break;
-				case SINGLE_HASHTAG:
+				case SINGLE_HASHTAG :
 					query = "#" + (String) output.get(Keys.QUERY_VALUE);
 					setToListView();
 					break;
-				case DONE:
+				case DONE :
 					query = "items that have been marked as done";
 					setToListView();
 					break;
-				case DATE:
-					Date date = ((Calendar) output.get(Keys.QUERY_VALUE)).getTime();
+				case DATE :
+					Date date = ((Calendar) output.get(Keys.QUERY_VALUE))
+							.getTime();
 					query = "items on " + UI.DD_MMMM_YYYY.format(date);
 					setToDayVIew(date);
 					break;
-				default:
+				default :
 					break;
 
 			}
 			mCommand = "Listing " + query;
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setToListView() {
 		mCenterView.init((ArrayList<ItemData>) mData);
 		mMainScrollPane = mCenterView.getScrollPane();
 		mFinalView = mCenterView;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setToDayVIew(Date date) {
 		mDayView.init(date, (ArrayList<ItemData>) mData);
 		mMainScrollPane = mDayView.getScrollPane();
 		mFinalView = mDayView;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setToToDoView() {
 		mToDoView.init((ArrayList<ItemData>) mData);
@@ -202,15 +203,15 @@ public class Feedback {
 	public JPanel getFinalView() {
 		return mFinalView;
 	}
-	
+
 	public JScrollPane getLeftScrollPane() {
 		return mMainToDoView.getScrollPane();
 	}
-	
+
 	public JScrollPane getMainScrollPane() {
 		return mMainScrollPane;
 	}
-	
+
 	public JScrollPane getRightScrollPane() {
 		return mMainTodayView.getScrollPane();
 	}

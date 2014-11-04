@@ -17,23 +17,27 @@ import javax.swing.border.Border;
 public class DropShadowPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-    public int pixels;
+	public int pixels;
 
-    public DropShadowPanel(int pix) {
-        this.pixels = pix;
-        Border border = BorderFactory.createEmptyBorder(pixels, pixels, pixels, pixels);
-        this.setBorder(BorderFactory.createCompoundBorder(this.getBorder(), border));
-        setOpaque(false);
-        setLayout(new BorderLayout());
-    }
+	public DropShadowPanel(int pix) {
+		this.pixels = pix;
+		Border border = BorderFactory.createEmptyBorder(pixels, pixels, pixels,
+				pixels);
+		this.setBorder(BorderFactory.createCompoundBorder(this.getBorder(),
+				border));
+		setOpaque(false);
+		setLayout(new BorderLayout());
+	}
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        int shade = 0;
-        int topOpacity = 80;
-        for (int i = 0; i < pixels; i++) {
-            g.setColor(new Color(shade, shade, shade, ((topOpacity / pixels) * i)));
-            g.drawRect(i, i, this.getWidth() - ((i * 2) + 1), this.getHeight() - ((i * 2) + 1));
-        }
-    }
+	@Override
+	protected void paintComponent(Graphics g) {
+		int shade = 0;
+		int topOpacity = 80;
+		for (int i = 0; i < pixels; i++) {
+			g.setColor(new Color(shade, shade, shade,
+					((topOpacity / pixels) * i)));
+			g.drawRect(i, i, this.getWidth() - ((i * 2) + 1), this.getHeight()
+					- ((i * 2) + 1));
+		}
+	}
 }

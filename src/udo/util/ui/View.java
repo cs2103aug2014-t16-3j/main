@@ -11,11 +11,11 @@ import udo.util.shared.OutputData;
 public class View extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public View() {
 		setOpaque(false);
 	}
-	
+
 	public void populateView(ArrayList<ItemData> data) {
 		removeAll();
 		for (int i = 0; i < data.size(); i++) {
@@ -23,14 +23,14 @@ public class View extends JPanel {
 			addEntry(item);
 		}
 	}
-	
+
 	protected void addEntry(ItemData item) {
 		Entry entry = new Entry(item, item.getItemType());
 		add(entry);
 	}
-	
+
 	protected void init(OutputData output, Command type) {
-		//TODO also a stub
+		// TODO also a stub
 	}
 
 }
