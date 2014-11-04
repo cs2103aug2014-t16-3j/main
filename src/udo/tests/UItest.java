@@ -26,7 +26,7 @@ public class UItest {
 		 * Testing listing items in main screen
 		 */
 //		testListAll();
-//		testListDone();
+		testListDone();
 //		testListSingleDate();
 //		testListSingleHashtag();
 	
@@ -36,7 +36,7 @@ public class UItest {
 //		testAddEvent();
 //		testAddTask();
 //		testAddPlan();
-		testEditItem();
+//		testEditItem();
 //		testDeleteItem();
 //		testMarkAsDone();
 //		testToggleDone();	

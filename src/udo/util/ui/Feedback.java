@@ -166,7 +166,20 @@ public class Feedback {
 					query = "items on " + UI.DD_MMMM_YYYY.format(date);
 					setToDayVIew(date);
 					break;
+				case EVENT :
+					query = "all events";
+					setToListView();
+					break;
+				case PLAN :
+					query = "all plans";
+					setToListView();
+					break;
+				case TASK :
+					query = "all tasks";
+					setToToDoView();
+					break;
 				default :
+					
 					break;
 
 			}

@@ -177,6 +177,7 @@ public class Constants {
 		public static final int ENTRY_SEPARATOR_WIDTH = -5;
 		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
 		public static final Dimension EMPTY_DATE = new Dimension(28,44);
+		public static final Dimension DONE_PANEL = new Dimension(28,28);
 		
 		public static final String ENTRY_ALL = "ALL";
 		public static final String ENTRY_EVENT = "EVENT";
@@ -186,7 +187,7 @@ public class Constants {
 		public static final Color MAIN_COLOR = Color.decode("#FFFFFF");
 		public static final Color MAIN_BORDER_COLOR = Color.decode("#E3E3E3");
 		public static final Color SUB_COLOR = Color.decode("#F4F4FF");
-		public static final Color ENTRY_DONE_BGCOLOR = Color.decode("#9FFF82");
+		public static final Color ENTRY_DONE_COLOR = Color.decode("#46FF82");
 		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
 		public static final Color ENTRY_TITLE_COLOR = new Color(0,0,0);
 		public static final Color ENTRY_HASHTAGS_COLOR = new Color(150,150,150);

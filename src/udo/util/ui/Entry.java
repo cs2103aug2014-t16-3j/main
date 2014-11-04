@@ -13,6 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
+
+
+
 /*
  import javax.swing.JTextPane;
  import javax.swing.text.AttributeSet;
@@ -46,10 +49,24 @@ public class Entry extends JPanel {
 	public Entry(ItemData item, ItemType type) {
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
 				UI.ENTRY_BORDERCOLOR));
+		//TODO option 3
+		/*
+		if((boolean) item.get(Keys.DONE)) {
+			setBackground(UI.ENTRY_DONE_COLOR);
+		} else { 
+			setOpaque(false);	
+		}*/
 		setOpaque(false);
 
 		mUid.setFont(UI.FONT_12);
 		mUid.setOpaque(true);
+		// TODO option 1
+		/*
+		if((boolean) item.get(Keys.DONE)) {
+			mUid.setBackground(UI.ENTRY_DONE_COLOR);
+		} else { 
+			mUid.setBackground(UI.UID_COLOR);	
+		}*/
 		mUid.setBackground(UI.UID_COLOR);
 
 		mTimePanel.setOpaque(false);
@@ -93,6 +110,19 @@ public class Entry extends JPanel {
 			default :
 				break;
 		}
+		//TODO option 2
+		//add(donePanel((boolean) item.get(Keys.DONE)));
+	}
+
+	private JPanel donePanel(boolean isDone) {
+		JPanel done = new JPanel();
+		done.setPreferredSize(UI.DONE_PANEL);
+		if(isDone) {
+			done.setBackground(UI.ENTRY_DONE_COLOR);
+		} else {
+			done.setOpaque(false);
+		}
+		return done;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -155,7 +185,7 @@ public class Entry extends JPanel {
 	}
 
 	private JPanel initDetails(String title, ArrayList<String> hashtags) {
-		mHorizontalRemainder = UI.SUBVIEW_WIDTH
+		mHorizontalRemainder = UI.SUBVIEW_WIDTH - (int) UI.DONE_PANEL.getWidth()
 				- (int) getPreferredSize().getWidth();
 		mDescription.setSize(mHorizontalRemainder, 1);
 		mDescription.append(title);
