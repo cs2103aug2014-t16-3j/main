@@ -107,7 +107,7 @@ public class SingleView extends View {
 				newValue = UI.DD_MM_YY.format(((Calendar)item.get(Keys.START)).getTime());
 				break;
 			case START_TIME:
-				fieldString = "Start date";
+				fieldString = "Start time";
 				oldValue = UI.HOUR_12.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
 				newValue = UI.HOUR_12.format(((Calendar)item.get(Keys.START)).getTime());
 				break;
