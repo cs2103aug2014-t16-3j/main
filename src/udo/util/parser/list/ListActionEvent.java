@@ -6,13 +6,13 @@ import udo.util.shared.ListQuery;
 import udo.util.shared.ParsingStatus;
 import udo.util.shared.Constants.Keys;
 
-public class ParserListEvent implements ParserListCommand {
+public class ListActionEvent implements ListActionCommand {
 
 	/**
 	 * This class handles the event field
 	 */
 	
-	public ParserListEvent() {
+	public ListActionEvent() {
 		
 	}
 

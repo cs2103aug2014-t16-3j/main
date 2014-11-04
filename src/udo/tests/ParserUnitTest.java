@@ -333,7 +333,7 @@ public class ParserUnitTest {
 		startHour = startEvent.get(Calendar.HOUR);
 		startMins = startEvent.get(Calendar.MINUTE);
 		
-		assertEquals(5, startDay);
+		assertEquals(6, startDay);
 		assertEquals(10, startMonth);
 		assertEquals(2014, startYear);
 		assertEquals(10, startHour);
@@ -345,7 +345,7 @@ public class ParserUnitTest {
 		endHour = endEvent.get(Calendar.HOUR);
 		endMins = endEvent.get(Calendar.MINUTE);
 		
-		assertEquals(5, endDay);
+		assertEquals(6, endDay);
 		assertEquals(10, endMonth);
 		assertEquals(2014, endYear);
 		assertEquals(9, endHour);

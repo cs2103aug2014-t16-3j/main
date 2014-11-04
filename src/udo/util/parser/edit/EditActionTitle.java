@@ -8,13 +8,13 @@ import udo.util.shared.EditField;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
-public class ParserEditTitle implements ParserEditCommand {
+public class EditActionTitle implements EditActionField {
 
 	/**
 	 * This class handles the title field
 	 */
 	
-	public ParserEditTitle() {
+	public EditActionTitle() {
 		
 	}
 

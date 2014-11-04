@@ -9,13 +9,13 @@ import udo.util.shared.InputData;
 import udo.util.shared.ListQuery;
 import udo.util.shared.ParsingStatus;
 
-public class ParserListHashtag implements ParserListCommand {
+public class ListActionHashtag implements ListActionCommand {
 
 	/**
 	 * This class handles the hashtag field
 	 */
 	
-	public ParserListHashtag() {
+	public ListActionHashtag() {
 		
 	}
 

@@ -3,29 +3,29 @@ package udo.util.parser.edit;
 
 import java.util.Calendar;
 
-import udo.util.parser.ParserTime;
+import udo.util.parser.DateGetter;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.EditField;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
-public class ParserEditEndTime implements ParserEditCommand {
+public class EditActionDueDate implements EditActionField {
 
 	/**
-	 * This class handles the end time field
+	 * This class handles the due date field
 	 */
 	
-	public ParserEditEndTime() {
+	public EditActionDueDate() {
 		
 	}
 
 	@Override
 	public void fill(String details, InputData data) {
-		ParserTime time = new ParserTime();
-		Calendar endTime = time.getTime(details);
-		if (endTime != null) {
-			data.put(Keys.FIELD, EditField.END_TIME);
-			data.put(Keys.VALUE, endTime);
+		DateGetter date = new DateGetter();
+		Calendar dueDate = date.getDate(details);
+		if (dueDate != null) {
+			data.put(Keys.FIELD, EditField.DUE_DATE);
+			data.put(Keys.VALUE, dueDate);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
 		} else {
 			data.setParsingStatus(ParsingStatus.FAIL);

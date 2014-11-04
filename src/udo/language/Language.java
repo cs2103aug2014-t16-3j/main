@@ -1,12 +1,6 @@
 //@author A0114847B
 package udo.language;
 
-import udo.util.parser.list.ParserListAll;
-import udo.util.parser.list.ParserListDate;
-import udo.util.parser.list.ParserListDone;
-import udo.util.parser.list.ParserListEvent;
-import udo.util.parser.list.ParserListPlan;
-import udo.util.parser.list.ParserListTask;
 
 public class Language {
 	

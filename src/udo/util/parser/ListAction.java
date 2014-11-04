@@ -2,14 +2,14 @@
 package udo.util.parser;
 
 import udo.language.Language.English;
-import udo.util.parser.list.ParserListAll;
-import udo.util.parser.list.ParserListCommand;
-import udo.util.parser.list.ParserListDate;
-import udo.util.parser.list.ParserListDone;
-import udo.util.parser.list.ParserListEvent;
-import udo.util.parser.list.ParserListHashtag;
-import udo.util.parser.list.ParserListPlan;
-import udo.util.parser.list.ParserListTask;
+import udo.util.parser.list.ListActionAll;
+import udo.util.parser.list.ListActionCommand;
+import udo.util.parser.list.ListActionDate;
+import udo.util.parser.list.ListActionDone;
+import udo.util.parser.list.ListActionEvent;
+import udo.util.parser.list.ListActionHashtag;
+import udo.util.parser.list.ListActionPlan;
+import udo.util.parser.list.ListActionTask;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
@@ -30,42 +30,42 @@ public class ListAction implements Action {
 	public InputData run(Command type, String details) {
 		InputData data = new InputData(type);
 		int field = getField(details);
-		ParserListCommand list;
+		ListActionCommand list;
 		switch (field) {
 			case 0 :
-				list = new ParserListHashtag();
+				list = new ListActionHashtag();
 				list.fill(type, details, data);
 				break;
 			case 1 :
-				list = new ParserListAll();
+				list = new ListActionAll();
 				list.fill(type, details, data);
 				break;
 			case 2 :
-				list = new ParserListDone();
+				list = new ListActionDone();
 				list.fill(type, details, data);
 				break;
 			case 3 :
-				list = new ParserListEvent();
+				list = new ListActionEvent();
 				list.fill(type, details, data);
 				break;
 			case 4 :
-				list = new ParserListTask();
+				list = new ListActionTask();
 				list.fill(type, details, data);
 				break;
 			case 5 :
-				list = new ParserListPlan();
+				list = new ListActionPlan();
 				list.fill(type, details, data);
 				break;
 			case 6 :
-				list = new ParserListDate();
+				list = new ListActionDate();
 				list.fill(type, details, data);
 				break;
 			case 7 :
-				list = new ParserListDate();
+				list = new ListActionDate();
 				list.fill(type, details, data);
 				break;
 			case 8 :
-				list = new ParserListDate();
+				list = new ListActionDate();
 				list.fill(type, details, data);
 				break;
 			default:

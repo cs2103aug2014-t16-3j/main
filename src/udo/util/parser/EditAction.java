@@ -1,17 +1,15 @@
 //@author A0114847B
 package udo.util.parser;
 
-import java.util.ArrayList;
-
 import udo.language.Language.English;
-import udo.util.parser.edit.ParserEditCommand;
-import udo.util.parser.edit.ParserEditDueDate;
-import udo.util.parser.edit.ParserEditDueTime;
-import udo.util.parser.edit.ParserEditEndDate;
-import udo.util.parser.edit.ParserEditEndTime;
-import udo.util.parser.edit.ParserEditStartDate;
-import udo.util.parser.edit.ParserEditStartTime;
-import udo.util.parser.edit.ParserEditTitle;
+import udo.util.parser.edit.EditActionDueDate;
+import udo.util.parser.edit.EditActionDueTime;
+import udo.util.parser.edit.EditActionEndDate;
+import udo.util.parser.edit.EditActionEndTime;
+import udo.util.parser.edit.EditActionField;
+import udo.util.parser.edit.EditActionStartDate;
+import udo.util.parser.edit.EditActionStartTime;
+import udo.util.parser.edit.EditActionTitle;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.InputData;
@@ -83,37 +81,37 @@ public class EditAction implements Action {
 	}
 	// check whether any of the value returned is null
 	private void setTitle(InputData data, String details) {
-		ParserEditCommand title = new ParserEditTitle();
+		EditActionField title = new EditActionTitle();
 		title.fill(details, data);
 	}
 	
 	private void setStartTime(InputData data, String details) {
-		ParserEditCommand startTime = new ParserEditStartTime();
+		EditActionField startTime = new EditActionStartTime();
 		startTime.fill(details, data);
 	}
 	
 	private void setEndTime(InputData data, String details) {
-		ParserEditCommand endTime = new ParserEditEndTime();
+		EditActionField endTime = new EditActionEndTime();
 		endTime.fill(details, data);
 	}
 	
 	private void setStartDate(InputData data, String details) {
-		ParserEditCommand startDate = new ParserEditStartDate();
+		EditActionField startDate = new EditActionStartDate();
 		startDate.fill(details, data);
 	}
 	
 	private void setEndDate(InputData data, String details) {
-		ParserEditCommand endDate = new ParserEditEndDate();
+		EditActionField endDate = new EditActionEndDate();
 		endDate.fill(details, data);
 	}
 	
 	private void setDueTime(InputData data, String details) {
-		ParserEditCommand dueTime = new ParserEditDueTime();
+		EditActionField dueTime = new EditActionDueTime();
 		dueTime.fill(details, data);
 	}
 	
 	private void setDueDate(InputData data, String details) {
-		ParserEditCommand dueDate = new ParserEditDueDate();
+		EditActionField dueDate = new EditActionDueDate();
 		dueDate.fill(details, data);
 	}
 
