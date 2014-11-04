@@ -7,6 +7,12 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserSave implements ParserCommand {
 
+	/**
+	 * This class handles the save command.
+	 * Input recieve by this class is in the format: 
+	 * "save"
+	 */
+	
 	public ParserSave() {
 
 	}

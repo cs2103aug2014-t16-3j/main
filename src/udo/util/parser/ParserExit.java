@@ -7,6 +7,12 @@ import udo.util.shared.ParsingStatus;
 
 public class ParserExit  implements ParserCommand {
 
+	/**
+	 * This class handles the exit command.
+	 * Input recieve by this class is in the format: 
+	 * "exit"
+	 */
+	
 	public ParserExit() {
 
 	}

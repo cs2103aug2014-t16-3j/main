@@ -8,6 +8,12 @@ import udo.util.shared.Constants.Keys;
 
 public class ParserToggleDone implements ParserCommand {
 
+	/**
+	 * This class takes in the items that marked as not completed from the completed list.
+	 * Input recieve by this class is in the format: 
+	 * "toggle done <<uid>>"
+	 */
+	
 	public ParserToggleDone() {
 		
 	}

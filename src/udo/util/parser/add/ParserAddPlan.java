@@ -15,11 +15,9 @@ public class ParserAddPlan implements ParserAddCommand {
 
 	@Override
 	public void fill(String details, InputData data) {
-		int startingIndex = 4;
-		String title = details.substring(startingIndex);
-		title = title.replaceAll("#", "");
+		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
-		if (!title.isEmpty()) {
+		if (title != null) {
 			data.put(Keys.TITLE, title);
 			data.put(Keys.HASHTAGS, tags);
 			data.setParsingStatus(ParsingStatus.SUCCESS);
@@ -30,11 +28,20 @@ public class ParserAddPlan implements ParserAddCommand {
 
 	@Override
 	public String getTitle(String input) {
-		return null;
+		String title = input.replaceAll("#", "");
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i = 1; i < parts.length; i++) {
+			newTitle = newTitle + parts[i] + " "; 
+		}
+		if (newTitle.length() != 0) {
+			newTitle = newTitle.trim();
+			return newTitle;
+		} else {
+			return null;
+		}
 	}
 
-	// Returns an ArrayList of tags. Tags do not contain "#"
-	// If no tags are found, retun an empty ArrayList
 	@Override
 	public ArrayList<String> getTags(String input) {
 		ArrayList<String> tagArrayList = new ArrayList<String>();

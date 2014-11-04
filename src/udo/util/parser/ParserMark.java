@@ -8,6 +8,12 @@ import udo.util.shared.Constants.Keys;
 
 public class ParserMark implements ParserCommand {
 
+	/**
+	 * This class takes in the items that marked completed.
+	 * Input recieve by this class is in the format: 
+	 * "done <<uid>>"
+	 */
+	
 	public ParserMark() {
 		
 	}

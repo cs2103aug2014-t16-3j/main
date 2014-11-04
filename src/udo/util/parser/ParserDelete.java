@@ -7,6 +7,11 @@ import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
 public class ParserDelete implements ParserCommand {
+	
+	/**
+	 * This class reads in the uid to be deleted.
+	 * Input recieved by this class is in the format: "delete <<uid>>"
+	 */
 
 	public ParserDelete() {
 		

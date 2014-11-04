@@ -22,7 +22,7 @@ public class ParserAddTask implements ParserAddCommand {
 		String title = getTitle(details);
 		ArrayList<String> tags = getTags(details);
 		Calendar end = setFirstTimeAndDate(details);
-		if (!title.isEmpty() && end != null) {
+		if (title != null && end != null) {
 			data.put(Keys.TITLE, title);
 			data.put(Keys.HASHTAGS, tags);
 			data.put(Keys.DUE, end);
@@ -35,10 +35,20 @@ public class ParserAddTask implements ParserAddCommand {
 	@Override
 	public String getTitle(String input) {
 		String title = input.replaceAll("#", "");
-		int startingIndex = 4;						// start after "add "
-		int endingIndex = title.indexOf("by") - 1; // trim ending white space
-		title = title.substring(startingIndex, endingIndex);
-		return title;
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i = 1; i < parts.length; i++) {
+			if (parts[i].equals("by")) {
+				break;
+			}
+			newTitle = newTitle + parts[i] + " "; 
+		}
+		if (newTitle.length() != 0) {
+			newTitle = newTitle.trim();
+			return newTitle;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
