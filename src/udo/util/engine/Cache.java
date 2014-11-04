@@ -190,7 +190,7 @@ public class Cache {
 	 */
 	public int generateUID() {
 		Random r = new Random(System.currentTimeMillis());
-		int uid = 10000 + r.nextInt(90000);
+		int uid = 10 + r.nextInt(90);
 		if (mUIDs.contains(uid)) {
 			return generateUID();
 		} else {
