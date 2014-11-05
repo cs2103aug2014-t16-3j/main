@@ -5,16 +5,15 @@ package udo.language;
  * This class is an abstract class that has to be extended. 
  * <p>
  * Extend this class by making a language class that gives values 
- * to all the variables shown below. 
+ * to all the language variables. 
  * <p>
- * Override the return value in the getInstance() method with the
- * class you extended
+ * Assign the userLanguagePack variable to the class you extended.
  *
  */
 public abstract class LanguagePack {
 	
-	// replace this variable with the desired language pack
-	public static LanguagePack userLanguagePack = 
+	public static LanguagePack userLanguagePack =
+			// replace this with the desired LanguagePack
 			new IndonesianLanguagePack();
 	
 	
@@ -52,6 +51,8 @@ public abstract class LanguagePack {
 	// the following language variables hold the string values for 
 	// their equivalent in english. The must be overridden 
 	// in the extended class in the setLanguage() method. 
+	
+	// commands
 	protected String ADD;
 	protected String LIST;
 	protected String DELETE;
@@ -62,10 +63,12 @@ public abstract class LanguagePack {
 	protected String MARK_DONE;
 	protected String TOGGLE_DONE;
 	
+	// delimiters
 	protected String FROM;
 	protected String TO;
 	protected String BY;
 	
+	// days
 	protected String TODAY;
 	protected String SUNDAY;
 	protected String MONDAY;
@@ -76,6 +79,7 @@ public abstract class LanguagePack {
 	protected String SATURDAY;
 	protected String TOMORROW;
 	
+	// edit fields
 	protected String TITLE;
 	protected String START_TIME;
 	protected String END_TIME;
@@ -84,12 +88,17 @@ public abstract class LanguagePack {
 	protected String DUE_TIME;
 	protected String DUE_DATE;
 
+	// list queries
 	protected String DAY;
 	protected String ALL;
 	protected String EVENT;
 	protected String TASK;
 	protected String PLAN;
 	protected String DONE;
+	
+	
+	
+	// below are the getters for the language variables
 	
 	public String getADD() {
 		return ADD;
