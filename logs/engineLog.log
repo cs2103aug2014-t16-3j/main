@@ -8,7 +8,7 @@
   <logger>Engine</logger>
   <level>INFO</level>
   <class>udo.main.Engine</class>
-  <method>logInfo</method>
+   <method>logInfo</method>
   <thread>1</thread>
   <message>can get today screen items</message>
 </record>
