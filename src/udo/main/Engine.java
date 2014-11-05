@@ -120,7 +120,7 @@ public class Engine {
 	public ArrayList<ItemData> getTodoScreenItems(Calendar fromCal, Calendar toCal) {
 		try {
 			logInfo("can get todo screen items");
-			return mCache.getAllTasksBetween(fromCal, toCal);
+			return mCache.getAllUndoneTasksBetween(fromCal, toCal);
 		} catch (CacheAccessException e) {
 			logSevere("cannot get todo screen items", e);
 			return null;
