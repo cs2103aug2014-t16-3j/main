@@ -22,23 +22,26 @@ public class Screen extends JPanel {
 	protected JScrollPane mScrollPane = new JScrollPane();
 	protected View mEntryView;
 	protected WrapLayout mLayout = new WrapLayout();
+	
+	protected int mHeight, mWidth;
 
-	public Screen() {
+	public Screen(int width, int height) {
+		mWidth = width;
+		mHeight = height;
 		setOpaque(false);
 		mHeader.setOpaque(false);
 		setLayout(mLayout);
 		mScrollPane.getViewport().setOpaque(false);
 		mScrollPane.setOpaque(false);
 		mScrollPane.setBorder(BorderFactory.createEmptyBorder());
-		mScrollPane
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		setBounds(0, 0, width, height);
 	}
 
 	protected void init(ArrayList<ItemData> data) {
 		mEntryView = new ListView();
-		mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
-				UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height
-						- UI.TEXTFIELD_HEIGHT));
+		mScrollPane.setPreferredSize(new Dimension(mWidth, 
+									mHeight - mLayout.getVgap()*2 - (int) mHeader.getPreferredSize().getHeight()));
 		mScrollPane.getViewport().add(mEntryView);
 		mEntryView.populateView(data);
 		if (mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {

@@ -14,19 +14,18 @@ public class MainScreen extends Screen {
 
 	private static final long serialVersionUID = 1L;
 
-	public MainScreen() {
-		super();
+	public MainScreen(int width, int height) {
+		super(width, height);
 		mLayout.setVgap(0);
 	}
 
 	@Override
 	public void init(ArrayList<ItemData> data) {
 		mEntryView = new ListView();
-		mScrollPane.setPreferredSize(new Dimension(UI.MAIN_WIDTH
-				- UI.MAIN_PADDING, UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT));
+		mScrollPane.setPreferredSize(new Dimension(mWidth, mHeight));
 		mScrollPane.getViewport().add(mEntryView);
 		mEntryView.populateView(data);
-		if (mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
+		if (mEntryView.getPreferredSize().width > mWidth) {
 			// logger.info("TODAY mEntryView's preferredSize: " +
 			// mEntryView.getPreferredSize() +
 			// "\nmEntryView's preferredSize is wider than mScrollPane");

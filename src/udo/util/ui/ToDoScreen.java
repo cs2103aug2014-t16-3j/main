@@ -20,9 +20,8 @@ public class ToDoScreen extends Screen {
 	// private static final Logger logger =
 	// Logger.getLogger(udo.util.ui.DayView.class.getName());
 
-	public ToDoScreen() {
-		super();
-		setBounds(0, 0, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+	public ToDoScreen(int width, int height) {
+		super(width, height);
 	}
 
 	public void init() {
@@ -33,7 +32,7 @@ public class ToDoScreen extends Screen {
 	@Override
 	public void init(ArrayList<ItemData> data) {
 		initHeader();
-		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+		mHeader.setPreferredSize(new Dimension(mWidth,
 				UI.TODOVIEW_HEADER_HEIGHT));
 		// try {
 		// logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
@@ -52,7 +51,7 @@ public class ToDoScreen extends Screen {
 		title.setFont(UI.FONT_24);
 		FontMetrics fm = title.getFontMetrics(title.getFont());
 		int height = fm.getHeight();
-		title.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+		title.setPreferredSize(new Dimension(mWidth, height));
 		title.setHorizontalAlignment(JLabel.RIGHT);
 		title.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		mHeader.add(title);
@@ -65,7 +64,7 @@ public class ToDoScreen extends Screen {
 			noItems.setFont(UI.FONT_14);
 			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
 			int height = fm.getHeight();
-			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+			noItems.setPreferredSize(new Dimension(mWidth, height));
 			noItems.setHorizontalAlignment(JLabel.CENTER);
 			add(noItems);
 		} else {
@@ -77,7 +76,7 @@ public class ToDoScreen extends Screen {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawLine(UI.SUBVIEW_WIDTH / 4, UI.SUBVIEW_HEADER_LINEY,
-				UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
+		g2.drawLine(mWidth / 4, UI.SUBVIEW_HEADER_LINEY,
+				mWidth, UI.SUBVIEW_HEADER_LINEY);
 	}
 }

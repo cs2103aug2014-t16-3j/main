@@ -42,10 +42,9 @@ public class DayScreen extends Screen {
 	// private static final Logger logger =
 	// Logger.getLogger(udo.util.ui.DayView.class.getName());
 
-	public DayScreen() {
+	public DayScreen(int width, int height) {
 
-		super();
-		setBounds(0, 0, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		super(width, height);
 		mTickerCoordsXY = new ArrayList<Point>();
 		mTickerCoordsWH = new ArrayList<Point>();
 		mRedTickCoordsXY = new ArrayList<Point>();
@@ -69,7 +68,7 @@ public class DayScreen extends Screen {
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		removeAll();
 		initHeader(newDate);
-		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+		mHeader.setPreferredSize(new Dimension(mWidth,
 				UI.DAYVIEW_HEADER_HEIGHT));
 		// try {
 		// logger.addHandler(new FileHandler("logs/dayViewLog%u.txt", true));

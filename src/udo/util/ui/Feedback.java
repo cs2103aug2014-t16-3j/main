@@ -36,11 +36,14 @@ public class Feedback {
 	private LanguagePack mLang = LanguagePack.getInstance();
 
 	public Feedback() {
-		mCenterView = new MainScreen();
-		mDayView = new DayScreen();
-		mToDoView = new ToDoScreen();
-		mMainTodayView = new DayScreen();
-		mMainToDoView = new ToDoScreen();
+		mCenterView = new MainScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
+									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
+		mDayView = new DayScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
+									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
+		mToDoView = new ToDoScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
+									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
+		mMainTodayView = new DayScreen(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		mMainToDoView = new ToDoScreen(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
 	}
 
 	public JPanel getTodayView(ArrayList<ItemData> data) {

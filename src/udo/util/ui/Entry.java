@@ -54,23 +54,30 @@ public class Entry extends JPanel {
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
 				UI.ENTRY_BORDERCOLOR));
 		//TODO option 3
-		/*
-		if((boolean) item.get(Keys.DONE)) {
-			setBackground(UI.ENTRY_DONE_COLOR);
-		} else { 
-			setOpaque(false);	
-		}*/
+		
+//		if(item.get(Keys.DONE) != null) {
+//			if((boolean) item.get(Keys.DONE)) {
+//				setBackground(UI.ENTRY_DONE_COLOR);
+//			} else { 
+//				setOpaque(false);	
+//			}
+//		} else {
+//			setOpaque(false);
+//		}
 		setOpaque(false);
 
 		mUid.setFont(UI.FONT_12);
 		mUid.setOpaque(true);
 		// TODO option 1
-		/*
-		if((boolean) item.get(Keys.DONE)) {
-			mUid.setBackground(UI.ENTRY_DONE_COLOR);
-		} else { 
-			mUid.setBackground(UI.UID_COLOR);	
-		}*/
+		
+		
+//		if(item.get(Keys.DONE) != null) {
+//			if((boolean) item.get(Keys.DONE)) {
+//				mUid.setBackground(UI.ENTRY_DONE_COLOR);
+//			} else { 
+//				mUid.setBackground(UI.UID_COLOR);	
+//			}
+//		}
 		mUid.setBackground(UI.UID_COLOR);
 
 		mTimePanel.setOpaque(false);
@@ -115,7 +122,9 @@ public class Entry extends JPanel {
 				break;
 		}
 		//TODO option 2
-		//add(donePanel((boolean) item.get(Keys.DONE)));
+//		if(item.get(Keys.DONE) != null) {
+//			add(donePanel((boolean) item.get(Keys.DONE)));
+//		}
 	}
 
 	private JPanel donePanel(boolean isDone) {
