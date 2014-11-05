@@ -17,3 +17,11 @@ hs_err_pid*
 data/
 
 log/
+
+logs/engineLog.log
+
+logs/engineLog.log.1
+
+logs/engineLog.log
+
+logs/engineLog.log
