@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2014-11-05T17:45:40</date>
+  <millis>1415180740859</millis>
+  <sequence>0</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get today screen items</message>
+</record>
+<record>
+  <date>2014-11-05T17:45:40</date>
+  <millis>1415180740871</millis>
+  <sequence>1</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get todo screen items</message>
+</record>
+<record>
+  <date>2014-11-05T17:45:56</date>
+  <millis>1415180756233</millis>
+  <sequence>2</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get today screen items</message>
+</record>
+<record>
+  <date>2014-11-05T17:45:56</date>
+  <millis>1415180756248</millis>
+  <sequence>3</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get todo screen items</message>
+</record>
+<record>
+  <date>2014-11-05T17:45:58</date>
+  <millis>1415180758239</millis>
+  <sequence>4</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>engine is executing exit without runner</message>
+</record>
+<record>
+  <date>2014-11-05T17:45:58</date>
+  <millis>1415180758240</millis>
+  <sequence>5</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>saving data...</message>
+</record>
+</log>
