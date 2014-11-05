@@ -85,6 +85,7 @@ public class Constants {
 	 * 
 	 */
 	public static final class StorageStrings {
+		public static final String FILEPATH = "data/";
 		public static final String FILENAME = "data/uDo_data.txt";
 		public static final String FIELD_DELIMITER = "\\|\\|\\|";
 		public static final String DATE_DELIMITER = "/";
