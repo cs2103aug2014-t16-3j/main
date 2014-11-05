@@ -55,30 +55,21 @@ public class Entry extends JPanel {
 				UI.ENTRY_BORDERCOLOR));
 		//TODO option 3
 		
-//		if(item.get(Keys.DONE) != null) {
-//			if((boolean) item.get(Keys.DONE)) {
-//				setBackground(UI.ENTRY_DONE_COLOR);
-//			} else { 
-//				setOpaque(false);	
-//			}
-//		} else {
-//			setOpaque(false);
-//		}
-		setOpaque(false);
+		if(item.get(Keys.DONE) != null) {
+			if((boolean) item.get(Keys.DONE)) {
+				setBackground(UI.ENTRY_DONE_COLOR);
+				mUid.setBackground(UI.ENTRY_DONE_COLOR);
+			} else { 
+				setOpaque(false);
+				mUid.setBackground(UI.UID_COLOR);
+			}
+		} else {
+			setOpaque(false);
+			mUid.setBackground(UI.UID_COLOR);
+		}
 
 		mUid.setFont(UI.FONT_12);
 		mUid.setOpaque(true);
-		// TODO option 1
-		
-		
-//		if(item.get(Keys.DONE) != null) {
-//			if((boolean) item.get(Keys.DONE)) {
-//				mUid.setBackground(UI.ENTRY_DONE_COLOR);
-//			} else { 
-//				mUid.setBackground(UI.UID_COLOR);	
-//			}
-//		}
-		mUid.setBackground(UI.UID_COLOR);
 
 		mTimePanel.setOpaque(false);
 		mTimePanel.setLayout(new BorderLayout());
@@ -121,22 +112,8 @@ public class Entry extends JPanel {
 			default :
 				break;
 		}
-		//TODO option 2
-//		if(item.get(Keys.DONE) != null) {
-//			add(donePanel((boolean) item.get(Keys.DONE)));
-//		}
 	}
 
-	private JPanel donePanel(boolean isDone) {
-		JPanel done = new JPanel();
-		done.setPreferredSize(UI.DONE_PANEL);
-		if(isDone) {
-			done.setBackground(UI.ENTRY_DONE_COLOR);
-		} else {
-			done.setOpaque(false);
-		}
-		return done;
-	}
 
 	@SuppressWarnings("unchecked")
 	private void initPlan(ItemData item) {

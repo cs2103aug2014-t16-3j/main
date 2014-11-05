@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
-<<<<<<< HEAD
-=======
 <record>
-  <date>2014-11-05T18:34:13</date>
-  <millis>1415183653351</millis>
+  <date>2014-11-05T20:09:55</date>
+  <millis>1415189395442</millis>
   <sequence>0</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -15,8 +13,8 @@
   <message>can get today screen items</message>
 </record>
 <record>
-  <date>2014-11-05T18:34:13</date>
-  <millis>1415183653534</millis>
+  <date>2014-11-05T20:09:55</date>
+  <millis>1415189395442</millis>
   <sequence>1</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -26,8 +24,8 @@
   <message>can get todo screen items</message>
 </record>
 <record>
-  <date>2014-11-05T18:34:17</date>
-  <millis>1415183657513</millis>
+  <date>2014-11-05T20:10:00</date>
+  <millis>1415189400760</millis>
   <sequence>2</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -37,8 +35,8 @@
   <message>can get today screen items</message>
 </record>
 <record>
-  <date>2014-11-05T18:34:17</date>
-  <millis>1415183657518</millis>
+  <date>2014-11-05T20:10:00</date>
+  <millis>1415189400775</millis>
   <sequence>3</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -48,26 +46,25 @@
   <message>can get todo screen items</message>
 </record>
 <record>
-  <date>2014-11-05T18:34:20</date>
-  <millis>1415183660794</millis>
+  <date>2014-11-05T20:10:02</date>
+  <millis>1415189402352</millis>
   <sequence>4</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
   <class>udo.main.Engine</class>
   <method>logInfo</method>
   <thread>1</thread>
-  <message>engine is executing exit without runner</message>
+  <message>can get today screen items</message>
 </record>
 <record>
-  <date>2014-11-05T18:34:20</date>
-  <millis>1415183660796</millis>
+  <date>2014-11-05T20:10:02</date>
+  <millis>1415189402367</millis>
   <sequence>5</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
   <class>udo.main.Engine</class>
   <method>logInfo</method>
   <thread>1</thread>
-  <message>saving data...</message>
+  <message>can get todo screen items</message>
 </record>
->>>>>>> origin/develop
 </log>
