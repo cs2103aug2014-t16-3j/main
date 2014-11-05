@@ -248,12 +248,19 @@ public class ParserUnitTest {
 		status = data.getStatus();
 		
 		assertEquals(ParsingStatus.FAIL, status);
+		
+		// test with 2 days in input
+		task1 = "add buy sunday times by sunday 12am";
+		data = p.getInputData(task1);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
 	}
 	
 	@Test
 	public void testAddEvent() {
 		// boundary case of different date and time formats
-		String event = "add meet #boss from 13/2/2013 10:10am to 22/1 9pm";
+		String event = "add meet #boss from 13/2/2013 10:10am to 22/1 9pm #vacation";
 		InputData data = p.getInputData(event);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -262,7 +269,7 @@ public class ParserUnitTest {
 		assertEquals(ParsingStatus.SUCCESS, status);
 		assertEquals(Command.ADD_EVENT, data.getCommand());
 		assertEquals("meet boss", title);
-		assertEquals("[boss]", hashtags.toString());
+		assertEquals("[boss, vacation]", hashtags.toString());
 		
 		Calendar startEvent = (Calendar) data.get(Keys.START);
 		Calendar endEvent = (Calendar) data.get(Keys.END);
