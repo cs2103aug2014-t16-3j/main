@@ -157,8 +157,15 @@ public class DayScreen extends Screen {
 		double minPerPixel = (24d * 60d) / mTickerImg.getWidth(null);
 		int currItem_startX = 0;
 		int lastItem_endX = 0;
-		hour = ((Calendar) item.get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
-		min = ((Calendar) item.get(Keys.START)).get(Calendar.MINUTE);
+		Calendar today = Calendar.getInstance();
+		Calendar start = (Calendar) item.get(Keys.START);
+		if(today.get(Calendar.DAY_OF_MONTH) == start.get(Calendar.DAY_OF_MONTH)) {
+			hour = (start).get(Calendar.HOUR_OF_DAY) * 60;
+			min = (start).get(Calendar.MINUTE);
+		} else {
+			hour = 0;
+			min = 0;
+		}
 		total = hour + min;
 		xy = new Point(Math.max(1, (int) Math.floor(total / minPerPixel)),
 				UI.TICKER_Y); // minimum x pixel is 1
@@ -168,8 +175,15 @@ public class DayScreen extends Screen {
 			lastItem_endX = mTickerCoordsXY.get(i - 1).x
 					+ mTickerCoordsWH.get(i - 1).x;
 		}
-		hour = ((Calendar) item.get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
-		min = ((Calendar) item.get(Keys.END)).get(Calendar.MINUTE);
+		Calendar end = (Calendar) item.get(Keys.END);
+		if(today.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)) {
+			hour = (end).get(Calendar.HOUR_OF_DAY) * 60;
+			min = (end).get(Calendar.MINUTE);
+		} else {
+			hour = 24*60;
+			min = 0;
+		}
+		
 		total = hour + min;
 		wh = new Point((int) (Math.ceil(total / minPerPixel)) - xy.x, 10);
 		mTickerCoordsWH.add(wh);
