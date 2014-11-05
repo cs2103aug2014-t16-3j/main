@@ -13,4 +13,7 @@ hs_err_pid*
 /bin/
 /bin
 
-data/*
+*.log
+data/
+
+log/

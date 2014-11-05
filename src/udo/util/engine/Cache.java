@@ -220,11 +220,14 @@ public class Cache {
 		return allEvents;
 	}
 
-	public ArrayList<ItemData> getAllTasksBetween(Calendar from, Calendar to) throws CacheAccessException {
+	public ArrayList<ItemData> getAllUndoneTasksBetween(Calendar from, Calendar to) throws CacheAccessException {
 		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
 		for (ItemData item : getAllTasks()) {
 			if (isBetweenDates(item, from, to)) {
-				allTasks.add(item);
+				boolean itemDone = (boolean)item.get(Keys.DONE);
+				if (!itemDone) {
+					allTasks.add(item);
+				}
 			}
 		}
 		Collections.sort(allTasks);

@@ -20,7 +20,6 @@ public abstract class LanguagePack {
 	
 	
 	
-	
 	/********************************************************
 	 * To Language translators: do not touch the code below *
 	 ********************************************************/
