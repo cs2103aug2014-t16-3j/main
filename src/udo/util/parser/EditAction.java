@@ -1,7 +1,6 @@
 //@author A0114847B
 package udo.util.parser;
 
-import udo.language.Language.English;
 import udo.util.parser.edit.EditActionDueDate;
 import udo.util.parser.edit.EditActionDueTime;
 import udo.util.parser.edit.EditActionEndDate;
@@ -23,14 +22,14 @@ import udo.util.shared.ParsingStatus;
 
 public class EditAction implements Action {
 	
-	String[] mFields = {English.TITLE,
-			English.START_TIME, English.END_TIME, 
-			English.START_DATE, English.END_DATE,
-			English.DUE_TIME, English.DUE_DATE};
-
-	public EditAction() {
-	
-	}
+	String[] mFields = {
+			mLang.getTITLE(),
+			mLang.getSTART_TIME(), 
+			mLang.getEND_TIME(), 
+			mLang.getSTART_DATE(), 
+			mLang.getEND_DATE(),
+			mLang.getDUE_TIME(), 
+			mLang.getDUE_DATE()};
 	
 	@Override
 	public InputData run(Command type, String details) {
@@ -53,32 +52,32 @@ public class EditAction implements Action {
 	}
 	
 	private void updateField(String field, InputData data, String details) {
-		switch (field) {
-		case English.TITLE :
+		if (field.equals(mLang.getTITLE())) {
 			setTitle(data, details);
-			break;
-		case English.START_TIME :
+			
+		} else if (field.equals(mLang.getSTART_TIME())) {
 			setStartTime(data, details);
-			break;
-		case English.END_TIME :
+			
+		} else if (field.equals(mLang.getEND_TIME())) {
 			setEndTime(data, details);
-			break;
-		case English.START_DATE :
+			
+		} else if (field.equals(mLang.getSTART_DATE())) {
 			setStartDate(data, details);
-			break;
-		case English.END_DATE :
+			
+		} else if (field.equals(mLang.getEND_DATE())) {
 			setEndDate(data, details);
-			break;
-		case English.DUE_TIME :
+			
+		} else if (field.equals(mLang.getDUE_TIME())) {
 			setDueTime(data, details);
-			break;
-		case English.DUE_DATE :
+			
+		} else if (field.equals(mLang.getDUE_DATE())) {
 			setDueDate(data, details);
-			break;
-		default:
-			break;
+			
+		} else {
+			// do nothing
 		}
 	}
+	
 	// check whether any of the value returned is null
 	private void setTitle(InputData data, String details) {
 		EditActionField title = new EditActionTitle();

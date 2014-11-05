@@ -4,7 +4,6 @@ package udo.util.parser.add;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.language.Language.English;
 import udo.util.parser.DateGetter;
 import udo.util.parser.TimeGetter;
 import udo.util.shared.Constants.Keys;
@@ -45,7 +44,7 @@ public class AddActionEvent implements AddActionType {
 		String parts[] = title.split(" ");
 		String newTitle = "";
 		for (int i = 1; i < parts.length; i++) {
-			if (parts[i].equals(English.FROM)) {
+			if (parts[i].equals(mLang.getFROM())) {
 				break;
 			}
 			newTitle = newTitle + parts[i] + " "; 
@@ -97,7 +96,7 @@ public class AddActionEvent implements AddActionType {
 	}
 	
 	public Calendar setSecondTimeAndDate(String details) {
-		int toStringIndex = details.lastIndexOf(English.TO);
+		int toStringIndex = details.lastIndexOf(mLang.getTO());
 		String endingTimeDateString = details.substring(toStringIndex);
 		Calendar end = getTime(endingTimeDateString);
 		Calendar date = getDate(endingTimeDateString);

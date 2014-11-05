@@ -1,7 +1,7 @@
 //@author A0114847B
 package udo.main;
 
-import udo.language.Language.English;
+import udo.language.LanguagePack;
 import udo.util.parser.Action;
 import udo.util.parser.AddAction;
 import udo.util.parser.DeleteAction;
@@ -25,9 +25,10 @@ import udo.util.shared.InputData;
  */
 
 public class Parser {
+	LanguagePack mLang;
 	
 	public Parser() {
-
+		mLang = LanguagePack.getInstance();
 	}
 	
 	/**
@@ -48,27 +49,36 @@ public class Parser {
 		String parts[] = input.split(" ");
 		String command = parts[0];
 		command = command.toLowerCase();
-		switch (command) {
-			case English.ADD :
-				return Command.ADD;
-			case English.LIST :
-				return Command.LIST;
-			case English.DELETE :
-				return Command.DELETE;
-			case English.SAVE :
-				return Command.SAVE;
-			case English.EXIT :
-				return Command.EXIT;
-			case English.UNDO :
-				return Command.UNDO;
-			case English.EDIT :
-				return Command.EDIT;
-			case English.DONE :
-				return Command.MARK_DONE;
-			case English.TOGGLE :
-				return Command.TOGGLE_DONE;
-			default:
-				return Command.NULL;
+		
+		if (command.equals(mLang.getADD())) {
+			return Command.ADD;
+			
+		} else if (command.equals(mLang.getLIST())) {
+			return Command.LIST;
+			
+		} else if (command.equals(mLang.getDELETE())) {
+			return Command.DELETE;
+			
+		} else if (command.equals(mLang.getSAVE())) {
+			return Command.SAVE;
+			
+		} else if (command.equals(mLang.getEXIT())) {
+			return Command.EXIT;
+			
+		} else if (command.equals(mLang.getUNDO())) {
+			return Command.UNDO;
+			
+		} else if (command.equals(mLang.getEDIT())) {
+			return Command.EDIT;
+			
+		} else if (command.equals(mLang.getMARK_DONE())) {
+			return Command.MARK_DONE;
+			
+		} else if (command.equals(mLang.getTOGGLE_DONE())) {
+			return Command.TOGGLE_DONE;
+			
+		} else {
+			return Command.NULL;
 		}
 	}
 

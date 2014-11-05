@@ -1,4 +1,104 @@
 <?xml version="1.0" encoding="windows-1252" standalone="no"?>
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
+<record>
+  <date>2014-11-05T11:10:51</date>
+  <millis>1415157051545</millis>
+  <sequence>0</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get today screen items</message>
+</record>
+<record>
+  <date>2014-11-05T11:10:51</date>
+  <millis>1415157051554</millis>
+  <sequence>1</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get todo screen items</message>
+</record>
+<record>
+  <date>2014-11-05T11:10:53</date>
+  <millis>1415157053913</millis>
+  <sequence>2</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get today screen items</message>
+</record>
+<record>
+  <date>2014-11-05T11:10:53</date>
+  <millis>1415157053923</millis>
+  <sequence>3</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get todo screen items</message>
+</record>
+<record>
+  <date>2014-11-05T11:11:05</date>
+  <millis>1415157065530</millis>
+  <sequence>4</sequence>
+  <logger>Engine</logger>
+  <level>WARNING</level>
+  <class>udo.main.Engine</class>
+  <method>logWarning</method>
+  <thread>1</thread>
+  <message>parsing failed! not executing...</message>
+  <param>FAIL</param>
+</record>
+<record>
+  <date>2014-11-05T11:11:05</date>
+  <millis>1415157065534</millis>
+  <sequence>5</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get today screen items</message>
+</record>
+<record>
+  <date>2014-11-05T11:11:05</date>
+  <millis>1415157065542</millis>
+  <sequence>6</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get todo screen items</message>
+</record>
+<record>
+  <date>2014-11-05T11:11:13</date>
+  <millis>1415157073639</millis>
+  <sequence>7</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get today screen items</message>
+</record>
+<record>
+  <date>2014-11-05T11:11:13</date>
+  <millis>1415157073648</millis>
+  <sequence>8</sequence>
+  <logger>Engine</logger>
+  <level>INFO</level>
+  <class>udo.main.Engine</class>
+  <method>logInfo</method>
+  <thread>1</thread>
+  <message>can get todo screen items</message>
+</record>
 </log>

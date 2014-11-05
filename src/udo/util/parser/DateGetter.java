@@ -6,9 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import udo.language.Language.English;
+import udo.language.LanguagePack;
 
 public class DateGetter {
+	LanguagePack mLang = LanguagePack.getInstance();
 	
 	/**
 	 * This class returns a calendar object set to the first date it reads from 
@@ -18,10 +19,17 @@ public class DateGetter {
 	 */
 
 	private static Calendar mDate;
-	private String mDays[] = {English.TODAY, English.SUNDAY, English.MONDAY, 
-								English.TUESDAY, English.WEDNESDAY, English.THURSDAY, 
-								English.FRIDAY, English.SATURDAY, English.TOMORROW};
 	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
+	private String mDays[] = {
+			mLang.getTODAY(), 
+			mLang.getSUNDAY(), 
+			mLang.getMONDAY(), 
+			mLang.getTUESDAY(),					
+			mLang.getWEDNESDAY(), 
+			mLang.getTHURSDAY(), 
+			mLang.getFRIDAY(), 
+			mLang.getSATURDAY(), 
+			mLang.getTOMORROW()};
 	
 	public DateGetter() {
 		

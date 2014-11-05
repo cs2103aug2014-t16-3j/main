@@ -187,6 +187,7 @@ public class Engine {
 				break;
 				
 			case SAVE :
+				logInfo("saving data...");
 				commandRunner = new RunnerSave(mFileManager, mCache);
 				break;
 				
@@ -240,6 +241,7 @@ public class Engine {
 	 * @return the output stating whether it saved or nots
 	 */
 	private OutputData runExit() {
+		logInfo("saving data...");
 		OutputData saveOutput = new RunnerSave(mFileManager, mCache).run();
 		OutputData output = new OutputData(Command.EXIT,
 				ParsingStatus.SUCCESS, 

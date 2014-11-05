@@ -1,7 +1,6 @@
 //@author A0114847B
 package udo.util.parser;
 
-import udo.language.Language.English;
 import udo.util.parser.list.ListActionAll;
 import udo.util.parser.list.ListActionCommand;
 import udo.util.parser.list.ListActionDate;
@@ -22,9 +21,15 @@ public class ListAction implements Action {
 	 * "list <<field>>"
 	 */
 	
-	String mFields[] = {"#", English.ALL, English.DONE, 
-						English.EVENT, English.TASK, 
-						English.PLAN, "/", English.DAY, English.TOMORROW};
+	String mFields[] = {"#", 
+			mLang.getALL(), 
+			mLang.getDONE(), 
+			mLang.getEVENT(), 
+			mLang.getTASK(), 
+			mLang.getPLAN(), 
+			"/", 
+			mLang.getDAY(), 
+			mLang.getTOMORROW()};
 
 	@Override
 	public InputData run(Command type, String details) {

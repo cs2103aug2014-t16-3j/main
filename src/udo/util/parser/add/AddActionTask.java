@@ -4,7 +4,6 @@ package udo.util.parser.add;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.language.Language.English;
 import udo.util.parser.DateGetter;
 import udo.util.parser.TimeGetter;
 import udo.util.shared.Constants.Keys;
@@ -42,7 +41,7 @@ public class AddActionTask implements AddActionType {
 		String parts[] = title.split(" ");
 		String newTitle = "";
 		for (int i = 1; i < parts.length; i++) {
-			if (parts[i].equals(English.BY)) {
+			if (parts[i].equals(mLang.getBY())) {
 				break;
 			}
 			newTitle = newTitle + parts[i] + " "; 

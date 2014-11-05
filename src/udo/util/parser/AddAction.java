@@ -1,11 +1,10 @@
 //@author A0114847B
 package udo.util.parser;
 
-import udo.language.Language.English;
-import udo.util.parser.add.AddActionType;
 import udo.util.parser.add.AddActionEvent;
 import udo.util.parser.add.AddActionPlan;
 import udo.util.parser.add.AddActionTask;
+import udo.util.parser.add.AddActionType;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 
@@ -27,9 +26,6 @@ import udo.util.shared.InputData;
 
 public class AddAction implements Action {
 	
-	public AddAction() {
-		
-	}
 	
 	/**
 	 * This method takes in user input and returns an InputData of the following 
@@ -71,10 +67,10 @@ public class AddAction implements Action {
 		boolean containsKeywordFrom = false;
 		boolean containsKeywordTo = false;
 		for (int i = 0; i < parts.length; i++) {
-			if (parts[i].equals(English.FROM)) {
+			if (parts[i].equals(mLang.getFROM())) {
 				containsKeywordFrom = true;
 			}
-			if (parts[i].equals(English.TO)) {
+			if (parts[i].equals(mLang.getTO())) {
 				containsKeywordTo = true;
 			}
 		}
@@ -91,7 +87,7 @@ public class AddAction implements Action {
 		String parts[] = task.split(" ");
 		boolean containsKeywordBy = false;
 		for (int i = 0; i < parts.length; i++) {
-			if (parts[i].equals(English.BY)) {
+			if (parts[i].equals(mLang.getBY())) {
 				containsKeywordBy = true;
 			}
 		}
