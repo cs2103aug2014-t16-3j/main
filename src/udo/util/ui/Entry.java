@@ -16,6 +16,8 @@ import javax.swing.SwingConstants;
 
 
 
+
+import udo.language.LanguagePack;
 /*
  import javax.swing.JTextPane;
  import javax.swing.text.AttributeSet;
@@ -45,6 +47,8 @@ public class Entry extends JPanel {
 	private JPanel mTimePanel = new JPanel();
 	private JPanel mSeparator = new JPanel();
 	private int mHorizontalRemainder;
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	public Entry(ItemData item, ItemType type) {
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
@@ -205,7 +209,8 @@ public class Entry extends JPanel {
 	}
 
 	private String initTime(Calendar cal) {
-		String time = "by ";
+		String time = mLang.getBY();
+		time += " "; 
 		time += getDay(cal);
 		time += UI.HOUR_12.format(cal.getTime());
 		return time;
@@ -228,17 +233,17 @@ public class Entry extends JPanel {
 		int dayDiff = getDayDiff(today, cal);
 		switch (dayDiff) {
 			case -1 :
-				day = "yesterday ";
+				day = mLang.getYESTERDAY();
 				break;
 			case 0 :
 				if (cal.get(Calendar.HOUR_OF_DAY) > 17) {
-					day = "tonight ";
+					day = mLang.getTONIGHT();
 				} else {
-					day = "today ";
+					day = mLang.getTODAY();
 				}
 				break;
 			case 1 :
-				day = "tomorrow ";
+				day = mLang.getTOMORROW();
 				break;
 			case -6 :
 			case -5 :
@@ -250,11 +255,12 @@ public class Entry extends JPanel {
 			case 4 :
 			case 5 :
 			case 6 :
-				day = UI.DAY_NAME.format(cal.getTime()) + " ";
+				String javaFormattedDay = UI.DAY_NAME.format(cal.getTime()); 
+				day = mLang.convertToLanguage(javaFormattedDay);
 			default :
 				break;
 		}
-		return day;
+		return day + " ";
 	}
 
 	private int getDayDiff(Calendar start, Calendar end) {

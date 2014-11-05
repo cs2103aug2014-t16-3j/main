@@ -20,7 +20,9 @@ public class EnglishLanguagePack extends LanguagePack {
 		TO = "to";
 		BY = "by";
 		
+		YESTERDAY = "yesterday";
 		TODAY = "today";
+		TONIGHT = "tonight";
 		SUNDAY = "sunday";
 		MONDAY = "monday";
 		TUESDAY = "tuesday";
@@ -44,6 +46,24 @@ public class EnglishLanguagePack extends LanguagePack {
 		TASK = "task";
 		PLAN = "plan";
 		DONE = "done";
+		
+		POPUP_ADDED = "Added ";
+		POPUP_DELETED = "Deleted ";
+		POPUP_EDITED = "Edited ";
+		POPUP_SAVED = "Saved ";
+		POPUP_PARSING_FAIL = "Command not recognised. Please try again";
+		POPUP_EXEC_FAIL = "Command cannot be executed. Please try again";
+		POPUP_TOGGLE_DONE = "Toggled completion status of ";
+		POPUP_MARK_AS_DONE = "Marked ";
+		POPUP_NO_ITEMS_FOUND = "No items found";
+		POPUP_LIST = "Listing ";
+		POPUP_QUERY_ALL = "all items";
+		POPUP_QUERY_DONE = "items that have been marked as done";
+		POPUP_QUERY_DATE = "items on ";
+		POPUP_QUERY_EVENT = "all events";
+		POPUP_QUERY_PLAN = "all plans";
+		POPUP_QUERY_TASK = "all tasks";
+		
 		
 	}
 	

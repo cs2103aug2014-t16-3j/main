@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import udo.language.LanguagePack;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
@@ -31,6 +32,8 @@ public class Feedback {
 	private JPanel mFinalView = new JPanel();
 
 	private JScrollPane mMainScrollPane;
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	public Feedback() {
 		mCenterView = new MainScreen();
@@ -67,9 +70,6 @@ public class Feedback {
 					case DELETE :
 						delete_entry(output);
 						break;
-					case EXIT :
-						mCommand = "Exit";
-						break;
 					case LIST :
 						list_entry(output);
 						break;
@@ -85,16 +85,16 @@ public class Feedback {
 						toggle_done(output);
 						break;
 					case SAVE :
-						mCommand = "Saved ";
+						mCommand = mLang.getPOPUP_SAVED();
 						break;
 					default :
 						break;
 				}
 			} else {
-				mCommand = "Command cannot be executed. Please try again";
+				mCommand = mLang.getPOPUP_EXEC_FAIL();
 			}
 		} else {
-			mCommand = "Command not recognised. Please try again";
+			mCommand = mLang.getPOPUP_PARSING_FAIL();
 		}
 	}
 
@@ -102,28 +102,28 @@ public class Feedback {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mCenterView.init(output, Command.TOGGLE_DONE);
 		mFinalView = mCenterView;
-		mCommand = "Toggled completion status of " + item.get(Keys.TITLE);
+		mCommand = mLang.getPOPUP_TOGGLE_DONE() + item.get(Keys.TITLE);
 	}
 
 	private void mark_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mCenterView.init(output, Command.MARK_DONE);
 		mFinalView = mCenterView;
-		mCommand = "Marked " + item.get(Keys.TITLE) + " as done";
+		mCommand = mLang.getPOPUP_MARK_AS_DONE() + item.get(Keys.TITLE) + " as done";
 	}
 
 	private void add_entry(OutputData output, Command type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mCenterView.init(output, type);
 		mFinalView = mCenterView;
-		mCommand = "Added " + item.get(Keys.TITLE);
+		mCommand = mLang.getPOPUP_ADDED() + item.get(Keys.TITLE);
 	}
 
 	private void delete_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mCenterView.init(output, Command.DELETE);
 		mFinalView = mCenterView;
-		mCommand = "Deleted " + item.get(Keys.TITLE);
+		mCommand = mLang.getPOPUP_DELETED() + item.get(Keys.TITLE);
 	}
 
 	private void edit_entry(OutputData output) {
@@ -131,7 +131,7 @@ public class Feedback {
 		mCenterView.init(output, Command.EDIT);
 
 		mFinalView = mCenterView;
-		mCommand = "Edited " + item.get(Keys.UID);
+		mCommand = mLang.getPOPUP_EDITED() + item.get(Keys.UID);
 
 	}
 
@@ -141,7 +141,7 @@ public class Feedback {
 		// view
 		mData = output.get(Keys.ITEMS);
 		if (((ArrayList<ItemData>) mData).size() == 0) {
-			mCommand = "No items found";
+			mCommand = mLang.getPOPUP_NO_ITEMS_FOUND();
 		} else {
 			// TODO make a method that can take in string/ calendar etc to build
 			// the popup string
@@ -149,7 +149,7 @@ public class Feedback {
 			String query = "";
 			switch (queryType) {
 				case ALL :
-					query = "all items";
+					query = mLang.getPOPUP_QUERY_ALL();
 					setToListView();
 					break;
 				case SINGLE_HASHTAG :
@@ -157,25 +157,25 @@ public class Feedback {
 					setToListView();
 					break;
 				case DONE :
-					query = "items that have been marked as done";
+					query = mLang.getPOPUP_QUERY_DONE();
 					setToListView();
 					break;
 				case DATE :
 					Date date = ((Calendar) output.get(Keys.QUERY_VALUE))
 							.getTime();
-					query = "items on " + UI.DD_MMMM_YYYY.format(date);
+					query = mLang.getPOPUP_QUERY_DATE() + UI.DD_MMMM_YYYY.format(date);
 					setToDayVIew(date);
 					break;
 				case EVENT :
-					query = "all events";
+					query = mLang.getPOPUP_QUERY_EVENT();
 					setToListView();
 					break;
 				case PLAN :
-					query = "all plans";
+					query = mLang.getPOPUP_QUERY_PLAN();
 					setToListView();
 					break;
 				case TASK :
-					query = "all tasks";
+					query = mLang.getPOPUP_QUERY_TASK();
 					setToToDoView();
 					break;
 				default :
@@ -183,7 +183,7 @@ public class Feedback {
 					break;
 
 			}
-			mCommand = "Listing " + query;
+			mCommand = mLang.getPOPUP_LIST() + query;
 		}
 
 	}

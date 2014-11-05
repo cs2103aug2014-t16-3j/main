@@ -14,22 +14,16 @@ public abstract class LanguagePack {
 	
 	public static LanguagePack userLanguagePack =
 			// replace this with the desired LanguagePack
-			new IndonesianLanguagePack();
+			// new IndonesianLanguagePack();
+			new EnglishLanguagePack();
 	
 	
 	
 	
 	
-	
-	
-
-
-	
-	
-	
-	
-	
-	
+	/********************************************************
+	 * To Language translators: do not touch the code below *
+	 ********************************************************/
 	
 	/**
 	 * This methods returns a LanguagePack object that represents the current user's
@@ -69,7 +63,9 @@ public abstract class LanguagePack {
 	protected String BY;
 	
 	// days
+	protected String YESTERDAY;
 	protected String TODAY;
+	protected String TONIGHT;
 	protected String SUNDAY;
 	protected String MONDAY;
 	protected String TUESDAY;
@@ -96,8 +92,51 @@ public abstract class LanguagePack {
 	protected String PLAN;
 	protected String DONE;
 	
+//@author A0114088H	
+	// Popup messages
+	protected String POPUP_SAVED;
+	protected String POPUP_PARSING_FAIL;
+	protected String POPUP_EXEC_FAIL;
+	protected String POPUP_TOGGLE_DONE;
+	protected String POPUP_MARK_AS_DONE;
+	protected String POPUP_ADDED;
+	protected String POPUP_DELETED;
+	protected String POPUP_EDITED;
+	protected String POPUP_NO_ITEMS_FOUND;
+	protected String POPUP_LIST;
+	protected String POPUP_QUERY_ALL;
+	protected String POPUP_QUERY_DONE;
+	protected String POPUP_QUERY_DATE;
+	protected String POPUP_QUERY_EVENT;
+	protected String POPUP_QUERY_PLAN;
+	protected String POPUP_QUERY_TASK;
 	
+	// Entry strings
 	
+	// the method below converts java string day format to the appropriate language
+	public String convertToLanguage(String javaFormattedDay) {
+		switch (javaFormattedDay) {
+			case "Monday" :
+				return getMONDAY();
+			case "Tuesday" :
+				return getTUESDAY();
+			case "Wednesday" :
+				return getWEDNESDAY();
+			case "Thursday" :
+				return getTHURSDAY();
+			case "Friday" :
+				return getFRIDAY();
+			case "Saturday" :
+				return getSATURDAY();
+			case "Sunday" :
+				return getSUNDAY();
+			default :
+				return "";
+		}
+	}
+
+	
+//@author A0114847B	
 	// below are the getters for the language variables
 	
 	public String getADD() {
@@ -136,8 +175,14 @@ public abstract class LanguagePack {
 	public String getBY() {
 		return BY;
 	}
+	public String getYESTERDAY() {
+		return YESTERDAY;
+	}
 	public String getTODAY() {
 		return TODAY;
+	}
+	public String getTONIGHT() {
+		return TONIGHT;
 	}
 	public String getSUNDAY() {
 		return SUNDAY;
@@ -201,6 +246,74 @@ public abstract class LanguagePack {
 	}
 	public String getDONE() {
 		return DONE;
+	}
+
+	public static LanguagePack getUserLanguagePack() {
+		return userLanguagePack;
+	}
+
+	public String getPOPUP_SAVED() {
+		return POPUP_SAVED;
+	}
+
+	public String getPOPUP_PARSING_FAIL() {
+		return POPUP_PARSING_FAIL;
+	}
+
+	public String getPOPUP_EXEC_FAIL() {
+		return POPUP_EXEC_FAIL;
+	}
+
+	public String getPOPUP_TOGGLE_DONE() {
+		return POPUP_TOGGLE_DONE;
+	}
+
+	public String getPOPUP_MARK_AS_DONE() {
+		return POPUP_MARK_AS_DONE;
+	}
+
+	public String getPOPUP_ADDED() {
+		return POPUP_ADDED;
+	}
+
+	public String getPOPUP_DELETED() {
+		return POPUP_DELETED;
+	}
+
+	public String getPOPUP_EDITED() {
+		return POPUP_EDITED;
+	}
+
+	public String getPOPUP_NO_ITEMS_FOUND() {
+		return POPUP_NO_ITEMS_FOUND;
+	}
+
+	public String getPOPUP_LIST() {
+		return POPUP_LIST;
+	}
+
+	public String getPOPUP_QUERY_ALL() {
+		return POPUP_QUERY_ALL;
+	}
+
+	public String getPOPUP_QUERY_DONE() {
+		return POPUP_QUERY_DONE;
+	}
+
+	public String getPOPUP_QUERY_DATE() {
+		return POPUP_QUERY_DATE;
+	}
+
+	public String getPOPUP_QUERY_EVENT() {
+		return POPUP_QUERY_EVENT;
+	}
+
+	public String getPOPUP_QUERY_PLAN() {
+		return POPUP_QUERY_PLAN;
+	}
+
+	public String getPOPUP_QUERY_TASK() {
+		return POPUP_QUERY_TASK;
 	}
 	
 }
