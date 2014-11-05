@@ -200,10 +200,10 @@ public class UserInterface implements ActionListener {
 		});
 
 		List<Image> icons = new ArrayList<Image>();
-		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_256).getImage());
-		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_64).getImage());
-		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_32).getImage());
-		icons.add(new ImageIcon(UI.UDO_LOGO_IMG_DIR_16).getImage());
+		icons.add(new ImageIcon(getClass().getResource(UI.UDO_LOGO_IMG_DIR_256)).getImage());
+		icons.add(new ImageIcon(getClass().getResource(UI.UDO_LOGO_IMG_DIR_64)).getImage());
+		icons.add(new ImageIcon(getClass().getResource(UI.UDO_LOGO_IMG_DIR_32)).getImage());
+		icons.add(new ImageIcon(getClass().getResource(UI.UDO_LOGO_IMG_DIR_16)).getImage());
 		mFrame.setIconImages(icons);
 		mShadowPanel.add(mTopBar, BorderLayout.NORTH);
 		mShadowPanel.add(mLeftView, BorderLayout.WEST);
@@ -223,8 +223,8 @@ public class UserInterface implements ActionListener {
 		mCloseButton.setFocusPainted(false);
 		mCloseButton.setOpaque(false);
 		mCloseButton.setPreferredSize(new Dimension(32, 32));
-		mCloseButton.setIcon(new ImageIcon(UI.CLOSE_BUTTON));
-		mCloseButton.setRolloverIcon(new ImageIcon(UI.CLOSE_BUTTON_HOVER));
+		mCloseButton.setIcon(new ImageIcon(getClass().getResource(UI.CLOSE_BUTTON)));
+		mCloseButton.setRolloverIcon(new ImageIcon(getClass().getResource(UI.CLOSE_BUTTON_HOVER)));
 		mCloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mFrame.dispose();
@@ -237,7 +237,7 @@ public class UserInterface implements ActionListener {
 
 	private void initUdoLogo() {
 		try {
-			mUdoImg = ImageIO.read(new File(UI.UDO_LOGO_IMG_DIR_32));
+			mUdoImg = ImageIO.read(getClass().getResource(UI.UDO_LOGO_IMG_DIR_32));
 		} catch (IOException ex) {
 			// handle exception...
 		}
@@ -460,7 +460,7 @@ public class UserInterface implements ActionListener {
 	private void setWelcomeScreen() {
 		BufferedImage logoImg = null;
 		try {
-			logoImg = ImageIO.read(new File(UI.UDO_LOGO_IMG_DIR_256));
+			logoImg = ImageIO.read(getClass().getResource(UI.UDO_LOGO_IMG_DIR_256));
 		} catch (IOException ex) {
 			// handle exception...
 		}
