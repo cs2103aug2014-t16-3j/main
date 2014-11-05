@@ -256,7 +256,7 @@ public class Entry extends JPanel {
 			case 5 :
 			case 6 :
 				String javaFormattedDay = UI.DAY_NAME.format(cal.getTime()); 
-				day = mLang.convertToLanguage(javaFormattedDay);
+				day = mLang.convertDayToLanguage(javaFormattedDay);
 			default :
 				break;
 		}

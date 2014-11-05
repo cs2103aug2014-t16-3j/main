@@ -113,7 +113,7 @@ public abstract class LanguagePack {
 	// Entry strings
 	
 	// the method below converts java string day format to the appropriate language
-	public String convertToLanguage(String javaFormattedDay) {
+	public String convertDayToLanguage(String javaFormattedDay) {
 		switch (javaFormattedDay) {
 			case "Monday" :
 				return getMONDAY();
@@ -134,6 +134,26 @@ public abstract class LanguagePack {
 		}
 	}
 
+	public String convertMonthToLanguage(String javaFormattedMonth) {
+		switch (javaFormattedMonth) {
+			case "Monday" :
+				return getMONDAY();
+			case "Tuesday" :
+				return getTUESDAY();
+			case "Wednesday" :
+				return getWEDNESDAY();
+			case "Thursday" :
+				return getTHURSDAY();
+			case "Friday" :
+				return getFRIDAY();
+			case "Saturday" :
+				return getSATURDAY();
+			case "Sunday" :
+				return getSUNDAY();
+			default :
+				return "";
+		}
+	}
 	
 //@author A0114847B	
 	// below are the getters for the language variables

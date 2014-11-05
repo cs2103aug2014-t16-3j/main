@@ -2,8 +2,13 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
+<<<<<<< HEAD
+  <date>2014-11-05T17:36:15</date>
+  <millis>1415180175784</millis>
+=======
   <date>2014-11-05T17:45:40</date>
   <millis>1415180740859</millis>
+>>>>>>> origin/develop
   <sequence>0</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -13,8 +18,13 @@
   <message>can get today screen items</message>
 </record>
 <record>
+<<<<<<< HEAD
+  <date>2014-11-05T17:36:15</date>
+  <millis>1415180175784</millis>
+=======
   <date>2014-11-05T17:45:40</date>
   <millis>1415180740871</millis>
+>>>>>>> origin/develop
   <sequence>1</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -24,8 +34,13 @@
   <message>can get todo screen items</message>
 </record>
 <record>
+<<<<<<< HEAD
+  <date>2014-11-05T17:36:24</date>
+  <millis>1415180184524</millis>
+=======
   <date>2014-11-05T17:45:56</date>
   <millis>1415180756233</millis>
+>>>>>>> origin/develop
   <sequence>2</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -35,8 +50,13 @@
   <message>can get today screen items</message>
 </record>
 <record>
+<<<<<<< HEAD
+  <date>2014-11-05T17:36:24</date>
+  <millis>1415180184524</millis>
+=======
   <date>2014-11-05T17:45:56</date>
   <millis>1415180756248</millis>
+>>>>>>> origin/develop
   <sequence>3</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -46,25 +66,42 @@
   <message>can get todo screen items</message>
 </record>
 <record>
+<<<<<<< HEAD
+  <date>2014-11-05T17:36:28</date>
+  <millis>1415180188646</millis>
+=======
   <date>2014-11-05T17:45:58</date>
   <millis>1415180758239</millis>
+>>>>>>> origin/develop
   <sequence>4</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
   <class>udo.main.Engine</class>
   <method>logInfo</method>
   <thread>1</thread>
+<<<<<<< HEAD
+  <message>can get today screen items</message>
+</record>
+<record>
+  <date>2014-11-05T17:36:28</date>
+  <millis>1415180188646</millis>
+=======
   <message>engine is executing exit without runner</message>
 </record>
 <record>
   <date>2014-11-05T17:45:58</date>
   <millis>1415180758240</millis>
+>>>>>>> origin/develop
   <sequence>5</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
   <class>udo.main.Engine</class>
   <method>logInfo</method>
   <thread>1</thread>
+<<<<<<< HEAD
+  <message>can get todo screen items</message>
+=======
   <message>saving data...</message>
+>>>>>>> origin/develop
 </record>
 </log>
