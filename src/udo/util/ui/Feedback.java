@@ -184,9 +184,9 @@ public class Feedback {
 					query = mLang.getPOPUP_QUERY_TASK();
 					setToToDoView();
 					break;
-				case SEARCH_QUERY :
-					query = output.get(Keys.SEARCH_QUERY);
-					setToListView();
+//				case SEARCH_QUERY :
+//					query = (String) output.get(Keys.SEARCH_QUERY);
+//					setToListView();
 				default :
 					
 					break;
