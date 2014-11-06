@@ -58,6 +58,7 @@ public class EnglishLanguagePack extends LanguagePack {
 		POPUP_MARK_AS_DONE = "Marked ";
 		POPUP_NO_ITEMS_FOUND = "No items found";
 		POPUP_LIST = "Listing ";
+		POPUP_SEARCH = "Search result for ";
 		POPUP_QUERY_ALL = "all items";
 		POPUP_QUERY_DONE = "items that have been marked as done";
 		POPUP_QUERY_DATE = "items on ";
