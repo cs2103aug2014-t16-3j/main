@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
+import udo.language.LanguagePack;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 
 public class ToDoScreen extends Screen {
 
 	private static final long serialVersionUID = 1L;
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	// private static final Logger logger =
 	// Logger.getLogger(udo.util.ui.DayView.class.getName());
@@ -47,7 +50,7 @@ public class ToDoScreen extends Screen {
 	}
 
 	private void initHeader() {
-		JLabel title = new JLabel("To Do");
+		JLabel title = new JLabel(mLang.getTO_DO_TITLE());
 		title.setFont(UI.FONT_24);
 		FontMetrics fm = title.getFontMetrics(title.getFont());
 		int height = fm.getHeight();
@@ -60,7 +63,7 @@ public class ToDoScreen extends Screen {
 
 	private void populateView(ArrayList<ItemData> data) {
 		if (data.size() == 0) {
-			JLabel noItems = new JLabel("You have no upcoming tasks!");
+			JLabel noItems = new JLabel(mLang.getNO_UPCOMING_TASKS());
 			noItems.setFont(UI.FONT_14);
 			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
 			int height = fm.getHeight();

@@ -118,7 +118,7 @@ public class Feedback {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mCenterView.init(output, Command.MARK_DONE);
 		mFinalView = mCenterView;
-		mCommand = mLang.getPOPUP_MARK_AS_DONE() + item.get(Keys.TITLE) + " as done";
+		mCommand = mLang.getPOPUP_MARK_AS_DONE() + item.get(Keys.TITLE);
 	}
 
 	private void add_entry(OutputData output, Command type) {

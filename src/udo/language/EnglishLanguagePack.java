@@ -60,7 +60,7 @@ public class EnglishLanguagePack extends LanguagePack {
 		POPUP_PARSING_FAIL = "Command not recognised. Please try again";
 		POPUP_EXEC_FAIL = "Command cannot be executed. Please try again";
 		POPUP_TOGGLE_DONE = "Toggled completion status of ";
-		POPUP_MARK_AS_DONE = "Marked ";
+		POPUP_MARK_AS_DONE = "Marked as done: ";
 		POPUP_NO_ITEMS_FOUND = "No items found";
 		POPUP_LIST = "Listing ";
 		POPUP_SEARCH = "Search result for ";
@@ -73,6 +73,20 @@ public class EnglishLanguagePack extends LanguagePack {
 		
 		// DayScreen messages
 		FREE_TODAY = "You are free today!";
+		
+		// ToDoScreen messages
+		TO_DO_TITLE = "To Do";
+		NO_UPCOMING_TASKS = "You have no upcoming tasks!";
+		
+		// SingleView messages
+		SINGLE_MARK_AS_DONE = "You have marked the following as completed: ";
+		SINGLE_TOGGLE_DONE = "You have toggled the completion status of: ";
+		SINGLE_EDITED = "You have edited: ";
+		SINGLE_FROM = "from: ";
+		SINGLE_TO = "to: ";
+		SINGLE_THIS_IS_EDITED_ITEM = "This is the edited item: ";
+		SINGLE_SUCCESFULLY_ADDED = "You have successfully added: ";
+		SINGLE_SUCCESSFULLY_DELETED = "You have successfully deleted: ";
 		
 		// Months
 		JANUARY = "January";

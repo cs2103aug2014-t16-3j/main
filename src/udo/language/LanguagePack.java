@@ -119,6 +119,20 @@ public abstract class LanguagePack {
 	// DayScreen messages
 	protected String FREE_TODAY;
 	
+	// ToDoScreen messages
+	protected String TO_DO_TITLE;
+	protected String NO_UPCOMING_TASKS;
+	
+	// SingleView messages
+	protected String SINGLE_MARK_AS_DONE;
+	protected String SINGLE_TOGGLE_DONE;
+	protected String SINGLE_EDITED;
+	protected String SINGLE_FROM;
+	protected String SINGLE_TO;
+	protected String SINGLE_THIS_IS_EDITED_ITEM;
+	protected String SINGLE_SUCCESFULLY_ADDED;
+	protected String SINGLE_SUCCESSFULLY_DELETED;
+	
 	// Months
 	protected String JANUARY;
 	protected String FEBRUARY;
@@ -515,6 +529,46 @@ public abstract class LanguagePack {
 
 	public String getDEC() {
 		return DEC;
+	}
+
+	public String getTO_DO_TITLE() {
+		return TO_DO_TITLE;
+	}
+
+	public String getNO_UPCOMING_TASKS() {
+		return NO_UPCOMING_TASKS;
+	}
+
+	public String getSINGLE_MARK_AS_DONE() {
+		return SINGLE_MARK_AS_DONE;
+	}
+
+	public String getSINGLE_TOGGLE_DONE() {
+		return SINGLE_TOGGLE_DONE;
+	}
+
+	public String getSINGLE_EDITED() {
+		return SINGLE_EDITED;
+	}
+
+	public String getSINGLE_FROM() {
+		return SINGLE_FROM;
+	}
+
+	public String getSINGLE_TO() {
+		return SINGLE_TO;
+	}
+
+	public String getSINGLE_THIS_IS_EDITED_ITEM() {
+		return SINGLE_THIS_IS_EDITED_ITEM;
+	}
+
+	public String getSINGLE_SUCCESFULLY_ADDED() {
+		return SINGLE_SUCCESFULLY_ADDED;
+	}
+
+	public String getSINGLE_SUCCESSFULLY_DELETED() {
+		return SINGLE_SUCCESSFULLY_DELETED;
 	}
 
 }
