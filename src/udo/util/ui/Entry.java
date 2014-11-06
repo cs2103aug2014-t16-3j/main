@@ -74,8 +74,7 @@ public class Entry extends JPanel {
 		mTimePanel.setOpaque(false);
 		mTimePanel.setLayout(new BorderLayout());
 
-		mDetailPanel
-				.setLayout(new BoxLayout(mDetailPanel, BoxLayout.PAGE_AXIS));
+		mDetailPanel.setLayout(new BoxLayout(mDetailPanel, BoxLayout.PAGE_AXIS));
 		mDetailPanel.setOpaque(false);
 
 		mDescription.setFont(UI.FONT_20);
@@ -207,7 +206,8 @@ public class Entry extends JPanel {
 		time += UI.HOUR_12.format(startCal.getTime()) + " - ";
 		if (getDayDiff(startCal, endCal) != 0) {
 			time += getDay(endCal);
-			time += UI.DD_MMM.format(endCal.getTime());
+			time += UI.DD.format(endCal.getTime()) + " " + 
+					mLang.convertMonthToLanguage(UI.MMM.format(endCal.getTime()));
 		}
 		time += UI.HOUR_12.format(endCal.getTime());
 		return time;
@@ -267,7 +267,7 @@ public class Entry extends JPanel {
 		time.setOpaque(false);
 		time.setLayout(new BoxLayout(time, BoxLayout.PAGE_AXIS));
 		mDate = new JLabel(UI.DD.format(cal.getTime()));
-		mMonth = new JLabel(UI.MMM.format(cal.getTime()));
+		mMonth = new JLabel(mLang.convertMonthToLanguage(UI.MMM.format(cal.getTime())));
 		mDate.setFont(UI.FONT_20_BOLD);
 		mMonth.setFont(UI.FONT_16);
 		time.add(mDate);

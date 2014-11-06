@@ -157,7 +157,7 @@ public class Constants {
 		public static final int MAIN_WIDTH = 350; // for presentation purposes
 		public static final int MAIN_HEIGHT = 600;
 		public static final int MAIN_PADDING = 8;
-		public static final int TEXTFIELD_HEIGHT = 24;
+		public static final int TEXTFIELD_HEIGHT = 32;
 //		public static final int SUBVIEW_WIDTH = 360; // or 300
 		public static final int SUBVIEW_WIDTH = 290; // This is only for presentation
 		public static final int SUBVIEW_HEIGHT = 550;
