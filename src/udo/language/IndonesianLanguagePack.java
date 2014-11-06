@@ -78,6 +78,16 @@ public class IndonesianLanguagePack extends LanguagePack {
 		TO_DO_TITLE = "Untuk dikerjakan";
 		NO_UPCOMING_TASKS = "Tidak ada tugas!";
 		
+		// SingleView messages
+		SINGLE_MARK_AS_DONE = "Anda telah menandai item berikut sebagai selesai: ";
+		SINGLE_TOGGLE_DONE = "Anda telah mengubah status selesai dari item: ";
+		SINGLE_EDITED = "Anda telah mengedit: ";
+		SINGLE_FROM = "dari: ";
+		SINGLE_TO = "menjadi: ";
+		SINGLE_THIS_IS_EDITED_ITEM = "Berikut adalah itemnya setelah diedit: ";
+		SINGLE_SUCCESFULLY_ADDED = "Anda telah berhasil menambahkan: ";
+		SINGLE_SUCCESSFULLY_DELETED = "Anda telah berhasil menghapus: ";
+		
 		// Months
 		JANUARY = "Januari";
 		FEBRUARY = "Februari";

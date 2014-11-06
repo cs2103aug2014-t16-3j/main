@@ -484,9 +484,12 @@ public class UserInterface implements ActionListener {
 		JLabel welcome2 = new JLabel();
 		welcome2.setFont(UI.FONT_16);
 		welcome2.setForeground(UI.POPUP_BGCOLOR);
-		welcome2.setText("<html>" + "<br>"
+		welcome2.setText("<html><center>" + "<br>"
 				+ mLang.getSUB_WELCOME_MESSAGE()
 				+ "</html>");
+		welcome2.setHorizontalTextPosition(JLabel.CENTER);
+		welcome2.setHorizontalAlignment(JLabel.CENTER);
+		welcome2.setPreferredSize(new Dimension(UI.MAIN_WIDTH, 100));
 		welcome2.setOpaque(false);
 		mMainView.add(logoLabel);
 		mMainView.add(welcome);
