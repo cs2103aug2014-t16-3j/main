@@ -15,6 +15,7 @@ public class EnglishLanguagePack extends LanguagePack {
 		EDIT = "edit";
 		MARK_DONE = "done";
 		TOGGLE_DONE = "toggle";
+		SEARCH = "search";
 		
 		FROM = "from";
 		TO = "to";

@@ -43,6 +43,7 @@ public class Constants {
 		public static final String VALUE = "value";
 		public static final String DATE = "date";
 		public static final String OLD_VALUE = "Old value";
+		public static final String SEARCH_QUERY = "search query";
 	}
 
 	//@author A0108358B

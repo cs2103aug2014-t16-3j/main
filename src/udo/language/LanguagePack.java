@@ -55,6 +55,7 @@ public abstract class LanguagePack {
 	protected String EDIT;
 	protected String MARK_DONE;
 	protected String TOGGLE_DONE;
+	protected String SEARCH;
 	
 	// delimiters
 	protected String FROM;
@@ -184,6 +185,9 @@ public abstract class LanguagePack {
 	}
 	public String getTOGGLE_DONE() {
 		return TOGGLE_DONE;
+	}
+	public String getSearch() {
+		return SEARCH;
 	}
 	public String getFROM() {
 		return FROM;
