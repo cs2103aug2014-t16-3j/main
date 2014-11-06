@@ -20,7 +20,9 @@ public class Cache {
 	private HashSet<ItemData> mEvents;
 	private HashSet<ItemData> mTasks;
 	private HashSet<ItemData> mPlans;
+	
 	private boolean mIsLocked;
+	
 	private Iterator<ItemData> mEventsIterator;
 	private Iterator<ItemData> mTasksIterator;
 	private Iterator<ItemData> mPlansIterator;
@@ -357,6 +359,29 @@ public class Cache {
 		}
 		
 		return collateItems();
+	}
+	
+	public ArrayList<ItemData> searchAllItems(String query) throws CacheAccessException {
+		ArrayList<ItemData> matchingItems = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			String title = (String) item.get(Keys.TITLE);
+			if (title != null) {
+				if (title.contains(query)) {
+					matchingItems.add(item);
+				} else {
+					@SuppressWarnings("unchecked")
+					ArrayList<String> taglist = (ArrayList<String>) item.get(Keys.HASHTAGS);
+					for (String tag : taglist) {
+						if (tag.contains(query)) {
+							matchingItems.add(item);
+							break;
+						}
+					}
+				}
+			}
+		}
+		Collections.sort(matchingItems);
+		return matchingItems;
 	}
 	
 	/**

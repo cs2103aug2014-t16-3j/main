@@ -18,6 +18,7 @@ import udo.util.engine.runners.RunnerDone;
 import udo.util.engine.runners.RunnerEdit;
 import udo.util.engine.runners.RunnerList;
 import udo.util.engine.runners.RunnerSave;
+import udo.util.engine.runners.RunnerSearch;
 import udo.util.exceptions.CacheAccessException;
 import udo.util.exceptions.ReadingFromStorageException;
 import udo.util.shared.Command;
@@ -184,6 +185,10 @@ public class Engine {
 				// undo uses engine logic hence cannot be abstracted out.
 				logInfo("engine is executing undo without runner");
 				output = runUndo(input);
+				break;
+				
+			case SEARCH :
+				commandRunner = new RunnerSearch(input, mUndoBin, mCache);
 				break;
 				
 			case SAVE :
