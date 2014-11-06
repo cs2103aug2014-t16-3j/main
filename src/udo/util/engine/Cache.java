@@ -361,11 +361,19 @@ public class Cache {
 		return collateItems();
 	}
 	
+	/**
+	 * returns a list of all the items matching a string query in their title or tags
+	 * @param query the string to search for
+	 * @return a list of all the items matching a string query in their title or tags
+	 * @throws CacheAccessException if cache is locked
+	 */
 	public ArrayList<ItemData> searchAllItems(String query) throws CacheAccessException {
 		ArrayList<ItemData> matchingItems = new ArrayList<ItemData>();
 		for (ItemData item : getAllItems()) {
 			String title = (String) item.get(Keys.TITLE);
 			if (title != null) {
+				title = title.toLowerCase();
+				query = query.trim().toLowerCase();
 				if (title.contains(query)) {
 					matchingItems.add(item);
 				} else if (taglistContains(item, query)) {
