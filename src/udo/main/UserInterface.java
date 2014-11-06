@@ -76,6 +76,8 @@ public class UserInterface implements ActionListener {
 	private Feedback fb;
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
+	
+	private ArrayList<String> mCmdHistory = new ArrayList<String>(5);
 
 	public static UserInterface getInstance() {
 		if (mUserInterface == null) {
@@ -138,7 +140,7 @@ public class UserInterface implements ActionListener {
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
 		mTextField.setBackground(UI.MAIN_COLOR);
-		mTextField.setFont(UI.FONT_16);
+		mTextField.setFont(UI.FONT_24);
 		setKeyBinds();
 
 		/**
@@ -347,6 +349,11 @@ public class UserInterface implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 
 		String text = mTextField.getText();
+		mCmdHistory.add(text);
+		//TODO cmd history
+		if(mCmdHistory.size()>5) {
+			
+		}
 		mTextField.setText("");
 
 		mUserInput = text;
