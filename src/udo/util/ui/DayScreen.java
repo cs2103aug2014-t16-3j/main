@@ -38,6 +38,8 @@ public class DayScreen extends Screen {
 												// overlapped start
 	private ArrayList<Point> mRedTickCoordsWH; // stores width and height of red
 												// ticks
+	
+	private Date mDateQuery;
 
 	// private static final Logger logger =
 	// Logger.getLogger(udo.util.ui.DayView.class.getName());
@@ -67,6 +69,7 @@ public class DayScreen extends Screen {
 	@Override
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		removeAll();
+		mDateQuery = newDate;
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(mWidth,
 				UI.DAYVIEW_HEADER_HEIGHT));
@@ -147,6 +150,7 @@ public class DayScreen extends Screen {
 		};
 	}
 
+	@SuppressWarnings("deprecation")
 	private void fillTicker(ItemData item, int i) {
 		int hour, min, total;
 		Point xy, wh;
@@ -156,9 +160,9 @@ public class DayScreen extends Screen {
 		double minPerPixel = (24d * 60d) / mTickerImg.getWidth(null);
 		int currItem_startX = 0;
 		int lastItem_endX = 0;
-		Calendar today = Calendar.getInstance();
+		Calendar date = dateToCalendar(mDateQuery);
 		Calendar start = (Calendar) item.get(Keys.START);
-		if(today.get(Calendar.DAY_OF_MONTH) == start.get(Calendar.DAY_OF_MONTH)) {
+		if(date.get(Calendar.DAY_OF_MONTH) == start.get(Calendar.DAY_OF_MONTH)) {
 			hour = (start).get(Calendar.HOUR_OF_DAY) * 60;
 			min = (start).get(Calendar.MINUTE);
 		} else {
@@ -175,7 +179,7 @@ public class DayScreen extends Screen {
 					+ mTickerCoordsWH.get(i - 1).x;
 		}
 		Calendar end = (Calendar) item.get(Keys.END);
-		if(today.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)) {
+		if(date.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)) {
 			hour = (end).get(Calendar.HOUR_OF_DAY) * 60;
 			min = (end).get(Calendar.MINUTE);
 		} else {
@@ -232,6 +236,12 @@ public class DayScreen extends Screen {
 		mTickerCoordsWH.clear();
 		mRedTickCoordsXY.clear();
 		mRedTickCoordsWH.clear();
+	}
+	
+	public Calendar dateToCalendar(Date date){ 
+	  Calendar cal = Calendar.getInstance();
+	  cal.setTime(date);
+	  return cal;
 	}
 
 	/**
