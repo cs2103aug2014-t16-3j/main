@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import udo.language.LanguagePack;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
@@ -16,31 +17,33 @@ import udo.util.shared.ItemData;
 import udo.util.shared.ListQuery;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
-import udo.util.ui.ListView;
 
 public class Feedback {
 
 	private String mCommand;
 	private Object mData;
 
-	private DayView mDayView;
-	private ListView mListView;
-	private ToDoView mToDoView;
-	private SingleView mSingleView;
-	private DayView mMainTodayView;
-	private ToDoView mMainToDoView;
+	private Screen mDayView;
+	private Screen mToDoView;
+	private Screen mCenterView;
+	private Screen mMainTodayView;
+	private Screen mMainToDoView;
 
 	private JPanel mFinalView = new JPanel();
-	
+
 	private JScrollPane mMainScrollPane;
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	public Feedback() {
-		mListView = new ListView();
-		mDayView = new DayView();
-		mToDoView = new ToDoView();
-		mSingleView = new SingleView();
-		mMainTodayView = new DayView();
-		mMainToDoView = new ToDoView();
+		mCenterView = new MainScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
+									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
+		mDayView = new DayScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
+									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
+		mToDoView = new ToDoScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
+									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
+		mMainTodayView = new DayScreen(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		mMainToDoView = new ToDoScreen(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
 	}
 
 	public JPanel getTodayView(ArrayList<ItemData> data) {
@@ -60,140 +63,148 @@ public class Feedback {
 	public void process(OutputData output) {
 		if (output.getParsingStatus().equals(ParsingStatus.SUCCESS)) {
 			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
+				mCenterView.removeAll();
 				switch (output.getCommand()) {
-					case ADD_EVENT:
-					case ADD_TASK:
-					case ADD_PLAN:
+					case ADD_EVENT :
+					case ADD_TASK :
+					case ADD_PLAN :
 						add_entry(output, output.getCommand());
-						break;						
-					case DELETE:
+						break;
+					case DELETE :
 						delete_entry(output);
 						break;
-					case EXIT:
-						mCommand = "Exit";
-						break;
-					case LIST:
+					case LIST :
 						list_entry(output);
 						break;
-					case UNDO:
+					case UNDO :
 						break;
-					case EDIT:
+					case EDIT :
 						edit_entry(output);
-						break; 
-					case MARK_DONE:
+						break;
+					case MARK_DONE :
 						mark_done(output);
 						break;
-					case TOGGLE_DONE:
+					case TOGGLE_DONE :
 						toggle_done(output);
 						break;
-					case SAVE:
-						mCommand = "Saved ";
+					case SAVE :
+						mCommand = mLang.getPOPUP_SAVED();
 						break;
-					default:
+					default :
 						break;
 				}
 			} else {
-				mCommand = "Command cannot be executed. Please try again";
+				mCommand = mLang.getPOPUP_EXEC_FAIL();
 			}
 		} else {
-			mCommand = "Command not recognised. Please try again";
+			mCommand = mLang.getPOPUP_PARSING_FAIL();
 		}
 	}
 
 	private void toggle_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.TOGGLE_DONE);
-		mFinalView = mSingleView;
-		mCommand = "Toggled completion status of " + item.get(Keys.TITLE);
+		mCenterView.init(output, Command.TOGGLE_DONE);
+		mFinalView = mCenterView;
+		mCommand = mLang.getPOPUP_TOGGLE_DONE() + item.get(Keys.TITLE);
 	}
 
 	private void mark_done(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.MARK_DONE);
-		mFinalView = mSingleView;
-		mCommand = "Marked " + item.get(Keys.TITLE) + " as done";
+		mCenterView.init(output, Command.MARK_DONE);
+		mFinalView = mCenterView;
+		mCommand = mLang.getPOPUP_MARK_AS_DONE() + item.get(Keys.TITLE) + " as done";
 	}
 
 	private void add_entry(OutputData output, Command type) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, type);
-		mFinalView = mSingleView;
-		mCommand = "Added " + item.get(Keys.TITLE);
+		mCenterView.init(output, type);
+		mFinalView = mCenterView;
+		mCommand = mLang.getPOPUP_ADDED() + item.get(Keys.TITLE);
 	}
 
 	private void delete_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.DELETE);
-		mFinalView = mSingleView;
-		mCommand = "Deleted " + item.get(Keys.TITLE);
+		mCenterView.init(output, Command.DELETE);
+		mFinalView = mCenterView;
+		mCommand = mLang.getPOPUP_DELETED() + item.get(Keys.TITLE);
 	}
-	
+
 	private void edit_entry(OutputData output) {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
-		mSingleView.removeAll();
-		mSingleView.init(output, Command.EDIT);
-		mFinalView = mSingleView;
-		mCommand = "Edited " + item.get(Keys.UID);
-		
+		mCenterView.init(output, Command.EDIT);
+
+		mFinalView = mCenterView;
+		mCommand = mLang.getPOPUP_EDITED() + item.get(Keys.UID);
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void list_entry(OutputData output) {
 		// TODO check if query is specified to 1 day, is a todo, or general list
 		// view
 		mData = output.get(Keys.ITEMS);
 		if (((ArrayList<ItemData>) mData).size() == 0) {
-			mCommand = "No items found";
+			mCommand = mLang.getPOPUP_NO_ITEMS_FOUND();
 		} else {
 			// TODO make a method that can take in string/ calendar etc to build
 			// the popup string
 			ListQuery queryType = (ListQuery) output.get(Keys.QUERY_TYPE);
 			String query = "";
 			switch (queryType) {
-				case ALL:
-					query = "all items";
+				case ALL :
+					query = mLang.getPOPUP_QUERY_ALL();
 					setToListView();
 					break;
-				case SINGLE_HASHTAG:
+				case SINGLE_HASHTAG :
 					query = "#" + (String) output.get(Keys.QUERY_VALUE);
 					setToListView();
 					break;
-				case DONE:
-					query = "items that have been marked as done";
+				case DONE :
+					query = mLang.getPOPUP_QUERY_DONE();
 					setToListView();
 					break;
-				case DATE:
-					Date date = ((Calendar) output.get(Keys.QUERY_VALUE)).getTime();
-					query = "items on " + UI.DD_MMMM_YYYY.format(date);
+				case DATE :
+					Date date = ((Calendar) output.get(Keys.QUERY_VALUE))
+							.getTime();
+					query = mLang.getPOPUP_QUERY_DATE() + UI.DD_MMMM_YYYY.format(date);
 					setToDayVIew(date);
 					break;
-				default:
+				case EVENT :
+					query = mLang.getPOPUP_QUERY_EVENT();
+					setToListView();
+					break;
+				case PLAN :
+					query = mLang.getPOPUP_QUERY_PLAN();
+					setToListView();
+					break;
+				case TASK :
+					query = mLang.getPOPUP_QUERY_TASK();
+					setToToDoView();
+					break;
+				default :
+					
 					break;
 
 			}
-			mCommand = "Listing " + query;
+			mCommand = mLang.getPOPUP_LIST() + query;
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setToListView() {
-		mListView.populateView((ArrayList<ItemData>) mData);
-		mMainScrollPane = null;
-		mFinalView = mListView;
+		mCenterView.init((ArrayList<ItemData>) mData);
+		mMainScrollPane = mCenterView.getScrollPane();
+		mFinalView = mCenterView;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setToDayVIew(Date date) {
 		mDayView.init(date, (ArrayList<ItemData>) mData);
 		mMainScrollPane = mDayView.getScrollPane();
 		mFinalView = mDayView;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setToToDoView() {
 		mToDoView.init((ArrayList<ItemData>) mData);
@@ -208,15 +219,15 @@ public class Feedback {
 	public JPanel getFinalView() {
 		return mFinalView;
 	}
-	
+
 	public JScrollPane getLeftScrollPane() {
 		return mMainToDoView.getScrollPane();
 	}
-	
+
 	public JScrollPane getMainScrollPane() {
 		return mMainScrollPane;
 	}
-	
+
 	public JScrollPane getRightScrollPane() {
 		return mMainTodayView.getScrollPane();
 	}

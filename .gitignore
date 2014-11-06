@@ -13,6 +13,15 @@ hs_err_pid*
 /bin/
 /bin
 
-dayViewLog0.txt
+*.log
+data/
 
-dayViewLog1.txt
+logs/
+
+logs/engineLog.log
+
+logs/engineLog.log.1
+
+logs/engineLog.log
+
+logs/engineLog.log

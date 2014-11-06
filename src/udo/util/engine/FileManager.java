@@ -3,6 +3,7 @@ package udo.util.engine;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -105,6 +106,8 @@ public class FileManager {
 
 	private boolean createNewFile(String filename) {
 		try {
+			File f = new File(StorageStrings.FILEPATH);
+			f.mkdirs();
 			new FileWriter(filename).close();
 		} catch (IOException e) {
 			return false;

@@ -1,4 +1,4 @@
-//@author Nicholas
+//@author A0108358B
 package udo.util.engine;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class Cache {
 	}
 
 	/**
-	 * adds an item
+	 * adds an item. 
 	 * 
 	 * @param item the item to add
 	 * @throws CacheAccessException if cache is locked when trying to add
@@ -190,7 +190,7 @@ public class Cache {
 	 */
 	public int generateUID() {
 		Random r = new Random(System.currentTimeMillis());
-		int uid = 10000 + r.nextInt(90000);
+		int uid = 10 + r.nextInt(90);
 		if (mUIDs.contains(uid)) {
 			return generateUID();
 		} else {
@@ -220,11 +220,14 @@ public class Cache {
 		return allEvents;
 	}
 
-	public ArrayList<ItemData> getAllTasksBetween(Calendar from, Calendar to) throws CacheAccessException {
+	public ArrayList<ItemData> getAllUndoneTasksBetween(Calendar from, Calendar to) throws CacheAccessException {
 		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
 		for (ItemData item : getAllTasks()) {
 			if (isBetweenDates(item, from, to)) {
-				allTasks.add(item);
+				boolean itemDone = (boolean)item.get(Keys.DONE);
+				if (!itemDone) {
+					allTasks.add(item);
+				}
 			}
 		}
 		Collections.sort(allTasks);
@@ -255,7 +258,7 @@ public class Cache {
 		Collections.sort(allEvents);
 		return allEvents;
 	}
-
+	
 	public ArrayList<ItemData> getAllTasks() throws CacheAccessException {
 		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
 		for (ItemData item : getAllItems()) {
@@ -274,6 +277,36 @@ public class Cache {
 			ItemType itemType = item.getItemType();
 			if (itemType.equals(ItemType.PLAN)) {
 				allPlans.add(item);
+			}
+		}
+		Collections.sort(allPlans);
+		return allPlans;
+	}
+
+	public ArrayList<ItemData> getAllUndoneTasks() throws CacheAccessException {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.TASK)) {
+				boolean taskUndone = !((boolean) item.get(Keys.DONE)); 
+				if (taskUndone) {
+					allTasks.add(item);
+				}
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+
+	public ArrayList<ItemData> getAllUndonePlans() throws CacheAccessException {
+		ArrayList<ItemData> allPlans = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.PLAN)) {
+				boolean planUndone = !((boolean) item.get(Keys.DONE)); 
+				if (planUndone) {
+					allPlans.add(item);
+				}
 			}
 		}
 		Collections.sort(allPlans);

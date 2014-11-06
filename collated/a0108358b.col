@@ -1,0 +1,3812 @@
+//@author: a0108358b
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\main\Engine.java
+	 */
+
+package udo.main;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.util.engine.Cache;
+import udo.util.engine.FileManager;
+import udo.util.engine.UndoBin;
+import udo.util.engine.runners.Runner;
+import udo.util.engine.runners.RunnerAdd;
+import udo.util.engine.runners.RunnerDelete;
+import udo.util.engine.runners.RunnerDone;
+import udo.util.engine.runners.RunnerEdit;
+import udo.util.engine.runners.RunnerList;
+import udo.util.engine.runners.RunnerSave;
+import udo.util.exceptions.AddToCacheException;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.ReadingFromStorageException;
+import udo.util.shared.Command;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+
+/**
+ * This is a facade class for the engine component.<br>
+ * It shields and controls the cache, undobin and filemanager.<br>
+ * It also creates command runners that execute the commands (command pattern).<br>
+ * Only one instance of the Engine can exist (singleton).
+ */
+public class Engine {
+	
+	private static Engine ENGINE_INSTANCE = null;
+	
+	private FileManager mFileManager;
+	private Cache mCache;
+	private UndoBin mUndoBin;
+
+	/**
+	 * private constructor. to instantiate this class, use the static getInstance() method.
+	 */
+	private Engine() {
+		mFileManager = new FileManager();
+		mCache = new Cache();
+		mUndoBin = new UndoBin();
+	}
+	
+	/**
+	 * This method returns the Engine. It restricts the caller to only one instance
+	 * of the Engine. This follows the Singleton Pattern.
+	 * @return The one and only instance of the Engine.
+	 */
+	public static Engine getInstance() {
+		if (ENGINE_INSTANCE == null) {
+			ENGINE_INSTANCE = new Engine();
+		}
+		
+		try {
+			ENGINE_INSTANCE.loadFile();
+			
+		} catch (ReadingFromStorageException e) {
+			ENGINE_INSTANCE = null;
+			return getInstance();
+			
+		} catch (IOException e) {
+			ENGINE_INSTANCE = null;
+			return getInstance();
+			
+		} catch (CacheAccessException e) {
+			ENGINE_INSTANCE = null;
+			return getInstance();
+		}
+		return ENGINE_INSTANCE;
+	}
+
+	// ****** public methods ****** //
+	
+	/**
+	 * This method returns an arraylist of events that occur on the specified day frame.
+	 * @param todayCal the calendar object containing the specified day
+	 * @return an arraylist of events that occur on the specified day
+	 */
+	public ArrayList<ItemData> getTodayScreenItems(Calendar todayCal) {
+		try {
+			return mCache.getAllEventsOn(todayCal);
+		} catch (CacheAccessException e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * This method returns an arraylist of tasks that occur between two dates.
+	 * @param fromCal one of the dates
+	 * @param toCal another one of the dates.
+	 * @return an arraylist of tasks that occur between the dates.
+	 */
+	public ArrayList<ItemData> getTodoScreenItems(Calendar fromCal, Calendar toCal) {
+		try {
+			return mCache.getAllTasksBetween(fromCal, toCal);
+		} catch (CacheAccessException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * This method returns an outputdata object that contains the execution result
+	 * and additional information.
+	 * @param input The inputdata object to execute 
+	 * @return the outputdata object containing execution result.
+	 */
+	public OutputData execute(InputData input) {
+		// precondition, input cannot be null
+		assert (input != null);
+
+		//preconditions, input must have these components
+		Command cmd = input.getCommand();
+		ParsingStatus parsingStatus = input.getStatus();
+		assert (cmd != null);
+		assert (parsingStatus != null);
+		
+		// check if parsing success or not
+		if (parsingStatus.equals(ParsingStatus.FAIL)) {
+			OutputData output = new OutputData(cmd, 
+					ParsingStatus.FAIL,
+					ExecutionStatus.NULL);
+			return output;
+		}
+		
+		OutputData output = null;
+		Runner commandRunner = null;
+		
+		// decide what function to run.
+		switch (cmd) {
+			case ADD_EVENT :
+			case ADD_TASK :
+			case ADD_PLAN :
+				commandRunner = new RunnerAdd(input, mUndoBin, mCache);
+				break;
+				
+			case LIST :
+				commandRunner = new RunnerList(input, mUndoBin, mCache);
+				break;
+				
+			case EDIT :
+				commandRunner = new RunnerEdit(input, mUndoBin, mCache);
+				break;
+				
+			case DELETE :
+				commandRunner = new RunnerDelete(input, mUndoBin, mCache);
+				break;
+				
+			case MARK_DONE :
+			case TOGGLE_DONE :
+				commandRunner = new RunnerDone(input, mUndoBin, mCache);
+				break;
+				
+			case UNDO :
+				// undo uses engine logic hence cannot be abstracted out.
+				output = runUndo(input);
+				break;
+				
+			case SAVE :
+				commandRunner = new RunnerSave(mFileManager, mCache);
+				break;
+				
+			case EXIT :
+				// exit uses the save runner so cannot be abstracted
+				// into a runner without violating demeter princlepl
+				output = runExit();
+				break;
+				
+			default:
+				return new OutputData(cmd, 
+						ParsingStatus.SUCCESS,
+						ExecutionStatus.NULL);
+		}
+		
+		// to filter the commands that need the runner to execute
+		if (commandRunner != null && output == null) {
+			output = commandRunner.run();
+		}
+		
+		// postcondition
+		assert (output != null);
+		return output;
+	}
+	
+	
+	
+	
+	// ********* methods that execute the commands ******* //
+
+	private OutputData runUndo(InputData inputData) {
+		 // the inputdata to be executed is already stored. 
+		 // so here just execute that inputdata.
+		InputData undoInput = mUndoBin.getUndoInputData();
+		return execute(undoInput);
+	}
+
+	/**
+	 * will save before sending the exit output.
+	 * @return the output stating whether it saved or nots
+	 */
+	private OutputData runExit() {
+		OutputData saveOutput = new RunnerSave(mFileManager, mCache).run();
+		OutputData output = new OutputData(Command.EXIT,
+				ParsingStatus.SUCCESS, 
+				ExecutionStatus.FAIL);
+		output.setExecutionStatus(saveOutput.getExecutionStatus());
+		return output;
+	}
+	
+	
+	
+
+	// ********* helper methods ******* //
+
+	private void loadFile() throws ReadingFromStorageException, IOException, CacheAccessException {
+		mCache.clear();
+		ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
+		mCache.addAll(itemsFromFile);
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\main\Engine.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\main\uDo.java
+	 */
+
+package udo.main;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
+import udo.util.shared.ExecutionStatus;
+
+/**
+ * This is the main class that the user will run. This class will also
+ * coordinate the other components.
+ * 
+ */
+public class uDo {
+
+	public static void main(String[] args) {
+		uDo udo = new uDo();
+		udo.run(args);
+	}
+
+	public static final int EXIT_STATUS_OK = 0;
+	public static final int EXIT_STATUS_NOT_OK = -1;
+	public static final int DAYS_IN_ADVANCE = 3;
+
+	private UserInterface mUI;
+	private Parser mParser;
+	private Engine mEngine;
+
+	boolean mIsRunning;
+
+	public uDo() {
+		mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
+		mParser = new Parser();
+		mEngine = Engine.getInstance(); // Engine is a Singleton pattern
+		mIsRunning = true;
+	}
+
+	private void run(String[] args) {
+
+		manageArgs(args);
+		
+		try {
+			
+			runMainLoop();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(EXIT_STATUS_NOT_OK);
+		}
+	}
+
+	private void manageArgs(String[] args) {
+		// in case we decide to handle any arguments
+	}
+
+	private void runMainLoop() {
+		while (mIsRunning) {
+			
+			updateTodayScreen();
+			updateTodoScreen();
+			
+			String inputString = mUI.getInput();
+			OutputData outputData = parseAndExecute(inputString);
+			mUI.show(outputData);
+			checkForExitCommand(outputData);
+		}
+		System.exit(EXIT_STATUS_OK);
+	}
+
+	private void updateTodoScreen() {
+		Calendar from = Calendar.getInstance();
+		from.setLenient(true);
+		Calendar to = Calendar.getInstance();
+		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + DAYS_IN_ADVANCE);
+		ArrayList<ItemData> itemsToShow = mEngine.getTodoScreenItems(from, to);
+		mUI.updateTodoScreen(itemsToShow);
+	}
+
+	private void updateTodayScreen() {
+		Calendar today = Calendar.getInstance();
+		ArrayList<ItemData> itemsToShow = mEngine.getTodayScreenItems(today);
+		mUI.updateTodayScreen(itemsToShow);
+	}
+
+	private void checkForExitCommand(OutputData outputData) {
+		if (outputData.getCommand() == Command.EXIT) {
+			if (outputData.getExecutionStatus() == ExecutionStatus.SUCCESS) {
+				mIsRunning = false;
+			}
+		}
+	}
+
+	private OutputData parseAndExecute(String input) {
+		InputData inputData = mParser.getInputData(input);
+		OutputData outputData = mEngine.execute(inputData);
+		return outputData;
+	}
+	
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\main\uDo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\tests\CacheUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import udo.util.engine.Cache;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
+import udo.util.exceptions.ItemNotFoundException;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+import udo.util.shared.Constants.Keys;
+
+public class CacheUnitTest {
+
+	private static final int PLAN_UID = 12347;
+	private static final int NOT_EXIST_UID = 0;
+	private static final int INVALID_UID = -1;
+	
+	// we assume cache.size() works because there is no way 
+	// to test it without invoking the other methods under test
+
+	@Test
+	public void testCacheAddItem() throws CacheAccessException {
+		// puts two items inside the cache 
+		// and test whether the items go inside the cache or not
+		Cache c = new Cache();
+		int oldSize = c.size();
+		ItemData i = new ItemData(ItemType.PLAN);
+		i.put(Keys.TITLE, "asd");
+		ItemData ii = new ItemData(ItemType.PLAN);
+		ii.put(Keys.TITLE, "asdasd");
+		c.addItem(i);
+		c.addItem(ii);
+		assertEquals("the new size should be larger than old size by 2",
+				c.size(), oldSize + 2);
+	}
+	
+	@SuppressWarnings("null")
+	@Test
+	public void testCacheGetItem() {
+		// puts an item inside the cache 
+		// and tries to get it back
+		Cache c = new Cache();
+		ItemData i = new ItemData(ItemType.PLAN);
+		i.put(Keys.TITLE, "asd");
+		i.put(Keys.UID, PLAN_UID);
+		try {
+			c.addItem(i);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+		
+		// get the correct item
+		ItemData get = null;
+		try {
+			get = c.getItem(PLAN_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			fail("item not found");
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		}
+		
+		assertNotEquals("received item should not be null",
+				null,
+				get);
+		
+		assertEquals("received item should have the correct uid",
+				PLAN_UID,
+				get.get(Keys.UID));
+		
+		// get the wrong item
+		ItemData getWrong = null;
+		try {
+			getWrong = c.getItem(NOT_EXIST_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			assertEquals("item not found, item received should still be null",
+					null,
+					getWrong);
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		}
+
+		// get the invalid item
+		ItemData getInvalid = null;
+		try {
+			getInvalid = c.getItem(INVALID_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			fail("item not foudn");
+		} catch (InvalidUIDException e) {
+			assertEquals("invalid uid, item received should still be null",
+					null,
+					getInvalid);
+		}
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	public void testCacheDeleteItem() {
+		// puts an item inside the cache 
+		// and tries to remove it
+		Cache c = new Cache();
+		ItemData i = new ItemData(ItemType.PLAN);
+		i.put(Keys.TITLE, "asd");
+		i.put(Keys.UID, PLAN_UID);
+		try {
+			c.addItem(i);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+		
+		// delete correct item
+		ItemData deleted = null;
+		try {
+			deleted = c.deleteItem(PLAN_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		} catch (ItemNotFoundException e) {
+			fail("item not found");
+		}
+		
+		assertNotEquals("deleted item not null",
+				null,
+				deleted);
+		
+		assertEquals("deleted item should have the correct uid",
+				PLAN_UID,
+				deleted.get(Keys.UID));
+
+		// delete the wrong item
+		ItemData deleteWrong = null;
+		try {
+			deleteWrong = c.deleteItem(NOT_EXIST_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			assertEquals("item not found, item deleted should still be null",
+					null,
+					deleteWrong);
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		}
+
+		// delete the invalid item
+		ItemData deleteInvalid = null;
+		try {
+			deleteInvalid = c.getItem(INVALID_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			fail("item not found");
+		} catch (InvalidUIDException e) {
+			assertEquals("invalid uid, item deleted should still be null",
+					null,
+					deleteInvalid);
+		}
+	}
+	
+	@Test
+	public void testCacheClear() {
+		// adds an item 
+		// then clears the cache
+		// then checks the cache size
+		Cache c = new Cache();
+		int emptySize = c.size();
+		
+		try {
+			c.addItem(new ItemData(ItemType.EVENT));
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+
+		int nonEmptySize = c.size();
+		
+		try {
+			c.clear();
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+		
+		int clearedSize = c.size();
+		
+		assertNotEquals("cleared size should not be the non empty size",
+				nonEmptySize,
+				clearedSize);
+		
+		assertEquals("cleared size should be empty size",
+				emptySize,
+				clearedSize);
+		
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\tests\CacheUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\tests\EngineUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.junit.Test;
+
+import udo.main.Engine;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.EditField;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+import udo.util.shared.ListQuery;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+
+public class EngineUnitTest {
+	
+	private static final int EVENT_UID = 12345;
+	private static final int TASK_UID = 12346;
+	
+	@Test
+	public void testEngineListByDate() {
+		Engine e = Engine.getInstance();
+		Calendar queryCal = Calendar.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DATE);
+		input.put(Keys.QUERY_VALUE, queryCal);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("list by date " + list);
+	}
+	
+	
+	@Test
+	// delete uid is split into:
+		// positive uid
+		// negative uid (invalid)
+	// The positive uid is split into:
+		// from 00000 to 99999 (valid)
+		// above 100000 and above
+	// within the valid range, it is also partitioned into: 
+		// 1. uid exist 
+		// 2. uid do not exist
+	public void testEngineDeleteBoundaryCasesForUID() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.DELETE, ParsingStatus.SUCCESS);
+		
+		// this is the boundary case for negative uid partition 
+		input.put(Keys.UID, -1);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+		
+		// this is the lower boundary case for the positive uid partition
+		// this uid also does not exist
+		input.put(Keys.UID, 00000); // also equal to the integer 0
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+		
+		// this is the upper boundary case for the positive uid partition
+		// this uid also does not exist
+		input.put(Keys.UID, 99999);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+
+		// this is a case for the positive and exists partition
+		input.put(Keys.UID, EVENT_UID);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		// this is the lower boundary case for the positive partition above 100000
+		input.put(Keys.UID, 100000);
+		output = e.execute(input);
+
+		assertFalse("output not null",
+				null == output);
+
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+	}
+	
+	@Test
+	public void testEngineListDone() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		e.execute(input);
+		
+		input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
+		
+		OutputData output = e.execute(input);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		assertFalse("items in output not null",
+				null == items);
+		assertFalse("number of items in output not null",
+				0 == items.size());	
+	}
+	
+	@Test
+	public void testEngineMarkAndToggleDone() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		OutputData output = e.execute(input);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == item);
+		assertTrue("ensure edited item marked", 
+				(boolean)item.get(Keys.DONE));
+		System.out.println(item);
+		
+		input = new InputData(Command.TOGGLE_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		output = e.execute(input);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		item = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == item);
+		assertFalse("ensure edited item unmarked", 
+				(boolean)item.get(Keys.DONE));
+		System.out.println(item);
+	}
+	
+	@Test
+	public void testEngineEditItemEndTime() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, EVENT_UID);
+		inputEdit.put("field", EditField.END_TIME);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == edited);
+		Calendar editedCal = (Calendar) edited.get(Keys.END);
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
+				editedCal.get(Calendar.HOUR_OF_DAY));
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineEditItemDueTime() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, TASK_UID);
+		inputEdit.put("field", EditField.DUE_TIME);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == edited);
+		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
+				editedCal.get(Calendar.HOUR_OF_DAY));
+		System.out.println(edited);
+	}
+
+	@Test
+	public void testEngineEditItemDueDate() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, TASK_UID);
+		inputEdit.put("field", EditField.DUE_DATE);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == edited);
+		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 
+				editedCal.get(Calendar.DAY_OF_MONTH));
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineEditItemTitle() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, EVENT_UID);
+		inputEdit.put("field", EditField.TITLE);
+		inputEdit.put("value", "dummy title");
+		OutputData output = e.execute(inputEdit);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		assertFalse("edited item in output not null",
+				null == edited);
+		assertEquals("ensure edited item actaully got edited",
+				"dummy title", 
+				edited.get(Keys.TITLE));
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineAddPlan() {
+		Engine e = Engine.getInstance();
+		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
+		inputPlan.put(Keys.TITLE, "test plan");
+		inputPlan.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputPlan);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData addedPlan = (ItemData) output.get(Keys.ITEM);
+		assertFalse("added item in output not null",
+				null == addedPlan);
+		assertEquals("added item is a plan",
+				ItemType.PLAN, 
+				addedPlan.getItemType());
+	}
+	
+	@Test
+	public void testEngineAddTask() {
+		Engine e = Engine.getInstance();
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputTask);
+		assertFalse("output not null",
+				null == output);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		ItemData addedTask = (ItemData) output.get(Keys.ITEM);
+		assertFalse("added item in output not null",
+				null == addedTask);
+		assertEquals("added item is a task",
+				ItemType.TASK,
+				addedTask.getItemType());
+	}
+	
+	@Test
+	public void testEngineGetUpcomingTasks() {
+		Engine e = Engine.getInstance();
+		Calendar from = Calendar.getInstance();
+		from.setLenient(true);
+		Calendar to = Calendar.getInstance();
+		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + 3);
+		ArrayList<ItemData> itemsToShow = e.getTodoScreenItems(from, to);
+		assertFalse("todayList is not null",
+				null == itemsToShow);
+		System.out.println(itemsToShow);
+	}
+
+	@Test
+	public void testEngineGetTodayItems() {
+		Engine e = Engine.getInstance();
+		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
+		assertFalse("todayList is not null",
+				null == todayList);
+	}
+
+	@Test
+	public void testEngineDelete() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.DELETE);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.UID, EVENT_UID);
+		OutputData output = e.execute(input);
+		assertFalse("Output must not be null",
+				null == output);
+		assertEquals("Execution must be successful",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+	}
+	
+	@Test
+	public void testEngineExecuteListHash() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+		input.put(Keys.QUERY_VALUE, "meeting");
+		OutputData o = e.execute(input);
+		
+		assertFalse("output object cant be null",
+				o == null);
+		
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be list",
+				Command.LIST,
+				o.getCommand());
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		System.out.println(s.toString());
+	}
+
+	@Test
+	public void testEngineExecuteListAll() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
+		OutputData o = e.execute(input);
+		
+		assertFalse("output object cant be null",
+				o == null);
+		
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be list",
+				Command.LIST,
+				o.getCommand());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		
+		assertFalse("there should be items",
+				null == s);
+	}
+
+	@Test 
+	public void testEngineExecuteExit() {
+		Engine e = Engine.getInstance();
+		 
+		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		assertEquals("the output command should be exit",
+				Command.EXIT,
+				o.getCommand());
+	}
+
+	@Test
+	public void testEngineExecuteAddEventNotNull() {
+		Engine e = Engine.getInstance();
+		 
+		InputData in = new InputData(Command.ADD_EVENT);
+		in.setParsingStatus(ParsingStatus.SUCCESS);
+		assertFalse("", null == e.execute(in));
+	}
+
+	@Test // save is still buggy
+	public void testEngineExecuteSave() {
+		Engine e = Engine.getInstance();
+		InputData in = new InputData(Command.SAVE);
+		in.setParsingStatus(ParsingStatus.SUCCESS);
+		OutputData out = e.execute(in);
+		assertFalse("out should not be null", null == out);
+		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
+	}
+
+	@Test
+	public void testItemDataMatch() {
+		ItemData i1 = new ItemData(ItemType.EVENT);
+		i1.put("a", "a");
+		i1.put("b", "ajshdgf");
+		ItemData i2 = new ItemData(ItemType.EVENT);
+		i2.put("a", "a");
+		i2.put("b", "ajshdgf");
+		assertTrue(i1.equals(i2));
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\tests\EngineUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\tests\FileManagerUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+import udo.util.engine.FileManager;
+import udo.util.exceptions.ReadingFromStorageException;
+import udo.util.exceptions.WritingToStorageException;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+import udo.util.shared.Constants.Keys;
+
+public class FileManagerUnitTest {
+
+	private static final String TEST_READ_FILENAME = "data/test_read_data.txt";
+	private static final String TEST_WRITE_FILENAME = "data/test_write_data.txt";
+
+	@Test
+	public void testFMReadFile() {
+		FileManager fm = new FileManager(TEST_READ_FILENAME);
+		ArrayList<ItemData> list = null;
+		
+		try {
+			list = fm.getFromFile();
+		} catch (ReadingFromStorageException e) {
+			fail("reading storage");
+		} catch (IOException e) {
+			fail("io");
+		}
+		
+		assertNotEquals("list should not be null",
+				null,
+				list);
+	}
+	
+	@SuppressWarnings("null")
+	@Test
+	public void testFMWriteFile() {
+		// make two plans, 
+		// then place them in the file
+		// then get back and check the file got things or not.
+		FileManager fm = new FileManager(TEST_WRITE_FILENAME);
+		ArrayList<ItemData> list = new ArrayList<ItemData>();
+		
+		ItemData testPlan = new ItemData(ItemType.PLAN);
+		testPlan.put(Keys.TITLE, "test plan 1");
+		testPlan.put(Keys.UID, 12347);
+		testPlan.put(Keys.HASHTAGS, new ArrayList<String>());
+		ItemData testPlan2 = new ItemData(ItemType.PLAN);
+		testPlan2.put(Keys.TITLE, "test plan 2");
+		testPlan2.put(Keys.UID, 12348);
+		testPlan2.put(Keys.HASHTAGS, new ArrayList<String>());
+		
+		list.add(testPlan);
+		list.add(testPlan2);
+		
+		try {
+			fm.writeToFile(list);
+		} catch (IOException e) {
+			fail("io");
+		} catch (WritingToStorageException e) {
+			fail("writing storage");
+		}
+		
+		// writing passed.
+		// now to get back.
+		ArrayList<ItemData> getBack = null;
+		try {
+			 getBack = fm.getFromFile();
+		} catch (ReadingFromStorageException e) {
+			fail("reading storage");
+		} catch (IOException e) {
+			fail("io");
+		}
+		
+		assertNotEquals("list should not be null",
+				null,
+				getBack);
+		
+		assertEquals("list should have the 2 things",
+				getBack.size(),
+				2);
+		
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\tests\FileManagerUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\tests\UndoBinUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import udo.util.engine.UndoBin;
+import udo.util.shared.Command;
+import udo.util.shared.InputData;
+
+public class UndoBinUnitTest {
+
+	@Test
+	public void testUBPutItem() {
+		// put something
+		UndoBin u = new UndoBin();
+		u.putInputData(new InputData(Command.EDIT));
+		// cannot fail. no exception thrown as well.
+	}
+	
+	@Test
+	public void testUBGetItem() {
+		// put something
+		// then get it back
+		// make sure its the same item
+		UndoBin u = new UndoBin();
+		u.putInputData(new InputData(Command.EDIT));
+		
+		InputData getInput = u.getUndoInputData();
+		
+		assertNotEquals("get input cannot be null",
+				null,
+				getInput);
+		
+		assertEquals("get input is the same as putted",
+				Command.EDIT,
+				getInput.getCommand());
+	}
+	
+	@Test
+	public void testUBClearItem() {
+		// put something
+		// then clear
+		// then try to get back.
+		// get back should be null
+		UndoBin u = new UndoBin();
+		u.putInputData(new InputData(Command.EDIT));
+		
+		u.clear();
+		
+		InputData getInput = u.getUndoInputData();
+		
+		assertEquals("get input must be null",
+				null,
+				getInput);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\tests\UndoBinUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\Cache.java
+	 */
+
+package udo.util.engine;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Random;
+
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
+import udo.util.exceptions.ItemNotFoundException;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+
+public class Cache {
+
+	private HashSet<ItemData> mEvents;
+	private HashSet<ItemData> mTasks;
+	private HashSet<ItemData> mPlans;
+	private boolean mIsLocked;
+	private Iterator<ItemData> mEventsIterator;
+	private Iterator<ItemData> mTasksIterator;
+	private Iterator<ItemData> mPlansIterator;
+
+	private HashSet<Integer> mUIDs;
+
+	public Cache() {
+		mEvents = new HashSet<ItemData>();
+		mTasks = new HashSet<ItemData>();
+		mPlans = new HashSet<ItemData>();
+		mUIDs = new HashSet<Integer>();
+		mIsLocked = false;
+	}
+
+	/**
+	 * adds a list of items
+	 * 
+	 * @param list the list of items to add
+	 * @throws CacheAccessException if adding one of the items failed
+	 */
+	public void addAll(ArrayList<ItemData> list) throws CacheAccessException {
+		for (ItemData item : list) {
+			addItem(item);
+		}
+	}
+
+	/**
+	 * adds an item
+	 * 
+	 * @param item the item to add
+	 * @throws CacheAccessException if cache is locked when trying to add
+	 */
+	public void addItem(ItemData item) throws CacheAccessException {
+		if (isLocked()) {
+			throw new CacheAccessException("cache is locked");
+		}
+		
+		trackUID(item);
+		
+		ItemType type = item.getItemType();
+		switch (type) {
+			case EVENT :
+				mEvents.add(item);
+				break;
+
+			case TASK :
+				mTasks.add(item);
+				break;
+
+			case PLAN :
+				mPlans.add(item);
+				break;
+
+			default:
+
+		}
+	}
+	
+	/**
+	 * gets an item by the uid
+	 * 
+	 * @param uid the uid of the item to get
+	 * @return the item matching the uid
+	 * @throws CacheAccessException if cache cannot be accessed
+	 * @throws ItemNotFoundException if item not found
+	 * @throws InvalidUIDException if uid invalid
+	 */
+	public ItemData getItem(int uid) throws CacheAccessException, ItemNotFoundException, InvalidUIDException {
+		if (uid < 0) {
+			throw new InvalidUIDException();
+		}
+		
+		ArrayList<ItemData> items = getAllItems();
+		ItemData result = null;
+		for (ItemData item : items) {
+			int itemUid = (int) item.get(Keys.UID);
+			if (itemUid == uid) {
+				result = item;
+				break;
+			}
+		}
+		
+		if (result == null) {
+			throw new ItemNotFoundException();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * deletes an item via the uid
+	 * 
+	 * @param uid the uid of the item to delete
+	 * @return the deleted item.
+	 * @throws CacheAccessException if cache cannot be accessed
+	 * @throws InvalidUIDException if uid wrong
+	 * @throws ItemNotFoundException if item not found
+	 */
+	public ItemData deleteItem(int uid) throws CacheAccessException, InvalidUIDException, ItemNotFoundException {
+		if (uid < 0) {
+			throw new InvalidUIDException("negative number");
+		}
+		
+		ArrayList<ItemData> items = getAllItems();
+		ItemData toDelete = null;
+		for (ItemData item : items) {
+			int itemUid = (int) item.get(Keys.UID);
+			if (itemUid == uid) {
+				toDelete = item;
+				break;
+			}
+		}
+		
+		if (toDelete == null) {
+			throw new ItemNotFoundException();
+		}
+
+		ItemType type = toDelete.getItemType();
+		switch (type) {
+			case EVENT:
+				mEvents.remove(toDelete);
+				break;
+			case TASK:
+				mTasks.remove(toDelete);
+				break;
+			case PLAN:
+				mPlans.remove(toDelete);
+				break;
+			default:
+				throw new ItemNotFoundException();
+		}
+
+		return toDelete;
+	}
+
+	/**
+	 * gives the size of the cache
+	 * 
+	 * @return the size
+	 */
+	public int size() {
+		int eventSize = mEvents.size();
+		int taskSize = mTasks.size();
+		int planSize = mPlans.size();
+		int totalSize = eventSize + taskSize + planSize;
+		return totalSize;
+	}
+
+	/**
+	 * clears all items in the cache.
+	 * does NOT invoke the delete command. it's a simple clear.
+	 * 
+	 * @throws CacheAccessException if cache is locked when trying to clear
+	 */
+	public void clear() throws CacheAccessException {
+		if (isLocked()) {
+			throw new CacheAccessException();
+		}
+		mEvents.clear();
+		mTasks.clear();
+		mPlans.clear();
+	}
+
+	/**
+	 * generates a random uid between 10000 and 99999
+	 * @return a random uid between 10000 and 99999
+	 */
+	public int generateUID() {
+		Random r = new Random(System.currentTimeMillis());
+		int uid = 10000 + r.nextInt(90000);
+		if (mUIDs.contains(uid)) {
+			return generateUID();
+		} else {
+			return uid;
+		}
+	}
+
+	public ArrayList<ItemData> getAllItemsOn(Calendar date) throws CacheAccessException {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			if (isSameDateAs(item, date)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+	
+	public ArrayList<ItemData> getAllEventsOn(Calendar date) throws CacheAccessException {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllEvents()) {
+			if (isSameDateAs(item, date)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+
+	public ArrayList<ItemData> getAllTasksBetween(Calendar from, Calendar to) throws CacheAccessException {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllTasks()) {
+			if (isBetweenDates(item, from, to)) {
+				allTasks.add(item);
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+	
+	public ArrayList<ItemData> getAllItemsWithHashtag(String tag) throws CacheAccessException {
+		ArrayList<ItemData> result = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			@SuppressWarnings("unchecked")
+			ArrayList<String> tags = (ArrayList<String>) item.get(Keys.HASHTAGS);
+			if (tags.contains(tag)) {
+				result.add(item);
+			}
+		}
+		Collections.sort(result);
+		return result;
+	}
+
+	public ArrayList<ItemData> getAllEvents() throws CacheAccessException {
+		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.EVENT)) {
+				allEvents.add(item);
+			}
+		}
+		Collections.sort(allEvents);
+		return allEvents;
+	}
+
+	public ArrayList<ItemData> getAllTasks() throws CacheAccessException {
+		ArrayList<ItemData> allTasks = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.TASK)) {
+				allTasks.add(item);
+			}
+		}
+		Collections.sort(allTasks);
+		return allTasks;
+	}
+	
+	public ArrayList<ItemData> getAllPlans() throws CacheAccessException {
+		ArrayList<ItemData> allPlans = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			ItemType itemType = item.getItemType();
+			if (itemType.equals(ItemType.PLAN)) {
+				allPlans.add(item);
+			}
+		}
+		Collections.sort(allPlans);
+		return allPlans;
+	}
+
+	/**
+	 * returns a list of both tasks and plans
+	 * 
+	 * @return a list of both tasks and plans
+	 * @throws CacheAccessException if cache is locked 
+	 */
+	public ArrayList<ItemData> getAllTodo() throws CacheAccessException {
+		ArrayList<ItemData> allTasksAndPlans = new ArrayList<ItemData>();
+		allTasksAndPlans.addAll(getAllTasks());
+		allTasksAndPlans.addAll(getAllPlans());
+		Collections.sort(allTasksAndPlans);
+		return allTasksAndPlans;
+	}
+	
+	/**
+	 * returns a list of items marked as done.
+	 * items can only be of task or plan type.
+	 * 
+	 * @return the list of done items
+	 * @throws CacheAccessException if cache is locked
+	 */
+	public ArrayList<ItemData> getAllDone() throws CacheAccessException {
+		ArrayList<ItemData> allDone = new ArrayList<ItemData>();
+		for (ItemData item : getAllTodo()) {
+			if ((boolean) item.get(Keys.DONE)) {
+				allDone.add(item);
+			}
+		}
+		Collections.sort(allDone);
+		return allDone;
+	}
+
+	/**
+	 * returns a list of all the items
+	 * 
+	 * @return a list of all the items
+	 * @throws CacheAccessException if the cache is locked
+	 */
+	public ArrayList<ItemData> getAllItems() throws CacheAccessException {
+		if (isLocked()) {
+			throw new CacheAccessException("cache not locked");
+		}
+		
+		return collateItems();
+	}
+	
+	/**
+	 * locks cache, makes an arraylist of items, then unlocks cache.
+	 * 
+	 * @return the list of items in the cache at this point.
+	 */
+	private ArrayList<ItemData> collateItems() {
+		lock();
+		
+		ArrayList<ItemData> allItems = new ArrayList<ItemData>();
+		while (hasNextItem()) {
+			allItems.add(getNextItem());
+		}
+		
+		Collections.sort(allItems);
+		
+		unlock();
+		return allItems;
+	}
+
+	private boolean isSameDateAs(ItemData item, Calendar date) {
+		Calendar itemCal;
+		ItemType itemType = item.getItemType();
+		if (itemType == null) {
+			return false;
+		} else if (itemType.equals(ItemType.EVENT)) {
+			itemCal = (Calendar) item.get(Keys.START);
+		} else if (itemType.equals(ItemType.TASK)) {
+			itemCal = (Calendar) item.get(Keys.DUE);
+		} else {
+			return false;
+		}
+		return isSameDateAs(itemCal, date);
+	}
+
+	private boolean isSameDateAs(Calendar c1, Calendar c2) {
+		int c1Day = c1.get(Calendar.DAY_OF_MONTH);
+		int c1Month = c1.get(Calendar.MONTH);
+		int c1Year = c1.get(Calendar.YEAR);
+		int c2Day = c2.get(Calendar.DAY_OF_MONTH);
+		int c2Month = c2.get(Calendar.MONTH);
+		int c2Year = c2.get(Calendar.YEAR);
+		if (c1Day != c2Day) {
+			return false;
+		}
+		if (c1Month != c2Month) {
+			return false;
+		}
+		if (c1Year != c2Year) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean isBetweenDates(ItemData item, Calendar from, Calendar to) {
+		Calendar itemCal;
+		ItemType itemType = item.getItemType();
+		if (itemType.equals(ItemType.EVENT)) {
+			itemCal = (Calendar) item.get(Keys.START);
+		} else if (itemType.equals(ItemType.TASK)) {
+			itemCal = (Calendar) item.get(Keys.DUE);
+		} else {
+			return false;
+		}
+		return isBetweenDates(itemCal, from, to);
+	}
+
+	private boolean isBetweenDates(Calendar itemCal, Calendar from, Calendar to) {
+		// compare from 0:00 to 23:59 of the date range
+		from.set(Calendar.HOUR_OF_DAY, 0);
+		from.set(Calendar.MINUTE, 0);
+		from.set(Calendar.SECOND, 0);
+		to.set(Calendar.HOUR_OF_DAY, 23);
+		to.set(Calendar.MINUTE, 59);
+		to.set(Calendar.SECOND, 59);
+		
+		if (itemCal.after(from) && itemCal.before(to)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void lock() {
+		mIsLocked = true;
+		mEventsIterator = mEvents.iterator();
+		mTasksIterator = mTasks.iterator();
+		mPlansIterator = mPlans.iterator();
+	}
+
+	private void unlock() {
+		mIsLocked = false;
+		mEventsIterator = null;
+		mTasksIterator = null;
+		mPlansIterator = null;
+	}
+
+	private boolean isLocked() {
+		return mIsLocked;
+	}
+
+	private boolean hasNextItem() {
+		if (!mIsLocked) {
+			return false;
+		} else {
+			return mEventsIterator.hasNext() || mTasksIterator.hasNext()
+					|| mPlansIterator.hasNext();
+		}
+	}
+
+	private ItemData getNextItem() {
+		if (!mIsLocked) {
+			return null;
+		}
+		if (mEventsIterator.hasNext()) {
+			return mEventsIterator.next();
+		} else if (mTasksIterator.hasNext()) {
+			return mTasksIterator.next();
+		} else if (mPlansIterator.hasNext()) {
+			return mPlansIterator.next();
+		} else {
+			return null;
+		}
+	}
+
+	private void trackUID(ItemData item) {
+		Integer uid = (Integer) item.get(Keys.UID);
+		mUIDs.add(uid);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\Cache.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\FileManager.java
+	 */
+
+package udo.util.engine;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.util.exceptions.ReadingFromStorageException;
+import udo.util.exceptions.WritingToStorageException;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.StorageIndices;
+import udo.util.shared.Constants.StorageStrings;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+
+public class FileManager {
+
+	private String mFilename;
+	
+	private BufferedReader mReader;
+	private ItemData mNextItem;
+	private boolean mIsReading;
+	
+	private BufferedWriter mWriter;
+	private boolean mIsWriting;
+
+	public FileManager() {
+		mFilename = StorageStrings.FILENAME;
+		mIsReading = false;
+		mIsWriting = false;
+	}
+	
+	/**
+	 * lets you specify what file to read.
+	 * 
+	 * @param filename the file to read
+	 */
+	public FileManager(String filename) {
+		mFilename = filename;
+		mIsReading = false;
+		mIsWriting = false;
+	}
+
+	/**
+	 * gets an arraylist of data after reading in the file
+	 * 
+	 * @return the list of items
+	 * @throws ReadingFromStorageException if cannot read
+	 * @throws IOException if reading error
+	 */
+	public ArrayList<ItemData> getFromFile() throws ReadingFromStorageException, IOException {
+		startReadMode();
+		if (!isReading()) {
+			throw new ReadingFromStorageException("read mode cannot be started");
+		}
+		ArrayList<ItemData> result = new ArrayList<ItemData>();
+		while (hasNextItem()) {
+			ItemData item = getNextItem();
+			result.add(item);
+		}
+		stopReadMode();
+		return result;
+	}
+
+	/**
+	 * writes a list of items to the file. 
+	 * @param list the list of items to write.
+	 * @throws IOException if writing error or file error.
+	 * @throws WritingToStorageException if cannot write
+	 */
+	public void writeToFile(ArrayList<ItemData> list) throws IOException, WritingToStorageException {
+		startWriteMode();
+		if (!isWriting()) {
+			throw new WritingToStorageException("write mode cannot be started");
+		}
+		for (ItemData item : list) {
+			write(item);
+		}
+		stopWriteMode();
+	}
+
+	private boolean hasNextItem() {
+		boolean hasNext = (mNextItem != null);
+		return hasNext;
+	}
+
+	private ItemData getNextItem() throws IOException {
+		if (hasNextItem()) {
+			ItemData result = mNextItem;
+			String nextLine = getNextLine();
+			mNextItem = getItemData(nextLine);
+			return result;
+		} else {
+			return null;
+		}
+	}
+
+	private boolean createNewFile(String filename) {
+		try {
+			new FileWriter(filename).close();
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
+	}
+
+	private String getNextLine() throws IOException {
+		return mReader.readLine();
+	}
+
+	private ItemData getItemData(String line) {
+		if (line == null) {
+			return null;
+		}
+		if (line.equals("")) {
+			return null;
+		}
+		String[] lineArray = getStringArray(line);
+		
+		ItemType type = getItemType(lineArray[StorageIndices.TYPE]);
+		switch (type) {
+			case EVENT :
+				return getEventItemData(lineArray);
+			case TASK :
+				return getTaskItemData(lineArray);
+			case PLAN :
+				return getPlanItemData(lineArray);
+			default:
+				return null;
+			
+		}
+	}
+	
+	private ItemData getPlanItemData(String[] lineArray) {
+		// [0uid, 1type, 2title, 3<tags>]
+
+		ItemData item = new ItemData(ItemType.PLAN);
+
+		int uid = Integer.parseInt(lineArray[StorageIndices.UID]);
+		item.put(Keys.UID,
+				uid);
+		
+		String title = lineArray[StorageIndices.TITLE];
+		item.put(Keys.TITLE,
+				title);
+		
+		boolean done = Boolean.parseBoolean(lineArray[StorageIndices.PLAN_DONE]);
+		item.put(Keys.DONE, 
+				done);
+
+		String tagsString = lineArray[StorageIndices.PLAN_HASHTAGS];
+		ArrayList<String> tagsList = getList(tagsString);
+		item.put(Keys.HASHTAGS, 
+				tagsList);
+
+		return item;
+	}
+
+	private ItemData getTaskItemData(String[] lineArray) {
+		// [0uid, 1type, 2title, 3ddate, 4dtime, 5<tags>]
+
+		ItemData item = new ItemData(ItemType.TASK);
+
+		int uid = Integer.parseInt(lineArray[StorageIndices.UID]);
+		item.put(Keys.UID,
+				uid);
+		
+		String title = lineArray[StorageIndices.TITLE];
+		item.put(Keys.TITLE,
+				title);
+
+		String dueDate = lineArray[StorageIndices.DUE_DATE];
+		String dueTime = lineArray[StorageIndices.DUE_TIME];
+		Calendar dueCal = getCalendar(dueDate, dueTime);
+		item.put(Keys.DUE, 
+				dueCal);
+		
+		boolean done = Boolean.parseBoolean(lineArray[StorageIndices.TASK_DONE]);
+		item.put(Keys.DONE, 
+				done);
+		
+		String tagsString = lineArray[StorageIndices.TASK_HASHTAGS];
+		ArrayList<String> tagsList = getList(tagsString);
+		item.put(Keys.HASHTAGS, 
+				tagsList);
+		
+		return item;
+	}
+
+	private ItemData getEventItemData(String[] lineArray) {
+		 // [0uid, 1type, 2title, 3stdate, 4stime, 5endate, 6entime, 7<tags>]
+		
+		ItemData item = new ItemData(ItemType.EVENT);
+
+		int uid = Integer.parseInt(lineArray[StorageIndices.UID]);
+		item.put(Keys.UID,
+				uid);
+		
+		String title = lineArray[StorageIndices.TITLE];
+		item.put(Keys.TITLE,
+				title);
+
+		String startDate = lineArray[StorageIndices.START_DATE];
+		String startTime = lineArray[StorageIndices.START_TIME];
+		Calendar startCal = getCalendar(startDate, startTime);
+		item.put(Keys.START, 
+				startCal);
+
+		String endDate = lineArray[StorageIndices.END_DATE];
+		String endTime = lineArray[StorageIndices.END_TIME];
+		Calendar endCal = getCalendar(endDate, endTime);
+		item.put(Keys.END, 
+				endCal);
+
+		String tagsString = lineArray[StorageIndices.EVENT_HASHTAGS];
+		ArrayList<String> tagsList = getList(tagsString);
+		item.put(Keys.HASHTAGS, 
+				tagsList);
+		
+		return item;
+	}
+
+	private String[] getStringArray(String str) {
+		return str.split(StorageStrings.FIELD_DELIMITER);
+	}
+
+	private ItemType getItemType(String typeString) {
+		if (typeString == null) {
+			return null;
+		} else if (typeString.equals(StorageStrings.TYPE_EVENT)) {
+			return ItemType.EVENT;
+		} else if (typeString.equals(StorageStrings.TYPE_TASK)) {
+			return ItemType.TASK;
+		} else if (typeString.equals(StorageStrings.TYPE_PLAN)) {
+			return ItemType.PLAN;
+		} else {
+			return null;
+		}
+	}
+
+	private Calendar getCalendar(String date, String time) {
+		Calendar cal = Calendar.getInstance();
+		// parse date and time
+		String[] timeArray = time.split(StorageStrings.TIME_DELIMITER);
+		String[] dateArray = date.split(StorageStrings.DATE_DELIMITER);
+		int day = Integer.parseInt(dateArray[0]);
+		int month = Integer.parseInt(dateArray[1]) - 1; // to offset the 0-based month in calendar
+		int year = Integer.parseInt(dateArray[2]);
+		int hour = Integer.parseInt(timeArray[0]);
+		int minute = Integer.parseInt(timeArray[1]);
+		cal.set(year, month, day, hour, minute);
+		return cal;
+	}
+
+	private ArrayList<String> getList(String tagsString) {
+		ArrayList<String> list = new ArrayList<String>();
+		if (tagsString == null || tagsString.length() == 0) {
+			return list;
+		} else {
+			String[] tagsArray = tagsString.split(",");
+			for (int i = 0; i < tagsArray.length; i++) {
+				list.add(tagsArray[i]);
+			}
+			return list;
+		}
+	}
+
+	private void startReadMode() {
+		if (isWriting()) {
+			setReading(false);
+		}
+		
+		try {
+			mReader = new BufferedReader(
+					new InputStreamReader(
+							new FileInputStream(mFilename),
+							"UTF-8"));
+			String nextLine = mReader.readLine();
+			mNextItem = getItemData(nextLine);
+			setReading(true);
+			
+		} catch (FileNotFoundException e) {
+			// if there's no existing file, create the file.
+			// then try opening it again.
+			setReading(false);
+			createNewFile(mFilename);
+			startReadMode();
+			
+		} catch (IOException e) {
+			// if unable to read the nextline
+			setReading(false);
+		}
+	}
+
+	private void stopReadMode() {
+		try {
+			mReader.close();
+			setReading(false);
+		} catch (IOException e) {
+			setReading(true);
+		}
+	}
+
+	private void startWriteMode() {
+		try {
+			// will overwrite the current file with the new data.
+			mWriter = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(mFilename),
+							"UTF-8"));
+			setWriting(true);
+		} catch (IOException e) {
+			setWriting(false);
+		}
+	}
+
+	private void stopWriteMode() {
+		try {
+			mWriter.close();
+			setWriting(false);
+		} catch (IOException e) {
+			setWriting(true);
+		}
+	}
+
+	private void write(ItemData item) throws IOException {
+		String itemString = item.toString();
+		mWriter.append(itemString);
+		mWriter.newLine();
+	}
+
+	private boolean isWriting() {
+		return mIsWriting;
+	}
+
+	private void setWriting(boolean writing) {
+		mIsWriting = writing;
+	}
+
+	private boolean isReading() {
+		return mIsReading;
+	}
+
+	private void setReading(boolean reading) {
+		mIsReading = reading;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\FileManager.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\Runner.java
+	 */
+
+package udo.util.engine.runners;
+
+import udo.util.engine.Cache;
+import udo.util.engine.FileManager;
+import udo.util.engine.UndoBin;
+import udo.util.shared.InputData;
+import udo.util.shared.OutputData;
+
+/**
+ * this class is the parent class of the classes that help the engine execute commands.
+ * the run() method has to be implemented by the extending classes.
+ * this class has to be extended.
+ */
+public abstract class Runner {
+
+	protected InputData mInput;
+	protected FileManager mFileManager;
+	protected Cache mCache;
+	protected UndoBin mUndoBin;
+	
+	protected Runner(InputData i, FileManager f, UndoBin u, Cache c) {
+		mInput = i;
+		mFileManager = f;
+		mUndoBin = u;
+		mCache = c;
+	}
+	
+	/**
+	 * This method executes a command and returns the output data.
+	 * This method has to be implemented in an extending class.
+	 * The actual execution is defined by the extending class.
+	 * @return the output data after execution.
+	 */
+	public abstract OutputData run();
+	
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\Runner.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerAdd.java
+	 */
+
+package udo.util.engine.runners;
+
+import udo.util.engine.Cache;
+import udo.util.engine.UndoBin;
+import udo.util.exceptions.AddToCacheException;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.shared.Command;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
+
+public class RunnerAdd extends Runner {
+	
+	public RunnerAdd(InputData input, UndoBin undoBin, Cache cache) {
+		super(input, null, undoBin, cache);
+	}
+
+	@Override
+	public OutputData run() {
+		// create outputdata with these params
+		Command cmd = mInput.getCommand();
+		ParsingStatus pStatus = mInput.getStatus();
+		OutputData output = new OutputData(cmd, pStatus);
+		
+		boolean cacheAddOK = false;
+		
+		ItemData genericItem = makeGenericItem(mInput);
+		ItemData itemToAdd;
+		
+		// carry out specific add for each itemtype.
+		// also adds the final item to the cache.
+		switch (cmd) {
+			case ADD_EVENT :
+				itemToAdd = addEvent(mInput, genericItem);
+				break;
+				
+			case ADD_TASK :
+				itemToAdd = addTask(mInput, genericItem);
+				break;
+				
+			case ADD_PLAN :
+				itemToAdd = addPlan(mInput, genericItem);
+				break;
+				
+			default :
+				itemToAdd = null;
+				break;
+		}
+		
+		if (itemToAdd == null) {
+			// item is null, item type was not correct
+			// fail the execution
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+			
+		} else {
+			try {
+				mCache.addItem(itemToAdd);
+				output.setExecutionStatus(ExecutionStatus.SUCCESS);
+				output.put(Keys.ITEM, itemToAdd);
+				storeUndo(itemToAdd);
+				
+			} catch (CacheAccessException e) {
+				output.setExecutionStatus(ExecutionStatus.FAIL);
+			}
+			
+		}
+		
+		return output;
+	}
+	
+	private ItemData makeGenericItem(InputData input) {
+		// extract data from inputdata to make an event
+		ItemData item = new ItemData();
+		
+		if (input.contains(Keys.UID)) {
+			// if the inputdata came from undo, 
+			// then it would have the uid
+			item.put(Keys.UID, 
+					input.get(Keys.UID));
+		} else {
+			item.put(Keys.UID, 
+					mCache.generateUID());
+		}
+		
+		item.put(Keys.TITLE, 
+				input.get(Keys.TITLE));
+		item.put(Keys.HASHTAGS, 
+				input.get(Keys.HASHTAGS));
+		
+		return item;
+	}
+	
+	private ItemData addEvent(InputData input, ItemData event) {
+		event.setItemType(ItemType.EVENT);
+		
+		event.put(Keys.START, 
+				input.get(Keys.START));
+		event.put(Keys.END, 
+				input.get(Keys.END));
+
+		return event;
+	}
+
+	private ItemData addTask(InputData input, ItemData task) {
+		task.setItemType(ItemType.TASK);
+		
+		task.put(Keys.DUE, 
+				input.get(Keys.DUE));
+		task.put(Keys.DONE, 
+				false);
+		
+		//add to cache
+		return task;
+	}
+	
+	private ItemData addPlan(InputData input, ItemData plan) {
+		plan.setItemType(ItemType.PLAN);
+		
+		plan.put(Keys.DONE, 
+				false);
+		
+		//add to cache
+		return plan;
+	}
+	
+	private void storeUndo(ItemData item) {
+		InputData undoInput = new InputData(Command.DELETE);
+		undoInput.put(Keys.UID, item.get(Keys.UID));
+		undoInput.setParsingStatus(ParsingStatus.SUCCESS);
+		mUndoBin.putInputData(undoInput);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerAdd.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerDelete.java
+	 */
+
+package udo.util.engine.runners;
+
+import udo.util.engine.Cache;
+import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
+import udo.util.exceptions.ItemNotFoundException;
+import udo.util.shared.Command;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
+
+public class RunnerDelete extends Runner {
+
+	public RunnerDelete(InputData input, UndoBin undoBin, Cache cache) {
+		super(input, null, undoBin, cache);
+	}
+
+	@Override
+	public OutputData run() {
+		int uid = (int) mInput.get(Keys.UID);
+		ItemData deletedItem;
+		OutputData output;
+		
+		try {
+			deletedItem = mCache.deleteItem(uid);
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.SUCCESS);
+			output.put(Keys.ITEM, deletedItem);
+			storeUndo(deletedItem);
+			
+		} catch (CacheAccessException e) {
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.FAIL);
+			
+		} catch (InvalidUIDException e) {
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.FAIL);
+			
+		} catch (ItemNotFoundException e) {
+			output = new OutputData(Command.DELETE, 
+					ParsingStatus.SUCCESS, 
+					ExecutionStatus.FAIL);
+		}
+
+		return output;
+	}
+
+	private void storeUndo(ItemData item) {
+		InputData undoInput;
+		ItemType previousItemType = item.getItemType();
+		
+		// create the correct inputdata depending on the type of item
+		switch (previousItemType) {
+			case EVENT :
+				undoInput = new InputData(Command.ADD_EVENT);
+				break;
+			case TASK :
+				// TODO
+				undoInput = new InputData(Command.ADD_TASK);
+				break;
+			case PLAN :
+				// TODO
+				undoInput = new InputData(Command.ADD_PLAN);
+				break;
+			default:
+				// should not
+				return;
+		}
+		
+		// copy the data in the item to the inputdata.
+		// so that the add command can add like it came from the parser
+		for (String key : item.getKeys()) {
+			undoInput.put(key, item.get(key));
+		}
+		
+		undoInput.setParsingStatus(ParsingStatus.SUCCESS);
+		mUndoBin.putInputData(undoInput);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerDelete.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerDone.java
+	 */
+
+package udo.util.engine.runners;
+
+import udo.util.engine.Cache;
+import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
+import udo.util.exceptions.ItemNotFoundException;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+
+public class RunnerDone extends Runner {
+
+	public RunnerDone(InputData input, UndoBin undoBin, Cache cache) {
+		super(input, null, undoBin, cache);
+	}
+
+	@Override
+	public OutputData run() {
+		Command cmd = mInput.getCommand();
+		int uid = (int) mInput.get(Keys.UID);
+		try {
+			ItemData itemToMark = mCache.getItem(uid);
+			
+			// ensure item exists
+			if (itemToMark == null) {
+				return new OutputData(cmd,
+						ParsingStatus.SUCCESS,
+						ExecutionStatus.FAIL);
+			}
+			
+			// ensure item is markable (i.e. not event)
+			if (itemToMark.getItemType() == ItemType.EVENT) {
+				return new OutputData(cmd,
+						ParsingStatus.SUCCESS,
+						ExecutionStatus.FAIL);
+			}
+			
+			switch (cmd) {
+				case MARK_DONE :
+					markDone(itemToMark);
+					break;
+					
+				case TOGGLE_DONE :
+					toggleDone(itemToMark);
+					break;
+					
+				default:
+					break;
+			}
+			
+			OutputData output = new OutputData(cmd,
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.SUCCESS);
+			output.put(Keys.ITEM, itemToMark);
+			
+			return output;
+			
+		} catch (CacheAccessException e) {
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
+		} catch (ItemNotFoundException e) {
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
+		} catch (InvalidUIDException e) {
+			return new OutputData(Command.EXIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
+		}
+	}
+
+	private void markDone(ItemData itemToMark) {
+		itemToMark.put(Keys.DONE, true);
+	}
+	
+	private void toggleDone(ItemData itemToMark) {
+		boolean doneValue = (boolean) itemToMark.get(Keys.DONE);
+		itemToMark.put(Keys.DONE, !doneValue);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerDone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerEdit.java
+	 */
+
+package udo.util.engine.runners;
+
+import java.util.Calendar;
+
+import udo.util.engine.Cache;
+import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.InvalidUIDException;
+import udo.util.exceptions.ItemNotFoundException;
+import udo.util.shared.Command;
+import udo.util.shared.EditField;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.shared.Constants.Keys;
+
+public class RunnerEdit extends Runner {
+
+	public RunnerEdit(InputData input, UndoBin undoBin, Cache cache) {
+		super(input, null, undoBin, cache);
+	}
+
+	@Override
+	public OutputData run() {
+		int uid = (int) mInput.get(Keys.UID);
+		try {
+			ItemData itemToEdit = mCache.getItem(uid);
+			Object value = mInput.get(Keys.VALUE);
+			OutputData output;
+
+			EditField field = (EditField) mInput.get(Keys.FIELD);
+			switch (field) {
+				case DUE_DATE :
+					output = runEditDueDate(itemToEdit, (Calendar) value);
+					break;
+				case DUE_TIME :
+					output = runEditDueTime(itemToEdit, (Calendar) value);
+					break;
+				case END_DATE :
+					output = runEditEndDate(itemToEdit, (Calendar) value);
+					break;
+				case END_TIME :
+					output = runEditEndTime(itemToEdit, (Calendar) value);
+					break;
+				case START_DATE :
+					output = runEditStartDate(itemToEdit, (Calendar) value);
+					break;
+				case START_TIME :
+					output = runEditStartTime(itemToEdit, (Calendar) value);
+					break;
+				case TITLE :
+					output = runEditTitle(itemToEdit, (String) value);
+					break;
+				default:
+					output = new OutputData(Command.EDIT, 
+							ParsingStatus.SUCCESS,
+							ExecutionStatus.FAIL);
+			}
+			output.put(Keys.ITEM, itemToEdit);
+			output.put(Keys.FIELD, field);
+			return output;
+			
+		} catch (CacheAccessException e) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
+		} catch (ItemNotFoundException e) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
+		} catch (InvalidUIDException e) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+			
+		}
+	}
+
+	private OutputData runEditTitle(ItemData item, String title) {
+		String oldTitle = (String) item.get(Keys.TITLE);
+		item.put(Keys.TITLE, title);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.TITLE, oldTitle);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, oldTitle);
+		return output;
+	}
+	
+	private OutputData runEditStartTime(ItemData item, Calendar timeCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
+		Calendar startCal = (Calendar) item.get(Keys.START);
+		Calendar calToStore = (Calendar) startCal.clone();
+		setTime(startCal, timeCal);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.START_TIME, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
+	}
+	
+	private OutputData runEditEndTime(ItemData item, Calendar timeCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
+		Calendar endCal = (Calendar) item.get(Keys.END);
+		Calendar calToStore = (Calendar) endCal.clone();
+		setTime(endCal, timeCal);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.END_TIME, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
+	}
+
+	private OutputData runEditStartDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.START);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setDate(dueCal, dateCal);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.START_DATE, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
+	}
+
+	private OutputData runEditEndDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.EVENT) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.END);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setDate(dueCal, dateCal);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.END_DATE, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
+	}
+	
+	private OutputData runEditDueTime(ItemData item, Calendar timeCal) {
+		if (item.getItemType() != ItemType.TASK) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.DUE);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setTime(dueCal, timeCal);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.DUE_TIME, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
+	}
+
+	private OutputData runEditDueDate(ItemData item, Calendar dateCal) {
+		if (item.getItemType() != ItemType.TASK) {
+			return new OutputData(Command.EDIT, 
+					ParsingStatus.SUCCESS,
+					ExecutionStatus.FAIL);
+		}
+		Calendar dueCal = (Calendar) item.get(Keys.DUE);
+		Calendar calToStore = (Calendar) dueCal.clone();
+		setDate(dueCal, dateCal);
+		int uid = (int) item.get(Keys.UID);
+		storeUndo(uid, EditField.DUE_DATE, calToStore);
+		OutputData output = new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+		output.put(Keys.OLD_VALUE, calToStore);
+		return output;
+	}
+
+	private OutputData setTime(Calendar itemCal, Calendar timeCal) {
+		itemCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+		itemCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+		return new OutputData(Command.EDIT, 
+				ParsingStatus.SUCCESS,
+				ExecutionStatus.SUCCESS);
+	}
+
+	private void setDate(Calendar itemCal, Calendar dateCal) {
+		itemCal.set(Calendar.YEAR, dateCal.get(Calendar.YEAR));
+		itemCal.set(Calendar.MONTH, dateCal.get(Calendar.MONTH));
+		itemCal.set(Calendar.DAY_OF_MONTH, dateCal.get(Calendar.DAY_OF_MONTH));
+	}
+
+	private void storeUndo(int uid, EditField field, Object oldValue) {
+		InputData undoInput = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		undoInput.put(Keys.UID, uid);
+		undoInput.put(Keys.FIELD, field);
+		undoInput.put(Keys.VALUE, oldValue);
+		mUndoBin.putInputData(undoInput);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerEdit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerList.java
+	 */
+
+package udo.util.engine.runners;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.util.engine.Cache;
+import udo.util.engine.UndoBin;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.InputData;
+import udo.util.shared.ItemData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+
+public class RunnerList extends Runner {
+
+	public RunnerList(InputData input, UndoBin undoBin, Cache cache) {
+		super(input, null, undoBin, cache);
+	}
+
+	@Override
+	public OutputData run() {
+		/*
+		 * 1. build a list of all items 2. select only the items we want. 3.
+		 * sort the items according to date/time 4. put the items in the
+		 * outputdata. 5. return output
+		 */
+		ArrayList<ItemData> result;
+
+		ListQuery queryType = (ListQuery) mInput.get(Keys.QUERY_TYPE);
+		
+		OutputData output = new OutputData(Command.LIST,
+				ParsingStatus.SUCCESS, 
+				ExecutionStatus.SUCCESS);
+		try {
+			switch (queryType) {
+				case ALL :
+					result = mCache.getAllItems();
+					break;
+
+				case DONE :
+					result = mCache.getAllDone();
+					break;
+
+				case SINGLE_HASHTAG :
+					String hashtag = (String) mInput.get(Keys.QUERY_VALUE);
+					result = mCache.getAllItemsWithHashtag(hashtag);
+					output.put(Keys.QUERY_VALUE, hashtag);
+					break;
+
+				case DATE :
+					Calendar dateCal = (Calendar) mInput.get(Keys.QUERY_VALUE);
+					result = mCache.getAllItemsOn(dateCal);
+					output.put(Keys.QUERY_VALUE, dateCal);
+					break;
+
+				default :
+					result = null;
+					output.setExecutionStatus(ExecutionStatus.FAIL);
+			}
+			output.put(Keys.QUERY_TYPE, queryType);
+			output.put(Keys.ITEMS, result);
+
+		} catch (CacheAccessException e) {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+		}
+
+		return output;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerSave.java
+	 */
+
+package udo.util.engine.runners;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import udo.util.engine.Cache;
+import udo.util.engine.FileManager;
+import udo.util.exceptions.CacheAccessException;
+import udo.util.exceptions.WritingToStorageException;
+import udo.util.shared.Command;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+
+public class RunnerSave extends Runner {
+
+	public RunnerSave(FileManager f, Cache c) {
+		super(null, f, null, c);
+		
+	}
+
+	@Override
+	public OutputData run() {
+		OutputData output = new OutputData(Command.SAVE,
+				ParsingStatus.SUCCESS, 
+				ExecutionStatus.SUCCESS);
+		try {
+			writeCacheToFile();
+			
+		} catch (WritingToStorageException e) {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+		} catch (IOException e) {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+		} catch (CacheAccessException e) {
+			output.setExecutionStatus(ExecutionStatus.FAIL);
+		}
+		
+		return output;
+	}
+
+	private void writeCacheToFile() throws WritingToStorageException, IOException, CacheAccessException {
+		ArrayList<ItemData> itemsToWrite = mCache.getAllItems(); 
+		mFileManager.writeToFile(itemsToWrite);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\runners\RunnerSave.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\UndoBin.java
+	 */
+
+package udo.util.engine;
+
+import udo.util.shared.InputData;
+
+/**
+ * only for engine to use.
+ */
+public class UndoBin {
+	private InputData mInputData;
+
+	public UndoBin() {
+		mInputData = null;
+	}
+
+	/**
+	 * put a inputdata here
+	 * 
+	 * @param input the data
+	 */
+	public void putInputData(InputData input) {
+		mInputData = input;
+	}
+
+	/**
+	 * get the input data from here
+	 * 
+	 * @return the data
+	 */
+	public InputData getUndoInputData() {
+		return mInputData;
+	}
+
+	/**
+	 * clear the contents of the cache.
+	 */
+	public void clear() {
+		mInputData = null;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\engine\UndoBin.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\AddToCacheException.java
+	 */
+
+package udo.util.exceptions;
+
+public class AddToCacheException extends Exception {
+
+	private static final long serialVersionUID = 3432337392350347299L;
+
+	public AddToCacheException() {
+	}
+
+	public AddToCacheException(String message) {
+		super(message);
+
+	}
+
+	public AddToCacheException(Throwable cause) {
+		super(cause);
+
+	}
+
+	public AddToCacheException(String message, Throwable cause) {
+		super(message, cause);
+
+	}
+
+	public AddToCacheException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\AddToCacheException.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\CacheAccessException.java
+	 */
+
+package udo.util.exceptions;
+
+public class CacheAccessException extends Exception {
+
+	private static final long serialVersionUID = 6438275789275587451L;
+
+	public CacheAccessException() {
+	}
+
+	public CacheAccessException(String message) {
+		super(message);
+
+	}
+
+	public CacheAccessException(Throwable cause) {
+		super(cause);
+
+	}
+
+	public CacheAccessException(String message, Throwable cause) {
+		super(message, cause);
+
+	}
+
+	public CacheAccessException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\CacheAccessException.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\InvalidUIDException.java
+	 */
+
+package udo.util.exceptions;
+
+public class InvalidUIDException extends Exception {
+	
+	private static final long serialVersionUID = -4071625216471665775L;
+
+	public InvalidUIDException() {
+	}
+
+	public InvalidUIDException(String message) {
+		super(message);
+
+	}
+
+	public InvalidUIDException(Throwable cause) {
+		super(cause);
+
+	}
+
+	public InvalidUIDException(String message, Throwable cause) {
+		super(message, cause);
+
+	}
+
+	public InvalidUIDException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\InvalidUIDException.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\ItemNotFoundException.java
+	 */
+
+package udo.util.exceptions;
+
+public class ItemNotFoundException extends Exception {
+	
+	private static final long serialVersionUID = 4713939680500553269L;
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\ItemNotFoundException.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\ReadingFromStorageException.java
+	 */
+
+package udo.util.exceptions;
+
+public class ReadingFromStorageException extends Exception {
+	
+	private static final long serialVersionUID = -8581536426563241650L;
+	
+	public ReadingFromStorageException() {
+	}
+
+	public ReadingFromStorageException(String message) {
+		super(message);
+
+	}
+
+	public ReadingFromStorageException(Throwable cause) {
+		super(cause);
+
+	}
+
+	public ReadingFromStorageException(String message, Throwable cause) {
+		super(message, cause);
+
+	}
+
+	public ReadingFromStorageException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\ReadingFromStorageException.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\WritingToStorageException.java
+	 */
+
+package udo.util.exceptions;
+
+public class WritingToStorageException extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 76626833108912570L;
+
+	public WritingToStorageException() {
+	}
+
+	public WritingToStorageException(String message) {
+		super(message);
+
+	}
+
+	public WritingToStorageException(Throwable cause) {
+		super(cause);
+
+	}
+
+	public WritingToStorageException(String message, Throwable cause) {
+		super(message, cause);
+
+	}
+
+	public WritingToStorageException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\exceptions\WritingToStorageException.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Command.java
+	 */
+
+package udo.util.shared;
+
+public enum Command {
+	ADD,
+	ADD_EVENT, 
+	ADD_TASK, 
+	ADD_PLAN, 
+	LIST, 
+	DELETE, 
+	EDIT,
+	MARK_DONE,
+	TOGGLE_DONE,
+	SAVE, 
+	EXIT, 
+	UNDO, 
+	NULL
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Command.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+	 */
+
+package udo.util.shared;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.text.SimpleDateFormat;
+
+import javax.swing.KeyStroke;
+
+/**
+ * 
+ * This class holds all constants that the program uses. (the magic numbers) The
+ * constants are further classified in their own subclasses. Add your own
+ * subclass here to store all your strings and values and such.
+ * 
+ */
+public class Constants {
+	
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds all the keys used for the data storage objects. Please
+	 * reference these values rather than typing your own key. This is to
+	 * standardise across components so that one component can retrieve the data
+	 * that another puts in.
+	 * 
+	 */
+	public static final class Keys {
+		public static final String UID = "uid";
+		public static final String TITLE = "title";
+		public static final String DUE = "due"; 			// for task
+		public static final String DONE = "done"; 			// for task
+		public static final String START = "start"; 		// events
+		public static final String END = "end"; 			// event
+		public static final String HASHTAG = "hashtag"; 	// for list
+		public static final String HASHTAGS = "hashtags"; 	// for parser add
+		public static final String ITEM = "item";
+		public static final String ITEMS = "items";
+		public static final String QUERY_TYPE = "query type";
+		public static final String QUERY_VALUE = "query value";
+		public static final String FIELD = "field";
+		public static final String VALUE = "value";
+		public static final String DATE = "date";
+		public static final String OLD_VALUE = "Old value";
+	}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds the array index values for the file manager usage. If you
+	 * desire to put your own values inside here, make sure that the new
+	 * variable name doesnt conflict with existing names. If there is potential
+	 * confusion (e.g. your title index is different from the existing index)
+	 * pls sound out first.
+	 * 
+	 */
+	public static final class StorageIndices {
+		// all
+		public static final int UID = 0;
+		public static final int TYPE = 1;
+		public static final int TITLE = 2;
+		// event
+		public static final int START_DATE = 3;
+		public static final int START_TIME = 4;
+		public static final int END_DATE = 5;
+		public static final int END_TIME = 6;
+		public static final int EVENT_HASHTAGS = 7;
+		// task
+		public static final int DUE_DATE = 3;
+		public static final int DUE_TIME = 4;
+		public static final int TASK_DONE = 5;
+		public static final int TASK_HASHTAGS = 6;
+		//plan
+		public static final int PLAN_DONE = 3;
+		public static final int PLAN_HASHTAGS = 4;
+	}
+	
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds the magic strings for the storage and retrieving of data
+	 * from the storage file. This includes the toString method of the ItemData
+	 * class
+	 * 
+	 */
+	public static final class StorageStrings {
+		public static final String FILENAME = "data/uDo_data.txt";
+		public static final String FIELD_DELIMITER = "\\|\\|\\|";
+		public static final String DATE_DELIMITER = "/";
+		public static final String TIME_DELIMITER = ":";
+		public static final String TAG_DELIMITER = ",";
+		public static final String TYPE_EVENT = "EVENT";
+		public static final String TYPE_TASK = "TASK";
+		public static final String TYPE_PLAN = "PLAN";
+		public static final String UNFORMATTED_STRING_EVENT = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$d/%10$d/%11$d|||%12$d:%13$d|||%14$s|||;";
+		public static final String UNFORMATTED_STRING_TASK = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$b|||%10$s|||;";
+		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
+	}
+	
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\DataHolder.java
+	 */
+
+package udo.util.shared;
+
+import java.util.HashMap;
+import java.util.Set;
+
+public class DataHolder {
+	
+	protected final HashMap<String, Object> mData;
+	
+	public DataHolder() {
+		mData = new HashMap<String, Object>();
+	}
+	
+	/**
+	 * Associates the specified item with the specified key An existing item of
+	 * the same key will be replaced. The item inserted cannot be {@code null}.
+	 * 
+	 * @param key
+	 *            The key of the item.
+	 * @param item
+	 *            The item to be put inside
+	 * @return {@code true} when the operation is successful, or {@code false}
+	 *         when the inserted item is null
+	 */
+	public boolean put(String key, Object item) {
+		if (item != null) {
+			mData.put(key, item);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Retrieves the item that is associated with the key.
+	 * 
+	 * @param key
+	 *            The key of the item to retrieve
+	 * @return The item, or {@code null} if the key is not mapped.
+	 */
+	public Object get(String key) {
+		if (mData.containsKey(key)) {
+			return mData.get(key);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a boolean value describing if the named item exists inside.
+	 * 
+	 * @param key
+	 *            The key of the item to check.
+	 * @return {@code true} if the item exists, or {@code false} otherwise.
+	 */
+	public boolean contains(String key) {
+		return mData.containsKey(key);
+	}
+
+	/**
+	 * Returns a {@link Set} view of the keys contained in this object.
+	 * 
+	 * @return the keyset
+	 */
+	public Set<String> getKeys() {
+		return mData.keySet();
+	}
+
+	/**
+	 * Returns the hashmap that holds the data.
+	 * 
+	 * @return the hashmap
+	 */
+	public HashMap<String, Object> getData() {
+		return mData;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\DataHolder.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\EditField.java
+	 */
+
+package udo.util.shared;
+
+public enum EditField {
+	TITLE,
+	START_TIME, END_TIME,
+	START_DATE, END_DATE,
+	DUE_TIME, DUE_DATE
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\EditField.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ExecutionStatus.java
+	 */
+
+package udo.util.shared;
+
+/**
+ * 
+ * Used to communicate the success of the command execution.
+ * <p>
+ * SUCCESS = Command executed successfully.
+ * <br>
+ * FAIL = Command failed to execute properly.
+ * <br>
+ * NULL = Command did not even attempt to execute.
+ *
+ */
+public enum ExecutionStatus {
+	SUCCESS, FAIL, NULL
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ExecutionStatus.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\InputData.java
+	 */
+
+package udo.util.shared;
+
+
+/**
+ * This class carries information parsed from the input string. This class
+ * should contain information that allows the Engine to decide what to do, and
+ * any additional information that the Engine requires to carry it out.
+ * 
+ */
+public class InputData extends DataHolder {
+
+	private Command mCommand;
+	private ParsingStatus mParsingStatus;
+
+	public InputData(Command cmd) {
+		mCommand = cmd;
+	}
+	
+	public InputData(Command cmd, ParsingStatus status) {
+		mCommand = cmd;
+		mParsingStatus = status;
+	}
+
+	/**
+	 * gets the command
+	 * 
+	 * @return the <code>Command</code>
+	 */
+	public Command getCommand() {
+		return mCommand;
+	}
+	
+	/**
+	 * Returns the {@code ParsingStatus} value
+	 * 
+	 * @return the {@code ParsingStatus} value
+	 */
+	public ParsingStatus getStatus() {
+		return mParsingStatus;
+	}
+
+	/**
+	 * Sets the {@code ParsingStatus} value
+	 * 
+	 * @param status the status
+	 * @return the {@code ParsingStatus} value
+	 */
+	public void setParsingStatus(ParsingStatus status) {
+		mParsingStatus = status;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\InputData.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ItemData.java
+	 */
+
+package udo.util.shared;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.StorageStrings;
+
+/**
+ * This class holds the all the data that an item should have, like title, date,
+ * hashtag, so on. The keys for the put() and get() function must be one of the
+ * keys from the Constants.Keys class.
+ * 
+ */
+public class ItemData extends DataHolder implements Comparable<ItemData> {
+
+	private ItemType mType;
+	
+	public ItemData() {
+		mType = ItemType.PLAN; // a default value
+	}
+
+	public ItemData(ItemType type) {
+		super();
+		mType = type;
+	}
+	
+	public void setItemType(ItemType type) {
+		mType = type;
+	}
+
+	public ItemType getItemType() {
+		return mType;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for (Object value : mData.values()) {
+			hash = hash | value.hashCode();
+		}
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == this) {
+			return true;
+		}
+		if (other == null) {
+			return false;
+		}
+		if (!other.getClass().equals(this.getClass())) {
+			return false;
+		} else {
+			ItemData otherItem = (ItemData) other;
+			if (!this.getItemType().equals(otherItem.getItemType())) {
+				return false;
+			}
+			if (!this.getData().equals(otherItem.getData())) {
+				return false;
+			}
+			return true;
+		}
+	}
+
+	@Override
+	public String toString() {
+		switch (mType) {
+		case EVENT :
+			return makeEventString();
+		case TASK : 
+			return makeTaskString();
+		case PLAN : 
+			return makePlanString();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public int compareTo(ItemData other) {
+		Calendar thisCal;
+		Calendar otherCal;
+
+		if (this.contains(Keys.START)) {
+			thisCal = (Calendar) this.get(Keys.START);
+		} else if (this.contains(Keys.DUE)) {
+			thisCal = (Calendar) this.get(Keys.DUE);
+		} else {
+			thisCal = null;
+		}
+
+		if (other.contains(Keys.START)) {
+			otherCal = (Calendar) other.get(Keys.START);
+		} else if (other.contains(Keys.DUE)) {
+			otherCal = (Calendar) other.get(Keys.DUE);
+		} else {
+			otherCal = null;
+		}
+
+		if (thisCal == null && otherCal == null) {
+			// they are equal if nothing to compare
+			return 0;
+		} else if (thisCal == null && otherCal != null) {
+			// this is placed behind the other
+			// if the other has a date and this doesnt.
+			return 1;
+		} else if (thisCal != null && otherCal == null) {
+			// this is placed in front of the other 
+			// if this has a date and the other doesnt.
+			return -1;
+		} else if (thisCal != null && otherCal != null) {
+			// if both are not null, then just 
+			// return the comparision to the other
+			return thisCal.compareTo(otherCal);
+		} else {
+			// this should not happen
+			return 0;
+		}
+	}
+
+	private String getTagString(ArrayList<String> list) {
+		String result = new String();
+		for (int i = 0; i < list.size(); i++) {
+			result = result.concat(list.get(i));
+			if (i != list.size() - 1) { //not last element 
+				result = result.concat(StorageStrings.TAG_DELIMITER);
+			}
+		}
+		result.concat(";");
+		// postcondition
+		assert (result != null);
+		return result;
+	}
+
+	private String makeEventString() {
+		// uid | type | title | sdate | stime | edate | etime | tags
+		Calendar startCal = (Calendar) mData.get(Keys.START);
+		Calendar endCal = (Calendar) mData.get(Keys.END);
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_EVENT,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				startCal.get(Calendar.DAY_OF_MONTH),
+				startCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				startCal.get(Calendar.YEAR),
+				startCal.get(Calendar.HOUR_OF_DAY),
+				startCal.get(Calendar.MINUTE),
+				endCal.get(Calendar.DAY_OF_MONTH),
+				endCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				endCal.get(Calendar.YEAR), 
+				endCal.get(Calendar.HOUR_OF_DAY),
+				endCal.get(Calendar.MINUTE), 
+				tagsString);
+		return result;
+	}
+
+	private String makeTaskString() {
+		// uid | type | title | ddate | dtime | done | tags
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		Calendar dueCal = (Calendar) mData.get(Keys.DUE);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_TASK,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				dueCal.get(Calendar.DAY_OF_MONTH),
+				dueCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				dueCal.get(Calendar.YEAR),
+				dueCal.get(Calendar.HOUR_OF_DAY),
+				dueCal.get(Calendar.MINUTE), 
+				mData.get(Keys.DONE),
+				tagsString);
+		return result;
+	}
+	
+	private String makePlanString() {
+		// uid | type | title | done | tags
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_PLAN,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				mData.get(Keys.DONE),
+				tagsString);
+		return result;
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ItemData.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ItemType.java
+	 */
+
+package udo.util.shared;
+
+/**
+ * 
+ *
+ */
+public enum ItemType {
+	EVENT, TASK, PLAN
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ItemType.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ListQuery.java
+	 */
+
+package udo.util.shared;
+
+/**
+ * This class holds the enum type for listing commands
+ */
+public enum ListQuery {
+	ALL, 
+	SINGLE_HASHTAG, 
+	DATE, 
+	DONE
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ListQuery.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\OutputData.java
+	 */
+
+package udo.util.shared;
+
+
+/**
+ * This class carries information from the engine to the UI. The information
+ * contained in this class is all the info that the UI needs to display a
+ * message that corresponds to the execution of the command.
+ * <p>
+ * For example, if the engine executed the addEvent() method, the OutputData
+ * object will contain the command executed (ADD_EVENT), the status of the
+ * execution (SUCCESS or FAIL), and any additional information regarding the
+ * event that was added.
+ * <p>
+ * The status and command are accessed directly but any other additional details
+ * will be stored in a hash table and only accessed by a key.
+ * 
+ */
+public class OutputData extends DataHolder {
+
+	private Command mCommand;
+	private ParsingStatus mParsingStatus;
+	private ExecutionStatus mExecutionStatus;
+	
+	public OutputData(Command cmd) {
+		mCommand = cmd;
+	}
+	
+	public OutputData(Command cmd, ParsingStatus pStatus) {
+		mCommand = cmd;
+		mParsingStatus = pStatus;
+	}
+
+	public OutputData(Command cmd, ParsingStatus pStatus, ExecutionStatus eStatus) {
+		mCommand = cmd;
+		mParsingStatus = pStatus;
+		mExecutionStatus = eStatus;
+	}
+
+	/**
+	 * Retrieves the {@code Command} value
+	 * 
+	 * @return the {@code Command} value
+	 */
+	public Command getCommand() {
+		return mCommand;
+	}
+	
+	/**
+	 * Retrieves the {@code ParsingStatus} value
+	 * 
+	 * @return the {@code ParsingStatus} value
+	 */
+	public ParsingStatus getParsingStatus() {
+		return mParsingStatus;
+	}
+
+	/**
+	 * Retrieves the {@code ExecutionStatus} value
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public ExecutionStatus getExecutionStatus() {
+		return mExecutionStatus;
+	}
+
+	/**
+	 * sets the {@code ExecutionStatus} value
+	 * @param status the status
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public void setParsingStatus(ParsingStatus status) {
+		mParsingStatus = status;
+	}
+	
+	/**
+	 * Retrieves the {@code ExecutionStatus} value
+	 * @param status the status
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public void setExecutionStatus(ExecutionStatus status) {
+		mExecutionStatus = status;
+	}
+	
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\OutputData.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ParsingStatus.java
+	 */
+
+package udo.util.shared;
+
+/**
+ * Communicates the success of parsing user's raw data
+ * <p>
+ * SUCCESS = No anomalies detected in input, successfully parsed input.
+ * <br>
+ * FAIL = Anomalies detected in input, failed to parse input.
+ * 
+ */
+public enum ParsingStatus {
+	SUCCESS, FAIL
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\ParsingStatus.java
+
+
+
+
+

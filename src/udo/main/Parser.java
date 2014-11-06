@@ -1,17 +1,18 @@
 //@author A0114847B
 package udo.main;
 
-import udo.util.parser.ParserAdd;
-import udo.util.parser.ParserCommand;
-import udo.util.parser.ParserDelete;
-import udo.util.parser.ParserEdit;
-import udo.util.parser.ParserExit;
-import udo.util.parser.ParserList;
-import udo.util.parser.ParserMark;
-import udo.util.parser.ParserSave;
-import udo.util.parser.ParserToggleDone;
-import udo.util.parser.ParserTrash;
-import udo.util.parser.ParserUndo;
+import udo.language.LanguagePack;
+import udo.util.parser.Action;
+import udo.util.parser.AddAction;
+import udo.util.parser.DeleteAction;
+import udo.util.parser.EditAction;
+import udo.util.parser.ExitAction;
+import udo.util.parser.ListAction;
+import udo.util.parser.MarkAction;
+import udo.util.parser.SaveAction;
+import udo.util.parser.ToggleDoneAction;
+import udo.util.parser.TrashAction;
+import udo.util.parser.UndoAction;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
 
@@ -19,19 +20,20 @@ import udo.util.shared.InputData;
  * This class parses information from the input string and package it 
  * as an InputData object. 
  * <p>
- * It reads in ADD, LIST, DELETE, EDIT, SAVE, EXIT and UNDO commands.
+ * It reads all enum Command commands.
  * Parser stores the keys using Keys class constants. 
  */
 
 public class Parser {
+	LanguagePack mLang;
 	
 	public Parser() {
-		//implement singleton pattern
+		mLang = LanguagePack.getInstance();
 	}
 	
 	/**
 	 * Parses raw user's input and return it as an InputData object.
-	 * Fields are filled accordingly to it's Commands 
+	 * Fields are filled accordingly to commands, which is the first word in the string
 	 * 
 	 * @param input string 
 	 * @return InputData object
@@ -43,52 +45,62 @@ public class Parser {
 	}
 	
 	private Command determineCommandType(String input) {
+		input = input.toLowerCase();
 		String parts[] = input.split(" ");
 		String command = parts[0];
 		command = command.toLowerCase();
-		switch (command) {
-			case "add":
-				return Command.ADD;
-			case "list":
-				return Command.LIST;
-			case "delete":
-				return Command.DELETE;
-			case "save":
-				return Command.SAVE;
-			case "exit":
-				return Command.EXIT;
-			case "undo":
-				return Command.UNDO;
-			case "edit":
-				return Command.EDIT;
-			case "done":
-				return Command.MARK_DONE;
-			case "toggle":
-				return Command.TOGGLE_DONE;
-			default:
-				return Command.NULL;
-			}
+		
+		if (command.equals(mLang.getADD())) {
+			return Command.ADD;
+			
+		} else if (command.equals(mLang.getLIST())) {
+			return Command.LIST;
+			
+		} else if (command.equals(mLang.getDELETE())) {
+			return Command.DELETE;
+			
+		} else if (command.equals(mLang.getSAVE())) {
+			return Command.SAVE;
+			
+		} else if (command.equals(mLang.getEXIT())) {
+			return Command.EXIT;
+			
+		} else if (command.equals(mLang.getUNDO())) {
+			return Command.UNDO;
+			
+		} else if (command.equals(mLang.getEDIT())) {
+			return Command.EDIT;
+			
+		} else if (command.equals(mLang.getMARK_DONE())) {
+			return Command.MARK_DONE;
+			
+		} else if (command.equals(mLang.getTOGGLE_DONE())) {
+			return Command.TOGGLE_DONE;
+			
+		} else {
+			return Command.NULL;
+		}
 	}
 
 	private InputData processCommandType(Command commandType, String details) {
 		switch (commandType) {
-			case ADD:
+			case ADD :
 				return add(commandType, details);
-			case LIST:
+			case LIST :
 				return list(commandType, details);
-			case DELETE:
+			case DELETE :
 				return delete(commandType, details);
-			case SAVE:
+			case SAVE :
 				return save(commandType, details);
-			case EXIT:
+			case EXIT :
 				return exit(commandType, details);
-			case UNDO:
+			case UNDO :
 				return undo(commandType, details);
-			case EDIT:
+			case EDIT :
 				return edit(commandType, details);
-			case TOGGLE_DONE:
+			case TOGGLE_DONE :
 				return toggle_done(commandType, details);
-			case MARK_DONE:
+			case MARK_DONE :
 				return mark(commandType, details);
 			default:
 				return trash(commandType, details);
@@ -96,60 +108,61 @@ public class Parser {
 	}
 	
 	private InputData mark(Command type, String details) {
-		ParserCommand mark = new ParserMark();
+		Action mark = new MarkAction();
 		InputData data = mark.run(type, details);
 		return data;
 	}
 
 	private InputData toggle_done(Command type, String details) {
-		ParserCommand toggleDone = new ParserToggleDone();
+		Action toggleDone = new ToggleDoneAction();
 		InputData data = toggleDone.run(type, details);
 		return data;
 	}
 
 	private InputData add(Command type, String details) {
-		ParserCommand add = new ParserAdd();
+		Action add = new AddAction();
 		InputData data = add.run(type, details);
 		return data;
 	}
 	
 	private InputData list(Command type, String details) {
-		ParserCommand list = new ParserList();
+		Action list = new ListAction();
 		InputData data = list.run(type, details);
 		return data;
 	}
 
 	private InputData edit(Command type, String details) {
-		ParserEdit activity = new ParserEdit();
-		return activity.edit(type, details);
+		Action edit = new EditAction();
+		InputData data = edit.run(type, details);
+		return data;
 	}
 	
 	private InputData delete(Command type, String details) {
-		ParserCommand delete = new ParserDelete();
+		Action delete = new DeleteAction();
 		InputData data = delete.run(type, details);
 		return data;
 	}
 	
 	private InputData trash(Command type, String details) {
-		ParserCommand trash = new ParserTrash();
+		Action trash = new TrashAction();
 		InputData data = trash.run(type);
 		return data;
 	}
 
 	private InputData undo(Command type, String details) {
-		ParserCommand undo = new ParserUndo();
+		Action undo = new UndoAction();
 		InputData data = undo.run(type);
 		return data;
 	}
 
 	private InputData save(Command type, String details) {
-		ParserCommand save = new ParserSave();
+		Action save = new SaveAction();
 		InputData data = save.run(type);
 		return data;
 	}
 
 	private InputData exit(Command type, String details) {
-		ParserCommand exit = new ParserExit();
+		Action exit = new ExitAction();
 		InputData data = exit.run(type);
 		return data;
 	}

@@ -98,4 +98,71 @@ public class MainUnitTest {
 						"new",
 						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListEvent(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list event");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		// check the size of the resulting arraylist of itemdata
+		assertEquals("the number of itemData should be zero (no data in database)",
+						0,
+						items.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListAll(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list all");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		// check the size of the resulting arraylist of itemdata
+		assertEquals("the number of itemData should be zero (3 in database)",
+						3,
+						items.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListPlan(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list plan");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		// check the size of the resulting arraylist of itemdata
+		assertEquals("the number of itemData should be zero (3 in database)",
+						3,
+						items.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListTask(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list task");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		// check the size of the resulting arraylist of itemdata
+		assertEquals("the number of itemData should be zero (no data in database)",
+						0,
+						items.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListHashtag(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list #new");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		// check the size of the resulting arraylist of itemdata
+		assertEquals("the number of itemData should be zero (no data in database)",
+						0,
+						items.size());
+		OutputData added = udo.testParseAndExecute("add #new stuff"); //proved to be working in testAddPlan
+		output = udo.testParseAndExecute("list #new");
+		// check the size again after adding new plan with hashtag
+		items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		assertEquals("the number of itemData should be one (the newly added)",
+				1,
+				items.size());
+	}
 }

@@ -2,6 +2,7 @@
 package udo.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -26,6 +27,76 @@ public class EngineUnitTest {
 	
 	private static final int EVENT_UID = 12345;
 	private static final int TASK_UID = 12346;
+	private static final int PLAN_UID = 12347;
+
+	@Test
+	public void testEngineListEvents() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.EVENT);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("List Events " + list.toString());
+	}
+
+	@Test
+	public void testEngineListTasks() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.TASK);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("List tasks " + list.toString());
+	}
+	
+	@Test
+	public void testEngineListPlans() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.PLAN);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("List plans " + list.toString());
+	}
 	
 	@Test
 	public void testEngineListByDate() {
@@ -52,6 +123,290 @@ public class EngineUnitTest {
 		System.out.println("list by date " + list);
 	}
 	
+	
+	@Test
+	public void testEngineListDone() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		e.execute(input);
+		
+		input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertNotEquals("items in output not null",
+				null,
+				items);
+		
+		assertNotEquals("number of items in output not 0",
+				0,
+				items.size());	
+	}
+	
+	@Test
+	public void testEngineMarkAndToggleDone() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == item);
+		
+		assertTrue("ensure edited item marked", 
+				(boolean)item.get(Keys.DONE));
+		
+		System.out.println(item);
+		
+		input = new InputData(Command.TOGGLE_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		item = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == item);
+		
+		assertFalse("ensure edited item unmarked", 
+				(boolean)item.get(Keys.DONE));
+		
+		System.out.println(item);
+	}
+	
+	@Test
+	public void testEngineEditItemEndTime() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, EVENT_UID);
+		inputEdit.put("field", EditField.END_TIME);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		Calendar editedCal = (Calendar) edited.get(Keys.END);
+		
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
+				editedCal.get(Calendar.HOUR_OF_DAY));
+		
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineEditItemDueTime() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, TASK_UID);
+		inputEdit.put("field", EditField.DUE_TIME);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
+		
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
+				editedCal.get(Calendar.HOUR_OF_DAY));
+		
+		System.out.println(edited);
+	}
+
+	@Test
+	public void testEngineEditItemDueDate() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, TASK_UID);
+		inputEdit.put("field", EditField.DUE_DATE);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
+		
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 
+				editedCal.get(Calendar.DAY_OF_MONTH));
+		
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineEditItemTitle() {
+		Engine e = Engine.getInstance();
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, EVENT_UID);
+		inputEdit.put("field", EditField.TITLE);
+		inputEdit.put("value", "dummy title");
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		assertEquals("ensure edited item actaully got edited",
+				"dummy title", 
+				edited.get(Keys.TITLE));
+		
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineAddPlan() {
+		Engine e = Engine.getInstance();
+		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
+		inputPlan.put(Keys.TITLE, "test plan");
+		inputPlan.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputPlan);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData addedPlan = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("added item in output not null",
+				null == addedPlan);
+		
+		assertEquals("added item is a plan",
+				ItemType.PLAN, 
+				addedPlan.getItemType());
+	}
+	
+	@Test
+	public void testEngineAddTask() {
+		Engine e = Engine.getInstance();
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputTask);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData addedTask = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("added item in output not null",
+				null == addedTask);
+		
+		assertEquals("added item is a task",
+				ItemType.TASK,
+				addedTask.getItemType());
+	}
+	
+	@Test
+	public void testEngineGetUpcomingTasks() {
+		Engine e = Engine.getInstance();
+		Calendar from = Calendar.getInstance();
+		from.setLenient(true);
+		Calendar to = Calendar.getInstance();
+		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + 3);
+		ArrayList<ItemData> itemsToShow = e.getTodoScreenItems(from, to);
+		
+		assertFalse("todayList is not null",
+				null == itemsToShow);
+		
+		System.out.println(itemsToShow);
+	}
+
+	@Test
+	public void testEngineGetTodayItems() {
+		Engine e = Engine.getInstance();
+		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
+		
+		assertFalse("todayList is not null",
+				null == todayList);
+	}
+
+	@Test
+	public void testEngineDelete() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.DELETE);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.UID, EVENT_UID);
+		OutputData output = e.execute(input);
+		
+		assertFalse("Output must not be null",
+				null == output);
+		
+		assertEquals("Execution must be successful",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+	}
 	
 	@Test
 	// delete uid is split into:
@@ -101,7 +456,7 @@ public class EngineUnitTest {
 		assertEquals("execution should be fail",
 				ExecutionStatus.FAIL,
 				output.getExecutionStatus());
-
+	
 		// this is a case for the positive and exists partition
 		input.put(Keys.UID, EVENT_UID);
 		output = e.execute(input);
@@ -116,239 +471,15 @@ public class EngineUnitTest {
 		// this is the lower boundary case for the positive partition above 100000
 		input.put(Keys.UID, 100000);
 		output = e.execute(input);
-
+	
 		assertFalse("output not null",
 				null == output);
-
+	
 		assertEquals("execution should be fail",
 				ExecutionStatus.FAIL,
 				output.getExecutionStatus());
 	}
-	
-	@Test
-	public void testEngineListDone() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
-		input.put(Keys.UID, TASK_UID);
-		e.execute(input);
-		
-		input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
-		
-		OutputData output = e.execute(input);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		assertFalse("items in output not null",
-				null == items);
-		assertFalse("number of items in output not null",
-				0 == items.size());	
-	}
-	
-	@Test
-	public void testEngineMarkAndToggleDone() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
-		input.put(Keys.UID, TASK_UID);
-		OutputData output = e.execute(input);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		ItemData item = (ItemData) output.get(Keys.ITEM);
-		assertFalse("edited item in output not null",
-				null == item);
-		assertTrue("ensure edited item marked", 
-				(boolean)item.get(Keys.DONE));
-		System.out.println(item);
-		
-		input = new InputData(Command.TOGGLE_DONE, ParsingStatus.SUCCESS);
-		input.put(Keys.UID, TASK_UID);
-		output = e.execute(input);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		item = (ItemData) output.get(Keys.ITEM);
-		assertFalse("edited item in output not null",
-				null == item);
-		assertFalse("ensure edited item unmarked", 
-				(boolean)item.get(Keys.DONE));
-		System.out.println(item);
-	}
-	
-	@Test
-	public void testEngineEditItemEndTime() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, EVENT_UID);
-		inputEdit.put("field", EditField.END_TIME);
-		inputEdit.put("value", Calendar.getInstance());
-		OutputData output = e.execute(inputEdit);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		assertFalse("edited item in output not null",
-				null == edited);
-		Calendar editedCal = (Calendar) edited.get(Keys.END);
-		assertEquals("ensure edited item actaully got edited",
-				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
-				editedCal.get(Calendar.HOUR_OF_DAY));
-		System.out.println(edited);
-	}
-	
-	@Test
-	public void testEngineEditItemDueTime() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, TASK_UID);
-		inputEdit.put("field", EditField.DUE_TIME);
-		inputEdit.put("value", Calendar.getInstance());
-		OutputData output = e.execute(inputEdit);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		assertFalse("edited item in output not null",
-				null == edited);
-		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
-		assertEquals("ensure edited item actaully got edited",
-				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
-				editedCal.get(Calendar.HOUR_OF_DAY));
-		System.out.println(edited);
-	}
 
-	@Test
-	public void testEngineEditItemDueDate() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, TASK_UID);
-		inputEdit.put("field", EditField.DUE_DATE);
-		inputEdit.put("value", Calendar.getInstance());
-		OutputData output = e.execute(inputEdit);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		assertFalse("edited item in output not null",
-				null == edited);
-		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
-		assertEquals("ensure edited item actaully got edited",
-				Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 
-				editedCal.get(Calendar.DAY_OF_MONTH));
-		System.out.println(edited);
-	}
-	
-	@Test
-	public void testEngineEditItemTitle() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, EVENT_UID);
-		inputEdit.put("field", EditField.TITLE);
-		inputEdit.put("value", "dummy title");
-		OutputData output = e.execute(inputEdit);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		assertFalse("edited item in output not null",
-				null == edited);
-		assertEquals("ensure edited item actaully got edited",
-				"dummy title", 
-				edited.get(Keys.TITLE));
-		System.out.println(edited);
-	}
-	
-	@Test
-	public void testEngineAddPlan() {
-		Engine e = Engine.getInstance();
-		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
-		inputPlan.put(Keys.TITLE, "test plan");
-		inputPlan.put(Keys.DUE, Calendar.getInstance());
-		OutputData output = e.execute(inputPlan);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		ItemData addedPlan = (ItemData) output.get(Keys.ITEM);
-		assertFalse("added item in output not null",
-				null == addedPlan);
-		assertEquals("added item is a plan",
-				ItemType.PLAN, 
-				addedPlan.getItemType());
-	}
-	
-	@Test
-	public void testEngineAddTask() {
-		Engine e = Engine.getInstance();
-		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
-		inputTask.put(Keys.TITLE, "test task");
-		inputTask.put(Keys.DUE, Calendar.getInstance());
-		OutputData output = e.execute(inputTask);
-		assertFalse("output not null",
-				null == output);
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		ItemData addedTask = (ItemData) output.get(Keys.ITEM);
-		assertFalse("added item in output not null",
-				null == addedTask);
-		assertEquals("added item is a task",
-				ItemType.TASK,
-				addedTask.getItemType());
-	}
-	
-	@Test
-	public void testEngineGetUpcomingTasks() {
-		Engine e = Engine.getInstance();
-		Calendar from = Calendar.getInstance();
-		from.setLenient(true);
-		Calendar to = Calendar.getInstance();
-		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + 3);
-		ArrayList<ItemData> itemsToShow = e.getTodoScreenItems(from, to);
-		assertFalse("todayList is not null",
-				null == itemsToShow);
-		System.out.println(itemsToShow);
-	}
-
-	@Test
-	public void testEngineGetTodayItems() {
-		Engine e = Engine.getInstance();
-		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
-		assertFalse("todayList is not null",
-				null == todayList);
-	}
-
-	@Test
-	public void testEngineDelete() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.DELETE);
-		input.setParsingStatus(ParsingStatus.SUCCESS);
-		input.put(Keys.UID, EVENT_UID);
-		OutputData output = e.execute(input);
-		assertFalse("Output must not be null",
-				null == output);
-		assertEquals("Execution must be successful",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-	}
-	
 	@Test
 	public void testEngineExecuteListHash() {
 		Engine e = Engine.getInstance();
@@ -402,11 +533,12 @@ public class EngineUnitTest {
 	@Test 
 	public void testEngineExecuteExit() {
 		Engine e = Engine.getInstance();
-		 
 		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
+		
 		assertEquals("the output status shud be success",
 				ExecutionStatus.SUCCESS,
 				o.getExecutionStatus());
+		
 		assertEquals("the output command should be exit",
 				Command.EXIT,
 				o.getCommand());
@@ -418,6 +550,7 @@ public class EngineUnitTest {
 		 
 		InputData in = new InputData(Command.ADD_EVENT);
 		in.setParsingStatus(ParsingStatus.SUCCESS);
+		
 		assertFalse("", null == e.execute(in));
 	}
 
@@ -427,7 +560,9 @@ public class EngineUnitTest {
 		InputData in = new InputData(Command.SAVE);
 		in.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData out = e.execute(in);
+		
 		assertFalse("out should not be null", null == out);
+		
 		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
 	}
 
@@ -436,9 +571,11 @@ public class EngineUnitTest {
 		ItemData i1 = new ItemData(ItemType.EVENT);
 		i1.put("a", "a");
 		i1.put("b", "ajshdgf");
+		
 		ItemData i2 = new ItemData(ItemType.EVENT);
 		i2.put("a", "a");
 		i2.put("b", "ajshdgf");
+		
 		assertTrue(i1.equals(i2));
 	}
 

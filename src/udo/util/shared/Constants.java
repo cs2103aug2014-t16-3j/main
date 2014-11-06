@@ -2,6 +2,7 @@
 package udo.util.shared;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
 
@@ -84,6 +85,7 @@ public class Constants {
 	 * 
 	 */
 	public static final class StorageStrings {
+		public static final String FILEPATH = "data/";
 		public static final String FILENAME = "data/uDo_data.txt";
 		public static final String FIELD_DELIMITER = "\\|\\|\\|";
 		public static final String DATE_DELIMITER = "/";
@@ -97,6 +99,17 @@ public class Constants {
 		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
 	}
 	
+	//@author A0108358B
+	/**
+	 * 
+	 * This class holds the magic strings for the loggers.
+	 * They include filenames
+	 * 
+	 */
+	public static final class Logging {
+		public static final String LOGFILE_ENGINE = "logs/engineLog.log";
+	}
+
 	//@author A0114088H
 	/**
 	 * 
@@ -110,6 +123,7 @@ public class Constants {
 		public static final KeyStroke ALT_S = KeyStroke.getKeyStroke("alt S");
 		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
 		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
+		public static final KeyStroke ENTER = KeyStroke.getKeyStroke("ENTER");
 		
 		public static final int FONTSIZE_24 = 24;
 		public static final int FONTSIZE_20 = 20;
@@ -135,15 +149,27 @@ public class Constants {
 		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
 		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
 		
-		public static final int MAIN_WIDTH = 400;
+		public static final int MAIN_WIDTH = 400; // or 360
+//		public static final int MAIN_WIDTH = 360;
 		public static final int MAIN_HEIGHT = 600;
-		public static final int SUBVIEW_WIDTH = 360;
+		public static final int MAIN_PADDING = 8;
+		public static final int TEXTFIELD_HEIGHT = 24;
+		public static final int SUBVIEW_WIDTH = 360; // or 300
+//		public static final int SUBVIEW_WIDTH = 300;
 		public static final int SUBVIEW_HEIGHT = 550;
 		public static final int SUBVIEW_HEADER_LINEY = 40;
 		public static final int SIDEVIEW_PADDING = 30;
 		
+		public static final String UDO_LOGO_IMG_DIR_256 = "/uDoLogo_256x256.png";
+		public static final String UDO_LOGO_IMG_DIR_64 = "/uDoLogo_64x64.png";
+		public static final String UDO_LOGO_IMG_DIR_32 = "/uDoLogo_32x32.png";
+		public static final String UDO_LOGO_IMG_DIR_16 = "/uDoLogo_16x16.png";
+		
+		public static final String CLOSE_BUTTON = "/closeButton.png";
+		public static final String CLOSE_BUTTON_HOVER = "/closeButtonHover.png";
+		
 		public static final int DAYVIEW_HEADER_HEIGHT = 100;
-		public static final String TICKER_IMAGE_DIR = "img/dayViewTicker2.png";
+		public static final String TICKER_IMAGE_DIR = "/dayViewTicker.png";
 		public static final int TICKER_Y = 18;
 
 		public static final int TODOVIEW_HEADER_HEIGHT = 40;
@@ -151,23 +177,27 @@ public class Constants {
 		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
 		public static final int ENTRY_SEPARATOR_WIDTH = -5;
 		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
+		public static final Dimension EMPTY_DATE = new Dimension(28,44);
+		public static final Dimension DONE_PANEL = new Dimension(28,28);
 		
 		public static final String ENTRY_ALL = "ALL";
 		public static final String ENTRY_EVENT = "EVENT";
 		public static final String ENTRY_TASK = "TASK";
 		public static final String ENTRY_PLAN = "PLAN";
 		
-		public static final Color MAIN_COLOR = new Color(255,255,255);
-		//public static final Color SUBVIEW_COLOR = new Color();
-		public static final Color ENTRY_BGCOLOR = new Color(255,255,255);
+		public static final Color MAIN_COLOR = Color.decode("#FFFFFF");
+		public static final Color MAIN_BORDER_COLOR = Color.decode("#E3E3E3");
+		public static final Color SUB_COLOR = Color.decode("#F4F4FF");
+		public static final Color ENTRY_DONE_COLOR = Color.decode("#46FF82");
 		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
-		public static final Color ENTRY_DATE_COLOR = new Color(150,150,150);
-		public static final Color ENTRY_HASHTAGS_COLOR = new Color(28,134,238);
+		public static final Color ENTRY_TITLE_COLOR = new Color(0,0,0);
+		public static final Color ENTRY_HASHTAGS_COLOR = new Color(150,150,150);
+		public static final Color ENTRY_DATE_COLOR = new Color(100,100,0);
 		
-		public static final Color UID_COLOR = new Color(238,238,238);
-		public static final Color SEPARATOR_COLOR_EVENT = new Color(100,0,100);
-		public static final Color SEPARATOR_COLOR_TASK = new Color(0,100,100);
-		public static final Color SEPARATOR_COLOR_PLAN = new Color(100,100,0);
+		public static final Color UID_COLOR = Color.decode("#F4F4FF");
+		public static final Color EVENT_COLOR = Color.decode("#6A828A");
+		public static final Color PLAN_COLOR = Color.decode("#CDFF00");
+		public static final Color TASK_COLOR = Color.decode("#FF3B77");
 		
 		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
 		public static final Color POPUP_FGCOLOR = new Color(255,255,255);

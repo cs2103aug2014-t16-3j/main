@@ -3,6 +3,7 @@ package udo.tests;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import udo.language.LanguagePack;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 
@@ -39,6 +40,9 @@ public class RandomTesting {
 		d.put("", sss);
 		println(d.get("").toString());
 		println(i.get("").toString());
+		
+		LanguagePack l = LanguagePack.getInstance();
+		System.out.println(l);
 		
 	}
 

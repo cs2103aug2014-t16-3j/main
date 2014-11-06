@@ -1,0 +1,1379 @@
+//@author: a0114088h
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\main\uDo.java
+	 */
+
+	public OutputData testParseAndExecute(String input) {
+		OutputData output = parseAndExecute(input);
+		return output;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\main\uDo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\tests\MainUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.junit.Test;
+
+import udo.main.uDo;
+import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
+import udo.util.shared.Constants.Keys;
+
+public class MainUnitTest {
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddEvent() {
+		uDo udo = new uDo();
+		// checking hours and minutes from the start and end dates
+		OutputData output = udo.testParseAndExecute("add #new Event from 28/10/14 3:00pm to 29/10/14 4:23pm");
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		Calendar time = Calendar.getInstance();
+		time.set(2014, Calendar.OCTOBER, 28, 15, 0);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		hashtags.add("new");
+		// The following will check the attributes of the added event
+		assertEquals("item name should be new Event",
+						"new Event",
+						item.get(Keys.TITLE));
+		
+		// to leo: do this kind of testing. 
+		// test each value, dont use equals for calendar.
+		// the reason is that they wont be equal because the seconds and miliseconds 
+		// are not accounted for
+		assertEquals("start hour should be 3", // do the same for minutes, day, month.. so on
+						time.get(Calendar.HOUR),
+						((Calendar)item.get(Keys.START)).get(Calendar.HOUR));
+		
+		time.set(2014, Calendar.OCTOBER, 29, 16, 23);
+		assertEquals("end hour 4",
+						time.get(Calendar.HOUR),
+						((Calendar)item.get(Keys.END)).get(Calendar.HOUR));
+		
+		assertEquals("hashtags will contain one object, 'new'",
+						hashtags.size(),
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		
+		assertEquals("the object is 'new'",
+						"new",
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddTask() {
+		uDo udo = new uDo();
+		// checking minutes from due date as well
+		OutputData output = udo.testParseAndExecute("add #new Task by 30/10/14 11:15am");
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		Calendar time = Calendar.getInstance();
+		time.set(2014, Calendar.OCTOBER, 30, 11, 15);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		hashtags.add("new");
+		// The following will check the attributes of the added plan
+		assertEquals("item name should be new task",
+						"new Task",
+						item.get(Keys.TITLE));
+		assertEquals("due hour 4",
+				time.get(Calendar.HOUR),
+				((Calendar)item.get(Keys.DUE)).get(Calendar.HOUR));
+		assertEquals("hashtags will contain one object, 'new'",
+						hashtags.size(),
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		assertEquals("the object is 'new'",
+						"new",
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddPlan() {
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("add #new Plan");
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		hashtags.add("new");
+		// The following will check the attributes of the added plan
+		assertEquals("item name should be new Event",
+						"new Plan",
+						item.get(Keys.TITLE));
+		assertEquals("hashtags will contain one object, 'new'",
+						hashtags.size(),
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		assertEquals("the object is 'new'",
+						"new",
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\tests\MainUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
+	 *
+	 */
+	public static final class UI {
+		public static final KeyStroke ALT_Q = KeyStroke.getKeyStroke("alt Q");
+		public static final KeyStroke ALT_A = KeyStroke.getKeyStroke("alt A");
+		public static final KeyStroke ALT_W = KeyStroke.getKeyStroke("alt W");
+		public static final KeyStroke ALT_S = KeyStroke.getKeyStroke("alt S");
+		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
+		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
+		
+		public static final int FONTSIZE_24 = 24;
+		public static final int FONTSIZE_20 = 20;
+		public static final int FONTSIZE_18 = 18;
+		public static final int FONTSIZE_16 = 16;
+		public static final int FONTSIZE_14 = 14;
+		public static final int FONTSIZE_12 = 12;
+		public static final Font FONT_24 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_24);
+		public static final Font FONT_20 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_20);
+		public static final Font FONT_18 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_18);
+		public static final Font FONT_16 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_16);
+		public static final Font FONT_14 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
+		public static final Font FONT_12 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_12);
+		public static final Font FONT_20_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_20);
+		public static final Font FONT_12_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_12);
+		
+		public static final SimpleDateFormat DD_MM_YY = new SimpleDateFormat("dd/MM/yy");
+		public static final SimpleDateFormat DD_MMMM_YYYY = new SimpleDateFormat("dd MMMM yyyy");
+		public static final SimpleDateFormat DD_MMMM = new SimpleDateFormat("dd MMMM");
+		public static final SimpleDateFormat DD_MMM = new SimpleDateFormat(" dd MMM ");
+		public static final SimpleDateFormat DD = new SimpleDateFormat("dd");
+		public static final SimpleDateFormat MMM = new SimpleDateFormat("MMM");
+		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
+		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
+		
+		public static final int MAIN_WIDTH = 400;
+		public static final int MAIN_HEIGHT = 600;
+		public static final int SUBVIEW_WIDTH = 360;
+		public static final int SUBVIEW_HEIGHT = 550;
+		public static final int SUBVIEW_HEADER_LINEY = 40;
+		public static final int SIDEVIEW_PADDING = 30;
+		
+		public static final int DAYVIEW_HEADER_HEIGHT = 100;
+		public static final String TICKER_IMAGE_DIR = "img/dayViewTicker2.png";
+		public static final int TICKER_Y = 18;
+
+		public static final int TODOVIEW_HEADER_HEIGHT = 40;
+		
+		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
+		public static final int ENTRY_SEPARATOR_WIDTH = -5;
+		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
+		
+		public static final String ENTRY_ALL = "ALL";
+		public static final String ENTRY_EVENT = "EVENT";
+		public static final String ENTRY_TASK = "TASK";
+		public static final String ENTRY_PLAN = "PLAN";
+		
+		public static final Color MAIN_COLOR = new Color(255,255,255);
+		//public static final Color SUBVIEW_COLOR = new Color();
+		public static final Color ENTRY_BGCOLOR = new Color(255,255,255);
+		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
+		public static final Color ENTRY_DATE_COLOR = new Color(150,150,150);
+		public static final Color ENTRY_HASHTAGS_COLOR = new Color(28,134,238);
+		
+		public static final Color UID_COLOR = new Color(238,238,238);
+		public static final Color SEPARATOR_COLOR_EVENT = new Color(150,0,150);
+		public static final Color SEPARATOR_COLOR_PLAN = new Color(0,150,150);
+		public static final Color SEPARATOR_COLOR_TASK = new Color(150,150,0);
+		
+		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
+		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
+		
+		public static final int SCROLLBAR_INCREMENT = 135;
+		
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\shared\Constants.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\DayView.java
+	 */
+
+package udo.util.ui;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+
+public class DayView extends JPanel{
+
+	private static final long serialVersionUID = -1690972274647306472L;
+	private JPanel mHeader = new JPanel();
+	private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd MMMM yyyy");
+	private SimpleDateFormat mDayFormat = new SimpleDateFormat("EEEE");  
+	private BufferedImage mTickerImg;
+	private JLabel mTicker;
+	private JScrollPane mScrollPane = new JScrollPane();
+	private ListView mEntryView = new ListView();
+	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the start of ticker
+	private ArrayList<Point> mTickerCoordsWH; // stores width and height of each ticker
+	private ArrayList<Point> mRedTickCoordsXY; // stores x and y coords of overlapped start
+	private ArrayList<Point> mRedTickCoordsWH; // stores width and height of red ticks
+	
+//	private static final Logger logger =
+//	        Logger.getLogger(udo.util.ui.DayView.class.getName());
+	
+	public DayView(){
+
+		mHeader.setOpaque(false);
+		mTickerCoordsXY = new ArrayList<Point>();
+		mTickerCoordsWH = new ArrayList<Point>();
+		mRedTickCoordsXY = new ArrayList<Point>();
+		mRedTickCoordsWH = new ArrayList<Point>();
+		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		setLayout(new WrapLayout());
+		setOpaque(false);
+		loadTicker();
+		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
+	}
+
+	public void init(ArrayList<ItemData> data) {
+		Date date = new Date();
+		init(date, data);
+	}
+	
+	public void init() {
+		Date date = new Date();
+		ArrayList<ItemData> data = new ArrayList<ItemData>();
+		init(date,data);
+	}
+	
+	public void init(Date newDate, ArrayList<ItemData> data) {
+		removeAll();
+		initHeader(newDate);
+		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.DAYVIEW_HEADER_HEIGHT));
+//		try {
+//			logger.addHandler(new FileHandler("logs/dayViewLog%u.txt", true));
+//		} catch (SecurityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		populateView(data);
+	}
+	
+	private void loadTicker() {
+		try {                
+			mTickerImg = ImageIO.read(new File(UI.TICKER_IMAGE_DIR));
+		} catch (IOException ex) {
+			// handle exception...
+		}
+//		mTicker = new JLabel(new ImageIcon(mTickerImg));
+		mTicker = new JLabel(new ImageIcon(mTickerImg)){
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.setColor(Color.GREEN);
+				for(int i=0; i < mTickerCoordsXY.size(); i++) {
+					g.fillRect(mTickerCoordsXY.get(i).x, 
+								mTickerCoordsXY.get(i).y, 
+								mTickerCoordsWH.get(i).x, 
+								mTickerCoordsWH.get(i).y);
+				}
+				g.setColor(Color.RED);
+				for(int i=0; i< mRedTickCoordsXY.size(); i++) {
+					g.fillRect(mRedTickCoordsXY.get(i).x, 
+								mRedTickCoordsXY.get(i).y, 
+								mRedTickCoordsWH.get(i).x, 
+								mRedTickCoordsWH.get(i).y);
+				}
+			}
+			
+		};
+		mTicker.setPreferredSize(new Dimension(mTickerImg.getWidth(),mTickerImg.getHeight()));
+	}
+	
+	private void populateView(ArrayList<ItemData> data) {
+		//logger.entering(getClass().getName(), "populateView");
+		if (data.size() == 0) {
+			JLabel noItems = new JLabel("You are free today!");
+			noItems.setFont(UI.FONT_14);
+			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
+			int height = fm.getHeight();
+			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+			noItems.setHorizontalAlignment(JLabel.CENTER);
+			add(noItems);
+		} else {
+			
+			int eventCount = 0;
+			for(int i = 0; i<data.size(); i++) {
+				ItemData item = data.get(i);
+				if(item.getItemType().equals(ItemType.EVENT)) {
+					fillTicker(item, eventCount);
+					eventCount++;
+				}
+			}
+			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
+			mScrollPane.getViewport().add(mEntryView);
+			mEntryView.populateView(data);
+			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
+//				logger.info("TODAY mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
+			} else {
+//				logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
+			}
+			
+			add(mScrollPane);
+			
+		}
+//		logger.exiting(getClass().getName(), "populateView");
+	}
+
+	private void fillTicker(ItemData item, int i) {
+		int hour, min, total;
+		Point xy,wh;
+		Point redXY, redWH;
+		xy = new Point();
+		wh = new Point();
+		int currItem_startX = 0;
+		int lastItem_endX = 0;
+		hour = ((Calendar) item.get(Keys.START)).get(Calendar.HOUR_OF_DAY) * 60;
+		min = ((Calendar) item.get(Keys.START)).get(Calendar.MINUTE);
+		total = hour+min;
+		xy = new Point(Math.max (1, (int) Math.floor(total/4d)), UI.TICKER_Y); //minimum x pixel is 1
+		mTickerCoordsXY.add(xy);
+		if(i>0) {
+			currItem_startX = xy.x;
+			lastItem_endX = mTickerCoordsXY.get(i-1).x + mTickerCoordsWH.get(i-1).x;
+		}
+		hour = ((Calendar) item.get(Keys.END)).get(Calendar.HOUR_OF_DAY) * 60;
+		min = ((Calendar) item.get(Keys.END)).get(Calendar.MINUTE);
+		total = hour+min;
+		wh = new Point((int) (Math.ceil(total/4d)) - xy.x, 10);
+		mTickerCoordsWH.add(wh);
+		int currItem_endX = xy.x + wh.x;
+		if(currItem_startX < lastItem_endX) {
+			redXY = new Point(xy.x, xy.y);
+			mRedTickCoordsXY.add(redXY);
+			if(currItem_endX > lastItem_endX) {
+				redWH = new Point(lastItem_endX - currItem_startX, 10);
+			}else{
+				redWH = new Point(currItem_endX - currItem_startX, 10);
+			}
+			mRedTickCoordsWH.add(redWH);
+		}
+	}
+	
+	private void initHeader(Date newDate) {
+		String dateString = mDateFormat.format(newDate);
+		JLabel date = new JLabel(dateString);
+		date.setFont(UI.FONT_24);
+		FontMetrics fm = date.getFontMetrics(date.getFont());
+		int height = fm.getHeight();
+		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH , height));
+		date.setHorizontalAlignment(JLabel.LEFT);
+
+		String dayString = mDayFormat.format(newDate);
+		JLabel day = new JLabel(dayString);
+		day.setFont(UI.FONT_18);
+		fm = day.getFontMetrics(day.getFont());
+		height = fm.getHeight();
+		day.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+		day.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		mHeader.add(date);
+		mHeader.add(day);
+		mHeader.add(mTicker);
+		
+		add(mHeader);
+	}
+	
+	@Override
+	public void removeAll() {
+		super.removeAll();
+		mHeader.removeAll();
+		mTickerCoordsXY.clear();
+		mTickerCoordsWH.clear();
+	}
+	
+	public JScrollPane getScrollPane() {
+		return mScrollPane;
+	}
+	
+	/**
+	 * The following override of paint method is to add the line separator
+	 * between the date and the day
+	 */
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.drawLine(UI.SUBVIEW_WIDTH/4, UI.SUBVIEW_HEADER_LINEY, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
+		
+	}
+	
+
+	
+}
+
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\DayView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\Entry.java
+	 */
+
+package udo.util.ui;
+
+import java.awt.BorderLayout;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+
+
+
+
+
+
+
+
+/*
+ import javax.swing.JTextPane;
+ import javax.swing.text.AttributeSet;
+ import javax.swing.text.SimpleAttributeSet;
+ import javax.swing.text.StyleConstants;
+ import javax.swing.text.StyleContext;
+ */
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
+import udo.util.shared.ItemData;
+import udo.util.shared.ItemType;
+
+public class Entry extends JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private JPanel mDetailPanel = new JPanel();
+	private JTextArea mExtraDesc = new JTextArea();
+	private JTextArea mDescription = new JTextArea();
+	private JTextArea mHashtags = new JTextArea();
+	// TODO maybe put a JTextPane here
+	private JLabel mUid = new JLabel();
+	private JLabel mDate;
+	private JLabel mMonth = new JLabel();
+	private JPanel mTimePanel = new JPanel();
+	private JPanel mSeparator = new JPanel();
+	private int mHorizontalRemainder;
+
+	public Entry(ItemData item, ItemType type) {
+		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UI.ENTRY_BORDERCOLOR));
+		setBackground(UI.ENTRY_BGCOLOR);
+		
+		mUid.setFont(UI.FONT_12);
+		mUid.setOpaque(true);
+		mUid.setBackground(UI.UID_COLOR);
+		
+		mTimePanel.setOpaque(false);
+		mTimePanel.setLayout(new BorderLayout());
+		
+		mDetailPanel.setLayout(new BoxLayout(mDetailPanel, BoxLayout.PAGE_AXIS));
+		mDetailPanel.setOpaque(false);
+		
+		mDescription.setFont(UI.FONT_20);
+		mDescription.setEditable(false);
+		mDescription.setWrapStyleWord(true);
+		mDescription.setLineWrap(true);
+		
+		mExtraDesc.setFont(UI.FONT_14);
+		mExtraDesc.setForeground(UI.ENTRY_DATE_COLOR);
+		mExtraDesc.setEditable(false);
+		mExtraDesc.setWrapStyleWord(true);
+		mExtraDesc.setLineWrap(true);
+		
+		mHashtags.setFont(UI.FONT_14);
+		mHashtags.setForeground(UI.ENTRY_HASHTAGS_COLOR);
+		mHashtags.setEditable(false);
+		mHashtags.setWrapStyleWord(true);
+		mHashtags.setLineWrap(true);
+		
+		switch(type) {
+			case EVENT:
+				initEvent(item);
+				break;
+			case TASK:
+				initTask(item);
+				break;
+			case PLAN:
+				initPlan(item);
+				break;
+			default:
+				break;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initPlan(ItemData item) {
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.CENTER);
+//		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
+//				0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
+		add(mTimePanel);
+		add(initSeparator(item.getItemType()));
+		add(initDetails((String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initTask(ItemData item) {
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
+		mTimePanel.add(initDate((Calendar) item.get(Keys.DUE)), BorderLayout.CENTER);
+//		mTimePanel.setBorder(BorderFactory.createEmptyBorder(0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
+//															0, (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2));
+		add(mTimePanel);
+		add(initSeparator(item.getItemType()));
+		add(initDetails((Calendar) item.get(Keys.DUE), (String) item.get(Keys.TITLE), (ArrayList<String>) item.get(Keys.HASHTAGS)));
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initEvent(ItemData item) {
+		mTimePanel.add(initUid( (Integer) item.get(Keys.UID)), BorderLayout.NORTH);
+		mTimePanel.add(initDate((Calendar) item.get(Keys.START)), BorderLayout.CENTER);
+		add(mTimePanel);
+		add(initSeparator(item.getItemType()));
+		add(initDetails((Calendar) item.get(Keys.START),
+						(Calendar) item.get(Keys.END),
+						(String) item.get(Keys.TITLE), 
+						(ArrayList<String>) item.get(Keys.HASHTAGS)));
+	}
+	
+	private JPanel initDetails(Calendar dueTime, String title, ArrayList<String> hashtags) {
+		mExtraDesc.append(initTime(dueTime));
+		return initDetails(title,hashtags);
+	}
+	
+	private JPanel initDetails(Calendar startTime, Calendar endTime, String title, ArrayList<String> hashtags) {
+		mExtraDesc.append(initTime(startTime, endTime));
+		return initDetails(title,hashtags);
+	}
+	
+	private JPanel initDetails(String title, ArrayList<String> hashtags) {
+		mHorizontalRemainder = UI.SUBVIEW_WIDTH - (int) getPreferredSize().getWidth();
+		mDescription.setSize(mHorizontalRemainder ,1);
+		mDescription.append(title);
+		for(int i = 0; i< hashtags.size(); i++) {
+			mHashtags.append("#" + hashtags.get(i) + " ");
+		}
+		mDetailPanel.add(mDescription);
+		mDetailPanel.add(mExtraDesc);
+		mDetailPanel.add(mHashtags);
+		return mDetailPanel;
+	}
+
+	private JLabel initUid(Integer uid) {
+		mUid.setText(uid.toString());
+		mUid.setHorizontalAlignment(SwingConstants.CENTER);
+		return mUid;
+	}
+	
+	private String initTime(Calendar cal) {
+		String time = "by ";
+		time += getDay(cal);
+		time += UI.HOUR_12.format(cal.getTime());
+		return time;
+	}
+	
+	private String initTime(Calendar startCal, Calendar endCal) {
+		String time = getDay(startCal);
+		time += UI.HOUR_12.format(startCal.getTime()) + " - ";
+		if(getDayDiff(startCal, endCal) != 0) {
+			time += getDay(endCal);
+			time += UI.DD_MMM.format(endCal.getTime());
+		}
+		time += UI.HOUR_12.format(endCal.getTime());
+		return time;
+	}
+	
+	private String getDay(Calendar cal) {
+		String day = "";
+		Calendar today = Calendar.getInstance();
+		int dayDiff = getDayDiff(today, cal);
+		switch(dayDiff) {
+			case -1:
+				day = "yesterday ";
+				break;
+			case 0:
+				if(cal.get(Calendar.HOUR_OF_DAY) > 17) {
+					day = "tonight ";
+				}else{
+					day = "today ";
+				}
+				break;
+			case 1:
+				day = "tomorrow ";
+				break;
+			case -6:
+			case -5:
+			case -4:
+			case -3:
+			case -2:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				day = UI.DAY_NAME.format(cal.getTime()) + " ";
+			default:
+				break;
+		}
+		return day;
+	}
+	
+	private int getDayDiff(Calendar start, Calendar end) {
+		int tempYear = end.get(Calendar.YEAR);
+		int endDays = end.get(Calendar.DAY_OF_YEAR);
+		
+		while(tempYear > start.get(Calendar.YEAR)) {
+			tempYear--;
+			Calendar offsetYear = new GregorianCalendar(tempYear, Calendar.DECEMBER, 31);
+			endDays += offsetYear.get(Calendar.DAY_OF_YEAR);
+		}
+		return endDays - start.get(Calendar.DAY_OF_YEAR);
+	}
+	
+	private JPanel initDate(Calendar cal) {
+		JPanel time = new JPanel();
+		time.setOpaque(false);
+		time.setLayout(new BoxLayout(time, BoxLayout.PAGE_AXIS));
+		mDate = new JLabel(UI.DD.format(cal.getTime()));
+		mMonth = new JLabel(UI.MMM.format(cal.getTime()));
+		mDate.setFont(UI.FONT_20_BOLD);
+		mMonth.setFont(UI.FONT_16);
+		time.add(mDate);
+		time.add(mMonth);
+		return time;
+	}
+	
+	private JPanel initSeparator(ItemType type) {
+		if(type.equals(ItemType.EVENT)) {
+			mSeparator.setBackground(UI.SEPARATOR_COLOR_EVENT);
+		} else if(type.equals(ItemType.TASK)) {
+			mSeparator.setBackground(UI.SEPARATOR_COLOR_TASK);
+		}else if(type.equals(ItemType.PLAN)){
+			mSeparator.setBackground(UI.SEPARATOR_COLOR_PLAN);
+		}
+		mSeparator.setBorder(BorderFactory.createEmptyBorder(UI.ENTRY_SEPARATOR_HEIGHT, UI.ENTRY_SEPARATOR_WIDTH, 0, 0));
+		return mSeparator;
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\Entry.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\Feedback.java
+	 */
+
+package udo.util.ui;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
+import udo.util.shared.ExecutionStatus;
+import udo.util.shared.ItemData;
+import udo.util.shared.ListQuery;
+import udo.util.shared.OutputData;
+import udo.util.shared.ParsingStatus;
+import udo.util.ui.ListView;
+
+public class Feedback {
+
+	private String mCommand;
+	private Object mData;
+
+	private DayView mDayView;
+	private ListView mListView;
+	private ToDoView mToDoView;
+	private SingleView mSingleView;
+	private DayView mMainTodayView;
+	private ToDoView mMainToDoView;
+
+	private JPanel mFinalView = new JPanel();
+	
+	private JScrollPane mMainScrollPane;
+
+	public Feedback() {
+		mListView = new ListView();
+		mDayView = new DayView();
+		mToDoView = new ToDoView();
+		mSingleView = new SingleView();
+		mMainTodayView = new DayView();
+		mMainToDoView = new ToDoView();
+	}
+
+	public JPanel getTodayView(ArrayList<ItemData> data) {
+		mMainTodayView.removeAll();
+		mMainTodayView.init(data);
+		mMainTodayView.revalidate();
+		return mMainTodayView;
+	}
+
+	public JPanel getToDoView(ArrayList<ItemData> data) {
+		mMainToDoView.removeAll();
+		mMainToDoView.init(data);
+		mMainToDoView.revalidate();
+		return mMainToDoView;
+	}
+
+	public void process(OutputData output) {
+		if (output.getParsingStatus().equals(ParsingStatus.SUCCESS)) {
+			if (output.getExecutionStatus().equals(ExecutionStatus.SUCCESS)) {
+				switch (output.getCommand()) {
+					case ADD_EVENT:
+					case ADD_TASK:
+					case ADD_PLAN:
+						add_entry(output, output.getCommand());
+						break;						
+					case DELETE:
+						delete_entry(output);
+						break;
+					case EXIT:
+						mCommand = "Exit";
+						break;
+					case LIST:
+						list_entry(output);
+						break;
+					case UNDO:
+						break;
+					case EDIT:
+						edit_entry(output);
+						break; 
+					case MARK_DONE:
+						mark_done(output);
+						break;
+					case TOGGLE_DONE:
+						toggle_done(output);
+						break;
+					case SAVE:
+						mCommand = "Saved ";
+						break;
+					default:
+						break;
+				}
+			} else {
+				mCommand = "Command cannot be executed. Please try again";
+			}
+		} else {
+			mCommand = "Command not recognised. Please try again";
+		}
+	}
+
+	private void toggle_done(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(output, Command.TOGGLE_DONE);
+		mFinalView = mSingleView;
+		mCommand = "Toggled completion status of " + item.get(Keys.TITLE);
+	}
+
+	private void mark_done(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(output, Command.MARK_DONE);
+		mFinalView = mSingleView;
+		mCommand = "Marked " + item.get(Keys.TITLE) + " as done";
+	}
+
+	private void add_entry(OutputData output, Command type) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(output, type);
+		mFinalView = mSingleView;
+		mCommand = "Added " + item.get(Keys.TITLE);
+	}
+
+	private void delete_entry(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(output, Command.DELETE);
+		mFinalView = mSingleView;
+		mCommand = "Deleted " + item.get(Keys.TITLE);
+	}
+	
+	private void edit_entry(OutputData output) {
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		mSingleView.removeAll();
+		mSingleView.init(output, Command.EDIT);
+		mFinalView = mSingleView;
+		mCommand = "Edited " + item.get(Keys.UID);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void list_entry(OutputData output) {
+		// TODO check if query is specified to 1 day, is a todo, or general list
+		// view
+		mData = output.get(Keys.ITEMS);
+		if (((ArrayList<ItemData>) mData).size() == 0) {
+			mCommand = "No items found";
+		} else {
+			// TODO make a method that can take in string/ calendar etc to build
+			// the popup string
+			ListQuery queryType = (ListQuery) output.get(Keys.QUERY_TYPE);
+			String query = "";
+			switch (queryType) {
+				case ALL:
+					query = "all items";
+					setToListView();
+					break;
+				case SINGLE_HASHTAG:
+					query = "#" + (String) output.get(Keys.QUERY_VALUE);
+					setToListView();
+					break;
+				case DONE:
+					query = "items that have been marked as done";
+					setToListView();
+					break;
+				case DATE:
+					Date date = ((Calendar) output.get(Keys.QUERY_VALUE)).getTime();
+					query = "items on " + UI.DD_MMMM_YYYY.format(date);
+					setToDayVIew(date);
+					break;
+				default:
+					break;
+
+			}
+			mCommand = "Listing " + query;
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void setToListView() {
+		mListView.populateView((ArrayList<ItemData>) mData);
+		mMainScrollPane = null;
+		mFinalView = mListView;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void setToDayVIew(Date date) {
+		mDayView.init(date, (ArrayList<ItemData>) mData);
+		mMainScrollPane = mDayView.getScrollPane();
+		mFinalView = mDayView;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void setToToDoView() {
+		mToDoView.init((ArrayList<ItemData>) mData);
+		mMainScrollPane = mToDoView.getScrollPane();
+		mFinalView = mToDoView;
+	}
+
+	public String getCommand() {
+		return mCommand;
+	}
+
+	public JPanel getFinalView() {
+		return mFinalView;
+	}
+	
+	public JScrollPane getLeftScrollPane() {
+		return mMainToDoView.getScrollPane();
+	}
+	
+	public JScrollPane getMainScrollPane() {
+		return mMainScrollPane;
+	}
+	
+	public JScrollPane getRightScrollPane() {
+		return mMainTodayView.getScrollPane();
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\Feedback.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\ListView.java
+	 */
+
+package udo.util.ui;
+
+import java.awt.Dimension;
+import java.util.ArrayList;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+
+import udo.util.shared.Constants.UI;
+import udo.util.shared.ItemData;
+
+
+public class ListView extends JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public ListView() {
+
+		setOpaque(false);
+		setLayout(new WrapLayout(WrapLayout.LEADING, 0 ,0));
+		setSize(new Dimension(UI.SUBVIEW_WIDTH, 1));
+		setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+	}
+
+	public void populateView(ArrayList<ItemData> data) {
+		removeAll();
+		for (int i = 0; i < data.size(); i++) {
+			Entry entry = new Entry(data.get(i), data.get(i).getItemType());
+			add(entry);
+		}
+	}
+	
+
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\ListView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\SingleView.java
+	 */
+
+package udo.util.ui;
+
+import java.awt.Dimension;
+import java.util.Calendar;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.UI;
+import udo.util.shared.EditField;
+import udo.util.shared.ItemData;
+import udo.util.shared.OutputData;
+
+public class SingleView extends JPanel {
+
+	private static final long serialVersionUID = 1L;
+	
+	private JLabel mMessage = new JLabel();
+	
+	public SingleView() {
+		
+		setOpaque(false);
+		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT));
+		setLayout(new WrapLayout(WrapLayout.LEADING, 5,5));
+		mMessage.setFont(UI.FONT_14);
+	}
+	
+	public void init(OutputData output, Command type) {
+		switch (type) {
+		case ADD_EVENT: 
+		case ADD_PLAN:
+		case ADD_TASK:
+			initAdd();
+			break;
+		case DELETE :
+			initDelete();
+			break;
+		case EDIT :
+			initEdit(output);
+			break;
+		case UNDO :
+			initUndo();
+			break;
+		case MARK_DONE:
+			initMarkDone();
+			break;
+		case TOGGLE_DONE:
+			initToggleDone();
+			break;
+		default :
+			break;
+		}
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		addEntry(item);
+	}
+
+	private void initToggleDone() {
+		mMessage.setText("You have toggled the completion status of: ");
+		add(mMessage);
+		
+	}
+
+	private void initMarkDone() {
+		mMessage.setText("You have marked the following as completed: ");
+		add(mMessage);
+		
+	}
+
+	private void initEdit(OutputData output) {
+		// TODO Auto-generated method stub
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		EditField field = (EditField) output.get(Keys.FIELD);
+		String fieldString = "";
+		String oldValue = "";
+		String newValue = "";
+		switch(field) {
+			case DUE_DATE:
+				fieldString = "Due date";
+				oldValue = UI.DD_MM_YY.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.DD_MM_YY.format(((Calendar)item.get(Keys.DUE)).getTime());
+				break;
+			case DUE_TIME:
+				fieldString = "Due time";
+				oldValue = UI.HOUR_12.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.HOUR_12.format(((Calendar)item.get(Keys.DUE)).getTime());
+				break;
+			case END_DATE:
+				fieldString = "End date";
+				oldValue = UI.DD_MM_YY.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.DD_MM_YY.format(((Calendar)item.get(Keys.END)).getTime());
+				break;
+			case END_TIME:
+				fieldString = "End Time";
+				oldValue = UI.HOUR_12.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.HOUR_12.format(((Calendar)item.get(Keys.END)).getTime());
+				break;
+			case START_DATE:
+				fieldString = "Due date";
+				oldValue = UI.DD_MM_YY.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.DD_MM_YY.format(((Calendar)item.get(Keys.START)).getTime());
+				break;
+			case START_TIME:
+				fieldString = "Due date";
+				oldValue = UI.HOUR_12.format(((Calendar) output.get(Keys.OLD_VALUE)).getTime());
+				newValue = UI.HOUR_12.format(((Calendar)item.get(Keys.START)).getTime());
+				break;
+			case TITLE:
+				fieldString = "Title";
+				oldValue = (String) output.get(Keys.OLD_VALUE);
+				newValue = (String) item.get(Keys.TITLE);
+				break;
+			default:
+				break;
+			
+		}
+		mMessage.setText("<html>"
+							+ "<br><br>"
+							+ "You have edited: <font color=\"blue\">" + fieldString
+							+ "</font><br>from: <font color=\"blue\">" + "\"" + oldValue + "\""
+							+ "</font><br>to: <font color=\"blue\">" + "\"" + newValue + "\""
+							+ "</font>. <br>This is the edited item: "
+							+ "</html>");
+		add(mMessage);
+	}
+
+	private void initAdd() {
+		mMessage.setText("<html>"
+							+"<br><br>"
+							+ "You have successfully added: "
+							+ "</html>");
+		add(mMessage);
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void initDelete() {
+		mMessage.setText("<html>"
+							+"<br><br>"
+							+ "You have successfully deleted: "
+							+ "</html>");
+		add(mMessage);
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void initUndo() {
+		// TODO Auto-generated method stub
+		mMessage.setText("<html>"
+							+"<br><br>"
+							+ "You have successfully added: "
+							+ "</html>");
+		add(mMessage);
+	}
+	
+	private void addEntry(ItemData item) {
+		Entry entry = new Entry(item, item.getItemType());
+		add(entry);
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\SingleView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\ToDoView.java
+	 */
+
+package udo.util.ui;
+
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import udo.util.shared.Constants.UI;
+import udo.util.shared.ItemData;
+
+public class ToDoView extends JPanel {
+
+	private static final long serialVersionUID = 1L;
+	
+	private JPanel mHeader = new JPanel();
+	private ListView mEntryView = new ListView();
+	private JScrollPane mScrollPane = new JScrollPane();
+	
+	private static final Logger logger =
+	        Logger.getLogger(udo.util.ui.DayView.class.getName());
+	
+	public ToDoView() {
+		setBounds(0,0,UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
+		setLayout(new WrapLayout());
+		setOpaque(false);
+		mScrollPane.getViewport().setBackground(UI.MAIN_COLOR);
+	}
+	
+	public void init() {
+		ArrayList<ItemData> data = new ArrayList<ItemData>();
+		init(data);
+	}
+	
+	public void init(ArrayList<ItemData> data) {
+		initHeader();
+		mHeader.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.TODOVIEW_HEADER_HEIGHT));
+		try {
+			logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		populateView(data);
+	}
+	
+	private void initHeader() {
+		JLabel title = new JLabel("To Do");
+		title.setFont(UI.FONT_24);
+		FontMetrics fm = title.getFontMetrics(title.getFont());
+		int height = fm.getHeight();
+		title.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+		title.setHorizontalAlignment(JLabel.RIGHT);
+		title.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		mHeader.add(title);
+		add(mHeader);
+	}
+	
+	private void populateView(ArrayList<ItemData> data) {
+		if (data.size() == 0) {
+			JLabel noItems = new JLabel("You have no upcoming tasks!");
+			noItems.setFont(UI.FONT_14);
+			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
+			int height = fm.getHeight();
+			noItems.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
+			noItems.setHorizontalAlignment(JLabel.CENTER);
+			add(noItems);
+		} else {
+			mScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			mScrollPane.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH,
+					UI.SUBVIEW_HEIGHT - mHeader.getPreferredSize().height));
+			mScrollPane.getViewport().add(mEntryView);
+			mEntryView.populateView(data);
+			if(mEntryView.getPreferredSize().width > UI.MAIN_WIDTH) {
+				logger.info("TODO mEntryView's preferredSize: " + mEntryView.getPreferredSize() + "\nmEntryView's preferredSize is wider than mScrollPane");
+			} else {
+				logger.fine("TODO mEntryView's preferredSize is contained in mScrollPane");
+			}
+			
+			add(mScrollPane);
+		}
+	}
+	
+	public JScrollPane getScrollPane() {
+		return mScrollPane;
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2 = (Graphics2D) g;
+		g2.drawLine(UI.SUBVIEW_WIDTH/4, UI.SUBVIEW_HEADER_LINEY, UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEADER_LINEY);
+	}
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\ToDoView.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\uDoPopup.java
+	 */
+
+package udo.util.ui;
+
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+
+import udo.util.shared.Constants.UI;
+
+public class uDoPopup extends JLabel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private float alpha;
+
+	public uDoPopup() {
+
+		setOpaque(false);
+		setFont(UI.FONT_14);
+		setBackground(UI.POPUP_BGCOLOR);
+		setForeground(UI.POPUP_FGCOLOR);
+		setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+	}
+
+	public void setAlpha(float value) {
+		if (alpha != value) {
+			float old = alpha;
+			alpha = value;
+			firePropertyChange("alpha", old, alpha);
+			repaint();
+		}
+	}
+
+	public float getAlpha() {
+		return alpha;
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g.create();
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+				getAlpha()));
+		super.paint(g2d);
+		g2d.dispose();
+	}
+
+	protected void paintComponent(Graphics g) {
+		g.setColor(getBackground());
+		g.fillRect(0, 0, getWidth(), getHeight());
+		super.paintComponent(g);
+	}
+
+}
+
+	// End of segment: C:\Users\Nicholas\workspace\uDo\src\udo\util\ui\uDoPopup.java
+
+
+
+
+
