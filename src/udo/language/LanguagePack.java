@@ -104,6 +104,7 @@ public abstract class LanguagePack {
 	protected String POPUP_EDITED;
 	protected String POPUP_NO_ITEMS_FOUND;
 	protected String POPUP_LIST;
+	protected String POPUP_SEARCH;
 	protected String POPUP_QUERY_ALL;
 	protected String POPUP_QUERY_DONE;
 	protected String POPUP_QUERY_DATE;
@@ -338,5 +339,9 @@ public abstract class LanguagePack {
 	public String getPOPUP_QUERY_TASK() {
 		return POPUP_QUERY_TASK;
 	}
-	
+
+	public String getPOPUP_SEARCH() {
+		return POPUP_SEARCH;
+	}
+
 }

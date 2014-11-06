@@ -90,6 +90,9 @@ public class Feedback {
 					case SAVE :
 						mCommand = mLang.getPOPUP_SAVED();
 						break;
+					case SEARCH :
+						mCommand = mLang.getPOPUP_SEARCH();
+						list_entry(output);
 					default :
 						break;
 				}
@@ -181,6 +184,9 @@ public class Feedback {
 					query = mLang.getPOPUP_QUERY_TASK();
 					setToToDoView();
 					break;
+//				case SEARCH_QUERY :
+//					query = (String) output.get(Keys.SEARCH_QUERY);
+//					setToListView();
 				default :
 					
 					break;
