@@ -93,6 +93,9 @@ public class Feedback {
 					case SEARCH :
 						mCommand = mLang.getPOPUP_SEARCH();
 						search_entry(output);
+					case EXIT :
+						mCommand = "";
+						break;
 					default :
 						break;
 				}

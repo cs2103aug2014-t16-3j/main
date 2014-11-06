@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import udo.language.LanguagePack;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
@@ -40,6 +41,8 @@ public class DayScreen extends Screen {
 												// ticks
 	
 	private Date mDateQuery;
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	// private static final Logger logger =
 	// Logger.getLogger(udo.util.ui.DayView.class.getName());
@@ -99,7 +102,7 @@ public class DayScreen extends Screen {
 
 	private void populateView(ArrayList<ItemData> data) {
 		if (data.size() == 0) {
-			JLabel noItems = new JLabel("You are free today!");
+			JLabel noItems = new JLabel(mLang.getFREE_TODAY());
 			noItems.setFont(UI.FONT_14);
 			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
 			int height = fm.getHeight();
@@ -143,14 +146,13 @@ public class DayScreen extends Screen {
 				}
 				g.setFont(UI.FONT_18);
 				g.setColor(UI.EVENT_COLOR);
-				g.drawString("AM", 76, 30);
-				g.drawString("PM", 257, 30);
+				g.drawString("AM", mTickerImg.getWidth(null)/4, 30);
+				g.drawString("PM", mTickerImg.getWidth(null)*3/4, 30);
 			}
 
 		};
 	}
 
-	@SuppressWarnings("deprecation")
 	private void fillTicker(ItemData item, int i) {
 		int hour, min, total;
 		Point xy, wh;
@@ -205,7 +207,8 @@ public class DayScreen extends Screen {
 	}
 
 	private void initHeader(Date newDate) {
-		String dateString = UI.DD_MMMM_YYYY.format(newDate);
+		String dateString = UI.DD.format(newDate) + " " + mLang.convertMonthToLanguage(UI.MMMM.format(newDate))
+							+ " " + UI.YYYY.format(newDate);
 		JLabel date = new JLabel(dateString);
 		date.setFont(UI.FONT_24);
 		FontMetrics fm = date.getFontMetrics(date.getFont());
@@ -213,7 +216,7 @@ public class DayScreen extends Screen {
 		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
 		date.setHorizontalAlignment(JLabel.LEFT);
 
-		String dayString = UI.DAY_NAME.format(newDate);
+		String dayString = mLang.convertDayToLanguage(UI.DAY_NAME.format(newDate));
 		JLabel day = new JLabel(dayString);
 		day.setFont(UI.FONT_18);
 		fm = day.getFontMetrics(day.getFont());

@@ -478,13 +478,13 @@ public class UserInterface implements ActionListener {
 		JLabel logoLabel = new JLabel(new ImageIcon(logoImg));
 		JLabel welcome = new JLabel();
 		welcome.setFont(UI.FONT_20_BOLD);
-		welcome.setText("<html>" + "<br><br>" + "Welcome to uDo!" + "</html>");
+		welcome.setText("<html>" + "<br><br>" + mLang.getWELCOME_MESSAGE() + "</html>");
 		welcome.setOpaque(false);
 		JLabel welcome2 = new JLabel();
 		welcome2.setFont(UI.FONT_16);
 		welcome2.setForeground(UI.POPUP_BGCOLOR);
 		welcome2.setText("<html>" + "<br>"
-				+ "Start by typing in the textbox below:"
+				+ mLang.getSUB_WELCOME_MESSAGE()
 				+ "</html>");
 		welcome2.setOpaque(false);
 		mMainView.add(logoLabel);

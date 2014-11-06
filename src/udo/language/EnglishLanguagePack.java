@@ -48,6 +48,11 @@ public class EnglishLanguagePack extends LanguagePack {
 		PLAN = "plan";
 		DONE = "done";
 		
+		// Welcome messages
+		WELCOME_MESSAGE = "Welcome to uDo!";
+		SUB_WELCOME_MESSAGE = "Start by typing in the textbox below:";
+		
+		// Popup messages
 		POPUP_ADDED = "Added ";
 		POPUP_DELETED = "Deleted ";
 		POPUP_EDITED = "Edited ";
@@ -65,6 +70,37 @@ public class EnglishLanguagePack extends LanguagePack {
 		POPUP_QUERY_EVENT = "all events";
 		POPUP_QUERY_PLAN = "all plans";
 		POPUP_QUERY_TASK = "all tasks";
+		
+		// DayScreen messages
+		FREE_TODAY = "You are free today!";
+		
+		// Months
+		JANUARY = "January";
+		FEBRUARY = "February";
+		MARCH = "March";
+		APRIL = "April";
+		MAY = "May";
+		JUNE = "June";
+		JULY = "July";
+		AUGUST = "August";
+		SEPTEMBER = "September";
+		OCTOBER = "October";
+		NOVEMBER = "November";
+		DECEMBER = "December";
+		
+		//Abbreviated Months
+		JAN = "Jan";
+		FEB = "Feb";
+		MAR = "Mar";
+		APR = "Apr";
+		MAY_SHORT = "May";
+		JUN = "Jun";
+		JUL = "Jul";
+		AUG = "Aug";
+		SEP = "Sep";
+		OCT = "Oct";
+		NOV = "Nov";
+		DEC = "Dec";
 		
 		
 	}
