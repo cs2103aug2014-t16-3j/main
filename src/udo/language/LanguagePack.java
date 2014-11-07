@@ -187,7 +187,7 @@ public abstract class LanguagePack {
 	public String getTOGGLE_DONE() {
 		return TOGGLE_DONE;
 	}
-	public String getSearch() {
+	public String getSEARCH() {
 		return SEARCH;
 	}
 	public String getFROM() {

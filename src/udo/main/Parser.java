@@ -78,7 +78,7 @@ public class Parser {
 		} else if (command.equals(mLang.getTOGGLE_DONE())) {
 			return Command.TOGGLE_DONE;
 			
-		} else if (command.equals(mLang.getSearch())) {
+		} else if (command.equals(mLang.getSEARCH())) {
 			return Command.SEARCH;
 			
 		} else {
