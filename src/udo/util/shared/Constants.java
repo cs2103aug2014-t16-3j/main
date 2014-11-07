@@ -160,16 +160,16 @@ public class Constants {
 		public static final int SUBVIEW_HEADER_LINEY = 40;
 		public static final int SIDEVIEW_PADDING = 30;
 		
-		public static final String UDO_LOGO_IMG_DIR_256 = "src/res/uDoLogo_256x256.png";
-		public static final String UDO_LOGO_IMG_DIR_64 = "src/res/uDoLogo_64x64.png";
-		public static final String UDO_LOGO_IMG_DIR_32 = "src/res/uDoLogo_32x32.png";
-		public static final String UDO_LOGO_IMG_DIR_16 = "src/res/uDoLogo_16x16.png";
+		public static final String UDO_LOGO_IMG_DIR_256 = "/uDoLogo_256x256.png";
+		public static final String UDO_LOGO_IMG_DIR_64 = "/uDoLogo_64x64.png";
+		public static final String UDO_LOGO_IMG_DIR_32 = "/uDoLogo_32x32.png";
+		public static final String UDO_LOGO_IMG_DIR_16 = "/uDoLogo_16x16.png";
 		
-		public static final String CLOSE_BUTTON = "src/res/closeButton.png";
-		public static final String CLOSE_BUTTON_HOVER = "src/res/closeButtonHover.png";
+		public static final String CLOSE_BUTTON = "/closeButton.png";
+		public static final String CLOSE_BUTTON_HOVER = "/closeButtonHover.png";
 		
 		public static final int DAYVIEW_HEADER_HEIGHT = 100;
-		public static final String TICKER_IMAGE_DIR = "src/res/dayViewTicker.png";
+		public static final String TICKER_IMAGE_DIR = "/dayViewTicker.png";
 		public static final int TICKER_Y = 18;
 
 		public static final int TODOVIEW_HEADER_HEIGHT = 40;

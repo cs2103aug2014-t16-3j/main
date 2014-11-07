@@ -84,7 +84,7 @@ public class DayScreen extends Screen {
 
 	private void loadTicker() {
 		try {
-			BufferedImage img = ImageIO.read(new File(UI.TICKER_IMAGE_DIR));
+			BufferedImage img = ImageIO.read(getClass().getResource(UI.TICKER_IMAGE_DIR));
 			mTickerImg = img.getScaledInstance(UI.SUBVIEW_WIDTH,
 					img.getHeight(), Image.SCALE_SMOOTH);
 		} catch (IOException ex) {
