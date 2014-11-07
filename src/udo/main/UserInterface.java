@@ -38,6 +38,7 @@ import javax.swing.border.Border;
 
 import com.sun.awt.AWTUtilities;
 
+import udo.language.LanguagePack;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
@@ -73,6 +74,8 @@ public class UserInterface implements ActionListener {
 	private String mUserInput;
 
 	private Feedback fb;
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	public static UserInterface getInstance() {
 		if (mUserInterface == null) {
@@ -228,7 +231,8 @@ public class UserInterface implements ActionListener {
 		mCloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mFrame.dispose();
-				System.exit(0);
+				mUserInput = mLang.getEXIT();
+				mWaiting = false;
 			}
 		});
 		mTopBar.add(mCloseButton, BorderLayout.EAST);
