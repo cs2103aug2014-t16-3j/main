@@ -16,7 +16,7 @@ hs_err_pid*
 *.log
 data/
 
-log/
+logs/
 
 logs/engineLog.log
 

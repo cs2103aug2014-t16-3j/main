@@ -477,7 +477,7 @@ public class UserInterface implements ActionListener {
 		welcome2.setFont(UI.FONT_16);
 		welcome2.setForeground(UI.POPUP_BGCOLOR);
 		welcome2.setText("<html>" + "<br>"
-				+ "Start by typing instruction in the textbox below:"
+				+ "Start by typing in the textbox below:"
 				+ "</html>");
 		welcome2.setOpaque(false);
 		mMainView.add(logoLabel);
