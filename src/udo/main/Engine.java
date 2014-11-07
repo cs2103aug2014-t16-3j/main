@@ -1,6 +1,7 @@
 //@author A0108358B
 package udo.main;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,12 +23,12 @@ import udo.util.engine.runners.RunnerSearch;
 import udo.util.exceptions.CacheAccessException;
 import udo.util.exceptions.ReadingFromStorageException;
 import udo.util.shared.Command;
+import udo.util.shared.Constants.LoggingStrings;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Logging;
 
 /**
  * This is a facade class for the engine component.<br>
@@ -54,13 +55,18 @@ public class Engine {
 		mFileManager = new FileManager();
 		mCache = new Cache();
 		mUndoBin = new UndoBin();
+		
+		// set up logger
 		mLogger = Logger.getLogger(Engine.class.getSimpleName());
 		try {
-			mLogger.addHandler(new FileHandler(Logging.LOGFILE_ENGINE));
+			new File(LoggingStrings.LOGPATH_ENGINE).mkdirs();
+			mLogger.addHandler(new FileHandler(LoggingStrings.LOGFILE_ENGINE));
 		} catch (SecurityException e) {
 			e.printStackTrace();
+			// how do i log a logger failure lol
 		} catch (IOException e) {
 			e.printStackTrace();
+			// how do i log a logger failure lol
 		}
 		mLogger.setLevel(Level.ALL);
 	}

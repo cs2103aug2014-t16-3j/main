@@ -104,11 +104,12 @@ public class Constants {
 	/**
 	 * 
 	 * This class holds the magic strings for the loggers.
-	 * They include filenames
+	 * They include filenames and paths
 	 * 
 	 */
-	public static final class Logging {
-		public static final String LOGFILE_ENGINE = "logs/engineLog.log";
+	public static final class LoggingStrings {
+		public static final String LOGPATH_ENGINE = "logs/engine/";
+		public static final String LOGFILE_ENGINE = LOGPATH_ENGINE + "engineLog.log";
 	}
 
 	//@author A0114088H

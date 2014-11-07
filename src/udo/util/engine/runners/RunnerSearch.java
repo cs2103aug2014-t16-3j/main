@@ -25,7 +25,7 @@ public class RunnerSearch extends Runner {
 		OutputData output = new OutputData(Command.SEARCH, ParsingStatus.SUCCESS);
 		
 		String searchQuery = (String) mInput.get(Keys.SEARCH_QUERY);
-		ArrayList<ItemData> list;
+		ArrayList<ItemData> list = new ArrayList<ItemData>();
 		
 		try {
 			list = mCache.searchAllItems(searchQuery);
