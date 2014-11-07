@@ -368,20 +368,24 @@ public class Cache {
 			if (title != null) {
 				if (title.contains(query)) {
 					matchingItems.add(item);
-				} else {
-					@SuppressWarnings("unchecked")
-					ArrayList<String> taglist = (ArrayList<String>) item.get(Keys.HASHTAGS);
-					for (String tag : taglist) {
-						if (tag.contains(query)) {
-							matchingItems.add(item);
-							break;
-						}
-					}
+				} else if (taglistContains(item, query)) {
+					matchingItems.add(item);
 				}
 			}
 		}
 		Collections.sort(matchingItems);
 		return matchingItems;
+	}
+	
+	private boolean taglistContains(ItemData item, String query) {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) item.get(Keys.HASHTAGS);
+		for (String tag : taglist) {
+			if (tag.contains(query)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
