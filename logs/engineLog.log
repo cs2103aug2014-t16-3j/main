@@ -2,8 +2,8 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
-  <date>2014-11-05T20:09:55</date>
-  <millis>1415189395442</millis>
+  <date>2014-11-07T20:19:40</date>
+  <millis>1415362780970</millis>
   <sequence>0</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -13,8 +13,8 @@
   <message>can get today screen items</message>
 </record>
 <record>
-  <date>2014-11-05T20:09:55</date>
-  <millis>1415189395442</millis>
+  <date>2014-11-07T20:19:41</date>
+  <millis>1415362781083</millis>
   <sequence>1</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -24,8 +24,8 @@
   <message>can get todo screen items</message>
 </record>
 <record>
-  <date>2014-11-05T20:10:00</date>
-  <millis>1415189400760</millis>
+  <date>2014-11-07T20:19:45</date>
+  <millis>1415362785207</millis>
   <sequence>2</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
@@ -35,31 +35,9 @@
   <message>can get today screen items</message>
 </record>
 <record>
-  <date>2014-11-05T20:10:00</date>
-  <millis>1415189400775</millis>
+  <date>2014-11-07T20:19:45</date>
+  <millis>1415362785423</millis>
   <sequence>3</sequence>
-  <logger>Engine</logger>
-  <level>INFO</level>
-  <class>udo.main.Engine</class>
-  <method>logInfo</method>
-  <thread>1</thread>
-  <message>can get todo screen items</message>
-</record>
-<record>
-  <date>2014-11-05T20:10:02</date>
-  <millis>1415189402352</millis>
-  <sequence>4</sequence>
-  <logger>Engine</logger>
-  <level>INFO</level>
-  <class>udo.main.Engine</class>
-  <method>logInfo</method>
-  <thread>1</thread>
-  <message>can get today screen items</message>
-</record>
-<record>
-  <date>2014-11-05T20:10:02</date>
-  <millis>1415189402367</millis>
-  <sequence>5</sequence>
   <logger>Engine</logger>
   <level>INFO</level>
   <class>udo.main.Engine</class>
