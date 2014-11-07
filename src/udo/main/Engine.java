@@ -234,7 +234,7 @@ public class Engine {
 	private OutputData runUndo(InputData inputData) {
 		 // the inputdata to be executed is already stored. 
 		 // so here just execute that inputdata.
-		InputData undoInput = mUndoBin.getUndoInputData();
+		InputData undoInput = mUndoBin.getUndo();
 		
 		if (undoInput == null) {
 			// nth to undo, dont execute!

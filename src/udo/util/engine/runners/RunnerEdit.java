@@ -221,7 +221,7 @@ public class RunnerEdit extends Runner {
 		undoInput.put(Keys.UID, uid);
 		undoInput.put(Keys.FIELD, field);
 		undoInput.put(Keys.VALUE, oldValue);
-		mUndoBin.putInputData(undoInput);
+		mUndoBin.storeUndo(undoInput);
 	}
 
 }

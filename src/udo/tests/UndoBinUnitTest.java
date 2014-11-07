@@ -15,7 +15,7 @@ public class UndoBinUnitTest {
 	public void testUBPutItem() {
 		// put something
 		UndoBin u = new UndoBin();
-		u.putInputData(new InputData(Command.EDIT));
+		u.storeUndo(new InputData(Command.EDIT));
 		// cannot fail. no exception thrown as well.
 	}
 	
@@ -25,9 +25,9 @@ public class UndoBinUnitTest {
 		// then get it back
 		// make sure its the same item
 		UndoBin u = new UndoBin();
-		u.putInputData(new InputData(Command.EDIT));
+		u.storeUndo(new InputData(Command.EDIT));
 		
-		InputData getInput = u.getUndoInputData();
+		InputData getInput = u.getUndo();
 		
 		assertNotEquals("get input cannot be null",
 				null,
@@ -45,11 +45,11 @@ public class UndoBinUnitTest {
 		// then try to get back.
 		// get back should be null
 		UndoBin u = new UndoBin();
-		u.putInputData(new InputData(Command.EDIT));
+		u.storeUndo(new InputData(Command.EDIT));
 		
 		u.clear();
 		
-		InputData getInput = u.getUndoInputData();
+		InputData getInput = u.getUndo();
 		
 		assertEquals("get input must be null",
 				null,

@@ -83,7 +83,7 @@ public class RunnerDelete extends Runner {
 		}
 		
 		undoInput.setParsingStatus(ParsingStatus.SUCCESS);
-		mUndoBin.putInputData(undoInput);
+		mUndoBin.storeUndo(undoInput);
 	}
 
 }
