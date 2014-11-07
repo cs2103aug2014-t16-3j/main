@@ -14,7 +14,7 @@ public abstract class LanguagePack {
 	
 	public static LanguagePack userLanguagePack =
 			// replace this with the desired LanguagePack
-			// new IndonesianLanguagePack();
+//			 new IndonesianLanguagePack();
 			new EnglishLanguagePack();
 	
 	
@@ -55,6 +55,7 @@ public abstract class LanguagePack {
 	protected String EDIT;
 	protected String MARK_DONE;
 	protected String TOGGLE_DONE;
+	protected String SEARCH;
 	
 	// delimiters
 	protected String FROM;
@@ -92,6 +93,10 @@ public abstract class LanguagePack {
 	protected String DONE;
 	
 //@author A0114088H	
+	// Welcome message
+	protected String WELCOME_MESSAGE;
+	protected String SUB_WELCOME_MESSAGE;
+	
 	// Popup messages
 	protected String POPUP_SAVED;
 	protected String POPUP_PARSING_FAIL;
@@ -103,6 +108,7 @@ public abstract class LanguagePack {
 	protected String POPUP_EDITED;
 	protected String POPUP_NO_ITEMS_FOUND;
 	protected String POPUP_LIST;
+	protected String POPUP_SEARCH;
 	protected String POPUP_QUERY_ALL;
 	protected String POPUP_QUERY_DONE;
 	protected String POPUP_QUERY_DATE;
@@ -110,7 +116,50 @@ public abstract class LanguagePack {
 	protected String POPUP_QUERY_PLAN;
 	protected String POPUP_QUERY_TASK;
 	
-	// Entry strings
+	// DayScreen messages
+	protected String FREE_TODAY;
+	
+	// ToDoScreen messages
+	protected String TO_DO_TITLE;
+	protected String NO_UPCOMING_TASKS;
+	
+	// SingleView messages
+	protected String SINGLE_MARK_AS_DONE;
+	protected String SINGLE_TOGGLE_DONE;
+	protected String SINGLE_EDITED;
+	protected String SINGLE_FROM;
+	protected String SINGLE_TO;
+	protected String SINGLE_THIS_IS_EDITED_ITEM;
+	protected String SINGLE_SUCCESFULLY_ADDED;
+	protected String SINGLE_SUCCESSFULLY_DELETED;
+	
+	// Months
+	protected String JANUARY;
+	protected String FEBRUARY;
+	protected String MARCH;
+	protected String APRIL;
+	protected String MAY;
+	protected String JUNE;
+	protected String JULY;
+	protected String AUGUST;
+	protected String SEPTEMBER;
+	protected String OCTOBER;
+	protected String NOVEMBER;
+	protected String DECEMBER;
+	
+	//Abbreviated Months
+	protected String JAN;
+	protected String FEB;
+	protected String MAR;
+	protected String APR;
+	protected String MAY_SHORT;
+	protected String JUN;
+	protected String JUL;
+	protected String AUG;
+	protected String SEP;
+	protected String OCT;
+	protected String NOV;
+	protected String DEC;
 	
 	// the method below converts java string day format to the appropriate language
 	public String convertDayToLanguage(String javaFormattedDay) {
@@ -136,20 +185,52 @@ public abstract class LanguagePack {
 
 	public String convertMonthToLanguage(String javaFormattedMonth) {
 		switch (javaFormattedMonth) {
-			case "Monday" :
-				return getMONDAY();
-			case "Tuesday" :
-				return getTUESDAY();
-			case "Wednesday" :
-				return getWEDNESDAY();
-			case "Thursday" :
-				return getTHURSDAY();
-			case "Friday" :
-				return getFRIDAY();
-			case "Saturday" :
-				return getSATURDAY();
-			case "Sunday" :
-				return getSUNDAY();
+			case "January" :
+				return getJANUARY();
+			case "Jan":
+				return getJAN();
+			case "February" :
+				return getFEBRUARY();
+			case "Feb" :
+				return getFEB();
+			case "March" :
+				return getMARCH();
+			case "Mar" :
+				return getMAR();
+			case "April" :
+				return getAPRIL();
+			case "Apr" :
+				return getAPR();
+			case "May" :
+				return getMAY();
+			case "June" :
+				return getJUNE();
+			case "Jun" :
+				return getJUN();
+			case "July" :
+				return getJULY();
+			case "Jul" :
+				return getJUL();
+			case "August" :
+				return getAUGUST();
+			case "Aug" :
+				return getAUG();
+			case "September" :
+				return getSEPTEMBER();
+			case "Sep" :
+				return getSEP();
+			case "October" :
+				return getOCTOBER();
+			case "Oct" :
+				return getOCT();
+			case "November" :
+				return getNOVEMBER();
+			case "Nov" :
+				return getNOV();
+			case "December" :
+				return getDECEMBER();
+			case "Dec" :
+				return getDEC();
 			default :
 				return "";
 		}
@@ -184,6 +265,9 @@ public abstract class LanguagePack {
 	}
 	public String getTOGGLE_DONE() {
 		return TOGGLE_DONE;
+	}
+	public String getSEARCH() {
+		return SEARCH;
 	}
 	public String getFROM() {
 		return FROM;
@@ -334,5 +418,157 @@ public abstract class LanguagePack {
 	public String getPOPUP_QUERY_TASK() {
 		return POPUP_QUERY_TASK;
 	}
-	
+
+	public String getPOPUP_SEARCH() {
+		return POPUP_SEARCH;
+	}
+
+	public String getWELCOME_MESSAGE() {
+		return WELCOME_MESSAGE;
+	}
+
+	public String getSUB_WELCOME_MESSAGE() {
+		return SUB_WELCOME_MESSAGE;
+	}
+
+	public String getFREE_TODAY() {
+		return FREE_TODAY;
+	}
+
+	public String getJANUARY() {
+		return JANUARY;
+	}
+
+	public String getFEBRUARY() {
+		return FEBRUARY;
+	}
+
+	public String getMARCH() {
+		return MARCH;
+	}
+
+	public String getAPRIL() {
+		return APRIL;
+	}
+
+	public String getMAY() {
+		return MAY;
+	}
+
+	public String getJUNE() {
+		return JUNE;
+	}
+
+	public String getJULY() {
+		return JULY;
+	}
+
+	public String getAUGUST() {
+		return AUGUST;
+	}
+
+	public String getSEPTEMBER() {
+		return SEPTEMBER;
+	}
+
+	public String getOCTOBER() {
+		return OCTOBER;
+	}
+
+	public String getNOVEMBER() {
+		return NOVEMBER;
+	}
+
+	public String getDECEMBER() {
+		return DECEMBER;
+	}
+
+	public String getJAN() {
+		return JAN;
+	}
+
+	public String getFEB() {
+		return FEB;
+	}
+
+	public String getMAR() {
+		return MAR;
+	}
+
+	public String getAPR() {
+		return APR;
+	}
+
+	public String getMAY_SHORT() {
+		return MAY_SHORT;
+	}
+
+	public String getJUN() {
+		return JUN;
+	}
+
+	public String getJUL() {
+		return JUL;
+	}
+
+	public String getAUG() {
+		return AUG;
+	}
+
+	public String getSEP() {
+		return SEP;
+	}
+
+	public String getOCT() {
+		return OCT;
+	}
+
+	public String getNOV() {
+		return NOV;
+	}
+
+	public String getDEC() {
+		return DEC;
+	}
+
+	public String getTO_DO_TITLE() {
+		return TO_DO_TITLE;
+	}
+
+	public String getNO_UPCOMING_TASKS() {
+		return NO_UPCOMING_TASKS;
+	}
+
+	public String getSINGLE_MARK_AS_DONE() {
+		return SINGLE_MARK_AS_DONE;
+	}
+
+	public String getSINGLE_TOGGLE_DONE() {
+		return SINGLE_TOGGLE_DONE;
+	}
+
+	public String getSINGLE_EDITED() {
+		return SINGLE_EDITED;
+	}
+
+	public String getSINGLE_FROM() {
+		return SINGLE_FROM;
+	}
+
+	public String getSINGLE_TO() {
+		return SINGLE_TO;
+	}
+
+	public String getSINGLE_THIS_IS_EDITED_ITEM() {
+		return SINGLE_THIS_IS_EDITED_ITEM;
+	}
+
+	public String getSINGLE_SUCCESFULLY_ADDED() {
+		return SINGLE_SUCCESFULLY_ADDED;
+	}
+
+	public String getSINGLE_SUCCESSFULLY_DELETED() {
+		return SINGLE_SUCCESSFULLY_DELETED;
+	}
+
 }

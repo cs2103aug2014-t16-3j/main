@@ -76,6 +76,8 @@ public class UserInterface implements ActionListener {
 	private Feedback fb;
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
+	
+	private ArrayList<String> mCmdHistory = new ArrayList<String>(5);
 
 	public static UserInterface getInstance() {
 		if (mUserInterface == null) {
@@ -138,8 +140,9 @@ public class UserInterface implements ActionListener {
 		mTextField.setColumns(20);
 		mTextField.addActionListener(this);
 		mTextField.setBackground(UI.MAIN_COLOR);
-		mTextField.setFont(UI.FONT_16);
+		mTextField.setFont(UI.FONT_24);
 		setKeyBinds();
+		System.out.println(mTextField.getPreferredSize().getHeight());
 
 		/**
 		 * Sets up textPanel
@@ -347,6 +350,11 @@ public class UserInterface implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 
 		String text = mTextField.getText();
+		mCmdHistory.add(text);
+		//TODO cmd history
+		if(mCmdHistory.size()>5) {
+			
+		}
 		mTextField.setText("");
 
 		mUserInput = text;
@@ -471,14 +479,17 @@ public class UserInterface implements ActionListener {
 		JLabel logoLabel = new JLabel(new ImageIcon(logoImg));
 		JLabel welcome = new JLabel();
 		welcome.setFont(UI.FONT_20_BOLD);
-		welcome.setText("<html>" + "<br><br>" + "Welcome to uDo!" + "</html>");
+		welcome.setText("<html>" + "<br><br>" + mLang.getWELCOME_MESSAGE() + "</html>");
 		welcome.setOpaque(false);
 		JLabel welcome2 = new JLabel();
 		welcome2.setFont(UI.FONT_16);
 		welcome2.setForeground(UI.POPUP_BGCOLOR);
-		welcome2.setText("<html>" + "<br>"
-				+ "Start by typing in the textbox below:"
+		welcome2.setText("<html><center>" + "<br>"
+				+ mLang.getSUB_WELCOME_MESSAGE()
 				+ "</html>");
+		welcome2.setHorizontalTextPosition(JLabel.CENTER);
+		welcome2.setHorizontalAlignment(JLabel.CENTER);
+		welcome2.setPreferredSize(new Dimension(UI.MAIN_WIDTH, 100));
 		welcome2.setOpaque(false);
 		mMainView.add(logoLabel);
 		mMainView.add(welcome);

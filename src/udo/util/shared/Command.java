@@ -12,6 +12,7 @@ public enum Command {
 	MARK_DONE,
 	TOGGLE_DONE,
 	SAVE, 
+	SEARCH,
 	EXIT, 
 	UNDO, 
 	NULL

@@ -21,6 +21,27 @@ public class ParserUnitTest {
 	Parser p = new Parser();
 	
 	@Test
+	public void testSearchAction() {
+		String search = "search jo ba b";
+		InputData data = p.getInputData(search);
+		ParsingStatus status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		
+		search = "search s";
+		data = p.getInputData(search);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.SUCCESS, status);
+		
+		search = "search ";
+		data = p.getInputData(search);
+		status = data.getStatus();
+		
+		assertEquals(ParsingStatus.FAIL, status);
+	}
+	
+	@Test
 	public void testListPlan() {
 		String listPlan = "list plan";
 		InputData data = p.getInputData(listPlan);
@@ -340,7 +361,7 @@ public class ParserUnitTest {
 		startHour = startEvent.get(Calendar.HOUR);
 		startMins = startEvent.get(Calendar.MINUTE);
 		
-		assertEquals(6, startDay);
+		assertEquals(7, startDay);
 		assertEquals(10, startMonth);
 		assertEquals(2014, startYear);
 		assertEquals(10, startHour);
@@ -352,7 +373,7 @@ public class ParserUnitTest {
 		endHour = endEvent.get(Calendar.HOUR);
 		endMins = endEvent.get(Calendar.MINUTE);
 		
-		assertEquals(6, endDay);
+		assertEquals(7, endDay);
 		assertEquals(10, endMonth);
 		assertEquals(2014, endYear);
 		assertEquals(9, endHour);

@@ -25,7 +25,7 @@ public class UItest {
 		/**
 		 * Testing listing items in main screen
 		 */
-		testListAll();
+//		testListAll();
 //		testListDone();
 //		testListSingleDate();
 //		testListSingleHashtag();

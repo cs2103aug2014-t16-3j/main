@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import udo.language.LanguagePack;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
@@ -38,6 +39,10 @@ public class DayScreen extends Screen {
 												// overlapped start
 	private ArrayList<Point> mRedTickCoordsWH; // stores width and height of red
 												// ticks
+	
+	private Date mDateQuery;
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	// private static final Logger logger =
 	// Logger.getLogger(udo.util.ui.DayView.class.getName());
@@ -67,6 +72,7 @@ public class DayScreen extends Screen {
 	@Override
 	public void init(Date newDate, ArrayList<ItemData> data) {
 		removeAll();
+		mDateQuery = newDate;
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(mWidth,
 				UI.DAYVIEW_HEADER_HEIGHT));
@@ -96,7 +102,7 @@ public class DayScreen extends Screen {
 
 	private void populateView(ArrayList<ItemData> data) {
 		if (data.size() == 0) {
-			JLabel noItems = new JLabel("You are free today!");
+			JLabel noItems = new JLabel(mLang.getFREE_TODAY());
 			noItems.setFont(UI.FONT_14);
 			FontMetrics fm = noItems.getFontMetrics(noItems.getFont());
 			int height = fm.getHeight();
@@ -140,8 +146,8 @@ public class DayScreen extends Screen {
 				}
 				g.setFont(UI.FONT_18);
 				g.setColor(UI.EVENT_COLOR);
-				g.drawString("AM", 76, 30);
-				g.drawString("PM", 257, 30);
+				g.drawString("AM", mTickerImg.getWidth(null)/4, 30);
+				g.drawString("PM", mTickerImg.getWidth(null)*3/4, 30);
 			}
 
 		};
@@ -156,9 +162,9 @@ public class DayScreen extends Screen {
 		double minPerPixel = (24d * 60d) / mTickerImg.getWidth(null);
 		int currItem_startX = 0;
 		int lastItem_endX = 0;
-		Calendar today = Calendar.getInstance();
+		Calendar date = dateToCalendar(mDateQuery);
 		Calendar start = (Calendar) item.get(Keys.START);
-		if(today.get(Calendar.DAY_OF_MONTH) == start.get(Calendar.DAY_OF_MONTH)) {
+		if(date.get(Calendar.DAY_OF_MONTH) == start.get(Calendar.DAY_OF_MONTH)) {
 			hour = (start).get(Calendar.HOUR_OF_DAY) * 60;
 			min = (start).get(Calendar.MINUTE);
 		} else {
@@ -175,7 +181,7 @@ public class DayScreen extends Screen {
 					+ mTickerCoordsWH.get(i - 1).x;
 		}
 		Calendar end = (Calendar) item.get(Keys.END);
-		if(today.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)) {
+		if(date.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH)) {
 			hour = (end).get(Calendar.HOUR_OF_DAY) * 60;
 			min = (end).get(Calendar.MINUTE);
 		} else {
@@ -201,7 +207,8 @@ public class DayScreen extends Screen {
 	}
 
 	private void initHeader(Date newDate) {
-		String dateString = UI.DD_MMMM_YYYY.format(newDate);
+		String dateString = UI.DD.format(newDate) + " " + mLang.convertMonthToLanguage(UI.MMMM.format(newDate))
+							+ " " + UI.YYYY.format(newDate);
 		JLabel date = new JLabel(dateString);
 		date.setFont(UI.FONT_24);
 		FontMetrics fm = date.getFontMetrics(date.getFont());
@@ -209,7 +216,7 @@ public class DayScreen extends Screen {
 		date.setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, height));
 		date.setHorizontalAlignment(JLabel.LEFT);
 
-		String dayString = UI.DAY_NAME.format(newDate);
+		String dayString = mLang.convertDayToLanguage(UI.DAY_NAME.format(newDate));
 		JLabel day = new JLabel(dayString);
 		day.setFont(UI.FONT_18);
 		fm = day.getFontMetrics(day.getFont());
@@ -232,6 +239,12 @@ public class DayScreen extends Screen {
 		mTickerCoordsWH.clear();
 		mRedTickCoordsXY.clear();
 		mRedTickCoordsWH.clear();
+	}
+	
+	public Calendar dateToCalendar(Date date){ 
+	  Calendar cal = Calendar.getInstance();
+	  cal.setTime(date);
+	  return cal;
 	}
 
 	/**

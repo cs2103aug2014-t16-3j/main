@@ -43,6 +43,7 @@ public class Constants {
 		public static final String VALUE = "value";
 		public static final String DATE = "date";
 		public static final String OLD_VALUE = "Old value";
+		public static final String SEARCH_QUERY = "search query";
 	}
 
 	//@author A0108358B
@@ -103,11 +104,12 @@ public class Constants {
 	/**
 	 * 
 	 * This class holds the magic strings for the loggers.
-	 * They include filenames
+	 * They include filenames and paths
 	 * 
 	 */
-	public static final class Logging {
-		public static final String LOGFILE_ENGINE = "logs/engineLog.log";
+	public static final class LoggingStrings {
+		public static final String LOGPATH_ENGINE = "logs/engine/";
+		public static final String LOGFILE_ENGINE = LOGPATH_ENGINE + "engineLog.log";
 	}
 
 	//@author A0114088H
@@ -146,16 +148,18 @@ public class Constants {
 		public static final SimpleDateFormat DD_MMM = new SimpleDateFormat(" dd MMM ");
 		public static final SimpleDateFormat DD = new SimpleDateFormat("dd");
 		public static final SimpleDateFormat MMM = new SimpleDateFormat("MMM");
+		public static final SimpleDateFormat MMMM = new SimpleDateFormat("MMMM");
+		public static final SimpleDateFormat YYYY = new SimpleDateFormat("yyyy");
 		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
 		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
 		
-		public static final int MAIN_WIDTH = 400; // or 360
-//		public static final int MAIN_WIDTH = 360;
+//		public static final int MAIN_WIDTH = 400; // or 360
+		public static final int MAIN_WIDTH = 350; // for presentation purposes
 		public static final int MAIN_HEIGHT = 600;
 		public static final int MAIN_PADDING = 8;
-		public static final int TEXTFIELD_HEIGHT = 24;
-		public static final int SUBVIEW_WIDTH = 360; // or 300
-//		public static final int SUBVIEW_WIDTH = 300;
+		public static final int TEXTFIELD_HEIGHT = 32;
+//		public static final int SUBVIEW_WIDTH = 360; // or 300
+		public static final int SUBVIEW_WIDTH = 290; // This is only for presentation
 		public static final int SUBVIEW_HEIGHT = 550;
 		public static final int SUBVIEW_HEADER_LINEY = 40;
 		public static final int SIDEVIEW_PADDING = 30;

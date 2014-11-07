@@ -20,7 +20,9 @@ public class Cache {
 	private HashSet<ItemData> mEvents;
 	private HashSet<ItemData> mTasks;
 	private HashSet<ItemData> mPlans;
+	
 	private boolean mIsLocked;
+	
 	private Iterator<ItemData> mEventsIterator;
 	private Iterator<ItemData> mTasksIterator;
 	private Iterator<ItemData> mPlansIterator;
@@ -201,7 +203,7 @@ public class Cache {
 	public ArrayList<ItemData> getAllItemsOn(Calendar date) throws CacheAccessException {
 		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
 		for (ItemData item : getAllItems()) {
-			if (isSameDateAs(item, date)) {
+			if (containsDate(item, date)) {
 				allEvents.add(item);
 			}
 		}
@@ -212,7 +214,7 @@ public class Cache {
 	public ArrayList<ItemData> getAllEventsOn(Calendar date) throws CacheAccessException {
 		ArrayList<ItemData> allEvents = new ArrayList<ItemData>();
 		for (ItemData item : getAllEvents()) {
-			if (isSameDateAs(item, date)) {
+			if (containsDate(item, date)) {
 				allEvents.add(item);
 			}
 		}
@@ -360,6 +362,41 @@ public class Cache {
 	}
 	
 	/**
+	 * returns a list of all the items matching a string query in their title or tags
+	 * @param query the string to search for
+	 * @return a list of all the items matching a string query in their title or tags
+	 * @throws CacheAccessException if cache is locked
+	 */
+	public ArrayList<ItemData> searchAllItems(String query) throws CacheAccessException {
+		ArrayList<ItemData> matchingItems = new ArrayList<ItemData>();
+		for (ItemData item : getAllItems()) {
+			String title = (String) item.get(Keys.TITLE);
+			if (title != null) {
+				title = title.toLowerCase();
+				query = query.trim().toLowerCase();
+				if (title.contains(query)) {
+					matchingItems.add(item);
+				} else if (taglistContains(item, query)) {
+					matchingItems.add(item);
+				}
+			}
+		}
+		Collections.sort(matchingItems);
+		return matchingItems;
+	}
+	
+	private boolean taglistContains(ItemData item, String query) {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) item.get(Keys.HASHTAGS);
+		for (String tag : taglist) {
+			if (tag.contains(query)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * locks cache, makes an arraylist of items, then unlocks cache.
 	 * 
 	 * @return the list of items in the cache at this point.
@@ -378,28 +415,47 @@ public class Cache {
 		return allItems;
 	}
 
-	private boolean isSameDateAs(ItemData item, Calendar date) {
-		Calendar itemCal;
+	private boolean containsDate(ItemData item, Calendar date) {
 		ItemType itemType = item.getItemType();
-		if (itemType == null) {
+		
+		if (itemType == null || date == null) {
 			return false;
 		} else if (itemType.equals(ItemType.EVENT)) {
-			itemCal = (Calendar) item.get(Keys.START);
+			
+			Calendar startCal = (Calendar) item.get(Keys.START);
+			Calendar endCal = (Calendar) item.get(Keys.END);
+			
+			if (startCal.before(date) && date.before(endCal)) {
+				return true;
+			} else if (isSameDateAs(startCal, date)) {
+				return true;
+			} else if (isSameDateAs(endCal, date)) {
+				return true;
+			} else {
+				return false;
+			}
 		} else if (itemType.equals(ItemType.TASK)) {
-			itemCal = (Calendar) item.get(Keys.DUE);
+			
+			Calendar itemCal = (Calendar) item.get(Keys.DUE);
+			return isSameDateAs(itemCal, date);
 		} else {
 			return false;
 		}
-		return isSameDateAs(itemCal, date);
+		
 	}
 
 	private boolean isSameDateAs(Calendar c1, Calendar c2) {
+		if (c1 == null || c2 == null) {
+			return false;
+		}
+		
 		int c1Day = c1.get(Calendar.DAY_OF_MONTH);
 		int c1Month = c1.get(Calendar.MONTH);
 		int c1Year = c1.get(Calendar.YEAR);
 		int c2Day = c2.get(Calendar.DAY_OF_MONTH);
 		int c2Month = c2.get(Calendar.MONTH);
 		int c2Year = c2.get(Calendar.YEAR);
+		
 		if (c1Day != c2Day) {
 			return false;
 		}

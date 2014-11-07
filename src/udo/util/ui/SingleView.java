@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.swing.JLabel;
 
+import udo.language.LanguagePack;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
 import udo.util.shared.Constants.UI;
@@ -18,6 +19,8 @@ public class SingleView extends View {
 	private static final long serialVersionUID = 1L;
 
 	private JLabel mMessage = new JLabel();
+	
+	private LanguagePack mLang = LanguagePack.getInstance();
 
 	public SingleView() {
 		setPreferredSize(new Dimension(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT));
@@ -39,8 +42,7 @@ public class SingleView extends View {
 			case EDIT :
 				initEdit(output);
 				break;
-			case UNDO :
-				initUndo();
+			case UNDO : //unreachable
 				break;
 			case MARK_DONE :
 				initMarkDone();
@@ -57,14 +59,14 @@ public class SingleView extends View {
 
 	private void initToggleDone() {
 		mMessage.setText("<html>" + "<br><br>"
-				+ "You have toggled the completion status of: " + "</html>");
+				+ mLang.getSINGLE_TOGGLE_DONE() + "</html>");
 		add(mMessage);
 
 	}
 
 	private void initMarkDone() {
 		mMessage.setText("<html>" + "<br><br>"
-				+ "You have marked the following as completed: " + "</html>");
+				+ mLang.getSINGLE_MARK_AS_DONE() + "</html>");
 		add(mMessage);
 
 	}
@@ -78,49 +80,49 @@ public class SingleView extends View {
 		String newValue = "";
 		switch (field) {
 			case DUE_DATE :
-				fieldString = "Due date";
+				fieldString = mLang.getDUE_DATE();
 				oldValue = UI.DD_MM_YY.format(((Calendar) output
 						.get(Keys.OLD_VALUE)).getTime());
 				newValue = UI.DD_MM_YY.format(((Calendar) item.get(Keys.DUE))
 						.getTime());
 				break;
 			case DUE_TIME :
-				fieldString = "Due time";
+				fieldString = mLang.getDUE_TIME();
 				oldValue = UI.HOUR_12.format(((Calendar) output
 						.get(Keys.OLD_VALUE)).getTime());
 				newValue = UI.HOUR_12.format(((Calendar) item.get(Keys.DUE))
 						.getTime());
 				break;
 			case END_DATE :
-				fieldString = "End date";
+				fieldString = mLang.getEND_DATE();
 				oldValue = UI.DD_MM_YY.format(((Calendar) output
 						.get(Keys.OLD_VALUE)).getTime());
 				newValue = UI.DD_MM_YY.format(((Calendar) item.get(Keys.END))
 						.getTime());
 				break;
 			case END_TIME :
-				fieldString = "End Time";
+				fieldString = mLang.getEND_TIME();
 				oldValue = UI.HOUR_12.format(((Calendar) output
 						.get(Keys.OLD_VALUE)).getTime());
 				newValue = UI.HOUR_12.format(((Calendar) item.get(Keys.END))
 						.getTime());
 				break;
 			case START_DATE :
-				fieldString = "Start date";
+				fieldString = mLang.getSTART_DATE();
 				oldValue = UI.DD_MM_YY.format(((Calendar) output
 						.get(Keys.OLD_VALUE)).getTime());
 				newValue = UI.DD_MM_YY.format(((Calendar) item.get(Keys.START))
 						.getTime());
 				break;
 			case START_TIME :
-				fieldString = "Start time";
+				fieldString = mLang.getSTART_TIME();
 				oldValue = UI.HOUR_12.format(((Calendar) output
 						.get(Keys.OLD_VALUE)).getTime());
 				newValue = UI.HOUR_12.format(((Calendar) item.get(Keys.START))
 						.getTime());
 				break;
 			case TITLE :
-				fieldString = "Title";
+				fieldString = mLang.getTITLE();
 				oldValue = (String) output.get(Keys.OLD_VALUE);
 				newValue = (String) item.get(Keys.TITLE);
 				break;
@@ -129,17 +131,17 @@ public class SingleView extends View {
 
 		}
 		mMessage.setText("<html>" + "<br><br>"
-				+ "You have edited: <font color=\"blue\">" + fieldString
-				+ "</font><br>from: <font color=\"blue\">" + "\"" + oldValue
-				+ "\"" + "</font><br>to: <font color=\"blue\">" + "\""
-				+ newValue + "\"" + "</font>. <br>This is the edited item: "
+				+ mLang.getSINGLE_EDITED() + "<font color=\"blue\">" + fieldString
+				+ "</font><br>" + mLang.getSINGLE_FROM() + "<font color=\"blue\">" + "\"" + oldValue
+				+ "\"" + "</font><br>" + mLang.getSINGLE_TO() + "<font color=\"blue\">" + "\""
+				+ newValue + "\"" + "</font>. <br>" + mLang.getSINGLE_THIS_IS_EDITED_ITEM()
 				+ "</html>");
 		add(mMessage);
 	}
 
 	private void initAdd() {
 		mMessage.setText("<html>" + "<br><br>"
-				+ "You have successfully added: " + "</html>");
+				+ mLang.getSINGLE_SUCCESFULLY_ADDED() + "</html>");
 		add(mMessage);
 		// TODO Auto-generated method stub
 
@@ -147,16 +149,10 @@ public class SingleView extends View {
 
 	private void initDelete() {
 		mMessage.setText("<html>" + "<br><br>"
-				+ "You have successfully deleted: " + "</html>");
+				+ mLang.getSINGLE_SUCCESSFULLY_DELETED() + "</html>");
 		add(mMessage);
 		// TODO Auto-generated method stub
 
 	}
 
-	private void initUndo() {
-		// TODO Auto-generated method stub
-		mMessage.setText("<html>" + "<br><br>"
-				+ "You have successfully added: " + "</html>");
-		add(mMessage);
-	}
 }

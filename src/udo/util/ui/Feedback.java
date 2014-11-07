@@ -90,6 +90,12 @@ public class Feedback {
 					case SAVE :
 						mCommand = mLang.getPOPUP_SAVED();
 						break;
+					case SEARCH :
+						mCommand = mLang.getPOPUP_SEARCH();
+						search_entry(output);
+					case EXIT :
+						mCommand = "";
+						break;
 					default :
 						break;
 				}
@@ -112,7 +118,7 @@ public class Feedback {
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		mCenterView.init(output, Command.MARK_DONE);
 		mFinalView = mCenterView;
-		mCommand = mLang.getPOPUP_MARK_AS_DONE() + item.get(Keys.TITLE) + " as done";
+		mCommand = mLang.getPOPUP_MARK_AS_DONE() + item.get(Keys.TITLE);
 	}
 
 	private void add_entry(OutputData output, Command type) {
@@ -139,15 +145,23 @@ public class Feedback {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void list_entry(OutputData output) {
-		// TODO check if query is specified to 1 day, is a todo, or general list
-		// view
+	private void search_entry(OutputData output) {
 		mData = output.get(Keys.ITEMS);
 		if (((ArrayList<ItemData>) mData).size() == 0) {
 			mCommand = mLang.getPOPUP_NO_ITEMS_FOUND();
 		} else {
-			// TODO make a method that can take in string/ calendar etc to build
-			// the popup string
+			String searchQuery = (String) output.get(Keys.SEARCH_QUERY);
+			mCommand = mLang.getPOPUP_SEARCH() + "\"" + searchQuery + "\"";
+			setToListView();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void list_entry(OutputData output) {
+		mData = output.get(Keys.ITEMS);
+		if (((ArrayList<ItemData>) mData).size() == 0) {
+			mCommand = mLang.getPOPUP_NO_ITEMS_FOUND();
+		} else {
 			ListQuery queryType = (ListQuery) output.get(Keys.QUERY_TYPE);
 			String query = "";
 			switch (queryType) {

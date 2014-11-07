@@ -10,6 +10,7 @@ import udo.util.parser.ExitAction;
 import udo.util.parser.ListAction;
 import udo.util.parser.MarkAction;
 import udo.util.parser.SaveAction;
+import udo.util.parser.SearchAction;
 import udo.util.parser.ToggleDoneAction;
 import udo.util.parser.TrashAction;
 import udo.util.parser.UndoAction;
@@ -77,6 +78,9 @@ public class Parser {
 		} else if (command.equals(mLang.getTOGGLE_DONE())) {
 			return Command.TOGGLE_DONE;
 			
+		} else if (command.equals(mLang.getSEARCH())) {
+			return Command.SEARCH;
+			
 		} else {
 			return Command.NULL;
 		}
@@ -102,11 +106,19 @@ public class Parser {
 				return toggle_done(commandType, details);
 			case MARK_DONE :
 				return mark(commandType, details);
+			case SEARCH :
+				return search(commandType, details);
 			default:
 				return trash(commandType, details);
 			}
 	}
 	
+	private InputData search(Command type, String details) {
+		Action search = new SearchAction();
+		InputData data = search.run(type, details);
+		return data;
+	}
+
 	private InputData mark(Command type, String details) {
 		Action mark = new MarkAction();
 		InputData data = mark.run(type, details);
