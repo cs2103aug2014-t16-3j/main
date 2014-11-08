@@ -26,7 +26,8 @@ import udo.util.shared.InputData;
  */
 
 public class Parser {
-	LanguagePack mLang;
+	
+	private LanguagePack mLang;
 	
 	public Parser() {
 		mLang = LanguagePack.getInstance();
@@ -90,24 +91,34 @@ public class Parser {
 		switch (commandType) {
 			case ADD :
 				return add(commandType, details);
+				
 			case LIST :
 				return list(commandType, details);
+				
 			case DELETE :
 				return delete(commandType, details);
+				
 			case SAVE :
 				return save(commandType, details);
+				
 			case EXIT :
 				return exit(commandType, details);
+				
 			case UNDO :
 				return undo(commandType, details);
+				
 			case EDIT :
 				return edit(commandType, details);
+				
 			case TOGGLE_DONE :
 				return toggle_done(commandType, details);
+				
 			case MARK_DONE :
 				return mark(commandType, details);
+				
 			case SEARCH :
 				return search(commandType, details);
+				
 			default:
 				return trash(commandType, details);
 			}

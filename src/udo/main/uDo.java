@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import udo.util.shared.Command;
+import udo.util.shared.Constants.MainVars;
+import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
-import udo.util.shared.ExecutionStatus;
 
 /**
  * This is the main class that the user will run. This class will also
@@ -17,20 +18,11 @@ import udo.util.shared.ExecutionStatus;
  */
 public class uDo {
 
-	public static void main(String[] args) {
-		uDo udo = new uDo();
-		udo.run(args);
-	}
-
-	public static final int EXIT_STATUS_OK = 0;
-	public static final int EXIT_STATUS_NOT_OK = -1;
-	public static final int DAYS_IN_ADVANCE = 3;
-
 	private UserInterface mUI;
 	private Parser mParser;
 	private Engine mEngine;
 
-	boolean mIsRunning;
+	private boolean mIsRunning;
 
 	public uDo() {
 		mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
@@ -49,7 +41,7 @@ public class uDo {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.exit(EXIT_STATUS_NOT_OK);
+			System.exit(MainVars.EXIT_STATUS_NOT_OK);
 		}
 	}
 
@@ -68,14 +60,14 @@ public class uDo {
 			mUI.show(outputData);
 			checkForExitCommand(outputData);
 		}
-		System.exit(EXIT_STATUS_OK);
+		System.exit(MainVars.EXIT_STATUS_OK);
 	}
 
 	private void updateTodoScreen() {
 		Calendar from = Calendar.getInstance();
 		from.setLenient(true);
 		Calendar to = Calendar.getInstance();
-		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + DAYS_IN_ADVANCE);
+		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + MainVars.DAYS_IN_ADVANCE);
 		ArrayList<ItemData> itemsToShow = mEngine.getTodoScreenItems(from, to);
 		mUI.updateTodoScreen(itemsToShow);
 	}
@@ -104,6 +96,11 @@ public class uDo {
 	public OutputData testParseAndExecute(String input) {
 		OutputData output = parseAndExecute(input);
 		return output;
+	}
+
+	public static void main(String[] args) {
+		uDo udo = new uDo();
+		udo.run(args);
 	}
 
 }

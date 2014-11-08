@@ -111,6 +111,18 @@ public class Constants {
 		public static final String LOGPATH_ENGINE = "logs/engine/";
 		public static final String LOGFILE_ENGINE = LOGPATH_ENGINE + "engineLog.log";
 	}
+	
+	//@author A0108358B
+	/**
+	 * 
+	 * This class holds the magic numebrs for the main program.
+	 * 
+	 */
+	public static final class MainVars {
+		public static final int EXIT_STATUS_OK = 0;
+		public static final int EXIT_STATUS_NOT_OK = -1;
+		public static final int DAYS_IN_ADVANCE = 3;
+	}
 
 	//@author A0114088H
 	/**

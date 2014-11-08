@@ -132,7 +132,7 @@ public class RunnerAdd extends Runner {
 		InputData undoInput = new InputData(Command.DELETE);
 		undoInput.put(Keys.UID, item.get(Keys.UID));
 		undoInput.setParsingStatus(ParsingStatus.SUCCESS);
-		mUndoBin.putInputData(undoInput);
+		mUndoBin.storeUndo(undoInput);
 	}
 
 }

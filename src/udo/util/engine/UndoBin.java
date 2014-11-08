@@ -18,7 +18,7 @@ public class UndoBin {
 	 * 
 	 * @param input the data
 	 */
-	public void putInputData(InputData input) {
+	public void storeUndo(InputData input) {
 		mInputData = input;
 	}
 
@@ -27,7 +27,7 @@ public class UndoBin {
 	 * 
 	 * @return the data
 	 */
-	public InputData getUndoInputData() {
+	public InputData getUndo() {
 		return mInputData;
 	}
 

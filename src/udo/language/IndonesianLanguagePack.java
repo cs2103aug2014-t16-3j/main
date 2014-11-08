@@ -1,4 +1,4 @@
-//@author A0114847B
+//@author A0114088H
 package udo.language;
 
 public class IndonesianLanguagePack extends LanguagePack {

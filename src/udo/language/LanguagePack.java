@@ -7,15 +7,15 @@ package udo.language;
  * Extend this class by making a language class that gives values 
  * to all the language variables. 
  * <p>
- * Assign the userLanguagePack variable to the class you extended.
+ * Assign the USER_LANGUAGE_PACK variable to the class you extended.
  *
  */
 public abstract class LanguagePack {
 	
-	public static LanguagePack userLanguagePack =
+	public static final LanguagePack USER_LANGUAGE_PACK =
 			// replace this with the desired LanguagePack
-			 new IndonesianLanguagePack();
-//			new EnglishLanguagePack();
+			// new IndonesianLanguagePack();
+			new EnglishLanguagePack();
 	
 	
 	
@@ -25,13 +25,13 @@ public abstract class LanguagePack {
 	 ********************************************************/
 	
 	/**
-	 * This methods returns a LanguagePack object that represents the current user's
+	 * This method returns a LanguagePack object that represents the current user's
 	 * desired language.
 	 * @return the implemented LanguagePack object 
 	 */
 	public static LanguagePack getInstance() {
-		userLanguagePack.setLanguage();
-		return userLanguagePack;
+		USER_LANGUAGE_PACK.setLanguage();
+		return USER_LANGUAGE_PACK;
 	}
 	
 	/**
@@ -57,12 +57,12 @@ public abstract class LanguagePack {
 	protected String TOGGLE_DONE;
 	protected String SEARCH;
 	
-	// delimiters
+	// keywords
 	protected String FROM;
 	protected String TO;
 	protected String BY;
 	
-	// days
+	// time words
 	protected String YESTERDAY;
 	protected String TODAY;
 	protected String TONIGHT;
@@ -92,7 +92,7 @@ public abstract class LanguagePack {
 	protected String PLAN;
 	protected String DONE;
 	
-//@author A0114088H	
+	//@author A0114088H	
 	// Welcome message
 	protected String WELCOME_MESSAGE;
 	protected String SUB_WELCOME_MESSAGE;
@@ -235,8 +235,7 @@ public abstract class LanguagePack {
 				return "";
 		}
 	}
-	
-//@author A0114847B	
+		
 	// below are the getters for the language variables
 	
 	public String getADD() {
@@ -349,10 +348,6 @@ public abstract class LanguagePack {
 	}
 	public String getDONE() {
 		return DONE;
-	}
-
-	public static LanguagePack getUserLanguagePack() {
-		return userLanguagePack;
 	}
 
 	public String getPOPUP_SAVED() {
@@ -569,6 +564,11 @@ public abstract class LanguagePack {
 
 	public String getSINGLE_SUCCESSFULLY_DELETED() {
 		return SINGLE_SUCCESSFULLY_DELETED;
+	}
+
+	// this method returns the language pack
+	public static LanguagePack getUserLanguagePack() {
+		return USER_LANGUAGE_PACK;
 	}
 
 }
