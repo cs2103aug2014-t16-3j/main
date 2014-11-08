@@ -2,10 +2,8 @@
 package udo.util.ui;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 
 import udo.util.shared.Constants.UI;
-import udo.util.shared.ItemData;
 
 public class ListView extends View {
 

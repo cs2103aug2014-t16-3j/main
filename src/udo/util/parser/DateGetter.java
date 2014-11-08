@@ -9,7 +9,6 @@ import java.util.Date;
 import udo.language.LanguagePack;
 
 public class DateGetter {
-	LanguagePack mLang = LanguagePack.getInstance();
 	
 	/**
 	 * This class returns a calendar object set to the first date it reads from 
@@ -18,7 +17,9 @@ public class DateGetter {
 	 * It takes in date of format dd/MM, dd/MM/yy and dd/MM/yyyy
 	 */
 
-	private static Calendar mDate;
+	private LanguagePack mLang = LanguagePack.getInstance();
+	
+	private static Calendar mDate = null;
 	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
 	private String mDays[] = {
 			mLang.getTODAY(), 

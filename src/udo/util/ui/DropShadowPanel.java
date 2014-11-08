@@ -7,7 +7,6 @@ package udo.util.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
@@ -17,7 +16,7 @@ import javax.swing.border.Border;
 public class DropShadowPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	public int pixels;
+	private int pixels;
 
 	public DropShadowPanel(int pix) {
 		this.pixels = pix;

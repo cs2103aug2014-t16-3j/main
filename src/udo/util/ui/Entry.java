@@ -102,12 +102,15 @@ public class Entry extends JPanel {
 			case EVENT :
 				initEvent(item);
 				break;
+				
 			case TASK :
 				initTask(item);
 				break;
+				
 			case PLAN :
 				initPlan(item);
 				break;
+				
 			default :
 				break;
 		}
@@ -221,6 +224,7 @@ public class Entry extends JPanel {
 			case -1 :
 				day = mLang.getYESTERDAY();
 				break;
+				
 			case 0 :
 				if (cal.get(Calendar.HOUR_OF_DAY) > 17) {
 					day = mLang.getTONIGHT();
@@ -228,9 +232,11 @@ public class Entry extends JPanel {
 					day = mLang.getTODAY();
 				}
 				break;
+				
 			case 1 :
 				day = mLang.getTOMORROW();
 				break;
+				
 			case -6 :
 			case -5 :
 			case -4 :
@@ -243,6 +249,8 @@ public class Entry extends JPanel {
 			case 6 :
 				String javaFormattedDay = UI.DAY_NAME.format(cal.getTime()); 
 				day = mLang.convertDayToLanguage(javaFormattedDay);
+				break;
+				
 			default :
 				break;
 		}

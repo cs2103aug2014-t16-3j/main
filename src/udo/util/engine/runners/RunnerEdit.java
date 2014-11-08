@@ -33,35 +33,43 @@ public class RunnerEdit extends Runner {
 			OutputData output;
 
 			EditField field = (EditField) mInput.get(Keys.FIELD);
+			
 			switch (field) {
 				case DUE_DATE :
 					output = runEditDueDate(itemToEdit, (Calendar) value);
 					break;
+					
 				case DUE_TIME :
 					output = runEditDueTime(itemToEdit, (Calendar) value);
 					break;
+					
 				case END_DATE :
 					output = runEditEndDate(itemToEdit, (Calendar) value);
 					break;
 				case END_TIME :
 					output = runEditEndTime(itemToEdit, (Calendar) value);
 					break;
+					
 				case START_DATE :
 					output = runEditStartDate(itemToEdit, (Calendar) value);
 					break;
 				case START_TIME :
 					output = runEditStartTime(itemToEdit, (Calendar) value);
 					break;
+					
 				case TITLE :
 					output = runEditTitle(itemToEdit, (String) value);
 					break;
+					
 				default:
 					output = new OutputData(Command.EDIT, 
 							ParsingStatus.SUCCESS,
 							ExecutionStatus.FAIL);
 			}
+			
 			output.put(Keys.ITEM, itemToEdit);
 			output.put(Keys.FIELD, field);
+			
 			return output;
 			
 		} catch (CacheAccessException e) {
@@ -87,10 +95,12 @@ public class RunnerEdit extends Runner {
 		item.put(Keys.TITLE, title);
 		int uid = (int) item.get(Keys.UID);
 		storeUndo(uid, EditField.TITLE, oldTitle);
+		
 		OutputData output = new OutputData(Command.EDIT, 
 				ParsingStatus.SUCCESS,
 				ExecutionStatus.SUCCESS);
 		output.put(Keys.OLD_VALUE, oldTitle);
+		
 		return output;
 	}
 	

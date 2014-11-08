@@ -17,6 +17,7 @@ import java.util.Calendar;
 import udo.util.exceptions.ReadingFromStorageException;
 import udo.util.exceptions.WritingToStorageException;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.MainVars;
 import udo.util.shared.Constants.StorageIndices;
 import udo.util.shared.Constants.StorageStrings;
 import udo.util.shared.ItemData;
@@ -97,29 +98,24 @@ public class FileManager {
 		if (hasNextItem()) {
 			ItemData result = mNextItem;
 			String nextLine = getNextLine();
-			mNextItem = getItemData(nextLine);
+			mNextItem = makeItemData(nextLine);
 			return result;
 		} else {
 			return null;
 		}
 	}
 
-	private boolean createNewFile(String filename) {
-		try {
-			File f = new File(StorageStrings.FILEPATH);
-			f.mkdirs();
-			new FileWriter(filename).close();
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
+	private void createNewFile(String filename) throws IOException {
+		File f = new File(StorageStrings.FILEPATH);
+		f.mkdirs();
+		new FileWriter(filename).close();
 	}
 
 	private String getNextLine() throws IOException {
 		return mReader.readLine();
 	}
 
-	private ItemData getItemData(String line) {
+	private ItemData makeItemData(String line) {
 		if (line == null) {
 			return null;
 		}
@@ -287,15 +283,19 @@ public class FileManager {
 							new FileInputStream(mFilename),
 							"UTF-8"));
 			String nextLine = mReader.readLine();
-			mNextItem = getItemData(nextLine);
+			mNextItem = makeItemData(nextLine);
 			setReading(true);
 			
 		} catch (FileNotFoundException e) {
 			// if there's no existing file, create the file.
 			// then try opening it again.
 			setReading(false);
-			createNewFile(mFilename);
-			startReadMode();
+			try {
+				createNewFile(mFilename);
+				startReadMode();
+			} catch (IOException e1) {
+				setReading(false);
+			}
 			
 		} catch (IOException e) {
 			// if unable to read the nextline

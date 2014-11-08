@@ -63,14 +63,17 @@ public class RunnerDelete extends Runner {
 			case EVENT :
 				undoInput = new InputData(Command.ADD_EVENT);
 				break;
+				
 			case TASK :
 				// TODO
 				undoInput = new InputData(Command.ADD_TASK);
 				break;
+				
 			case PLAN :
 				// TODO
 				undoInput = new InputData(Command.ADD_PLAN);
 				break;
+				
 			default:
 				// should not
 				return;

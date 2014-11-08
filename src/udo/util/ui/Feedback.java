@@ -70,32 +70,43 @@ public class Feedback {
 					case ADD_PLAN :
 						add_entry(output, output.getCommand());
 						break;
+						
 					case DELETE :
 						delete_entry(output);
 						break;
+						
 					case LIST :
 						list_entry(output);
 						break;
+						
 					case UNDO :
 						break;
+						
 					case EDIT :
 						edit_entry(output);
 						break;
+						
 					case MARK_DONE :
 						mark_done(output);
 						break;
+						
 					case TOGGLE_DONE :
 						toggle_done(output);
 						break;
+						
 					case SAVE :
 						mCommand = mLang.getPOPUP_SAVED();
 						break;
+						
 					case SEARCH :
 						mCommand = mLang.getPOPUP_SEARCH();
 						search_entry(output);
+						break;
+						
 					case EXIT :
 						mCommand = "";
 						break;
+						
 					default :
 						break;
 				}
@@ -169,34 +180,40 @@ public class Feedback {
 					query = mLang.getPOPUP_QUERY_ALL();
 					setToListView();
 					break;
+					
 				case SINGLE_HASHTAG :
 					query = "#" + (String) output.get(Keys.QUERY_VALUE);
 					setToListView();
 					break;
+					
 				case DONE :
 					query = mLang.getPOPUP_QUERY_DONE();
 					setToListView();
 					break;
+					
 				case DATE :
 					Date date = ((Calendar) output.get(Keys.QUERY_VALUE))
 							.getTime();
 					query = mLang.getPOPUP_QUERY_DATE() + UI.DD_MMMM_YYYY.format(date);
 					setToDayVIew(date);
 					break;
+					
 				case EVENT :
 					query = mLang.getPOPUP_QUERY_EVENT();
 					setToListView();
 					break;
+					
 				case PLAN :
 					query = mLang.getPOPUP_QUERY_PLAN();
 					setToListView();
 					break;
+					
 				case TASK :
 					query = mLang.getPOPUP_QUERY_TASK();
 					setToToDoView();
 					break;
-				default :
 					
+				default :
 					break;
 
 			}

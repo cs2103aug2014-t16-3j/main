@@ -40,7 +40,10 @@ public class RunnerSave extends Runner {
 		return output;
 	}
 
-	private void writeCacheToFile() throws WritingToStorageException, IOException, CacheAccessException {
+	private void writeCacheToFile() throws 
+							WritingToStorageException, 
+							IOException, 
+							CacheAccessException {
 		ArrayList<ItemData> itemsToWrite = mCache.getAllItems(); 
 		mFileManager.writeToFile(itemsToWrite);
 	}

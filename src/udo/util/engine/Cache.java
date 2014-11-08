@@ -145,12 +145,15 @@ public class Cache {
 			case EVENT:
 				mEvents.remove(toDelete);
 				break;
+				
 			case TASK:
 				mTasks.remove(toDelete);
 				break;
+				
 			case PLAN:
 				mPlans.remove(toDelete);
 				break;
+				
 			default:
 				throw new ItemNotFoundException();
 		}
@@ -305,8 +308,8 @@ public class Cache {
 		for (ItemData item : getAllItems()) {
 			ItemType itemType = item.getItemType();
 			if (itemType.equals(ItemType.PLAN)) {
-				boolean planUndone = !((boolean) item.get(Keys.DONE)); 
-				if (planUndone) {
+				boolean planDone = ((boolean) item.get(Keys.DONE)); 
+				if (!planDone) {
 					allPlans.add(item);
 				}
 			}
@@ -490,11 +493,7 @@ public class Cache {
 		to.set(Calendar.MINUTE, 59);
 		to.set(Calendar.SECOND, 59);
 		
-		if (itemCal.after(from) && itemCal.before(to)) {
-			return true;
-		} else {
-			return false;
-		}
+		return itemCal.after(from) && itemCal.before(to);
 	}
 
 	private void lock() {
@@ -519,7 +518,8 @@ public class Cache {
 		if (!mIsLocked) {
 			return false;
 		} else {
-			return mEventsIterator.hasNext() || mTasksIterator.hasNext()
+			return mEventsIterator.hasNext() 
+					|| mTasksIterator.hasNext()
 					|| mPlansIterator.hasNext();
 		}
 	}

@@ -3,9 +3,6 @@ package udo.util.engine;
 
 import udo.util.shared.InputData;
 
-/**
- * only for engine to use.
- */
 public class UndoBin {
 	private InputData mInputData;
 

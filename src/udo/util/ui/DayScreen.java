@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +28,7 @@ import udo.util.shared.ItemType;
 public class DayScreen extends Screen {
 
 	private static final long serialVersionUID = -1690972274647306472L;
+	
 	private Image mTickerImg;
 	private JLabel mTicker;
 	private ArrayList<Point> mTickerCoordsXY; // stores x and y coords of the

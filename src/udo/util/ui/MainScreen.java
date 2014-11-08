@@ -1,14 +1,9 @@
 package udo.util.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
-
 import udo.util.shared.ItemData;
-import udo.util.shared.Constants.UI;
 
 public class MainScreen extends Screen {
 

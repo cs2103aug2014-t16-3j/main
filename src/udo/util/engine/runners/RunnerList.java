@@ -24,11 +24,7 @@ public class RunnerList extends Runner {
 
 	@Override
 	public OutputData run() {
-		/*
-		 * 1. build a list of all items 2. select only the items we want. 3.
-		 * sort the items according to date/time 4. put the items in the
-		 * outputdata. 5. return output
-		 */
+		
 		ArrayList<ItemData> result;
 
 		ListQuery queryType = (ListQuery) mInput.get(Keys.QUERY_TYPE);

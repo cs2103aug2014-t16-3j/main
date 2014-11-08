@@ -3,16 +3,15 @@ package udo.util.engine.runners;
 
 import udo.util.engine.Cache;
 import udo.util.engine.UndoBin;
-import udo.util.exceptions.AddToCacheException;
 import udo.util.exceptions.CacheAccessException;
 import udo.util.shared.Command;
+import udo.util.shared.Constants.Keys;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
 import udo.util.shared.OutputData;
 import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
 
 public class RunnerAdd extends Runner {
 	
@@ -27,8 +26,6 @@ public class RunnerAdd extends Runner {
 		ParsingStatus pStatus = mInput.getStatus();
 		OutputData output = new OutputData(cmd, pStatus);
 		
-		boolean cacheAddOK = false;
-		
 		ItemData genericItem = makeGenericItem(mInput);
 		ItemData itemToAdd;
 		
@@ -36,15 +33,15 @@ public class RunnerAdd extends Runner {
 		// also adds the final item to the cache.
 		switch (cmd) {
 			case ADD_EVENT :
-				itemToAdd = addEvent(mInput, genericItem);
+				itemToAdd = makeEvent(mInput, genericItem);
 				break;
 				
 			case ADD_TASK :
-				itemToAdd = addTask(mInput, genericItem);
+				itemToAdd = makeTask(mInput, genericItem);
 				break;
 				
 			case ADD_PLAN :
-				itemToAdd = addPlan(mInput, genericItem);
+				itemToAdd = makePlan(mInput, genericItem);
 				break;
 				
 			default :
@@ -95,7 +92,7 @@ public class RunnerAdd extends Runner {
 		return item;
 	}
 	
-	private ItemData addEvent(InputData input, ItemData event) {
+	private ItemData makeEvent(InputData input, ItemData event) {
 		event.setItemType(ItemType.EVENT);
 		
 		event.put(Keys.START, 
@@ -106,7 +103,7 @@ public class RunnerAdd extends Runner {
 		return event;
 	}
 
-	private ItemData addTask(InputData input, ItemData task) {
+	private ItemData makeTask(InputData input, ItemData task) {
 		task.setItemType(ItemType.TASK);
 		
 		task.put(Keys.DUE, 
@@ -114,17 +111,15 @@ public class RunnerAdd extends Runner {
 		task.put(Keys.DONE, 
 				false);
 		
-		//add to cache
 		return task;
 	}
 	
-	private ItemData addPlan(InputData input, ItemData plan) {
+	private ItemData makePlan(InputData input, ItemData plan) {
 		plan.setItemType(ItemType.PLAN);
 		
 		plan.put(Keys.DONE, 
 				false);
 		
-		//add to cache
 		return plan;
 	}
 	

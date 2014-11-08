@@ -36,20 +36,26 @@ public class SingleView extends View {
 			case ADD_TASK :
 				initAdd();
 				break;
+				
 			case DELETE :
 				initDelete();
 				break;
+				
 			case EDIT :
 				initEdit(output);
 				break;
+				
 			case UNDO : //unreachable
 				break;
+				
 			case MARK_DONE :
 				initMarkDone();
 				break;
+				
 			case TOGGLE_DONE :
 				initToggleDone();
 				break;
+				
 			default :
 				break;
 		}
@@ -86,6 +92,7 @@ public class SingleView extends View {
 				newValue = UI.DD_MM_YY.format(((Calendar) item.get(Keys.DUE))
 						.getTime());
 				break;
+				
 			case DUE_TIME :
 				fieldString = mLang.getDUE_TIME();
 				oldValue = UI.HOUR_12.format(((Calendar) output
@@ -93,6 +100,7 @@ public class SingleView extends View {
 				newValue = UI.HOUR_12.format(((Calendar) item.get(Keys.DUE))
 						.getTime());
 				break;
+				
 			case END_DATE :
 				fieldString = mLang.getEND_DATE();
 				oldValue = UI.DD_MM_YY.format(((Calendar) output
@@ -100,6 +108,7 @@ public class SingleView extends View {
 				newValue = UI.DD_MM_YY.format(((Calendar) item.get(Keys.END))
 						.getTime());
 				break;
+				
 			case END_TIME :
 				fieldString = mLang.getEND_TIME();
 				oldValue = UI.HOUR_12.format(((Calendar) output
@@ -107,6 +116,7 @@ public class SingleView extends View {
 				newValue = UI.HOUR_12.format(((Calendar) item.get(Keys.END))
 						.getTime());
 				break;
+				
 			case START_DATE :
 				fieldString = mLang.getSTART_DATE();
 				oldValue = UI.DD_MM_YY.format(((Calendar) output
@@ -114,6 +124,7 @@ public class SingleView extends View {
 				newValue = UI.DD_MM_YY.format(((Calendar) item.get(Keys.START))
 						.getTime());
 				break;
+				
 			case START_TIME :
 				fieldString = mLang.getSTART_TIME();
 				oldValue = UI.HOUR_12.format(((Calendar) output
@@ -121,11 +132,13 @@ public class SingleView extends View {
 				newValue = UI.HOUR_12.format(((Calendar) item.get(Keys.START))
 						.getTime());
 				break;
+				
 			case TITLE :
 				fieldString = mLang.getTITLE();
 				oldValue = (String) output.get(Keys.OLD_VALUE);
 				newValue = (String) item.get(Keys.TITLE);
 				break;
+				
 			default :
 				break;
 
