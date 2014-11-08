@@ -1,6 +1,7 @@
 //@author A0114088H
 package udo.util.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -35,13 +36,15 @@ public class Feedback {
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
 
-	public Feedback() {
-		mCenterView = new MainScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
-									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
-		mDayView = new DayScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
-									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
-		mToDoView = new ToDoScreen(UI.MAIN_WIDTH - UI.MAIN_PADDING, 
-									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
+	public Feedback() throws IOException {
+		int effectiveMainWidth = UI.MAIN_WIDTH - UI.MAIN_PADDING;
+		int effectiveMainHeight = UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT;
+		mCenterView = new MainScreen(effectiveMainWidth, 
+									effectiveMainHeight);
+		mDayView = new DayScreen(effectiveMainWidth, 
+									effectiveMainHeight);
+		mToDoView = new ToDoScreen(effectiveMainWidth, 
+									effectiveMainHeight);
 		mMainTodayView = new DayScreen(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 		mMainToDoView = new ToDoScreen(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
 		mFinalView.setOpaque(false);

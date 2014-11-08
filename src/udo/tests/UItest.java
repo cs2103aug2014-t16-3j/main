@@ -1,5 +1,6 @@
 package udo.tests;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -7,6 +8,7 @@ import udo.main.Engine;
 import udo.main.UserInterface;
 import udo.util.shared.Command;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.MainVars;
 import udo.util.shared.EditField;
 import udo.util.shared.ExecutionStatus;
 import udo.util.shared.InputData;
@@ -18,9 +20,14 @@ import udo.util.shared.ParsingStatus;
 
 public class UItest {
 
-	private static UserInterface ui = UserInterface.getInstance();
+	private static UserInterface ui;
 	public static void main(String[] args) {
-		
+		try {
+			ui = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(MainVars.EXIT_STATUS_NOT_OK);
+		} 
 
 		/**
 		 * Testing listing items in main screen

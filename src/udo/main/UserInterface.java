@@ -82,14 +82,14 @@ public class UserInterface implements ActionListener {
 	
 	private CommandHistory mCmdHistory = new CommandHistory(5);
 
-	public static UserInterface getInstance() {
+	public static UserInterface getInstance() throws IOException {
 		if (USER_INTERFACE_INSTANCE == null) {
 			USER_INTERFACE_INSTANCE = new UserInterface();
 		}
 		return USER_INTERFACE_INSTANCE;
 	}
 
-	private UserInterface() {
+	private UserInterface() throws IOException {
 
 		mFeedback = new Feedback();
 		initUI();

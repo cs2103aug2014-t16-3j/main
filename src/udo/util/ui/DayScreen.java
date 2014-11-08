@@ -47,7 +47,7 @@ public class DayScreen extends Screen {
 	// private static final Logger logger =
 	// Logger.getLogger(udo.util.ui.DayView.class.getName());
 
-	public DayScreen(int width, int height) {
+	public DayScreen(int width, int height) throws IOException {
 
 		super(width, height);
 		mTickerCoordsXY = new ArrayList<Point>();
@@ -88,14 +88,12 @@ public class DayScreen extends Screen {
 		populateView(data);
 	}
 
-	private void loadTicker() {
-		try {
-			BufferedImage img = ImageIO.read(getClass().getResource(UI.TICKER_IMAGE_DIR));
-			mTickerImg = img.getScaledInstance(UI.SUBVIEW_WIDTH,
-					img.getHeight(), Image.SCALE_SMOOTH);
-		} catch (IOException ex) {
-			// handle exception...
-		}
+	private void loadTicker() throws IOException {
+		BufferedImage img = ImageIO.read(getClass().getResource(UI.TICKER_IMAGE_DIR));
+		mTickerImg = img.getScaledInstance(UI.SUBVIEW_WIDTH,
+											img.getHeight(), 
+											Image.SCALE_SMOOTH);
+		
 		drawTicker();
 
 	}
