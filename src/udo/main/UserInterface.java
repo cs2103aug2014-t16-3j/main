@@ -391,6 +391,7 @@ public class UserInterface implements ActionListener {
 	 * @param output 
 	 */
 	public void show(OutputData output) {
+		assert output!= null;
 		mFeedback.process(output);
 		String outputString = mFeedback.getCommand();
 
