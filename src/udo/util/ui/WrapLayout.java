@@ -1,3 +1,4 @@
+//@author A0114088H-reduced
 package udo.util.ui;
 
 import java.awt.Component;
