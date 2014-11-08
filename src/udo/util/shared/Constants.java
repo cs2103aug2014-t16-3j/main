@@ -110,6 +110,8 @@ public class Constants {
 	public static final class LoggingStrings {
 		public static final String LOGPATH_ENGINE = "logs/engine/";
 		public static final String LOGFILE_ENGINE = LOGPATH_ENGINE + "engineLog.log";
+		public static final String LOGPATH_UI = "logs/ui/";
+		public static final String LOGFILE_UI = LOGPATH_UI + "uiLog.log";
 	}
 	
 	//@author A0108358B
