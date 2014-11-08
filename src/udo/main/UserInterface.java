@@ -1,3 +1,4 @@
+//@author A0114088H
 package udo.main;
 
 import java.awt.BorderLayout;
@@ -49,7 +50,7 @@ import udo.util.ui.uDoPopup;
 
 public class UserInterface implements ActionListener {
 
-	private static UserInterface mUserInterface;
+	private static UserInterface USER_INTERFACE_INSTANCE;
 
 	private JFrame mFrame = new JFrame("uDo");
 	private JLayeredPane mMainViewLayer = new JLayeredPane();
@@ -73,22 +74,22 @@ public class UserInterface implements ActionListener {
 	private volatile boolean mWaiting;
 	private String mUserInput;
 
-	private Feedback fb;
+	private Feedback mFeedback;
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
 	
 	private ArrayList<String> mCmdHistory = new ArrayList<String>(5);
 
 	public static UserInterface getInstance() {
-		if (mUserInterface == null) {
-			mUserInterface = new UserInterface();
+		if (USER_INTERFACE_INSTANCE == null) {
+			USER_INTERFACE_INSTANCE = new UserInterface();
 		}
-		return mUserInterface;
+		return USER_INTERFACE_INSTANCE;
 	}
 
 	private UserInterface() {
 
-		fb = new Feedback();
+		mFeedback = new Feedback();
 		initUI();
 	}
 
@@ -376,25 +377,26 @@ public class UserInterface implements ActionListener {
 
 	public void updateTodayScreen(ArrayList<ItemData> data) {
 		mRightView.removeAll();
-		mRightView.add(fb.getTodayView(data), BorderLayout.CENTER);
+		mRightView.add(mFeedback.getTodayView(data), BorderLayout.CENTER);
 		mFrame.revalidate();
 	}
 
 	public void updateTodoScreen(ArrayList<ItemData> data) {
 		mLeftView.removeAll();
-		mLeftView.add(fb.getToDoView(data), BorderLayout.CENTER);
+		mLeftView.add(mFeedback.getToDoView(data), BorderLayout.CENTER);
 		mFrame.revalidate();
 	}
 
 	/**
 	 * ui.show is to show the output sent by engine
+	 * @param output 
 	 */
 	public void show(OutputData output) {
-		fb.process(output);
-		String outputString = fb.getCommand();
+		mFeedback.process(output);
+		String outputString = mFeedback.getCommand();
 
 		mMainView.removeAll();
-		mMainView.add(fb.getFinalView(), BorderLayout.CENTER);
+		mMainView.add(mFeedback.getFinalView(), BorderLayout.CENTER);
 		mFrame.revalidate();
 
 		showPopup(outputString);
@@ -421,8 +423,9 @@ public class UserInterface implements ActionListener {
 	}
 
 	private void fadePopup() {
-		if (mExistingTimer != null)
+		if (mExistingTimer != null) {
 			mExistingTimer.stop();
+		}
 		mTimer = new Timer(10, new ActionListener() {
 			int fade = -1;
 
@@ -458,15 +461,15 @@ public class UserInterface implements ActionListener {
 	}
 
 	private JScrollPane getLeftSPane() {
-		return fb.getLeftScrollPane();
+		return mFeedback.getLeftScrollPane();
 	}
 
 	private JScrollPane getRightSPane() {
-		return fb.getRightScrollPane();
+		return mFeedback.getRightScrollPane();
 	}
 
 	private JScrollPane getMainSPane() {
-		return fb.getMainScrollPane();
+		return mFeedback.getMainScrollPane();
 	}
 
 	private void setWelcomeScreen() {

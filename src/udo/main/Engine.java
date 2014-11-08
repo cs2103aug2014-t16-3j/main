@@ -49,7 +49,8 @@ public class Engine {
 	private Logger mLogger;
 
 	/**
-	 * private constructor. to instantiate this class, use the static getInstance() method.
+	 * This is a private constructor. 
+	 * To instantiate this class, use the static getInstance() method.
 	 */
 	private Engine() {
 		mFileManager = new FileManager();
@@ -74,7 +75,7 @@ public class Engine {
 	/**
 	 * This method returns the Engine. It restricts the caller to only one instance
 	 * of the Engine. This follows the Singleton Pattern.
-	 * @return The one and only instance of the Engine.
+	 * @return The Engine.
 	 */
 	public static Engine getInstance() {
 		if (ENGINE_INSTANCE == null) {
@@ -128,7 +129,9 @@ public class Engine {
 		try {
 			logInfo("can get todo screen items");
 			return mCache.getAllUndoneTasksBetween(fromCal, toCal);
+			
 		} catch (CacheAccessException e) {
+			
 			logSevere("cannot get todo screen items", e);
 			return null;
 		}
@@ -164,6 +167,8 @@ public class Engine {
 		
 		// decide what function to run.
 		switch (cmd) {
+
+			// these 3 cases do the same thing
 			case ADD_EVENT :
 			case ADD_TASK :
 			case ADD_PLAN :
@@ -182,6 +187,7 @@ public class Engine {
 				commandRunner = new RunnerDelete(input, mUndoBin, mCache);
 				break;
 				
+			// these two cases do the same thing
 			case MARK_DONE :
 			case TOGGLE_DONE :
 				commandRunner = new RunnerDone(input, mUndoBin, mCache);
@@ -204,7 +210,7 @@ public class Engine {
 				
 			case EXIT :
 				// exit uses the save runner so cannot be abstracted
-				// into a runner without violating demeter princlepl
+				// into a runner without violating the law of demeter 
 				logInfo("engine is executing exit without runner");
 				output = runExit();
 				break;
@@ -266,7 +272,9 @@ public class Engine {
 
 	// ********* helper methods ******* //
 
-	private void loadFile() throws ReadingFromStorageException, IOException, CacheAccessException {
+	private void loadFile() throws ReadingFromStorageException, 
+								IOException, 
+								CacheAccessException {
 		mCache.clear();
 		ArrayList<ItemData> itemsFromFile = mFileManager.getFromFile();
 		mCache.addAll(itemsFromFile);

@@ -6,6 +6,7 @@ public class EnglishLanguagePack extends LanguagePack {
 	@Override
 	public void setLanguage() {
 		
+		// Commands
 		ADD = "add";
 		LIST = "list";
 		DELETE = "delete";
@@ -17,10 +18,12 @@ public class EnglishLanguagePack extends LanguagePack {
 		TOGGLE_DONE = "toggle";
 		SEARCH = "search";
 		
+		// Keywords
 		FROM = "from";
 		TO = "to";
 		BY = "by";
 		
+		// Time words
 		YESTERDAY = "yesterday";
 		TODAY = "today";
 		TONIGHT = "tonight";
@@ -33,6 +36,7 @@ public class EnglishLanguagePack extends LanguagePack {
 		SATURDAY = "saturday";
 		TOMORROW = "tomorrow";
 		
+		// Edit fields
 		TITLE = "title";
 		START_TIME = "start time";
 		END_TIME = "end time";
@@ -41,6 +45,7 @@ public class EnglishLanguagePack extends LanguagePack {
 		DUE_TIME = "due time";
 		DUE_DATE = "due date";
 
+		// list queries
 		DAY = "day";
 		ALL = "all";
 		EVENT = "event";
