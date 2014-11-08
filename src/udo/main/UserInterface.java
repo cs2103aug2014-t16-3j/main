@@ -143,7 +143,6 @@ public class UserInterface implements ActionListener {
 		mTextField.setBackground(UI.MAIN_COLOR);
 		mTextField.setFont(UI.FONT_24);
 		setKeyBinds();
-		System.out.println(mTextField.getPreferredSize().getHeight());
 
 		/**
 		 * Sets up textPanel
@@ -392,6 +391,7 @@ public class UserInterface implements ActionListener {
 	 * @param output 
 	 */
 	public void show(OutputData output) {
+		assert output!= null;
 		mFeedback.process(output);
 		String outputString = mFeedback.getCommand();
 
