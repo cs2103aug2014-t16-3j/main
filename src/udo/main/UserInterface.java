@@ -11,6 +11,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.util.List;
+import java.util.Stack;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -43,6 +44,7 @@ import udo.language.LanguagePack;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.OutputData;
+import udo.util.ui.CommandHistory;
 import udo.util.ui.DropShadowPanel;
 import udo.util.ui.Feedback;
 import udo.util.ui.WrapLayout;
@@ -78,7 +80,7 @@ public class UserInterface implements ActionListener {
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
 	
-	private ArrayList<String> mCmdHistory = new ArrayList<String>(5);
+	private CommandHistory mCmdHistory = new CommandHistory(5);
 
 	public static UserInterface getInstance() {
 		if (USER_INTERFACE_INSTANCE == null) {
@@ -332,14 +334,35 @@ public class UserInterface implements ActionListener {
 		mFrame.getRootPane()
 				.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 				.put(UI.ENTER, "EnterPressed");
-		mFrame.getRootPane().getActionMap()
-				.put("EnterPressed", new AbstractAction() {
-					private static final long serialVersionUID = 1L;
+		mFrame.getRootPane().getActionMap().put("EnterPressed", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
 
-					public void actionPerformed(ActionEvent e) {
-						mTextField.requestFocus();
-					}
-				});
+			public void actionPerformed(ActionEvent e) {
+				mTextField.requestFocus();
+			}
+		});
+		
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(UI.UP,
+				"up");
+		mTextField.getActionMap().put("up", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				String cmd = mCmdHistory.cycle(1);
+				mTextField.setText(cmd);
+			}
+		});
+		
+		mTextField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(UI.DOWN,
+				"down");
+		mTextField.getActionMap().put("down", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				String cmd = mCmdHistory.cycle(-1);
+				mTextField.setText(cmd);
+			}
+		});
 	}
 
 	@Override
@@ -351,10 +374,7 @@ public class UserInterface implements ActionListener {
 
 		String text = mTextField.getText();
 		mCmdHistory.add(text);
-		//TODO cmd history
-		if(mCmdHistory.size()>5) {
-			
-		}
+		mCmdHistory.initIndex();
 		mTextField.setText("");
 
 		mUserInput = text;
