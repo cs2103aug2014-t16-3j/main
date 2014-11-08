@@ -169,12 +169,12 @@ public class Constants {
 		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
 		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
 		
-//		public static final int MAIN_WIDTH = 400; // or 360
+//		public static final int MAIN_WIDTH = 400; // normal size
 		public static final int MAIN_WIDTH = 350; // for presentation purposes
 		public static final int MAIN_HEIGHT = 600;
 		public static final int MAIN_PADDING = 8;
 		public static final int TEXTFIELD_HEIGHT = 32;
-//		public static final int SUBVIEW_WIDTH = 360; // or 300
+//		public static final int SUBVIEW_WIDTH = 360; // normal size
 		public static final int SUBVIEW_WIDTH = 290; // This is only for presentation
 		public static final int SUBVIEW_HEIGHT = 550;
 		public static final int SUBVIEW_HEADER_LINEY = 40;
