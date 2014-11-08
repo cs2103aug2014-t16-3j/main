@@ -14,8 +14,8 @@ public abstract class LanguagePack {
 	
 	public static LanguagePack userLanguagePack =
 			// replace this with the desired LanguagePack
-//			 new IndonesianLanguagePack();
-			new EnglishLanguagePack();
+			 new IndonesianLanguagePack();
+//			new EnglishLanguagePack();
 	
 	
 	

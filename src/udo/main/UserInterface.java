@@ -142,7 +142,6 @@ public class UserInterface implements ActionListener {
 		mTextField.setBackground(UI.MAIN_COLOR);
 		mTextField.setFont(UI.FONT_24);
 		setKeyBinds();
-		System.out.println(mTextField.getPreferredSize().getHeight());
 
 		/**
 		 * Sets up textPanel

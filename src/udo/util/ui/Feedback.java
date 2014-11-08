@@ -44,6 +44,7 @@ public class Feedback {
 									UI.MAIN_HEIGHT - UI.TEXTFIELD_HEIGHT);
 		mMainTodayView = new DayScreen(UI.SUBVIEW_WIDTH, UI.SUBVIEW_HEIGHT);
 		mMainToDoView = new ToDoScreen(UI.SUBVIEW_WIDTH,UI.SUBVIEW_HEIGHT);
+		mFinalView.setOpaque(false);
 	}
 
 	public JPanel getTodayView(ArrayList<ItemData> data) {
@@ -202,7 +203,6 @@ public class Feedback {
 			}
 			mCommand = mLang.getPOPUP_LIST() + query;
 		}
-
 	}
 
 	@SuppressWarnings("unchecked")
