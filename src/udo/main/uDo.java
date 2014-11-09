@@ -1,6 +1,7 @@
 //@author A0108358B
 package udo.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -25,7 +26,12 @@ public class uDo {
 	private boolean mIsRunning;
 
 	public uDo() {
-		mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
+		try {
+			mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(MainVars.EXIT_STATUS_NOT_OK);
+		} 
 		mParser = new Parser();
 		mEngine = Engine.getInstance(); // Engine is a Singleton pattern
 		mIsRunning = true;

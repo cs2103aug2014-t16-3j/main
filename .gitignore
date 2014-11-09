@@ -25,3 +25,9 @@ logs/engineLog.log.1
 logs/engineLog.log
 
 logs/engineLog.log
+
+collated/readme-collated.txt
+
+*.txt
+
+src/udo/tests/UItest.java

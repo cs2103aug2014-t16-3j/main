@@ -79,7 +79,8 @@ public class ToDoScreen extends Screen {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.drawLine(mWidth / 4, UI.SUBVIEW_HEADER_LINEY,
+		int fromQuarterWidth = mWidth/4;
+		g2.drawLine(fromQuarterWidth, UI.SUBVIEW_HEADER_LINEY,
 				mWidth, UI.SUBVIEW_HEADER_LINEY);
 	}
 }

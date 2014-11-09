@@ -53,7 +53,6 @@ public class Entry extends JPanel {
 	public Entry(ItemData item, ItemType type) {
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0,
 				UI.ENTRY_BORDERCOLOR));
-		//TODO option 3
 		
 		if(item.get(Keys.DONE) != null) {
 			if((boolean) item.get(Keys.DONE)) {
@@ -216,6 +215,14 @@ public class Entry extends JPanel {
 		return time;
 	}
 
+	private String convertToTodayOrTonight(Calendar cal) {
+		if (cal.get(Calendar.HOUR_OF_DAY) > 17) {
+			return mLang.getTONIGHT();
+		} else {
+			return mLang.getTODAY();
+		}
+	}
+	
 	private String getDay(Calendar cal) {
 		String day = "";
 		Calendar today = Calendar.getInstance();
@@ -226,11 +233,7 @@ public class Entry extends JPanel {
 				break;
 				
 			case 0 :
-				if (cal.get(Calendar.HOUR_OF_DAY) > 17) {
-					day = mLang.getTONIGHT();
-				} else {
-					day = mLang.getTODAY();
-				}
+				day = convertToTodayOrTonight(cal);
 				break;
 				
 			case 1 :

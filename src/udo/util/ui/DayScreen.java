@@ -9,10 +9,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -21,6 +24,7 @@ import javax.swing.SwingConstants;
 
 import udo.language.LanguagePack;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.LoggingStrings;
 import udo.util.shared.Constants.UI;
 import udo.util.shared.ItemData;
 import udo.util.shared.ItemType;
@@ -44,10 +48,10 @@ public class DayScreen extends Screen {
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
 
-	// private static final Logger logger =
-	// Logger.getLogger(udo.util.ui.DayView.class.getName());
+	 private static final Logger logger =
+	 Logger.getLogger(udo.util.ui.DayScreen.class.getName());
 
-	public DayScreen(int width, int height) {
+	public DayScreen(int width, int height) throws IOException {
 
 		super(width, height);
 		mTickerCoordsXY = new ArrayList<Point>();
@@ -76,26 +80,25 @@ public class DayScreen extends Screen {
 		initHeader(newDate);
 		mHeader.setPreferredSize(new Dimension(mWidth,
 				UI.DAYVIEW_HEADER_HEIGHT));
-		// try {
-		// logger.addHandler(new FileHandler("logs/dayViewLog%u.txt", true));
-		// } catch (SecurityException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+		 try {
+			 new File(LoggingStrings.LOGPATH_UI).mkdirs();
+			 logger.addHandler(new FileHandler(LoggingStrings.LOGFILE_UI, true));
+		 } catch (SecurityException e) {
+		 // TODO Auto-generated catch block
+		 e.printStackTrace();
+		 } catch (IOException e) {
+		 // TODO Auto-generated catch block
+		 e.printStackTrace();
+		 }
 		populateView(data);
 	}
 
-	private void loadTicker() {
-		try {
-			BufferedImage img = ImageIO.read(getClass().getResource(UI.TICKER_IMAGE_DIR));
-			mTickerImg = img.getScaledInstance(UI.SUBVIEW_WIDTH,
-					img.getHeight(), Image.SCALE_SMOOTH);
-		} catch (IOException ex) {
-			// handle exception...
-		}
+	private void loadTicker() throws IOException {
+		BufferedImage img = ImageIO.read(getClass().getResource(UI.TICKER_IMAGE_DIR));
+		mTickerImg = img.getScaledInstance(UI.SUBVIEW_WIDTH,
+											img.getHeight(), 
+											Image.SCALE_SMOOTH);
+		
 		drawTicker();
 
 	}
@@ -207,6 +210,8 @@ public class DayScreen extends Screen {
 	}
 
 	private void initHeader(Date newDate) {
+		logger.entering("DayScreen", "initHeader", newDate);
+		
 		String dateString = UI.DD.format(newDate) + " " + mLang.convertMonthToLanguage(UI.MMMM.format(newDate))
 							+ " " + UI.YYYY.format(newDate);
 		JLabel date = new JLabel(dateString);
@@ -229,6 +234,8 @@ public class DayScreen extends Screen {
 		mHeader.add(mTicker);
 
 		add(mHeader);
+		
+		logger.exiting("DayScreen", "initHeader");
 	}
 
 	@Override

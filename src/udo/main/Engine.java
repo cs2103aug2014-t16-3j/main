@@ -64,10 +64,10 @@ public class Engine {
 			mLogger.addHandler(new FileHandler(LoggingStrings.LOGFILE_ENGINE));
 		} catch (SecurityException e) {
 			e.printStackTrace();
-			// how do i log a logger failure lol
+			// do nothing, logger failure is not serious
 		} catch (IOException e) {
 			e.printStackTrace();
-			// how do i log a logger failure lol
+			// do nothing, logger failure is not serious
 		}
 		mLogger.setLevel(Level.ALL);
 	}

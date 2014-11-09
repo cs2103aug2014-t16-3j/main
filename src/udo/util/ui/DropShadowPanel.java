@@ -1,4 +1,4 @@
-//@author A014088H
+//@author A0114088H-reused
 
 // this was taken from http://stackoverflow.com/questions/13368103/jpanel-drop-shadow
 // I do not take credit from this.

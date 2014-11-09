@@ -31,10 +31,6 @@ public class MainUnitTest {
 						"new Event",
 						item.get(Keys.TITLE));
 		
-		// to leo: do this kind of testing. 
-		// test each value, dont use equals for calendar.
-		// the reason is that they wont be equal because the seconds and miliseconds 
-		// are not accounted for
 		assertEquals("start hour should be 3", // do the same for minutes, day, month.. so on
 						time.get(Calendar.HOUR),
 						((Calendar)item.get(Keys.START)).get(Calendar.HOUR));
