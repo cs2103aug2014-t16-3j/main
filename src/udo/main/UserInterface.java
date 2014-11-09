@@ -104,7 +104,7 @@ public class UserInterface implements ActionListener {
 			ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File(
 					"fonts/Ubuntu-R.TTF")));
 		} catch (IOException | FontFormatException e) {
-			// Handle exception
+			e.printStackTrace();
 		}
 
 		/**
@@ -247,7 +247,7 @@ public class UserInterface implements ActionListener {
 		try {
 			mUdoImg = ImageIO.read(getClass().getResource(UI.UDO_LOGO_IMG_DIR_32));
 		} catch (IOException ex) {
-			// handle exception...
+			ex.printStackTrace();
 		}
 		mUdoLogo = new JLabel(new ImageIcon(mUdoImg));
 		int padding = 4;
@@ -496,7 +496,7 @@ public class UserInterface implements ActionListener {
 		try {
 			logoImg = ImageIO.read(getClass().getResource(UI.UDO_LOGO_IMG_DIR_256));
 		} catch (IOException ex) {
-			// handle exception...
+			ex.printStackTrace();
 		}
 		JLabel logoLabel = new JLabel(new ImageIcon(logoImg));
 		JLabel welcome = new JLabel();

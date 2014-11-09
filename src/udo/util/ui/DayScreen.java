@@ -84,11 +84,9 @@ public class DayScreen extends Screen {
 			 new File(LoggingStrings.LOGPATH_UI).mkdirs();
 			 logger.addHandler(new FileHandler(LoggingStrings.LOGFILE_UI, true));
 		 } catch (SecurityException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
+			 e.printStackTrace();
 		 } catch (IOException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
+			 e.printStackTrace();
 		 }
 		populateView(data);
 	}

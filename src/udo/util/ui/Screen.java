@@ -66,14 +66,12 @@ public class Screen extends JPanel {
 	}
 
 	public void init(Date date, ArrayList<ItemData> mData) {
-		// TODO Auto-generated method stub
 		// this is another stub to be overridden by subclass.
 
 	}
 
 	@Override
 	public void removeAll() {
-		// TODO also a stub method to be overridden by dayScreen.java
 		super.removeAll();
 	}
 }
