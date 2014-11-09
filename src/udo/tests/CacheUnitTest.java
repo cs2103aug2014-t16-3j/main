@@ -1,17 +1,19 @@
 //@author A0108358B
 package udo.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import udo.util.engine.Cache;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.InvalidUIDException;
-import udo.util.exceptions.ItemNotFoundException;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.Constants.Keys;
+import udo.constants.Constants.Keys;
+import udo.data.ItemData;
+import udo.engine.util.Cache;
+import udo.enums.ItemType;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.InvalidUIDException;
+import udo.exceptions.ItemNotFoundException;
 
 public class CacheUnitTest {
 	// this suite will only test the core crud methods of the cache

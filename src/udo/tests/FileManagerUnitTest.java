@@ -1,19 +1,21 @@
 //@author A0108358B
 package udo.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.junit.Test;
 
-import udo.util.engine.FileManager;
-import udo.util.exceptions.ReadingFromStorageException;
-import udo.util.exceptions.WritingToStorageException;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.Constants.Keys;
+import udo.constants.Constants.Keys;
+import udo.data.ItemData;
+import udo.engine.util.FileManager;
+import udo.enums.ItemType;
+import udo.exceptions.ReadingFromStorageException;
+import udo.exceptions.WritingToStorageException;
 
 public class FileManagerUnitTest {
 

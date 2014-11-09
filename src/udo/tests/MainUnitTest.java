@@ -1,17 +1,18 @@
-//@author a0114088H
+//@author A0114088H
 package udo.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.junit.Test;
 
+import udo.constants.Constants.Keys;
+import udo.data.ItemData;
+import udo.data.OutputData;
 import udo.main.uDo;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-import udo.util.shared.Constants.Keys;
 
 public class MainUnitTest {
 
@@ -31,10 +32,6 @@ public class MainUnitTest {
 						"new Event",
 						item.get(Keys.TITLE));
 		
-		// to leo: do this kind of testing. 
-		// test each value, dont use equals for calendar.
-		// the reason is that they wont be equal because the seconds and miliseconds 
-		// are not accounted for
 		assertEquals("start hour should be 3", // do the same for minutes, day, month.. so on
 						time.get(Calendar.HOUR),
 						((Calendar)item.get(Keys.START)).get(Calendar.HOUR));
@@ -105,10 +102,12 @@ public class MainUnitTest {
 		uDo udo = new uDo();
 		OutputData output = udo.testParseAndExecute("list event");
 		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (no data in database)",
-						0,
-						items.size());
+
+
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -117,10 +116,11 @@ public class MainUnitTest {
 		uDo udo = new uDo();
 		OutputData output = udo.testParseAndExecute("list all");
 		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (3 in database)",
-						3,
-						items.size());
+		
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -129,10 +129,11 @@ public class MainUnitTest {
 		uDo udo = new uDo();
 		OutputData output = udo.testParseAndExecute("list plan");
 		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (3 in database)",
-						3,
-						items.size());
+
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -141,10 +142,11 @@ public class MainUnitTest {
 		uDo udo = new uDo();
 		OutputData output = udo.testParseAndExecute("list task");
 		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (no data in database)",
-						0,
-						items.size());
+
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -157,8 +159,8 @@ public class MainUnitTest {
 		assertEquals("the number of itemData should be zero (no data in database)",
 						0,
 						items.size());
-		OutputData added = udo.testParseAndExecute("add #new stuff"); //proved to be working in testAddPlan
-		output = udo.testParseAndExecute("list #new");
+		OutputData added = udo.testParseAndExecute("add #testingNew stuff"); //proved to be working in testAddPlan
+		output = udo.testParseAndExecute("list #testingNew");
 		// check the size again after adding new plan with hashtag
 		items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
 		assertEquals("the number of itemData should be one (the newly added)",

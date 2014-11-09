@@ -8,17 +8,18 @@ import java.util.Calendar;
 
 import org.junit.Test;
 
-import udo.main.Parser;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.ParsingStatus;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.EditField;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+import udo.parser.Parser;
 
 public class ParserUnitTest {
 
 	Parser p = new Parser();
+	Calendar cal = Calendar.getInstance();
 	
 	@Test
 	public void testSearchAction() {
@@ -232,7 +233,7 @@ public class ParserUnitTest {
 	@Test
 	public void testAddTask() {
 		// boundary case of hashtag keyword
-		String task1 = "add Meet jane after #school #by saturday 7:55pm";
+		String task1 = "add Meet jane after #school #by today 7:55pm";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -250,9 +251,10 @@ public class ParserUnitTest {
 		int hour = due.get(Calendar.HOUR);
 		int mins = due.get(Calendar.MINUTE);
 		
-		assertEquals(8, day);
-		assertEquals(10, month);
-		assertEquals(2014, year);
+		Calendar todayCal = Calendar.getInstance();
+		assertEquals(todayCal.get(Calendar.DAY_OF_MONTH), day);
+		assertEquals(todayCal.get(Calendar.MONTH), month);
+		assertEquals(todayCal.get(Calendar.YEAR), year);
 		assertEquals(7, hour);
 		assertEquals(55, mins);
 		
@@ -349,7 +351,7 @@ public class ParserUnitTest {
 		event = "add meet #boss from tomorrow 10am to 9:12am";
 		data = p.getInputData(event);
 		status = data.getStatus();
-		
+				
 		assertEquals(ParsingStatus.SUCCESS, status);
 		
 		startEvent = (Calendar) data.get(Keys.START);
@@ -361,9 +363,9 @@ public class ParserUnitTest {
 		startHour = startEvent.get(Calendar.HOUR);
 		startMins = startEvent.get(Calendar.MINUTE);
 		
-		assertEquals(7, startDay);
-		assertEquals(10, startMonth);
-		assertEquals(2014, startYear);
+		assertEquals(cal.get(Calendar.DAY_OF_MONTH) + 1, startDay);
+		assertEquals(cal.get(Calendar.MONTH), startMonth);
+		assertEquals(cal.get(Calendar.YEAR), startYear);
 		assertEquals(10, startHour);
 		assertEquals(0, startMins);
 		
@@ -373,9 +375,9 @@ public class ParserUnitTest {
 		endHour = endEvent.get(Calendar.HOUR);
 		endMins = endEvent.get(Calendar.MINUTE);
 		
-		assertEquals(7, endDay);
-		assertEquals(10, endMonth);
-		assertEquals(2014, endYear);
+		assertEquals(cal.get(Calendar.DAY_OF_MONTH) + 1, endDay);
+		assertEquals(cal.get(Calendar.MONTH), endMonth);
+		assertEquals(cal.get(Calendar.YEAR), endYear);
 		assertEquals(9, endHour);
 		assertEquals(12, endMins);
 		
