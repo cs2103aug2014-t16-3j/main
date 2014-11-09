@@ -1,4 +1,4 @@
-//@authorA0114088H
+//@author A0114088H
 package udo.util.ui;
 
 import java.util.ArrayList;
