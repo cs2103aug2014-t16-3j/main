@@ -140,10 +140,6 @@ public class Entry extends JPanel {
 				BorderLayout.NORTH);
 		mTimePanel.add(initDate((Calendar) item.get(Keys.DUE)),
 				BorderLayout.CENTER);
-		// mTimePanel.setBorder(BorderFactory.createEmptyBorder(0,
-		// (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
-		// 0, (UI.ENTRY_TIMEPANEL_WIDTH -
-		// mTimePanel.getPreferredSize().width)/2));
 		add(mTimePanel);
 		add(initSeparator(item.getItemType()));
 		add(initDetails((Calendar) item.get(Keys.DUE),
@@ -214,7 +210,7 @@ public class Entry extends JPanel {
 			time += UI.DD.format(endCal.getTime()) + " " + 
 					mLang.convertMonthToLanguage(UI.MMM.format(endCal.getTime()));
 		}
-		time += UI.HOUR_12.format(endCal.getTime());
+		time += " " + UI.HOUR_12.format(endCal.getTime());
 		return time;
 	}
 

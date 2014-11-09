@@ -45,9 +45,6 @@ public class SingleView extends View {
 				initEdit(output);
 				break;
 				
-			case UNDO : //unreachable
-				break;
-				
 			case MARK_DONE :
 				initMarkDone();
 				break;
@@ -78,7 +75,6 @@ public class SingleView extends View {
 	}
 
 	private void initEdit(OutputData output) {
-		// TODO Auto-generated method stub
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		EditField field = (EditField) output.get(Keys.FIELD);
 		String fieldString = "";
@@ -156,7 +152,6 @@ public class SingleView extends View {
 		mMessage.setText("<html>" + "<br><br>"
 				+ mLang.getSINGLE_SUCCESFULLY_ADDED() + "</html>");
 		add(mMessage);
-		// TODO Auto-generated method stub
 
 	}
 
@@ -164,7 +159,6 @@ public class SingleView extends View {
 		mMessage.setText("<html>" + "<br><br>"
 				+ mLang.getSINGLE_SUCCESSFULLY_DELETED() + "</html>");
 		add(mMessage);
-		// TODO Auto-generated method stub
 
 	}
 

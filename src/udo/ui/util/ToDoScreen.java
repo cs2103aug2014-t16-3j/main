@@ -20,9 +20,6 @@ public class ToDoScreen extends Screen {
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
 
-	// private static final Logger logger =
-	// Logger.getLogger(udo.ui.util.DayView.class.getName());
-
 	public ToDoScreen(int width, int height) {
 		super(width, height);
 	}
@@ -37,15 +34,6 @@ public class ToDoScreen extends Screen {
 		initHeader();
 		mHeader.setPreferredSize(new Dimension(mWidth,
 				UI.TODOVIEW_HEADER_HEIGHT));
-		// try {
-		// logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
-		// } catch (SecurityException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 		populateView(data);
 	}
 

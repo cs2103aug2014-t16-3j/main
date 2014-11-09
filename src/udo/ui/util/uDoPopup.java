@@ -1,4 +1,7 @@
-//@author A0114088H
+//@author A0114088H-reused
+
+// the bulk of the alpha-related methods come online, but i forgot the source. 
+// the rest of the config comes from me
 package udo.ui.util;
 
 import java.awt.AlphaComposite;

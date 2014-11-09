@@ -31,7 +31,7 @@ public class View extends JPanel {
 	}
 
 	protected void init(OutputData output, Command type) {
-		// TODO also a stub
+		// a stub to be overridden by subclass
 	}
 
 }

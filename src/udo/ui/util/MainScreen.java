@@ -21,13 +21,6 @@ public class MainScreen extends Screen {
 		mScrollPane.setPreferredSize(new Dimension(mWidth, mHeight));
 		mScrollPane.getViewport().add(mEntryView);
 		mEntryView.populateView(data);
-		if (mEntryView.getPreferredSize().width > mWidth) {
-			// logger.info("TODAY mEntryView's preferredSize: " +
-			// mEntryView.getPreferredSize() +
-			// "\nmEntryView's preferredSize is wider than mScrollPane");
-		} else {
-			// logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
-		}
 
 		add(mScrollPane);
 	}
