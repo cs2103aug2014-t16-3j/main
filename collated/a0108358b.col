@@ -3,10 +3,661 @@
 
 
 	/**
-	 * origin: .\udo\main\Engine.java
+	 * origin: .\udo\constants\Constants.java
 	 */
 
-package udo.main;
+package udo.constants;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.text.SimpleDateFormat;
+
+import javax.swing.KeyStroke;
+
+/**
+ * 
+ * This class holds all constants that the program uses. (the magic numbers) The
+ * constants are further classified in their own subclasses. Add your own
+ * subclass here to store all your strings and values and such.
+ * 
+ */
+public class Constants {
+	
+	// End of segment: .\udo\constants\Constants.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\constants\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds all the keys used for the data storage objects. Please
+	 * reference these values rather than typing your own key. This is to
+	 * standardise across components so that one component can retrieve the data
+	 * that another puts in.
+	 * 
+	 */
+	public static final class Keys {
+		public static final String UID = "uid";
+		public static final String TITLE = "title";
+		public static final String DUE = "due"; 			// for task
+		public static final String DONE = "done"; 			// for task
+		public static final String START = "start"; 		// events
+		public static final String END = "end"; 			// event
+		public static final String HASHTAG = "hashtag"; 	// for list
+		public static final String HASHTAGS = "hashtags"; 	// for parser add
+		public static final String ITEM = "item";
+		public static final String ITEMS = "items";
+		public static final String QUERY_TYPE = "query type";
+		public static final String QUERY_VALUE = "query value";
+		public static final String FIELD = "field";
+		public static final String VALUE = "value";
+		public static final String DATE = "date";
+		public static final String OLD_VALUE = "Old value";
+		public static final String SEARCH_QUERY = "search query";
+	}
+
+	// End of segment: .\udo\constants\Constants.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\constants\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds the array index values for the file manager usage. If you
+	 * desire to put your own values inside here, make sure that the new
+	 * variable name doesnt conflict with existing names. If there is potential
+	 * confusion (e.g. your title index is different from the existing index)
+	 * pls sound out first.
+	 * 
+	 */
+	public static final class StorageIndices {
+		// all
+		public static final int UID = 0;
+		public static final int TYPE = 1;
+		public static final int TITLE = 2;
+		// event
+		public static final int START_DATE = 3;
+		public static final int START_TIME = 4;
+		public static final int END_DATE = 5;
+		public static final int END_TIME = 6;
+		public static final int EVENT_HASHTAGS = 7;
+		// task
+		public static final int DUE_DATE = 3;
+		public static final int DUE_TIME = 4;
+		public static final int TASK_DONE = 5;
+		public static final int TASK_HASHTAGS = 6;
+		//plan
+		public static final int PLAN_DONE = 3;
+		public static final int PLAN_HASHTAGS = 4;
+	}
+	
+	// End of segment: .\udo\constants\Constants.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\constants\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds the magic strings for the storage and retrieving of data
+	 * from the storage file. This includes the toString method of the ItemData
+	 * class
+	 * 
+	 */
+	public static final class StorageStrings {
+		public static final String FILEPATH = "data/";
+		public static final String FILENAME = "data/uDo_data.txt";
+		public static final String FIELD_DELIMITER = "\\|\\|\\|";
+		public static final String DATE_DELIMITER = "/";
+		public static final String TIME_DELIMITER = ":";
+		public static final String TAG_DELIMITER = ",";
+		public static final String TYPE_EVENT = "EVENT";
+		public static final String TYPE_TASK = "TASK";
+		public static final String TYPE_PLAN = "PLAN";
+		public static final String UNFORMATTED_STRING_EVENT = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$d/%10$d/%11$d|||%12$d:%13$d|||%14$s|||;";
+		public static final String UNFORMATTED_STRING_TASK = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$b|||%10$s|||;";
+		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
+	}
+	
+	// End of segment: .\udo\constants\Constants.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\constants\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds the magic strings for the loggers.
+	 * They include filenames and paths
+	 * 
+	 */
+	public static final class LoggingStrings {
+		public static final String LOGPATH_ENGINE = "logs/engine/";
+		public static final String LOGFILE_ENGINE = LOGPATH_ENGINE + "engineLog.log";
+		public static final String LOGPATH_PARSER = "logs/parser/";
+		public static final String LOGFILE_PARSER = LOGPATH_PARSER + "parserLog.log";
+		public static final String LOGPATH_UI = "logs/ui/";
+		public static final String LOGFILE_UI = LOGPATH_UI + "uiLog.log";
+	}
+	
+	// End of segment: .\udo\constants\Constants.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\constants\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds the magic numebrs for the main program.
+	 * 
+	 */
+	public static final class MainVars {
+		public static final int EXIT_STATUS_OK = 0;
+		public static final int EXIT_STATUS_NOT_OK = -1;
+		public static final int DAYS_IN_ADVANCE = 3;
+	}
+
+	// End of segment: .\udo\constants\Constants.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\data\DataHolder.java
+	 */
+
+package udo.data;
+
+import java.util.HashMap;
+import java.util.Set;
+
+public class DataHolder {
+	
+	protected final HashMap<String, Object> mData;
+	
+	public DataHolder() {
+		mData = new HashMap<String, Object>();
+	}
+	
+	/**
+	 * Associates the specified item with the specified key An existing item of
+	 * the same key will be replaced. The item inserted cannot be {@code null}.
+	 * 
+	 * @param key
+	 *            The key of the item.
+	 * @param item
+	 *            The item to be put inside
+	 * @return {@code true} when the operation is successful, or {@code false}
+	 *         when the inserted item is null
+	 */
+	public boolean put(String key, Object item) {
+		if (item != null) {
+			mData.put(key, item);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Retrieves the item that is associated with the key.
+	 * 
+	 * @param key
+	 *            The key of the item to retrieve
+	 * @return The item, or {@code null} if the key is not mapped.
+	 */
+	public Object get(String key) {
+		if (mData.containsKey(key)) {
+			return mData.get(key);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a boolean value describing if the named item exists inside.
+	 * 
+	 * @param key
+	 *            The key of the item to check.
+	 * @return {@code true} if the item exists, or {@code false} otherwise.
+	 */
+	public boolean contains(String key) {
+		return mData.containsKey(key);
+	}
+
+	/**
+	 * Returns a {@link Set} view of the keys contained in this object.
+	 * 
+	 * @return the keyset
+	 */
+	public Set<String> getKeys() {
+		return mData.keySet();
+	}
+
+	/**
+	 * Returns the hashmap that holds the data.
+	 * 
+	 * @return the hashmap
+	 */
+	public HashMap<String, Object> getData() {
+		return mData;
+	}
+}
+
+	// End of segment: .\udo\data\DataHolder.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\data\InputData.java
+	 */
+
+package udo.data;
+
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+
+/**
+ * This class carries information parsed from the input string. This class
+ * should contain information that allows the Engine to decide what to do, and
+ * any additional information that the Engine requires to carry it out.
+ * 
+ */
+public class InputData extends DataHolder {
+
+	private Command mCommand;
+	private ParsingStatus mParsingStatus;
+
+	public InputData(Command cmd) {
+		mCommand = cmd;
+	}
+	
+	public InputData(Command cmd, ParsingStatus status) {
+		mCommand = cmd;
+		mParsingStatus = status;
+	}
+
+	/**
+	 * gets the command
+	 * 
+	 * @return the <code>Command</code>
+	 */
+	public Command getCommand() {
+		return mCommand;
+	}
+	
+	/**
+	 * Returns the {@code ParsingStatus} value
+	 * 
+	 * @return the {@code ParsingStatus} value
+	 */
+	public ParsingStatus getStatus() {
+		return mParsingStatus;
+	}
+
+	/**
+	 * Sets the {@code ParsingStatus} value
+	 * 
+	 * @param status the status
+	 * @return the {@code ParsingStatus} value
+	 */
+	public void setParsingStatus(ParsingStatus status) {
+		mParsingStatus = status;
+	}
+}
+
+	// End of segment: .\udo\data\InputData.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\data\ItemData.java
+	 */
+
+package udo.data;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.StorageStrings;
+import udo.enums.ItemType;
+
+/**
+ * This class holds the all the data that an item should have, like title, date,
+ * hashtag, so on. The keys for the put() and get() function must be one of the
+ * keys from the Constants.Keys class.
+ * 
+ */
+public class ItemData extends DataHolder implements Comparable<ItemData> {
+
+	private ItemType mType;
+	
+	public ItemData() {
+		mType = ItemType.PLAN; // a default value
+	}
+
+	public ItemData(ItemType type) {
+		super();
+		mType = type;
+	}
+	
+	public void setItemType(ItemType type) {
+		mType = type;
+	}
+
+	public ItemType getItemType() {
+		return mType;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		for (Object value : mData.values()) {
+			hash = hash | value.hashCode();
+		}
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == this) {
+			return true;
+		}
+		if (other == null) {
+			return false;
+		}
+		if (!other.getClass().equals(this.getClass())) {
+			return false;
+		} else {
+			ItemData otherItem = (ItemData) other;
+			if (!this.getItemType().equals(otherItem.getItemType())) {
+				return false;
+			}
+			if (!this.getData().equals(otherItem.getData())) {
+				return false;
+			}
+			return true;
+		}
+	}
+
+	@Override
+	public String toString() {
+		switch (mType) {
+		case EVENT :
+			return makeEventString();
+		case TASK : 
+			return makeTaskString();
+		case PLAN : 
+			return makePlanString();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public int compareTo(ItemData other) {
+		Calendar thisCal;
+		Calendar otherCal;
+
+		if (this.contains(Keys.START)) {
+			thisCal = (Calendar) this.get(Keys.START);
+		} else if (this.contains(Keys.DUE)) {
+			thisCal = (Calendar) this.get(Keys.DUE);
+		} else {
+			thisCal = null;
+		}
+
+		if (other.contains(Keys.START)) {
+			otherCal = (Calendar) other.get(Keys.START);
+		} else if (other.contains(Keys.DUE)) {
+			otherCal = (Calendar) other.get(Keys.DUE);
+		} else {
+			otherCal = null;
+		}
+
+		if (thisCal == null && otherCal == null) {
+			// they are equal if nothing to compare
+			return 0;
+		} else if (thisCal == null && otherCal != null) {
+			// this is placed behind the other
+			// if the other has a date and this doesnt.
+			return 1;
+		} else if (thisCal != null && otherCal == null) {
+			// this is placed in front of the other 
+			// if this has a date and the other doesnt.
+			return -1;
+		} else if (thisCal != null && otherCal != null) {
+			// if both are not null, then just 
+			// return the comparision to the other
+			return thisCal.compareTo(otherCal);
+		} else {
+			// this should not happen
+			return 0;
+		}
+	}
+
+	private String getTagString(ArrayList<String> list) {
+		String result = new String();
+		for (int i = 0; i < list.size(); i++) {
+			result = result.concat(list.get(i));
+			if (i != list.size() - 1) { //not last element 
+				result = result.concat(StorageStrings.TAG_DELIMITER);
+			}
+		}
+		result.concat(";");
+		// postcondition
+		assert (result != null);
+		return result;
+	}
+
+	private String makeEventString() {
+		// uid | type | title | sdate | stime | edate | etime | tags
+		Calendar startCal = (Calendar) mData.get(Keys.START);
+		Calendar endCal = (Calendar) mData.get(Keys.END);
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_EVENT,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				startCal.get(Calendar.DAY_OF_MONTH),
+				startCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				startCal.get(Calendar.YEAR),
+				startCal.get(Calendar.HOUR_OF_DAY),
+				startCal.get(Calendar.MINUTE),
+				endCal.get(Calendar.DAY_OF_MONTH),
+				endCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				endCal.get(Calendar.YEAR), 
+				endCal.get(Calendar.HOUR_OF_DAY),
+				endCal.get(Calendar.MINUTE), 
+				tagsString);
+		return result;
+	}
+
+	private String makeTaskString() {
+		// uid | type | title | ddate | dtime | done | tags
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		Calendar dueCal = (Calendar) mData.get(Keys.DUE);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_TASK,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				dueCal.get(Calendar.DAY_OF_MONTH),
+				dueCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
+				dueCal.get(Calendar.YEAR),
+				dueCal.get(Calendar.HOUR_OF_DAY),
+				dueCal.get(Calendar.MINUTE), 
+				mData.get(Keys.DONE),
+				tagsString);
+		return result;
+	}
+	
+	private String makePlanString() {
+		// uid | type | title | done | tags
+		@SuppressWarnings("unchecked")
+		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
+		assert (taglist != null);
+		String tagsString = getTagString(taglist);
+		
+		String result = String.format(StorageStrings.UNFORMATTED_STRING_PLAN,
+				mData.get(Keys.UID),
+				mType.toString(),
+				mData.get(Keys.TITLE),
+				mData.get(Keys.DONE),
+				tagsString);
+		return result;
+	}
+}
+
+	// End of segment: .\udo\data\ItemData.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\data\OutputData.java
+	 */
+
+package udo.data;
+
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ParsingStatus;
+
+
+/**
+ * This class carries information from the engine to the UI. The information
+ * contained in this class is all the info that the UI needs to display a
+ * message that corresponds to the execution of the command.
+ * <p>
+ * For example, if the engine executed the addEvent() method, the OutputData
+ * object will contain the command executed (ADD_EVENT), the status of the
+ * execution (SUCCESS or FAIL), and any additional information regarding the
+ * event that was added.
+ * <p>
+ * The status and command are accessed directly but any other additional details
+ * will be stored in a hash table and only accessed by a key.
+ * 
+ */
+public class OutputData extends DataHolder {
+
+	private Command mCommand;
+	private ParsingStatus mParsingStatus;
+	private ExecutionStatus mExecutionStatus;
+	
+	public OutputData(Command cmd) {
+		mCommand = cmd;
+	}
+	
+	public OutputData(Command cmd, ParsingStatus pStatus) {
+		mCommand = cmd;
+		mParsingStatus = pStatus;
+	}
+
+	public OutputData(Command cmd, ParsingStatus pStatus, ExecutionStatus eStatus) {
+		mCommand = cmd;
+		mParsingStatus = pStatus;
+		mExecutionStatus = eStatus;
+	}
+
+	/**
+	 * Retrieves the {@code Command} value
+	 * 
+	 * @return the {@code Command} value
+	 */
+	public Command getCommand() {
+		return mCommand;
+	}
+	
+	/**
+	 * Retrieves the {@code ParsingStatus} value
+	 * 
+	 * @return the {@code ParsingStatus} value
+	 */
+	public ParsingStatus getParsingStatus() {
+		return mParsingStatus;
+	}
+
+	/**
+	 * Retrieves the {@code ExecutionStatus} value
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public ExecutionStatus getExecutionStatus() {
+		return mExecutionStatus;
+	}
+
+	/**
+	 * sets the {@code ExecutionStatus} value
+	 * @param status the status
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public void setParsingStatus(ParsingStatus status) {
+		mParsingStatus = status;
+	}
+	
+	/**
+	 * Retrieves the {@code ExecutionStatus} value
+	 * @param status the status
+	 * 
+	 * @return the {@code ExecutionStatus} value
+	 */
+	public void setExecutionStatus(ExecutionStatus status) {
+		mExecutionStatus = status;
+	}
+	
+}
+
+	// End of segment: .\udo\data\OutputData.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\engine\Engine.java
+	 */
+
+package udo.engine;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,26 +667,26 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import udo.util.engine.Cache;
-import udo.util.engine.FileManager;
-import udo.util.engine.UndoBin;
-import udo.util.engine.runners.Runner;
-import udo.util.engine.runners.RunnerAdd;
-import udo.util.engine.runners.RunnerDelete;
-import udo.util.engine.runners.RunnerDone;
-import udo.util.engine.runners.RunnerEdit;
-import udo.util.engine.runners.RunnerList;
-import udo.util.engine.runners.RunnerSave;
-import udo.util.engine.runners.RunnerSearch;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.ReadingFromStorageException;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.LoggingStrings;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
+import udo.constants.Constants.LoggingStrings;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.FileManager;
+import udo.engine.util.UndoBin;
+import udo.engine.util.runners.Runner;
+import udo.engine.util.runners.RunnerAdd;
+import udo.engine.util.runners.RunnerDelete;
+import udo.engine.util.runners.RunnerDone;
+import udo.engine.util.runners.RunnerEdit;
+import udo.engine.util.runners.RunnerList;
+import udo.engine.util.runners.RunnerSave;
+import udo.engine.util.runners.RunnerSearch;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.ReadingFromStorageException;
 
 /**
  * This is a facade class for the engine component.<br>
@@ -300,1109 +951,17 @@ public class Engine {
 	}
 }
 
-	// End of segment: .\udo\main\Engine.java
+	// End of segment: .\udo\engine\Engine.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\main\uDo.java
+	 * origin: .\udo\engine\util\Cache.java
 	 */
 
-package udo.main;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import udo.util.shared.Command;
-import udo.util.shared.Constants.MainVars;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-
-/**
- * This is the main class that the user will run. This class will also
- * coordinate the other components.
- * 
- */
-public class uDo {
-
-	private UserInterface mUI;
-	private Parser mParser;
-	private Engine mEngine;
-
-	private boolean mIsRunning;
-
-	public uDo() {
-		try {
-			mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(MainVars.EXIT_STATUS_NOT_OK);
-		} 
-		mParser = new Parser();
-		mEngine = Engine.getInstance(); // Engine is a Singleton pattern
-		mIsRunning = true;
-	}
-
-	private void run(String[] args) {
-
-		manageArgs(args);
-		
-		try {
-			
-			runMainLoop();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(MainVars.EXIT_STATUS_NOT_OK);
-		}
-	}
-
-	private void manageArgs(String[] args) {
-		// in case we decide to handle any arguments
-	}
-
-	private void runMainLoop() {
-		while (mIsRunning) {
-			
-			updateTodayScreen();
-			updateTodoScreen();
-			
-			String inputString = mUI.getInput();
-			OutputData outputData = parseAndExecute(inputString);
-			mUI.show(outputData);
-			checkForExitCommand(outputData);
-		}
-		System.exit(MainVars.EXIT_STATUS_OK);
-	}
-
-	private void updateTodoScreen() {
-		Calendar from = Calendar.getInstance();
-		from.setLenient(true);
-		Calendar to = Calendar.getInstance();
-		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + MainVars.DAYS_IN_ADVANCE);
-		ArrayList<ItemData> itemsToShow = mEngine.getTodoScreenItems(from, to);
-		mUI.updateTodoScreen(itemsToShow);
-	}
-
-	private void updateTodayScreen() {
-		Calendar today = Calendar.getInstance();
-		ArrayList<ItemData> itemsToShow = mEngine.getTodayScreenItems(today);
-		mUI.updateTodayScreen(itemsToShow);
-	}
-
-	private void checkForExitCommand(OutputData outputData) {
-		if (outputData.getCommand() == Command.EXIT) {
-			if (outputData.getExecutionStatus() == ExecutionStatus.SUCCESS) {
-				mIsRunning = false;
-			}
-		}
-	}
-
-	private OutputData parseAndExecute(String input) {
-		InputData inputData = mParser.getInputData(input);
-		OutputData outputData = mEngine.execute(inputData);
-		return outputData;
-	}
-	
-	// End of segment: .\udo\main\uDo.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\tests\CacheUnitTest.java
-	 */
-
-package udo.tests;
-
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import org.junit.Test;
-
-import udo.util.engine.Cache;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.InvalidUIDException;
-import udo.util.exceptions.ItemNotFoundException;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.Constants.Keys;
-
-public class CacheUnitTest {
-	// this suite will only test the core crud methods of the cache
-	// other aux methods [e.g. getAllPlans()] are not tested
-	// this is because their success mostly depends on the core methods.
-	// we assume the logic is correct for the aux methods. 
-
-	private static final int PLAN_UID = 12347;
-	private static final int NOT_EXIST_UID = 0;
-	private static final int INVALID_UID = -1;
-	
-	// we assume cache.size() works because there is no way 
-	// to test it without invoking the other methods under test
-
-	@Test
-	public void testCacheAddItem() throws CacheAccessException {
-		// puts two items inside the cache 
-		// and test whether the items go inside the cache or not
-		Cache c = new Cache();
-		int oldSize = c.size();
-		ItemData i = new ItemData(ItemType.PLAN);
-		i.put(Keys.TITLE, "asd");
-		ItemData ii = new ItemData(ItemType.PLAN);
-		ii.put(Keys.TITLE, "asdasd");
-		c.addItem(i);
-		c.addItem(ii);
-		assertEquals("the new size should be larger than old size by 2",
-				c.size(), oldSize + 2);
-	}
-	
-	@SuppressWarnings("null")
-	@Test
-	public void testCacheGetItem() {
-		// puts an item inside the cache 
-		// and tries to get it back
-		Cache c = new Cache();
-		ItemData i = new ItemData(ItemType.PLAN);
-		i.put(Keys.TITLE, "asd");
-		i.put(Keys.UID, PLAN_UID);
-		try {
-			c.addItem(i);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		}
-		
-		// get the correct item
-		ItemData get = null;
-		try {
-			get = c.getItem(PLAN_UID);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		} catch (ItemNotFoundException e) {
-			fail("item not found");
-		} catch (InvalidUIDException e) {
-			fail("invalid uid");
-		}
-		
-		assertNotEquals("received item should not be null",
-				null,
-				get);
-		
-		assertEquals("received item should have the correct uid",
-				PLAN_UID,
-				get.get(Keys.UID));
-		
-		// get the wrong item
-		ItemData getWrong = null;
-		try {
-			getWrong = c.getItem(NOT_EXIST_UID);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		} catch (ItemNotFoundException e) {
-			assertEquals("item not found, item received should still be null",
-					null,
-					getWrong);
-		} catch (InvalidUIDException e) {
-			fail("invalid uid");
-		}
-
-		// get the invalid item
-		ItemData getInvalid = null;
-		try {
-			getInvalid = c.getItem(INVALID_UID);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		} catch (ItemNotFoundException e) {
-			fail("item not foudn");
-		} catch (InvalidUIDException e) {
-			assertEquals("invalid uid, item received should still be null",
-					null,
-					getInvalid);
-		}
-	}
-
-	@SuppressWarnings("null")
-	@Test
-	public void testCacheDeleteItem() {
-		// puts an item inside the cache 
-		// and tries to remove it
-		Cache c = new Cache();
-		ItemData i = new ItemData(ItemType.PLAN);
-		i.put(Keys.TITLE, "asd");
-		i.put(Keys.UID, PLAN_UID);
-		try {
-			c.addItem(i);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		}
-		
-		// delete correct item
-		ItemData deleted = null;
-		try {
-			deleted = c.deleteItem(PLAN_UID);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		} catch (InvalidUIDException e) {
-			fail("invalid uid");
-		} catch (ItemNotFoundException e) {
-			fail("item not found");
-		}
-		
-		assertNotEquals("deleted item not null",
-				null,
-				deleted);
-		
-		assertEquals("deleted item should have the correct uid",
-				PLAN_UID,
-				deleted.get(Keys.UID));
-
-		// delete the wrong item
-		ItemData deleteWrong = null;
-		try {
-			deleteWrong = c.deleteItem(NOT_EXIST_UID);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		} catch (ItemNotFoundException e) {
-			assertEquals("item not found, item deleted should still be null",
-					null,
-					deleteWrong);
-		} catch (InvalidUIDException e) {
-			fail("invalid uid");
-		}
-
-		// delete the invalid item
-		ItemData deleteInvalid = null;
-		try {
-			deleteInvalid = c.getItem(INVALID_UID);
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		} catch (ItemNotFoundException e) {
-			fail("item not found");
-		} catch (InvalidUIDException e) {
-			assertEquals("invalid uid, item deleted should still be null",
-					null,
-					deleteInvalid);
-		}
-	}
-	
-	@Test
-	public void testCacheClear() {
-		// adds an item 
-		// then clears the cache
-		// then checks the cache size
-		Cache c = new Cache();
-		int emptySize = c.size();
-		
-		try {
-			c.addItem(new ItemData(ItemType.EVENT));
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		}
-
-		int nonEmptySize = c.size();
-		
-		try {
-			c.clear();
-		} catch (CacheAccessException e) {
-			fail("cache access");
-		}
-		
-		int clearedSize = c.size();
-		
-		assertNotEquals("cleared size should not be the non empty size",
-				nonEmptySize,
-				clearedSize);
-		
-		assertEquals("cleared size should be empty size",
-				emptySize,
-				clearedSize);
-		
-	}
-}
-
-	// End of segment: .\udo\tests\CacheUnitTest.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\tests\EngineUnitTest.java
-	 */
-
-package udo.tests;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import org.junit.Test;
-
-import udo.main.Engine;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.ListQuery;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
-
-public class EngineUnitTest {
-	
-	private static final int EVENT_UID = 12345;
-	private static final int TASK_UID = 12346;
-	private static final int PLAN_UID = 12347;
-
-	@Test
-	public void testEngineListEvents() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.EVENT);
-		OutputData output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		
-		assertFalse("list not null",
-				null == list);
-		
-		System.out.println("List Events " + list.toString());
-	}
-
-	@Test
-	public void testEngineListTasks() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.TASK);
-		OutputData output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		
-		assertFalse("list not null",
-				null == list);
-		
-		System.out.println("List tasks " + list.toString());
-	}
-	
-	@Test
-	public void testEngineListPlans() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.PLAN);
-		OutputData output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		
-		assertFalse("list not null",
-				null == list);
-		
-		System.out.println("List plans " + list.toString());
-	}
-	
-	@Test
-	public void testEngineListByDate() {
-		Engine e = Engine.getInstance();
-		Calendar queryCal = Calendar.getInstance();
-		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.DATE);
-		input.put(Keys.QUERY_VALUE, queryCal);
-		OutputData output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		
-		assertFalse("list not null",
-				null == list);
-		
-		System.out.println("list by date " + list);
-	}
-	
-	
-	@Test
-	public void testEngineListDone() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
-		input.put(Keys.UID, TASK_UID);
-		e.execute(input);
-		
-		input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
-		OutputData output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		
-		assertNotEquals("items in output not null",
-				null,
-				items);
-		
-		assertNotEquals("number of items in output not 0",
-				0,
-				items.size());	
-	}
-	
-	@Test
-	public void testEngineMarkAndToggleDone() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
-		input.put(Keys.UID, TASK_UID);
-		OutputData output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		ItemData item = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("edited item in output not null",
-				null == item);
-		
-		assertTrue("ensure edited item marked", 
-				(boolean)item.get(Keys.DONE));
-		
-		System.out.println(item);
-		
-		input = new InputData(Command.TOGGLE_DONE, ParsingStatus.SUCCESS);
-		input.put(Keys.UID, TASK_UID);
-		output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		item = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("edited item in output not null",
-				null == item);
-		
-		assertFalse("ensure edited item unmarked", 
-				(boolean)item.get(Keys.DONE));
-		
-		System.out.println(item);
-	}
-	
-	@Test
-	public void testEngineEditItemEndTime() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, EVENT_UID);
-		inputEdit.put("field", EditField.END_TIME);
-		inputEdit.put("value", Calendar.getInstance());
-		OutputData output = e.execute(inputEdit);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("edited item in output not null",
-				null == edited);
-		
-		Calendar editedCal = (Calendar) edited.get(Keys.END);
-		
-		assertEquals("ensure edited item actaully got edited",
-				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
-				editedCal.get(Calendar.HOUR_OF_DAY));
-		
-		System.out.println(edited);
-	}
-	
-	@Test
-	public void testEngineEditItemDueTime() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, TASK_UID);
-		inputEdit.put("field", EditField.DUE_TIME);
-		inputEdit.put("value", Calendar.getInstance());
-		OutputData output = e.execute(inputEdit);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("edited item in output not null",
-				null == edited);
-		
-		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
-		
-		assertEquals("ensure edited item actaully got edited",
-				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
-				editedCal.get(Calendar.HOUR_OF_DAY));
-		
-		System.out.println(edited);
-	}
-
-	@Test
-	public void testEngineEditItemDueDate() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, TASK_UID);
-		inputEdit.put("field", EditField.DUE_DATE);
-		inputEdit.put("value", Calendar.getInstance());
-		OutputData output = e.execute(inputEdit);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("edited item in output not null",
-				null == edited);
-		
-		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
-		
-		assertEquals("ensure edited item actaully got edited",
-				Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 
-				editedCal.get(Calendar.DAY_OF_MONTH));
-		
-		System.out.println(edited);
-	}
-	
-	@Test
-	public void testEngineEditItemTitle() {
-		Engine e = Engine.getInstance();
-		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
-		inputEdit.put(Keys.UID, EVENT_UID);
-		inputEdit.put("field", EditField.TITLE);
-		inputEdit.put("value", "dummy title");
-		OutputData output = e.execute(inputEdit);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		ItemData edited = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("edited item in output not null",
-				null == edited);
-		
-		assertEquals("ensure edited item actaully got edited",
-				"dummy title", 
-				edited.get(Keys.TITLE));
-		
-		System.out.println(edited);
-	}
-	
-	@Test
-	public void testEngineAddPlan() {
-		Engine e = Engine.getInstance();
-		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
-		inputPlan.put(Keys.TITLE, "test plan");
-		inputPlan.put(Keys.DUE, Calendar.getInstance());
-		OutputData output = e.execute(inputPlan);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		ItemData addedPlan = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("added item in output not null",
-				null == addedPlan);
-		
-		assertEquals("added item is a plan",
-				ItemType.PLAN, 
-				addedPlan.getItemType());
-	}
-	
-	@Test
-	public void testEngineAddTask() {
-		Engine e = Engine.getInstance();
-		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
-		inputTask.put(Keys.TITLE, "test task");
-		inputTask.put(Keys.DUE, Calendar.getInstance());
-		OutputData output = e.execute(inputTask);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		ItemData addedTask = (ItemData) output.get(Keys.ITEM);
-		
-		assertFalse("added item in output not null",
-				null == addedTask);
-		
-		assertEquals("added item is a task",
-				ItemType.TASK,
-				addedTask.getItemType());
-	}
-	
-	@Test
-	public void testEngineGetUpcomingTasks() {
-		Engine e = Engine.getInstance();
-		Calendar from = Calendar.getInstance();
-		from.setLenient(true);
-		Calendar to = Calendar.getInstance();
-		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + 3);
-		ArrayList<ItemData> itemsToShow = e.getTodoScreenItems(from, to);
-		
-		assertFalse("todayList is not null",
-				null == itemsToShow);
-		
-		System.out.println(itemsToShow);
-	}
-
-	@Test
-	public void testEngineGetTodayItems() {
-		Engine e = Engine.getInstance();
-		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
-		
-		assertFalse("todayList is not null",
-				null == todayList);
-	}
-
-	@Test
-	public void testEngineDelete() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.DELETE);
-		input.setParsingStatus(ParsingStatus.SUCCESS);
-		input.put(Keys.UID, EVENT_UID);
-		OutputData output = e.execute(input);
-		
-		assertFalse("Output must not be null",
-				null == output);
-		
-		assertEquals("Execution must be successful",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-	}
-	
-	@Test
-	// delete uid is split into:
-		// positive uid
-		// negative uid (invalid)
-	// The positive uid is split into:
-		// from 00000 to 99999 (valid)
-		// above 100000 and above
-	// within the valid range, it is also partitioned into: 
-		// 1. uid exist 
-		// 2. uid do not exist
-	public void testEngineDeleteBoundaryCasesForUID() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.DELETE, ParsingStatus.SUCCESS);
-		
-		// this is the boundary case for negative uid partition 
-		input.put(Keys.UID, -1);
-		OutputData output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be fail",
-				ExecutionStatus.FAIL,
-				output.getExecutionStatus());
-		
-		// this is the lower boundary case for the positive uid partition
-		// this uid also does not exist
-		input.put(Keys.UID, 00000); // also equal to the integer 0
-		output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be fail",
-				ExecutionStatus.FAIL,
-				output.getExecutionStatus());
-		
-		// this is the upper boundary case for the positive uid partition
-		// this uid also does not exist
-		input.put(Keys.UID, 99999);
-		output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be fail",
-				ExecutionStatus.FAIL,
-				output.getExecutionStatus());
-	
-		// this is a case for the positive and exists partition
-		input.put(Keys.UID, EVENT_UID);
-		output = e.execute(input);
-		
-		assertFalse("output not null",
-				null == output);
-		
-		assertEquals("execution should be success",
-				ExecutionStatus.SUCCESS,
-				output.getExecutionStatus());
-		
-		// this is the lower boundary case for the positive partition above 100000
-		input.put(Keys.UID, 100000);
-		output = e.execute(input);
-	
-		assertFalse("output not null",
-				null == output);
-	
-		assertEquals("execution should be fail",
-				ExecutionStatus.FAIL,
-				output.getExecutionStatus());
-	}
-
-	@Test
-	public void testEngineExecuteListHash() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.LIST);
-		input.setParsingStatus(ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
-		input.put(Keys.QUERY_VALUE, "meeting");
-		OutputData o = e.execute(input);
-		
-		assertFalse("output object cant be null",
-				o == null);
-		
-		assertEquals("the output status shud be success",
-				ExecutionStatus.SUCCESS,
-				o.getExecutionStatus());
-		
-		assertEquals("the output command should be list",
-				Command.LIST,
-				o.getCommand());
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
-		System.out.println(s.toString());
-	}
-
-	@Test
-	public void testEngineExecuteListAll() {
-		Engine e = Engine.getInstance();
-		InputData input = new InputData(Command.LIST);
-		input.setParsingStatus(ParsingStatus.SUCCESS);
-		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
-		OutputData o = e.execute(input);
-		
-		assertFalse("output object cant be null",
-				o == null);
-		
-		assertEquals("the output status shud be success",
-				ExecutionStatus.SUCCESS,
-				o.getExecutionStatus());
-		
-		assertEquals("the output command should be list",
-				Command.LIST,
-				o.getCommand());
-		
-		@SuppressWarnings("unchecked")
-		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
-		
-		assertFalse("there should be items",
-				null == s);
-	}
-
-	@Test 
-	public void testEngineExecuteExit() {
-		Engine e = Engine.getInstance();
-		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
-		
-		assertEquals("the output status shud be success",
-				ExecutionStatus.SUCCESS,
-				o.getExecutionStatus());
-		
-		assertEquals("the output command should be exit",
-				Command.EXIT,
-				o.getCommand());
-	}
-
-	@Test
-	public void testEngineExecuteAddEventNotNull() {
-		Engine e = Engine.getInstance();
-		 
-		InputData in = new InputData(Command.ADD_EVENT);
-		in.setParsingStatus(ParsingStatus.SUCCESS);
-		
-		assertFalse("", null == e.execute(in));
-	}
-
-	@Test // save is still buggy
-	public void testEngineExecuteSave() {
-		Engine e = Engine.getInstance();
-		InputData in = new InputData(Command.SAVE);
-		in.setParsingStatus(ParsingStatus.SUCCESS);
-		OutputData out = e.execute(in);
-		
-		assertFalse("out should not be null", null == out);
-		
-		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
-	}
-
-	@Test
-	public void testItemDataMatch() {
-		ItemData i1 = new ItemData(ItemType.EVENT);
-		i1.put("a", "a");
-		i1.put("b", "ajshdgf");
-		
-		ItemData i2 = new ItemData(ItemType.EVENT);
-		i2.put("a", "a");
-		i2.put("b", "ajshdgf");
-		
-		assertTrue(i1.equals(i2));
-	}
-
-}
-
-	// End of segment: .\udo\tests\EngineUnitTest.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\tests\FileManagerUnitTest.java
-	 */
-
-package udo.tests;
-
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.junit.Test;
-
-import udo.util.engine.FileManager;
-import udo.util.exceptions.ReadingFromStorageException;
-import udo.util.exceptions.WritingToStorageException;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.Constants.Keys;
-
-public class FileManagerUnitTest {
-
-	private static final String TEST_READ_FILENAME = "data/test_read_data.txt";
-	private static final String TEST_WRITE_FILENAME = "data/test_write_data.txt";
-
-	@Test
-	public void testFMReadFile() {
-		FileManager fm = new FileManager(TEST_READ_FILENAME);
-		ArrayList<ItemData> list = null;
-		
-		try {
-			list = fm.getFromFile();
-		} catch (ReadingFromStorageException e) {
-			fail("reading storage");
-		} catch (IOException e) {
-			fail("io");
-		}
-		
-		assertNotEquals("list should not be null",
-				null,
-				list);
-	}
-	
-	@SuppressWarnings("null")
-	@Test
-	public void testFMWriteFile() {
-		// make two plans, 
-		// then place them in the file
-		// then get back and check the file got things or not.
-		FileManager fm = new FileManager(TEST_WRITE_FILENAME);
-		ArrayList<ItemData> list = new ArrayList<ItemData>();
-		
-		ItemData testPlan = new ItemData(ItemType.PLAN);
-		testPlan.put(Keys.TITLE, "test plan 1");
-		testPlan.put(Keys.UID, 12347);
-		testPlan.put(Keys.HASHTAGS, new ArrayList<String>());
-		ItemData testPlan2 = new ItemData(ItemType.PLAN);
-		testPlan2.put(Keys.TITLE, "test plan 2");
-		testPlan2.put(Keys.UID, 12348);
-		testPlan2.put(Keys.HASHTAGS, new ArrayList<String>());
-		
-		list.add(testPlan);
-		list.add(testPlan2);
-		
-		try {
-			fm.writeToFile(list);
-		} catch (IOException e) {
-			fail("io");
-		} catch (WritingToStorageException e) {
-			fail("writing storage");
-		}
-		
-		// writing passed.
-		// now to get back.
-		ArrayList<ItemData> getBack = null;
-		try {
-			 getBack = fm.getFromFile();
-		} catch (ReadingFromStorageException e) {
-			fail("reading storage");
-		} catch (IOException e) {
-			fail("io");
-		}
-		
-		assertNotEquals("list should not be null",
-				null,
-				getBack);
-		
-		assertEquals("list should have the 2 things",
-				getBack.size(),
-				2);
-		
-	}
-
-}
-
-	// End of segment: .\udo\tests\FileManagerUnitTest.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\tests\UndoBinUnitTest.java
-	 */
-
-package udo.tests;
-
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
-import udo.util.engine.UndoBin;
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-
-public class UndoBinUnitTest {
-
-	@Test
-	public void testUBPutItem() {
-		// put something
-		UndoBin u = new UndoBin();
-		u.storeUndo(new InputData(Command.EDIT));
-		// cannot fail. no exception thrown as well.
-	}
-	
-	@Test
-	public void testUBGetItem() {
-		// put something
-		// then get it back
-		// make sure its the same item
-		UndoBin u = new UndoBin();
-		u.storeUndo(new InputData(Command.EDIT));
-		
-		InputData getInput = u.getUndo();
-		
-		assertNotEquals("get input cannot be null",
-				null,
-				getInput);
-		
-		assertEquals("get input is the same as putted",
-				Command.EDIT,
-				getInput.getCommand());
-	}
-	
-	@Test
-	public void testUBClearItem() {
-		// put something
-		// then clear
-		// then try to get back.
-		// get back should be null
-		UndoBin u = new UndoBin();
-		u.storeUndo(new InputData(Command.EDIT));
-		
-		u.clear();
-		
-		InputData getInput = u.getUndo();
-		
-		assertEquals("get input must be null",
-				null,
-				getInput);
-	}
-
-}
-
-	// End of segment: .\udo\tests\UndoBinUnitTest.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\engine\Cache.java
-	 */
-
-package udo.util.engine;
+package udo.engine.util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1411,12 +970,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.InvalidUIDException;
-import udo.util.exceptions.ItemNotFoundException;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
+import udo.constants.Constants.Keys;
+import udo.data.ItemData;
+import udo.enums.ItemType;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.InvalidUIDException;
+import udo.exceptions.ItemNotFoundException;
 
 public class Cache {
 
@@ -1949,17 +1508,17 @@ public class Cache {
 
 }
 
-	// End of segment: .\udo\util\engine\Cache.java
+	// End of segment: .\udo\engine\util\Cache.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\FileManager.java
+	 * origin: .\udo\engine\util\FileManager.java
 	 */
 
-package udo.util.engine;
+package udo.engine.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -1974,14 +1533,14 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.util.exceptions.ReadingFromStorageException;
-import udo.util.exceptions.WritingToStorageException;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.Constants.MainVars;
-import udo.util.shared.Constants.StorageIndices;
-import udo.util.shared.Constants.StorageStrings;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.MainVars;
+import udo.constants.Constants.StorageIndices;
+import udo.constants.Constants.StorageStrings;
+import udo.data.ItemData;
+import udo.enums.ItemType;
+import udo.exceptions.ReadingFromStorageException;
+import udo.exceptions.WritingToStorageException;
 
 public class FileManager {
 
@@ -2317,23 +1876,23 @@ public class FileManager {
 	}
 }
 
-	// End of segment: .\udo\util\engine\FileManager.java
+	// End of segment: .\udo\engine\util\FileManager.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\Runner.java
+	 * origin: .\udo\engine\util\runners\Runner.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
-import udo.util.engine.Cache;
-import udo.util.engine.FileManager;
-import udo.util.engine.UndoBin;
-import udo.util.shared.InputData;
-import udo.util.shared.OutputData;
+import udo.data.InputData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.FileManager;
+import udo.engine.util.UndoBin;
 
 /**
  * this class is the parent class of the classes that help the engine execute commands.
@@ -2364,29 +1923,29 @@ public abstract class Runner {
 	
 }
 
-	// End of segment: .\udo\util\engine\runners\Runner.java
+	// End of segment: .\udo\engine\util\runners\Runner.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\RunnerAdd.java
+	 * origin: .\udo\engine\util\runners\RunnerAdd.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
-import udo.util.engine.Cache;
-import udo.util.engine.UndoBin;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ItemType;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
 
 public class RunnerAdd extends Runner {
 	
@@ -2507,31 +2066,31 @@ public class RunnerAdd extends Runner {
 
 }
 
-	// End of segment: .\udo\util\engine\runners\RunnerAdd.java
+	// End of segment: .\udo\engine\util\runners\RunnerAdd.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\RunnerDelete.java
+	 * origin: .\udo\engine\util\runners\RunnerDelete.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
-import udo.util.engine.Cache;
-import udo.util.engine.UndoBin;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.InvalidUIDException;
-import udo.util.exceptions.ItemNotFoundException;
-import udo.util.shared.Command;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ItemType;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.InvalidUIDException;
+import udo.exceptions.ItemNotFoundException;
 
 public class RunnerDelete extends Runner {
 
@@ -2609,31 +2168,31 @@ public class RunnerDelete extends Runner {
 
 }
 
-	// End of segment: .\udo\util\engine\runners\RunnerDelete.java
+	// End of segment: .\udo\engine\util\runners\RunnerDelete.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\RunnerDone.java
+	 * origin: .\udo\engine\util\runners\RunnerDone.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
-import udo.util.engine.Cache;
-import udo.util.engine.UndoBin;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.InvalidUIDException;
-import udo.util.exceptions.ItemNotFoundException;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ItemType;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.InvalidUIDException;
+import udo.exceptions.ItemNotFoundException;
 
 public class RunnerDone extends Runner {
 
@@ -2711,34 +2270,34 @@ public class RunnerDone extends Runner {
 
 }
 
-	// End of segment: .\udo\util\engine\runners\RunnerDone.java
+	// End of segment: .\udo\engine\util\runners\RunnerDone.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\RunnerEdit.java
+	 * origin: .\udo\engine\util\runners\RunnerEdit.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
 import java.util.Calendar;
 
-import udo.util.engine.Cache;
-import udo.util.engine.UndoBin;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.InvalidUIDException;
-import udo.util.exceptions.ItemNotFoundException;
-import udo.util.shared.Command;
-import udo.util.shared.EditField;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
+import udo.enums.EditField;
+import udo.enums.ExecutionStatus;
+import udo.enums.ItemType;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.InvalidUIDException;
+import udo.exceptions.ItemNotFoundException;
 
 public class RunnerEdit extends Runner {
 
@@ -2958,32 +2517,32 @@ public class RunnerEdit extends Runner {
 
 }
 
-	// End of segment: .\udo\util\engine\runners\RunnerEdit.java
+	// End of segment: .\udo\engine\util\runners\RunnerEdit.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\RunnerList.java
+	 * origin: .\udo\engine\util\runners\RunnerList.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.util.engine.Cache;
-import udo.util.engine.UndoBin;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
 
 public class RunnerList extends Runner {
 
@@ -3051,30 +2610,30 @@ public class RunnerList extends Runner {
 
 }
 
-	// End of segment: .\udo\util\engine\runners\RunnerList.java
+	// End of segment: .\udo\engine\util\runners\RunnerList.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\RunnerSave.java
+	 * origin: .\udo\engine\util\runners\RunnerSave.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import udo.util.engine.Cache;
-import udo.util.engine.FileManager;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.exceptions.WritingToStorageException;
-import udo.util.shared.Command;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.FileManager;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.WritingToStorageException;
 
 public class RunnerSave extends Runner {
 
@@ -3112,30 +2671,30 @@ public class RunnerSave extends Runner {
 
 }
 
-	// End of segment: .\udo\util\engine\runners\RunnerSave.java
+	// End of segment: .\udo\engine\util\runners\RunnerSave.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\runners\RunnerSearch.java
+	 * origin: .\udo\engine\util\runners\RunnerSearch.java
 	 */
 
-package udo.util.engine.runners;
+package udo.engine.util.runners;
 
 import java.util.ArrayList;
 
-import udo.util.engine.Cache;
-import udo.util.engine.UndoBin;
-import udo.util.exceptions.CacheAccessException;
-import udo.util.shared.Command;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.util.Cache;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ParsingStatus;
+import udo.exceptions.CacheAccessException;
 
 public class RunnerSearch extends Runner {
 	
@@ -3170,19 +2729,19 @@ public class RunnerSearch extends Runner {
 
 }
 
-	// End of segment: .\udo\util\engine\runners\RunnerSearch.java
+	// End of segment: .\udo\engine\util\runners\RunnerSearch.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\engine\UndoBin.java
+	 * origin: .\udo\engine\util\UndoBin.java
 	 */
 
-package udo.util.engine;
+package udo.engine.util;
 
-import udo.util.shared.InputData;
+import udo.data.InputData;
 
 public class UndoBin {
 	private InputData mInputData;
@@ -3217,17 +2776,161 @@ public class UndoBin {
 	}
 }
 
-	// End of segment: .\udo\util\engine\UndoBin.java
+	// End of segment: .\udo\engine\util\UndoBin.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\exceptions\AddToCacheException.java
+	 * origin: .\udo\enums\Command.java
 	 */
 
-package udo.util.exceptions;
+package udo.enums;
+
+public enum Command {
+	ADD,
+	ADD_EVENT, 
+	ADD_TASK, 
+	ADD_PLAN, 
+	LIST, 
+	DELETE, 
+	EDIT,
+	MARK_DONE,
+	TOGGLE_DONE,
+	SAVE, 
+	SEARCH,
+	EXIT, 
+	UNDO, 
+	NULL
+}
+
+	// End of segment: .\udo\enums\Command.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\enums\EditField.java
+	 */
+
+package udo.enums;
+
+public enum EditField {
+	TITLE,
+	START_TIME, END_TIME,
+	START_DATE, END_DATE,
+	DUE_TIME, DUE_DATE
+}
+
+	// End of segment: .\udo\enums\EditField.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\enums\ExecutionStatus.java
+	 */
+
+package udo.enums;
+
+/**
+ * 
+ * Used to communicate the success of the command execution.
+ * <p>
+ * SUCCESS = Command executed successfully.
+ * <br>
+ * FAIL = Command failed to execute properly.
+ * <br>
+ * NULL = Command did not even attempt to execute.
+ *
+ */
+public enum ExecutionStatus {
+	SUCCESS, FAIL, NULL
+}
+
+	// End of segment: .\udo\enums\ExecutionStatus.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\enums\ItemType.java
+	 */
+
+package udo.enums;
+
+/**
+ * 
+ *
+ */
+public enum ItemType {
+	EVENT, TASK, PLAN
+}
+
+	// End of segment: .\udo\enums\ItemType.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\enums\ListQuery.java
+	 */
+
+package udo.enums;
+
+/**
+ * This class holds the enum type for listing queries
+ */
+public enum ListQuery {
+	ALL, 
+	SINGLE_HASHTAG, 
+	DATE, 
+	DONE,
+	EVENT,
+	TASK,
+	PLAN
+}
+
+	// End of segment: .\udo\enums\ListQuery.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\enums\ParsingStatus.java
+	 */
+
+package udo.enums;
+
+/**
+ * Communicates the success of parsing user's raw data
+ * <p>
+ * SUCCESS = No anomalies detected in input, successfully parsed input.
+ * <br>
+ * FAIL = Anomalies detected in input, failed to parse input.
+ * 
+ */
+public enum ParsingStatus {
+	SUCCESS, FAIL
+}
+
+	// End of segment: .\udo\enums\ParsingStatus.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\exceptions\AddToCacheException.java
+	 */
+
+package udo.exceptions;
 
 public class AddToCacheException extends Exception {
 
@@ -3259,17 +2962,17 @@ public class AddToCacheException extends Exception {
 
 }
 
-	// End of segment: .\udo\util\exceptions\AddToCacheException.java
+	// End of segment: .\udo\exceptions\AddToCacheException.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\exceptions\CacheAccessException.java
+	 * origin: .\udo\exceptions\CacheAccessException.java
 	 */
 
-package udo.util.exceptions;
+package udo.exceptions;
 
 public class CacheAccessException extends Exception {
 
@@ -3301,17 +3004,17 @@ public class CacheAccessException extends Exception {
 
 }
 
-	// End of segment: .\udo\util\exceptions\CacheAccessException.java
+	// End of segment: .\udo\exceptions\CacheAccessException.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\exceptions\InvalidUIDException.java
+	 * origin: .\udo\exceptions\InvalidUIDException.java
 	 */
 
-package udo.util.exceptions;
+package udo.exceptions;
 
 public class InvalidUIDException extends Exception {
 	
@@ -3343,17 +3046,17 @@ public class InvalidUIDException extends Exception {
 
 }
 
-	// End of segment: .\udo\util\exceptions\InvalidUIDException.java
+	// End of segment: .\udo\exceptions\InvalidUIDException.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\exceptions\ItemNotFoundException.java
+	 * origin: .\udo\exceptions\ItemNotFoundException.java
 	 */
 
-package udo.util.exceptions;
+package udo.exceptions;
 
 public class ItemNotFoundException extends Exception {
 	
@@ -3361,17 +3064,17 @@ public class ItemNotFoundException extends Exception {
 
 }
 
-	// End of segment: .\udo\util\exceptions\ItemNotFoundException.java
+	// End of segment: .\udo\exceptions\ItemNotFoundException.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\exceptions\ReadingFromStorageException.java
+	 * origin: .\udo\exceptions\ReadingFromStorageException.java
 	 */
 
-package udo.util.exceptions;
+package udo.exceptions;
 
 public class ReadingFromStorageException extends Exception {
 	
@@ -3403,17 +3106,17 @@ public class ReadingFromStorageException extends Exception {
 
 }
 
-	// End of segment: .\udo\util\exceptions\ReadingFromStorageException.java
+	// End of segment: .\udo\exceptions\ReadingFromStorageException.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\exceptions\WritingToStorageException.java
+	 * origin: .\udo\exceptions\WritingToStorageException.java
 	 */
 
-package udo.util.exceptions;
+package udo.exceptions;
 
 public class WritingToStorageException extends Exception {
 
@@ -3448,792 +3151,1157 @@ public class WritingToStorageException extends Exception {
 
 }
 
-	// End of segment: .\udo\util\exceptions\WritingToStorageException.java
+	// End of segment: .\udo\exceptions\WritingToStorageException.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\shared\Command.java
+	 * origin: .\udo\main\uDo.java
 	 */
 
-package udo.util.shared;
+package udo.main;
 
-public enum Command {
-	ADD,
-	ADD_EVENT, 
-	ADD_TASK, 
-	ADD_PLAN, 
-	LIST, 
-	DELETE, 
-	EDIT,
-	MARK_DONE,
-	TOGGLE_DONE,
-	SAVE, 
-	SEARCH,
-	EXIT, 
-	UNDO, 
-	NULL
-}
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 
-	// End of segment: .\udo\util\shared\Command.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\Constants.java
-	 */
-
-package udo.util.shared;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.text.SimpleDateFormat;
-
-import javax.swing.KeyStroke;
+import udo.constants.Constants.MainVars;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.Engine;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.parser.Parser;
+import udo.ui.UserInterface;
 
 /**
- * 
- * This class holds all constants that the program uses. (the magic numbers) The
- * constants are further classified in their own subclasses. Add your own
- * subclass here to store all your strings and values and such.
+ * This is the main class that the user will run. This class will also
+ * coordinate the other components.
  * 
  */
-public class Constants {
-	
-	// End of segment: .\udo\util\shared\Constants.java
+public class uDo {
 
+	private UserInterface mUI;
+	private Parser mParser;
+	private Engine mEngine;
 
+	private boolean mIsRunning;
 
-
-
-	/**
-	 * origin: .\udo\util\shared\Constants.java
-	 */
-
-	/**
-	 * 
-	 * This class holds all the keys used for the data storage objects. Please
-	 * reference these values rather than typing your own key. This is to
-	 * standardise across components so that one component can retrieve the data
-	 * that another puts in.
-	 * 
-	 */
-	public static final class Keys {
-		public static final String UID = "uid";
-		public static final String TITLE = "title";
-		public static final String DUE = "due"; 			// for task
-		public static final String DONE = "done"; 			// for task
-		public static final String START = "start"; 		// events
-		public static final String END = "end"; 			// event
-		public static final String HASHTAG = "hashtag"; 	// for list
-		public static final String HASHTAGS = "hashtags"; 	// for parser add
-		public static final String ITEM = "item";
-		public static final String ITEMS = "items";
-		public static final String QUERY_TYPE = "query type";
-		public static final String QUERY_VALUE = "query value";
-		public static final String FIELD = "field";
-		public static final String VALUE = "value";
-		public static final String DATE = "date";
-		public static final String OLD_VALUE = "Old value";
-		public static final String SEARCH_QUERY = "search query";
+	public uDo() {
+		try {
+			mUI = UserInterface.getInstance(); // the UI is shown when init-ed, singleton pattern
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(MainVars.EXIT_STATUS_NOT_OK);
+		} 
+		mParser = new Parser();
+		mEngine = Engine.getInstance(); // Engine is a Singleton pattern
+		mIsRunning = true;
 	}
 
-	// End of segment: .\udo\util\shared\Constants.java
+	private void run(String[] args) {
 
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\Constants.java
-	 */
-
-	/**
-	 * 
-	 * This class holds the array index values for the file manager usage. If you
-	 * desire to put your own values inside here, make sure that the new
-	 * variable name doesnt conflict with existing names. If there is potential
-	 * confusion (e.g. your title index is different from the existing index)
-	 * pls sound out first.
-	 * 
-	 */
-	public static final class StorageIndices {
-		// all
-		public static final int UID = 0;
-		public static final int TYPE = 1;
-		public static final int TITLE = 2;
-		// event
-		public static final int START_DATE = 3;
-		public static final int START_TIME = 4;
-		public static final int END_DATE = 5;
-		public static final int END_TIME = 6;
-		public static final int EVENT_HASHTAGS = 7;
-		// task
-		public static final int DUE_DATE = 3;
-		public static final int DUE_TIME = 4;
-		public static final int TASK_DONE = 5;
-		public static final int TASK_HASHTAGS = 6;
-		//plan
-		public static final int PLAN_DONE = 3;
-		public static final int PLAN_HASHTAGS = 4;
-	}
-	
-	// End of segment: .\udo\util\shared\Constants.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\Constants.java
-	 */
-
-	/**
-	 * 
-	 * This class holds the magic strings for the storage and retrieving of data
-	 * from the storage file. This includes the toString method of the ItemData
-	 * class
-	 * 
-	 */
-	public static final class StorageStrings {
-		public static final String FILEPATH = "data/";
-		public static final String FILENAME = "data/uDo_data.txt";
-		public static final String FIELD_DELIMITER = "\\|\\|\\|";
-		public static final String DATE_DELIMITER = "/";
-		public static final String TIME_DELIMITER = ":";
-		public static final String TAG_DELIMITER = ",";
-		public static final String TYPE_EVENT = "EVENT";
-		public static final String TYPE_TASK = "TASK";
-		public static final String TYPE_PLAN = "PLAN";
-		public static final String UNFORMATTED_STRING_EVENT = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$d/%10$d/%11$d|||%12$d:%13$d|||%14$s|||;";
-		public static final String UNFORMATTED_STRING_TASK = "%1$d|||%2$s|||%3$s|||%4$d/%5$d/%6$d|||%7$d:%8$d|||%9$b|||%10$s|||;";
-		public static final String UNFORMATTED_STRING_PLAN = "%1$d|||%2$s|||%3$s|||%4$b|||%5$s|||;";
-	}
-	
-	// End of segment: .\udo\util\shared\Constants.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\Constants.java
-	 */
-
-	/**
-	 * 
-	 * This class holds the magic strings for the loggers.
-	 * They include filenames and paths
-	 * 
-	 */
-	public static final class LoggingStrings {
-		public static final String LOGPATH_ENGINE = "logs/engine/";
-		public static final String LOGFILE_ENGINE = LOGPATH_ENGINE + "engineLog.log";
-		public static final String LOGPATH_UI = "logs/ui/";
-		public static final String LOGFILE_UI = LOGPATH_UI + "uiLog.log";
-	}
-	
-	// End of segment: .\udo\util\shared\Constants.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\Constants.java
-	 */
-
-	/**
-	 * 
-	 * This class holds the magic numebrs for the main program.
-	 * 
-	 */
-	public static final class MainVars {
-		public static final int EXIT_STATUS_OK = 0;
-		public static final int EXIT_STATUS_NOT_OK = -1;
-		public static final int DAYS_IN_ADVANCE = 3;
-	}
-
-	// End of segment: .\udo\util\shared\Constants.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\DataHolder.java
-	 */
-
-package udo.util.shared;
-
-import java.util.HashMap;
-import java.util.Set;
-
-public class DataHolder {
-	
-	protected final HashMap<String, Object> mData;
-	
-	public DataHolder() {
-		mData = new HashMap<String, Object>();
-	}
-	
-	/**
-	 * Associates the specified item with the specified key An existing item of
-	 * the same key will be replaced. The item inserted cannot be {@code null}.
-	 * 
-	 * @param key
-	 *            The key of the item.
-	 * @param item
-	 *            The item to be put inside
-	 * @return {@code true} when the operation is successful, or {@code false}
-	 *         when the inserted item is null
-	 */
-	public boolean put(String key, Object item) {
-		if (item != null) {
-			mData.put(key, item);
-			return true;
-		} else {
-			return false;
+		manageArgs(args);
+		
+		try {
+			
+			runMainLoop();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(MainVars.EXIT_STATUS_NOT_OK);
 		}
 	}
 
-	/**
-	 * Retrieves the item that is associated with the key.
-	 * 
-	 * @param key
-	 *            The key of the item to retrieve
-	 * @return The item, or {@code null} if the key is not mapped.
-	 */
-	public Object get(String key) {
-		if (mData.containsKey(key)) {
-			return mData.get(key);
-		} else {
-			return null;
+	private void manageArgs(String[] args) {
+		// in case we decide to handle any arguments
+	}
+
+	private void runMainLoop() {
+		while (mIsRunning) {
+			
+			updateTodayScreen();
+			updateTodoScreen();
+			
+			String inputString = mUI.getInput();
+			OutputData outputData = parseAndExecute(inputString);
+			mUI.show(outputData);
+			checkForExitCommand(outputData);
+		}
+		System.exit(MainVars.EXIT_STATUS_OK);
+	}
+
+	private void updateTodoScreen() {
+		Calendar from = Calendar.getInstance();
+		from.setLenient(true);
+		Calendar to = Calendar.getInstance();
+		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + MainVars.DAYS_IN_ADVANCE);
+		ArrayList<ItemData> itemsToShow = mEngine.getTodoScreenItems(from, to);
+		mUI.updateTodoScreen(itemsToShow);
+	}
+
+	private void updateTodayScreen() {
+		Calendar today = Calendar.getInstance();
+		ArrayList<ItemData> itemsToShow = mEngine.getTodayScreenItems(today);
+		mUI.updateTodayScreen(itemsToShow);
+	}
+
+	private void checkForExitCommand(OutputData outputData) {
+		if (outputData.getCommand() == Command.EXIT) {
+			if (outputData.getExecutionStatus() == ExecutionStatus.SUCCESS) {
+				mIsRunning = false;
+			}
 		}
 	}
 
-	/**
-	 * Returns a boolean value describing if the named item exists inside.
-	 * 
-	 * @param key
-	 *            The key of the item to check.
-	 * @return {@code true} if the item exists, or {@code false} otherwise.
-	 */
-	public boolean contains(String key) {
-		return mData.containsKey(key);
-	}
-
-	/**
-	 * Returns a {@link Set} view of the keys contained in this object.
-	 * 
-	 * @return the keyset
-	 */
-	public Set<String> getKeys() {
-		return mData.keySet();
-	}
-
-	/**
-	 * Returns the hashmap that holds the data.
-	 * 
-	 * @return the hashmap
-	 */
-	public HashMap<String, Object> getData() {
-		return mData;
-	}
-}
-
-	// End of segment: .\udo\util\shared\DataHolder.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\EditField.java
-	 */
-
-package udo.util.shared;
-
-public enum EditField {
-	TITLE,
-	START_TIME, END_TIME,
-	START_DATE, END_DATE,
-	DUE_TIME, DUE_DATE
-}
-
-	// End of segment: .\udo\util\shared\EditField.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\ExecutionStatus.java
-	 */
-
-package udo.util.shared;
-
-/**
- * 
- * Used to communicate the success of the command execution.
- * <p>
- * SUCCESS = Command executed successfully.
- * <br>
- * FAIL = Command failed to execute properly.
- * <br>
- * NULL = Command did not even attempt to execute.
- *
- */
-public enum ExecutionStatus {
-	SUCCESS, FAIL, NULL
-}
-
-	// End of segment: .\udo\util\shared\ExecutionStatus.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\InputData.java
-	 */
-
-package udo.util.shared;
-
-
-/**
- * This class carries information parsed from the input string. This class
- * should contain information that allows the Engine to decide what to do, and
- * any additional information that the Engine requires to carry it out.
- * 
- */
-public class InputData extends DataHolder {
-
-	private Command mCommand;
-	private ParsingStatus mParsingStatus;
-
-	public InputData(Command cmd) {
-		mCommand = cmd;
+	private OutputData parseAndExecute(String input) {
+		InputData inputData = mParser.getInputData(input);
+		OutputData outputData = mEngine.execute(inputData);
+		return outputData;
 	}
 	
-	public InputData(Command cmd, ParsingStatus status) {
-		mCommand = cmd;
-		mParsingStatus = status;
-	}
+	// End of segment: .\udo\main\uDo.java
+
+
+
+
 
 	/**
-	 * gets the command
-	 * 
-	 * @return the <code>Command</code>
+	 * origin: .\udo\tests\AllTests.java
 	 */
-	public Command getCommand() {
-		return mCommand;
+
+package udo.tests;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({ 
+	MainUnitTest.class, 
+	ParserUnitTest.class, 
+	EngineUnitTest.class, 
+	CacheUnitTest.class, 
+	FileManagerUnitTest.class, 
+	UndoBinUnitTest.class
+	})
+
+public class AllTests {
+
+}
+
+	// End of segment: .\udo\tests\AllTests.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\tests\CacheUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+
+import udo.constants.Constants.Keys;
+import udo.data.ItemData;
+import udo.engine.util.Cache;
+import udo.enums.ItemType;
+import udo.exceptions.CacheAccessException;
+import udo.exceptions.InvalidUIDException;
+import udo.exceptions.ItemNotFoundException;
+
+public class CacheUnitTest {
+	// this suite will only test the core crud methods of the cache
+	// other aux methods [e.g. getAllPlans()] are not tested
+	// this is because their success mostly depends on the core methods.
+	// we assume the logic is correct for the aux methods. 
+
+	private static final int PLAN_UID = 12347;
+	private static final int NOT_EXIST_UID = 0;
+	private static final int INVALID_UID = -1;
+	
+	// we assume cache.size() works because there is no way 
+	// to test it without invoking the other methods under test
+
+	@Test
+	public void testCacheAddItem() throws CacheAccessException {
+		// puts two items inside the cache 
+		// and test whether the items go inside the cache or not
+		Cache c = new Cache();
+		int oldSize = c.size();
+		ItemData i = new ItemData(ItemType.PLAN);
+		i.put(Keys.TITLE, "asd");
+		ItemData ii = new ItemData(ItemType.PLAN);
+		ii.put(Keys.TITLE, "asdasd");
+		c.addItem(i);
+		c.addItem(ii);
+		assertEquals("the new size should be larger than old size by 2",
+				c.size(), oldSize + 2);
 	}
 	
-	/**
-	 * Returns the {@code ParsingStatus} value
-	 * 
-	 * @return the {@code ParsingStatus} value
-	 */
-	public ParsingStatus getStatus() {
-		return mParsingStatus;
+	@SuppressWarnings("null")
+	@Test
+	public void testCacheGetItem() {
+		// puts an item inside the cache 
+		// and tries to get it back
+		Cache c = new Cache();
+		ItemData i = new ItemData(ItemType.PLAN);
+		i.put(Keys.TITLE, "asd");
+		i.put(Keys.UID, PLAN_UID);
+		try {
+			c.addItem(i);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+		
+		// get the correct item
+		ItemData get = null;
+		try {
+			get = c.getItem(PLAN_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			fail("item not found");
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		}
+		
+		assertNotEquals("received item should not be null",
+				null,
+				get);
+		
+		assertEquals("received item should have the correct uid",
+				PLAN_UID,
+				get.get(Keys.UID));
+		
+		// get the wrong item
+		ItemData getWrong = null;
+		try {
+			getWrong = c.getItem(NOT_EXIST_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			assertEquals("item not found, item received should still be null",
+					null,
+					getWrong);
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		}
+
+		// get the invalid item
+		ItemData getInvalid = null;
+		try {
+			getInvalid = c.getItem(INVALID_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			fail("item not foudn");
+		} catch (InvalidUIDException e) {
+			assertEquals("invalid uid, item received should still be null",
+					null,
+					getInvalid);
+		}
 	}
 
-	/**
-	 * Sets the {@code ParsingStatus} value
-	 * 
-	 * @param status the status
-	 * @return the {@code ParsingStatus} value
-	 */
-	public void setParsingStatus(ParsingStatus status) {
-		mParsingStatus = status;
+	@SuppressWarnings("null")
+	@Test
+	public void testCacheDeleteItem() {
+		// puts an item inside the cache 
+		// and tries to remove it
+		Cache c = new Cache();
+		ItemData i = new ItemData(ItemType.PLAN);
+		i.put(Keys.TITLE, "asd");
+		i.put(Keys.UID, PLAN_UID);
+		try {
+			c.addItem(i);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+		
+		// delete correct item
+		ItemData deleted = null;
+		try {
+			deleted = c.deleteItem(PLAN_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		} catch (ItemNotFoundException e) {
+			fail("item not found");
+		}
+		
+		assertNotEquals("deleted item not null",
+				null,
+				deleted);
+		
+		assertEquals("deleted item should have the correct uid",
+				PLAN_UID,
+				deleted.get(Keys.UID));
+
+		// delete the wrong item
+		ItemData deleteWrong = null;
+		try {
+			deleteWrong = c.deleteItem(NOT_EXIST_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			assertEquals("item not found, item deleted should still be null",
+					null,
+					deleteWrong);
+		} catch (InvalidUIDException e) {
+			fail("invalid uid");
+		}
+
+		// delete the invalid item
+		ItemData deleteInvalid = null;
+		try {
+			deleteInvalid = c.getItem(INVALID_UID);
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		} catch (ItemNotFoundException e) {
+			fail("item not found");
+		} catch (InvalidUIDException e) {
+			assertEquals("invalid uid, item deleted should still be null",
+					null,
+					deleteInvalid);
+		}
+	}
+	
+	@Test
+	public void testCacheClear() {
+		// adds an item 
+		// then clears the cache
+		// then checks the cache size
+		Cache c = new Cache();
+		int emptySize = c.size();
+		
+		try {
+			c.addItem(new ItemData(ItemType.EVENT));
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+
+		int nonEmptySize = c.size();
+		
+		try {
+			c.clear();
+		} catch (CacheAccessException e) {
+			fail("cache access");
+		}
+		
+		int clearedSize = c.size();
+		
+		assertNotEquals("cleared size should not be the non empty size",
+				nonEmptySize,
+				clearedSize);
+		
+		assertEquals("cleared size should be empty size",
+				emptySize,
+				clearedSize);
+		
 	}
 }
 
-	// End of segment: .\udo\util\shared\InputData.java
+	// End of segment: .\udo\tests\CacheUnitTest.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\shared\ItemData.java
+	 * origin: .\udo\tests\EngineUnitTest.java
 	 */
 
-package udo.util.shared;
+package udo.tests;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.Constants.StorageStrings;
+import org.junit.Test;
 
-/**
- * This class holds the all the data that an item should have, like title, date,
- * hashtag, so on. The keys for the put() and get() function must be one of the
- * keys from the Constants.Keys class.
- * 
- */
-public class ItemData extends DataHolder implements Comparable<ItemData> {
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.Engine;
+import udo.enums.Command;
+import udo.enums.EditField;
+import udo.enums.ExecutionStatus;
+import udo.enums.ItemType;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
 
-	private ItemType mType;
+public class EngineUnitTest {
 	
-	public ItemData() {
-		mType = ItemType.PLAN; // a default value
-	}
+	private static final int EVENT_UID = 12345;
+	private static final int TASK_UID = 12346;
+	private static final int PLAN_UID = 12347;
 
-	public ItemData(ItemType type) {
-		super();
-		mType = type;
-	}
-	
-	public void setItemType(ItemType type) {
-		mType = type;
-	}
-
-	public ItemType getItemType() {
-		return mType;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash = 0;
-		for (Object value : mData.values()) {
-			hash = hash | value.hashCode();
-		}
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (other == this) {
-			return true;
-		}
-		if (other == null) {
-			return false;
-		}
-		if (!other.getClass().equals(this.getClass())) {
-			return false;
-		} else {
-			ItemData otherItem = (ItemData) other;
-			if (!this.getItemType().equals(otherItem.getItemType())) {
-				return false;
-			}
-			if (!this.getData().equals(otherItem.getData())) {
-				return false;
-			}
-			return true;
-		}
-	}
-
-	@Override
-	public String toString() {
-		switch (mType) {
-		case EVENT :
-			return makeEventString();
-		case TASK : 
-			return makeTaskString();
-		case PLAN : 
-			return makePlanString();
-		default:
-			return null;
-		}
-	}
-
-	@Override
-	public int compareTo(ItemData other) {
-		Calendar thisCal;
-		Calendar otherCal;
-
-		if (this.contains(Keys.START)) {
-			thisCal = (Calendar) this.get(Keys.START);
-		} else if (this.contains(Keys.DUE)) {
-			thisCal = (Calendar) this.get(Keys.DUE);
-		} else {
-			thisCal = null;
-		}
-
-		if (other.contains(Keys.START)) {
-			otherCal = (Calendar) other.get(Keys.START);
-		} else if (other.contains(Keys.DUE)) {
-			otherCal = (Calendar) other.get(Keys.DUE);
-		} else {
-			otherCal = null;
-		}
-
-		if (thisCal == null && otherCal == null) {
-			// they are equal if nothing to compare
-			return 0;
-		} else if (thisCal == null && otherCal != null) {
-			// this is placed behind the other
-			// if the other has a date and this doesnt.
-			return 1;
-		} else if (thisCal != null && otherCal == null) {
-			// this is placed in front of the other 
-			// if this has a date and the other doesnt.
-			return -1;
-		} else if (thisCal != null && otherCal != null) {
-			// if both are not null, then just 
-			// return the comparision to the other
-			return thisCal.compareTo(otherCal);
-		} else {
-			// this should not happen
-			return 0;
-		}
-	}
-
-	private String getTagString(ArrayList<String> list) {
-		String result = new String();
-		for (int i = 0; i < list.size(); i++) {
-			result = result.concat(list.get(i));
-			if (i != list.size() - 1) { //not last element 
-				result = result.concat(StorageStrings.TAG_DELIMITER);
-			}
-		}
-		result.concat(";");
-		// postcondition
-		assert (result != null);
-		return result;
-	}
-
-	private String makeEventString() {
-		// uid | type | title | sdate | stime | edate | etime | tags
-		Calendar startCal = (Calendar) mData.get(Keys.START);
-		Calendar endCal = (Calendar) mData.get(Keys.END);
-		@SuppressWarnings("unchecked")
-		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
-		assert (taglist != null);
-		String tagsString = getTagString(taglist);
+	@Test
+	public void testEngineAddEventNotNull() {
+		Engine e = Engine.getInstance();
+		InputData inputTask = new InputData(Command.ADD_EVENT, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test event");
+		inputTask.put(Keys.START, Calendar.getInstance());
+		inputTask.put(Keys.END, Calendar.getInstance());
+		OutputData output = e.execute(inputTask);
 		
-		String result = String.format(StorageStrings.UNFORMATTED_STRING_EVENT,
-				mData.get(Keys.UID),
-				mType.toString(),
-				mData.get(Keys.TITLE),
-				startCal.get(Calendar.DAY_OF_MONTH),
-				startCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
-				startCal.get(Calendar.YEAR),
-				startCal.get(Calendar.HOUR_OF_DAY),
-				startCal.get(Calendar.MINUTE),
-				endCal.get(Calendar.DAY_OF_MONTH),
-				endCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
-				endCal.get(Calendar.YEAR), 
-				endCal.get(Calendar.HOUR_OF_DAY),
-				endCal.get(Calendar.MINUTE), 
-				tagsString);
-		return result;
-	}
-
-	private String makeTaskString() {
-		// uid | type | title | ddate | dtime | done | tags
-		@SuppressWarnings("unchecked")
-		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
-		assert (taglist != null);
-		String tagsString = getTagString(taglist);
-		Calendar dueCal = (Calendar) mData.get(Keys.DUE);
+		assertFalse("output not null",
+				null == output);
 		
-		String result = String.format(StorageStrings.UNFORMATTED_STRING_TASK,
-				mData.get(Keys.UID),
-				mType.toString(),
-				mData.get(Keys.TITLE),
-				dueCal.get(Calendar.DAY_OF_MONTH),
-				dueCal.get(Calendar.MONTH) + 1, // add 1 to offset 0-basing in cal object
-				dueCal.get(Calendar.YEAR),
-				dueCal.get(Calendar.HOUR_OF_DAY),
-				dueCal.get(Calendar.MINUTE), 
-				mData.get(Keys.DONE),
-				tagsString);
-		return result;
-	}
-	
-	private String makePlanString() {
-		// uid | type | title | done | tags
-		@SuppressWarnings("unchecked")
-		ArrayList<String> taglist = (ArrayList<String>) mData.get(Keys.HASHTAGS);
-		assert (taglist != null);
-		String tagsString = getTagString(taglist);
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
 		
-		String result = String.format(StorageStrings.UNFORMATTED_STRING_PLAN,
-				mData.get(Keys.UID),
-				mType.toString(),
-				mData.get(Keys.TITLE),
-				mData.get(Keys.DONE),
-				tagsString);
-		return result;
-	}
-}
-
-	// End of segment: .\udo\util\shared\ItemData.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\ItemType.java
-	 */
-
-package udo.util.shared;
-
-/**
- * 
- *
- */
-public enum ItemType {
-	EVENT, TASK, PLAN
-}
-
-	// End of segment: .\udo\util\shared\ItemType.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\ListQuery.java
-	 */
-
-package udo.util.shared;
-
-/**
- * This class holds the enum type for listing queries
- */
-public enum ListQuery {
-	ALL, 
-	SINGLE_HASHTAG, 
-	DATE, 
-	DONE,
-	EVENT,
-	TASK,
-	PLAN
-}
-
-	// End of segment: .\udo\util\shared\ListQuery.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\OutputData.java
-	 */
-
-package udo.util.shared;
-
-
-/**
- * This class carries information from the engine to the UI. The information
- * contained in this class is all the info that the UI needs to display a
- * message that corresponds to the execution of the command.
- * <p>
- * For example, if the engine executed the addEvent() method, the OutputData
- * object will contain the command executed (ADD_EVENT), the status of the
- * execution (SUCCESS or FAIL), and any additional information regarding the
- * event that was added.
- * <p>
- * The status and command are accessed directly but any other additional details
- * will be stored in a hash table and only accessed by a key.
- * 
- */
-public class OutputData extends DataHolder {
-
-	private Command mCommand;
-	private ParsingStatus mParsingStatus;
-	private ExecutionStatus mExecutionStatus;
-	
-	public OutputData(Command cmd) {
-		mCommand = cmd;
-	}
-	
-	public OutputData(Command cmd, ParsingStatus pStatus) {
-		mCommand = cmd;
-		mParsingStatus = pStatus;
+		ItemData addedEvent = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("added item in output not null",
+				null == addedEvent);
+		
+		assertEquals("added item is a event",
+				ItemType.EVENT,
+				addedEvent.getItemType());
 	}
 
-	public OutputData(Command cmd, ParsingStatus pStatus, ExecutionStatus eStatus) {
-		mCommand = cmd;
-		mParsingStatus = pStatus;
-		mExecutionStatus = eStatus;
+	@Test
+	public void testEngineAddTask() {
+		Engine e = Engine.getInstance();
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputTask);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData addedTask = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("added item in output not null",
+				null == addedTask);
+		
+		assertEquals("added item is a task",
+				ItemType.TASK,
+				addedTask.getItemType());
 	}
 
-	/**
-	 * Retrieves the {@code Command} value
-	 * 
-	 * @return the {@code Command} value
-	 */
-	public Command getCommand() {
-		return mCommand;
+	@Test
+	public void testEngineAddPlan() {
+		Engine e = Engine.getInstance();
+		InputData inputPlan = new InputData(Command.ADD_PLAN, ParsingStatus.SUCCESS);
+		inputPlan.put(Keys.TITLE, "test plan");
+		inputPlan.put(Keys.DUE, Calendar.getInstance());
+		OutputData output = e.execute(inputPlan);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData addedPlan = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("added item in output not null",
+				null == addedPlan);
+		
+		assertEquals("added item is a plan",
+				ItemType.PLAN, 
+				addedPlan.getItemType());
+	}
+
+	@Test
+	public void testEngineListEvents() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.EVENT);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("List Events " + list.toString());
+	}
+
+	@Test
+	public void testEngineListTasks() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.TASK);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("List tasks " + list.toString());
 	}
 	
-	/**
-	 * Retrieves the {@code ParsingStatus} value
-	 * 
-	 * @return the {@code ParsingStatus} value
-	 */
-	public ParsingStatus getParsingStatus() {
-		return mParsingStatus;
-	}
-
-	/**
-	 * Retrieves the {@code ExecutionStatus} value
-	 * 
-	 * @return the {@code ExecutionStatus} value
-	 */
-	public ExecutionStatus getExecutionStatus() {
-		return mExecutionStatus;
-	}
-
-	/**
-	 * sets the {@code ExecutionStatus} value
-	 * @param status the status
-	 * 
-	 * @return the {@code ExecutionStatus} value
-	 */
-	public void setParsingStatus(ParsingStatus status) {
-		mParsingStatus = status;
+	@Test
+	public void testEngineListPlans() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.PLAN);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("List plans " + list.toString());
 	}
 	
-	/**
-	 * Retrieves the {@code ExecutionStatus} value
-	 * @param status the status
-	 * 
-	 * @return the {@code ExecutionStatus} value
-	 */
-	public void setExecutionStatus(ExecutionStatus status) {
-		mExecutionStatus = status;
+	@Test
+	public void testEngineListByDate() {
+		Engine e = Engine.getInstance();
+		Calendar queryCal = Calendar.getInstance();
+		InputData input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DATE);
+		input.put(Keys.QUERY_VALUE, queryCal);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> list = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertFalse("list not null",
+				null == list);
+		
+		System.out.println("list by date " + list);
 	}
 	
+	
+	@Test
+	public void testEngineListHashtag() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+		input.put(Keys.QUERY_VALUE, "meeting");
+		OutputData o = e.execute(input);
+		
+		assertFalse("output object cant be null",
+				o == null);
+		
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be list",
+				Command.LIST,
+				o.getCommand());
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		System.out.println(s.toString());
+	}
+
+	@Test
+	public void testEngineListAll() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.LIST);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
+		OutputData o = e.execute(input);
+		
+		assertFalse("output object cant be null",
+				o == null);
+		
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be list",
+				Command.LIST,
+				o.getCommand());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> s = (ArrayList<ItemData>) o.get(Keys.ITEMS);
+		
+		assertFalse("there should be items",
+				null == s);
+	}
+
+	@Test
+	public void testEngineListDone() {
+		Engine e = Engine.getInstance();
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		e.execute(input);
+		
+		input = new InputData(Command.LIST, ParsingStatus.SUCCESS);
+		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		assertNotEquals("items in output not null",
+				null,
+				items);
+	}
+	
+	@Test
+	public void testEngineMarkAndToggleDone() {
+		Engine e = Engine.getInstance();
+		
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.UID, TASK_UID);
+		inputTask.put(Keys.HASHTAGS, new ArrayList<ItemData>());
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		e.execute(inputTask);
+		
+		InputData input = new InputData(Command.MARK_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == item);
+		
+		assertTrue("ensure edited item marked", 
+				(boolean)item.get(Keys.DONE));
+		
+		System.out.println(item);
+		
+		input = new InputData(Command.TOGGLE_DONE, ParsingStatus.SUCCESS);
+		input.put(Keys.UID, TASK_UID);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		item = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == item);
+		
+		assertFalse("ensure edited item unmarked", 
+				(boolean)item.get(Keys.DONE));
+		
+		System.out.println(item);
+	}
+	
+	@Test
+	public void testEngineEditItemEndTime() {
+		Engine e = Engine.getInstance();
+		
+		InputData inputTask = new InputData(Command.ADD_EVENT, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test event");
+		inputTask.put(Keys.UID, EVENT_UID);
+		inputTask.put(Keys.HASHTAGS, new ArrayList<ItemData>());
+		inputTask.put(Keys.START, Calendar.getInstance());
+		inputTask.put(Keys.END, Calendar.getInstance());
+		e.execute(inputTask);
+		
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, EVENT_UID);
+		inputEdit.put("field", EditField.END_TIME);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		Calendar editedCal = (Calendar) edited.get(Keys.END);
+		
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
+				editedCal.get(Calendar.HOUR_OF_DAY));
+		
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineEditItemDueTime() {
+		Engine e = Engine.getInstance();
+		
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.UID, TASK_UID);
+		inputTask.put(Keys.HASHTAGS, new ArrayList<ItemData>());
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		e.execute(inputTask);
+		
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, TASK_UID);
+		inputEdit.put("field", EditField.DUE_TIME);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
+		
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 
+				editedCal.get(Calendar.HOUR_OF_DAY));
+		
+		System.out.println(edited);
+	}
+
+	@Test
+	public void testEngineEditItemDueDate() {
+		Engine e = Engine.getInstance();
+		
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.UID, TASK_UID);
+		inputTask.put(Keys.HASHTAGS, new ArrayList<ItemData>());
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		e.execute(inputTask);
+		
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, TASK_UID);
+		inputEdit.put("field", EditField.DUE_DATE);
+		inputEdit.put("value", Calendar.getInstance());
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		Calendar editedCal = (Calendar) edited.get(Keys.DUE);
+		
+		assertEquals("ensure edited item actaully got edited",
+				Calendar.getInstance().get(Calendar.DAY_OF_MONTH), 
+				editedCal.get(Calendar.DAY_OF_MONTH));
+		
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineEditItemTitle() {
+		Engine e = Engine.getInstance();
+		
+		InputData inputTask = new InputData(Command.ADD_TASK, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test task");
+		inputTask.put(Keys.UID, TASK_UID);
+		inputTask.put(Keys.HASHTAGS, new ArrayList<ItemData>());
+		inputTask.put(Keys.DUE, Calendar.getInstance());
+		e.execute(inputTask);
+		
+		InputData inputEdit = new InputData(Command.EDIT, ParsingStatus.SUCCESS);
+		inputEdit.put(Keys.UID, TASK_UID);
+		inputEdit.put("field", EditField.TITLE);
+		inputEdit.put("value", "dummy title");
+		OutputData output = e.execute(inputEdit);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+		
+		ItemData edited = (ItemData) output.get(Keys.ITEM);
+		
+		assertFalse("edited item in output not null",
+				null == edited);
+		
+		assertEquals("ensure edited item actaully got edited",
+				"dummy title", 
+				edited.get(Keys.TITLE));
+		
+		System.out.println(edited);
+	}
+	
+	@Test
+	public void testEngineGetUpcomingTasks() {
+		Engine e = Engine.getInstance();
+		Calendar from = Calendar.getInstance();
+		from.setLenient(true);
+		Calendar to = Calendar.getInstance();
+		to.set(Calendar.DAY_OF_YEAR, to.get(Calendar.DAY_OF_YEAR) + 3);
+		ArrayList<ItemData> itemsToShow = e.getTodoScreenItems(from, to);
+		
+		assertFalse("todayList is not null",
+				null == itemsToShow);
+		
+		System.out.println(itemsToShow);
+	}
+
+	@Test
+	public void testEngineGetTodayItems() {
+		Engine e = Engine.getInstance();
+		ArrayList<ItemData> todayList = e.getTodayScreenItems(Calendar.getInstance());
+		
+		assertFalse("todayList is not null",
+				null == todayList);
+	}
+
+	@Test
+	public void testEngineDelete() {
+		Engine e = Engine.getInstance();
+		
+		InputData inputTask = new InputData(Command.ADD_EVENT, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test event");
+		inputTask.put(Keys.UID, EVENT_UID);
+		inputTask.put(Keys.HASHTAGS, new ArrayList<ItemData>());
+		inputTask.put(Keys.START, Calendar.getInstance());
+		inputTask.put(Keys.END, Calendar.getInstance());
+		e.execute(inputTask);
+		
+		InputData input = new InputData(Command.DELETE);
+		input.setParsingStatus(ParsingStatus.SUCCESS);
+		input.put(Keys.UID, EVENT_UID);
+		OutputData output = e.execute(input);
+		
+		assertFalse("Output must not be null",
+				null == output);
+		
+		assertEquals("Execution must be successful",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+	}
+	
+	@Test
+	// delete uid is split into:
+		// positive uid (valid)
+		// negative uid (invalid)
+	// within the valid range, it is also partitioned into: 
+		// 1. uid exist 
+		// 2. uid do not exist
+	public void testEngineDeleteBoundaryCasesForUID() {
+		Engine e = Engine.getInstance();
+		
+		// set up item
+		InputData inputTask = new InputData(Command.ADD_EVENT, ParsingStatus.SUCCESS);
+		inputTask.put(Keys.TITLE, "test event");
+		inputTask.put(Keys.UID, EVENT_UID);
+		inputTask.put(Keys.HASHTAGS, new ArrayList<ItemData>());
+		inputTask.put(Keys.START, Calendar.getInstance());
+		inputTask.put(Keys.END, Calendar.getInstance());
+		e.execute(inputTask);
+		
+		InputData input = new InputData(Command.DELETE, ParsingStatus.SUCCESS);
+		
+		// this is the boundary case for negative uid partition 
+		input.put(Keys.UID, -1);
+		OutputData output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be fail",
+				ExecutionStatus.FAIL,
+				output.getExecutionStatus());
+		
+		// we cannot confirm if a uid does not exist
+		// because the data file can be modified 
+		// before the test case is run
+	
+		// this is a case for the positive and exists partition
+		input.put(Keys.UID, EVENT_UID);
+		output = e.execute(input);
+		
+		assertFalse("output not null",
+				null == output);
+		
+		assertEquals("execution should be success",
+				ExecutionStatus.SUCCESS,
+				output.getExecutionStatus());
+	}
+
+	@Test // save is still buggy
+	public void testEngineSave() {
+		Engine e = Engine.getInstance();
+		InputData in = new InputData(Command.SAVE);
+		in.setParsingStatus(ParsingStatus.SUCCESS);
+		OutputData out = e.execute(in);
+		
+		assertFalse("out should not be null", null == out);
+		
+		assertEquals("", ExecutionStatus.SUCCESS, out.getExecutionStatus());
+	}
+
+	@Test 
+	public void testEngineExit() {
+		Engine e = Engine.getInstance();
+		OutputData o = e.execute(new InputData(Command.EXIT, ParsingStatus.SUCCESS));
+		
+		assertEquals("the output status shud be success",
+				ExecutionStatus.SUCCESS,
+				o.getExecutionStatus());
+		
+		assertEquals("the output command should be exit",
+				Command.EXIT,
+				o.getCommand());
+	}
+
 }
 
-	// End of segment: .\udo\util\shared\OutputData.java
+	// End of segment: .\udo\tests\EngineUnitTest.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\shared\ParsingStatus.java
+	 * origin: .\udo\tests\FileManagerUnitTest.java
 	 */
 
-package udo.util.shared;
+package udo.tests;
 
-/**
- * Communicates the success of parsing user's raw data
- * <p>
- * SUCCESS = No anomalies detected in input, successfully parsed input.
- * <br>
- * FAIL = Anomalies detected in input, failed to parse input.
- * 
- */
-public enum ParsingStatus {
-	SUCCESS, FAIL
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+import udo.constants.Constants.Keys;
+import udo.data.ItemData;
+import udo.engine.util.FileManager;
+import udo.enums.ItemType;
+import udo.exceptions.ReadingFromStorageException;
+import udo.exceptions.WritingToStorageException;
+
+public class FileManagerUnitTest {
+
+	private static final String TEST_READ_FILENAME = "data/test_read_data.txt";
+	private static final String TEST_WRITE_FILENAME = "data/test_write_data.txt";
+
+	@Test
+	public void testFMReadFile() {
+		FileManager fm = new FileManager(TEST_READ_FILENAME);
+		ArrayList<ItemData> list = null;
+		
+		try {
+			list = fm.getFromFile();
+		} catch (ReadingFromStorageException e) {
+			fail("reading storage");
+		} catch (IOException e) {
+			fail("io");
+		}
+		
+		assertNotEquals("list should not be null",
+				null,
+				list);
+	}
+	
+	@SuppressWarnings("null")
+	@Test
+	public void testFMWriteFile() {
+		// make two plans, 
+		// then place them in the file
+		// then get back and check the file got things or not.
+		FileManager fm = new FileManager(TEST_WRITE_FILENAME);
+		ArrayList<ItemData> list = new ArrayList<ItemData>();
+		
+		ItemData testPlan = new ItemData(ItemType.PLAN);
+		testPlan.put(Keys.TITLE, "test plan 1");
+		testPlan.put(Keys.UID, 12347);
+		testPlan.put(Keys.HASHTAGS, new ArrayList<String>());
+		ItemData testPlan2 = new ItemData(ItemType.PLAN);
+		testPlan2.put(Keys.TITLE, "test plan 2");
+		testPlan2.put(Keys.UID, 12348);
+		testPlan2.put(Keys.HASHTAGS, new ArrayList<String>());
+		
+		list.add(testPlan);
+		list.add(testPlan2);
+		
+		try {
+			fm.writeToFile(list);
+		} catch (IOException e) {
+			fail("io");
+		} catch (WritingToStorageException e) {
+			fail("writing storage");
+		}
+		
+		// writing passed.
+		// now to get back.
+		ArrayList<ItemData> getBack = null;
+		try {
+			 getBack = fm.getFromFile();
+		} catch (ReadingFromStorageException e) {
+			fail("reading storage");
+		} catch (IOException e) {
+			fail("io");
+		}
+		
+		assertNotEquals("list should not be null",
+				null,
+				getBack);
+		
+		assertEquals("list should have the 2 things",
+				getBack.size(),
+				2);
+		
+	}
+
 }
 
-	// End of segment: .\udo\util\shared\ParsingStatus.java
+	// End of segment: .\udo\tests\FileManagerUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\tests\UndoBinUnitTest.java
+	 */
+
+package udo.tests;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import udo.data.InputData;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
+
+public class UndoBinUnitTest {
+
+	@Test
+	public void testUBPutItem() {
+		// put something
+		UndoBin u = new UndoBin();
+		u.storeUndo(new InputData(Command.EDIT));
+		// cannot fail. no exception thrown as well.
+	}
+	
+	@Test
+	public void testUBGetItem() {
+		// put something
+		// then get it back
+		// make sure its the same item
+		UndoBin u = new UndoBin();
+		u.storeUndo(new InputData(Command.EDIT));
+		
+		InputData getInput = u.getUndo();
+		
+		assertNotEquals("get input cannot be null",
+				null,
+				getInput);
+		
+		assertEquals("get input is the same as putted",
+				Command.EDIT,
+				getInput.getCommand());
+	}
+	
+	@Test
+	public void testUBClearItem() {
+		// put something
+		// then clear
+		// then try to get back.
+		// get back should be null
+		UndoBin u = new UndoBin();
+		u.storeUndo(new InputData(Command.EDIT));
+		
+		u.clear();
+		
+		InputData getInput = u.getUndo();
+		
+		assertEquals("get input must be null",
+				null,
+				getInput);
+	}
+
+}
+
+	// End of segment: .\udo\tests\UndoBinUnitTest.java
 
 
 

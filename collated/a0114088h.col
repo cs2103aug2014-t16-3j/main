@@ -3,6 +3,116 @@
 
 
 	/**
+	 * origin: .\udo\constants\Constants.java
+	 */
+
+	/**
+	 * 
+	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
+	 *
+	 */
+	public static final class UI {
+		public static final KeyStroke ALT_Q = KeyStroke.getKeyStroke("alt Q");
+		public static final KeyStroke ALT_A = KeyStroke.getKeyStroke("alt A");
+		public static final KeyStroke ALT_W = KeyStroke.getKeyStroke("alt W");
+		public static final KeyStroke ALT_S = KeyStroke.getKeyStroke("alt S");
+		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
+		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
+		public static final KeyStroke ENTER = KeyStroke.getKeyStroke("ENTER");
+		public static final KeyStroke UP = KeyStroke.getKeyStroke("UP");
+		public static final KeyStroke DOWN = KeyStroke.getKeyStroke("DOWN");
+		
+		public static final int FONTSIZE_24 = 24;
+		public static final int FONTSIZE_20 = 20;
+		public static final int FONTSIZE_18 = 18;
+		public static final int FONTSIZE_16 = 16;
+		public static final int FONTSIZE_14 = 14;
+		public static final int FONTSIZE_12 = 12;
+		public static final Font FONT_24 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_24);
+		public static final Font FONT_20 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_20);
+		public static final Font FONT_18 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_18);
+		public static final Font FONT_16 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_16);
+		public static final Font FONT_14 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
+		public static final Font FONT_12 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_12);
+		public static final Font FONT_20_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_20);
+		public static final Font FONT_12_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_12);
+		
+		public static final SimpleDateFormat DD_MM_YY = new SimpleDateFormat("dd/MM/yy");
+		public static final SimpleDateFormat DD_MMMM_YYYY = new SimpleDateFormat("dd MMMM yyyy");
+		public static final SimpleDateFormat DD_MMMM = new SimpleDateFormat("dd MMMM");
+		public static final SimpleDateFormat DD_MMM = new SimpleDateFormat(" dd MMM ");
+		public static final SimpleDateFormat DD = new SimpleDateFormat("dd");
+		public static final SimpleDateFormat MMM = new SimpleDateFormat("MMM");
+		public static final SimpleDateFormat MMMM = new SimpleDateFormat("MMMM");
+		public static final SimpleDateFormat YYYY = new SimpleDateFormat("yyyy");
+		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
+		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
+		
+//		public static final int MAIN_WIDTH = 400; // or 360
+		public static final int MAIN_WIDTH = 350; // for presentation purposes
+		public static final int MAIN_HEIGHT = 600;
+		public static final int MAIN_PADDING = 8;
+		public static final int TEXTFIELD_HEIGHT = 32;
+//		public static final int SUBVIEW_WIDTH = 360; // or 300
+		public static final int SUBVIEW_WIDTH = 290; // This is only for presentation
+		public static final int SUBVIEW_HEIGHT = 550;
+		public static final int SUBVIEW_HEADER_LINEY = 40;
+		public static final int SIDEVIEW_PADDING = 30;
+		
+		public static final String UDO_LOGO_IMG_DIR_256 = "/uDoLogo_256x256.png";
+		public static final String UDO_LOGO_IMG_DIR_64 = "/uDoLogo_64x64.png";
+		public static final String UDO_LOGO_IMG_DIR_32 = "/uDoLogo_32x32.png";
+		public static final String UDO_LOGO_IMG_DIR_16 = "/uDoLogo_16x16.png";
+		
+		public static final String CLOSE_BUTTON = "/closeButton.png";
+		public static final String CLOSE_BUTTON_HOVER = "/closeButtonHover.png";
+		
+		public static final int DAYVIEW_HEADER_HEIGHT = 100;
+		public static final String TICKER_IMAGE_DIR = "/dayViewTicker.png";
+		public static final int TICKER_Y = 18;
+
+		public static final int TODOVIEW_HEADER_HEIGHT = 40;
+		
+		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
+		public static final int ENTRY_SEPARATOR_WIDTH = -5;
+		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
+		public static final Dimension EMPTY_DATE = new Dimension(28,44);
+		public static final Dimension DONE_PANEL = new Dimension(28,28);
+		
+		public static final String ENTRY_ALL = "ALL";
+		public static final String ENTRY_EVENT = "EVENT";
+		public static final String ENTRY_TASK = "TASK";
+		public static final String ENTRY_PLAN = "PLAN";
+		
+		public static final Color MAIN_COLOR = Color.decode("#FFFFFF");
+		public static final Color MAIN_BORDER_COLOR = Color.decode("#E3E3E3");
+		public static final Color SUB_COLOR = Color.decode("#F4F4FF");
+		public static final Color ENTRY_DONE_COLOR = Color.decode("#46FF82");
+		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
+		public static final Color ENTRY_TITLE_COLOR = new Color(0,0,0);
+		public static final Color ENTRY_HASHTAGS_COLOR = new Color(150,150,150);
+		public static final Color ENTRY_DATE_COLOR = new Color(100,100,0);
+		
+		public static final Color UID_COLOR = Color.decode("#F4F4FF");
+		public static final Color EVENT_COLOR = Color.decode("#6A828A");
+		public static final Color PLAN_COLOR = Color.decode("#CDFF00");
+		public static final Color TASK_COLOR = Color.decode("#FF3B77");
+		
+		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
+		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
+		
+		public static final int SCROLLBAR_INCREMENT = 135;
+		
+	}
+}
+
+	// End of segment: .\udo\constants\Constants.java
+
+
+
+
+
+	/**
 	 * origin: .\udo\language\IndonesianLanguagePack.java
 	 */
 
@@ -156,10 +266,190 @@ public class IndonesianLanguagePack extends LanguagePack {
 
 
 	/**
-	 * origin: .\udo\main\UserInterface.java
+	 * origin: .\udo\tests\MainUnitTest.java
 	 */
 
-package udo.main;
+package udo.tests;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.junit.Test;
+
+import udo.constants.Constants.Keys;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.main.uDo;
+
+public class MainUnitTest {
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddEvent() {
+		uDo udo = new uDo();
+		// checking hours and minutes from the start and end dates
+		OutputData output = udo.testParseAndExecute("add #new Event from 28/10/14 3:00pm to 29/10/14 4:23pm");
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		Calendar time = Calendar.getInstance();
+		time.set(2014, Calendar.OCTOBER, 28, 15, 0);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		hashtags.add("new");
+		// The following will check the attributes of the added event
+		assertEquals("item name should be new Event",
+						"new Event",
+						item.get(Keys.TITLE));
+		
+		assertEquals("start hour should be 3", // do the same for minutes, day, month.. so on
+						time.get(Calendar.HOUR),
+						((Calendar)item.get(Keys.START)).get(Calendar.HOUR));
+		
+		time.set(2014, Calendar.OCTOBER, 29, 16, 23);
+		assertEquals("end hour 4",
+						time.get(Calendar.HOUR),
+						((Calendar)item.get(Keys.END)).get(Calendar.HOUR));
+		
+		assertEquals("hashtags will contain one object, 'new'",
+						hashtags.size(),
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		
+		assertEquals("the object is 'new'",
+						"new",
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddTask() {
+		uDo udo = new uDo();
+		// checking minutes from due date as well
+		OutputData output = udo.testParseAndExecute("add #new Task by 30/10/14 11:15am");
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		Calendar time = Calendar.getInstance();
+		time.set(2014, Calendar.OCTOBER, 30, 11, 15);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		hashtags.add("new");
+		// The following will check the attributes of the added plan
+		assertEquals("item name should be new task",
+						"new Task",
+						item.get(Keys.TITLE));
+		assertEquals("due hour 4",
+				time.get(Calendar.HOUR),
+				((Calendar)item.get(Keys.DUE)).get(Calendar.HOUR));
+		assertEquals("hashtags will contain one object, 'new'",
+						hashtags.size(),
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		assertEquals("the object is 'new'",
+						"new",
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddPlan() {
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("add #new Plan");
+		ItemData item = (ItemData) output.get(Keys.ITEM);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		hashtags.add("new");
+		// The following will check the attributes of the added plan
+		assertEquals("item name should be new Event",
+						"new Plan",
+						item.get(Keys.TITLE));
+		assertEquals("hashtags will contain one object, 'new'",
+						hashtags.size(),
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
+		assertEquals("the object is 'new'",
+						"new",
+						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListEvent(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list event");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+
+
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListAll(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list all");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListPlan(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list plan");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListTask(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list task");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+
+		// check the nullity of the output list
+		assertNotEquals("the list shoud not be null",
+						null,
+						items);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testListHashtag(){
+		uDo udo = new uDo();
+		OutputData output = udo.testParseAndExecute("list #new");
+		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		// check the size of the resulting arraylist of itemdata
+		assertEquals("the number of itemData should be zero (no data in database)",
+						0,
+						items.size());
+		OutputData added = udo.testParseAndExecute("add #testingNew stuff"); //proved to be working in testAddPlan
+		output = udo.testParseAndExecute("list #testingNew");
+		// check the size again after adding new plan with hashtag
+		items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
+		assertEquals("the number of itemData should be one (the newly added)",
+				1,
+				items.size());
+	}
+}
+
+	// End of segment: .\udo\tests\MainUnitTest.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\ui\UserInterface.java
+	 */
+
+package udo.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -199,15 +489,15 @@ import javax.swing.border.Border;
 
 import com.sun.awt.AWTUtilities;
 
+import udo.constants.Constants.UI;
+import udo.data.ItemData;
+import udo.data.OutputData;
 import udo.language.LanguagePack;
-import udo.util.shared.Constants.UI;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-import udo.util.ui.CommandHistory;
-import udo.util.ui.DropShadowPanel;
-import udo.util.ui.Feedback;
-import udo.util.ui.WrapLayout;
-import udo.util.ui.uDoPopup;
+import udo.ui.util.CommandHistory;
+import udo.ui.util.DropShadowPanel;
+import udo.ui.util.Feedback;
+import udo.ui.util.WrapLayout;
+import udo.ui.util.uDoPopup;
 
 public class UserInterface implements ActionListener {
 
@@ -264,7 +554,7 @@ public class UserInterface implements ActionListener {
 			ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File(
 					"fonts/Ubuntu-R.TTF")));
 		} catch (IOException | FontFormatException e) {
-			// Handle exception
+			e.printStackTrace();
 		}
 
 		/**
@@ -407,7 +697,7 @@ public class UserInterface implements ActionListener {
 		try {
 			mUdoImg = ImageIO.read(getClass().getResource(UI.UDO_LOGO_IMG_DIR_32));
 		} catch (IOException ex) {
-			// handle exception...
+			ex.printStackTrace();
 		}
 		mUdoLogo = new JLabel(new ImageIcon(mUdoImg));
 		int padding = 4;
@@ -656,7 +946,7 @@ public class UserInterface implements ActionListener {
 		try {
 			logoImg = ImageIO.read(getClass().getResource(UI.UDO_LOGO_IMG_DIR_256));
 		} catch (IOException ex) {
-			// handle exception...
+			ex.printStackTrace();
 		}
 		JLabel logoLabel = new JLabel(new ImageIcon(logoImg));
 		JLabel welcome = new JLabel();
@@ -680,301 +970,17 @@ public class UserInterface implements ActionListener {
 
 }
 
-	// End of segment: .\udo\main\UserInterface.java
+	// End of segment: .\udo\ui\UserInterface.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\tests\MainUnitTest.java
+	 * origin: .\udo\ui\util\CommandHistory.java
 	 */
 
-package udo.tests;
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import org.junit.Test;
-
-import udo.main.uDo;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-import udo.util.shared.Constants.Keys;
-
-public class MainUnitTest {
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testAddEvent() {
-		uDo udo = new uDo();
-		// checking hours and minutes from the start and end dates
-		OutputData output = udo.testParseAndExecute("add #new Event from 28/10/14 3:00pm to 29/10/14 4:23pm");
-		ItemData item = (ItemData) output.get(Keys.ITEM);
-		Calendar time = Calendar.getInstance();
-		time.set(2014, Calendar.OCTOBER, 28, 15, 0);
-		ArrayList<String> hashtags = new ArrayList<String>();
-		hashtags.add("new");
-		// The following will check the attributes of the added event
-		assertEquals("item name should be new Event",
-						"new Event",
-						item.get(Keys.TITLE));
-		
-		assertEquals("start hour should be 3", // do the same for minutes, day, month.. so on
-						time.get(Calendar.HOUR),
-						((Calendar)item.get(Keys.START)).get(Calendar.HOUR));
-		
-		time.set(2014, Calendar.OCTOBER, 29, 16, 23);
-		assertEquals("end hour 4",
-						time.get(Calendar.HOUR),
-						((Calendar)item.get(Keys.END)).get(Calendar.HOUR));
-		
-		assertEquals("hashtags will contain one object, 'new'",
-						hashtags.size(),
-						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
-		
-		assertEquals("the object is 'new'",
-						"new",
-						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testAddTask() {
-		uDo udo = new uDo();
-		// checking minutes from due date as well
-		OutputData output = udo.testParseAndExecute("add #new Task by 30/10/14 11:15am");
-		ItemData item = (ItemData) output.get(Keys.ITEM);
-		Calendar time = Calendar.getInstance();
-		time.set(2014, Calendar.OCTOBER, 30, 11, 15);
-		ArrayList<String> hashtags = new ArrayList<String>();
-		hashtags.add("new");
-		// The following will check the attributes of the added plan
-		assertEquals("item name should be new task",
-						"new Task",
-						item.get(Keys.TITLE));
-		assertEquals("due hour 4",
-				time.get(Calendar.HOUR),
-				((Calendar)item.get(Keys.DUE)).get(Calendar.HOUR));
-		assertEquals("hashtags will contain one object, 'new'",
-						hashtags.size(),
-						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
-		assertEquals("the object is 'new'",
-						"new",
-						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testAddPlan() {
-		uDo udo = new uDo();
-		OutputData output = udo.testParseAndExecute("add #new Plan");
-		ItemData item = (ItemData) output.get(Keys.ITEM);
-		ArrayList<String> hashtags = new ArrayList<String>();
-		hashtags.add("new");
-		// The following will check the attributes of the added plan
-		assertEquals("item name should be new Event",
-						"new Plan",
-						item.get(Keys.TITLE));
-		assertEquals("hashtags will contain one object, 'new'",
-						hashtags.size(),
-						((ArrayList<String>) item.get(Keys.HASHTAGS)).size());
-		assertEquals("the object is 'new'",
-						"new",
-						((ArrayList<String>) item.get(Keys.HASHTAGS)).get(0));
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testListEvent(){
-		uDo udo = new uDo();
-		OutputData output = udo.testParseAndExecute("list event");
-		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (no data in database)",
-						0,
-						items.size());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testListAll(){
-		uDo udo = new uDo();
-		OutputData output = udo.testParseAndExecute("list all");
-		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (3 in database)",
-						3,
-						items.size());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testListPlan(){
-		uDo udo = new uDo();
-		OutputData output = udo.testParseAndExecute("list plan");
-		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (3 in database)",
-						3,
-						items.size());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testListTask(){
-		uDo udo = new uDo();
-		OutputData output = udo.testParseAndExecute("list task");
-		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (no data in database)",
-						0,
-						items.size());
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testListHashtag(){
-		uDo udo = new uDo();
-		OutputData output = udo.testParseAndExecute("list #new");
-		ArrayList<ItemData> items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		// check the size of the resulting arraylist of itemdata
-		assertEquals("the number of itemData should be zero (no data in database)",
-						0,
-						items.size());
-		OutputData added = udo.testParseAndExecute("add #new stuff"); //proved to be working in testAddPlan
-		output = udo.testParseAndExecute("list #new");
-		// check the size again after adding new plan with hashtag
-		items = (ArrayList<ItemData>) output.get(Keys.ITEMS);
-		assertEquals("the number of itemData should be one (the newly added)",
-				1,
-				items.size());
-	}
-}
-
-	// End of segment: .\udo\tests\MainUnitTest.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\shared\Constants.java
-	 */
-
-	/**
-	 * 
-	 * This class holds UI-related attributes such as fonts, measurements, types of entry and colours.
-	 *
-	 */
-	public static final class UI {
-		public static final KeyStroke ALT_Q = KeyStroke.getKeyStroke("alt Q");
-		public static final KeyStroke ALT_A = KeyStroke.getKeyStroke("alt A");
-		public static final KeyStroke ALT_W = KeyStroke.getKeyStroke("alt W");
-		public static final KeyStroke ALT_S = KeyStroke.getKeyStroke("alt S");
-		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
-		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
-		public static final KeyStroke ENTER = KeyStroke.getKeyStroke("ENTER");
-		public static final KeyStroke UP = KeyStroke.getKeyStroke("UP");
-		public static final KeyStroke DOWN = KeyStroke.getKeyStroke("DOWN");
-		
-		public static final int FONTSIZE_24 = 24;
-		public static final int FONTSIZE_20 = 20;
-		public static final int FONTSIZE_18 = 18;
-		public static final int FONTSIZE_16 = 16;
-		public static final int FONTSIZE_14 = 14;
-		public static final int FONTSIZE_12 = 12;
-		public static final Font FONT_24 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_24);
-		public static final Font FONT_20 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_20);
-		public static final Font FONT_18 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_18);
-		public static final Font FONT_16 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_16);
-		public static final Font FONT_14 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_14);
-		public static final Font FONT_12 = new Font("Ubuntu", Font.PLAIN, FONTSIZE_12);
-		public static final Font FONT_20_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_20);
-		public static final Font FONT_12_BOLD = new Font("Ubuntu", Font.BOLD, FONTSIZE_12);
-		
-		public static final SimpleDateFormat DD_MM_YY = new SimpleDateFormat("dd/MM/yy");
-		public static final SimpleDateFormat DD_MMMM_YYYY = new SimpleDateFormat("dd MMMM yyyy");
-		public static final SimpleDateFormat DD_MMMM = new SimpleDateFormat("dd MMMM");
-		public static final SimpleDateFormat DD_MMM = new SimpleDateFormat(" dd MMM ");
-		public static final SimpleDateFormat DD = new SimpleDateFormat("dd");
-		public static final SimpleDateFormat MMM = new SimpleDateFormat("MMM");
-		public static final SimpleDateFormat MMMM = new SimpleDateFormat("MMMM");
-		public static final SimpleDateFormat YYYY = new SimpleDateFormat("yyyy");
-		public static final SimpleDateFormat DAY_NAME = new SimpleDateFormat("EEEE");
-		public static final SimpleDateFormat HOUR_12 = new SimpleDateFormat("hh:mm a");
-		
-//		public static final int MAIN_WIDTH = 400; // normal size
-		public static final int MAIN_WIDTH = 350; // for presentation purposes
-		public static final int MAIN_HEIGHT = 600;
-		public static final int MAIN_PADDING = 8;
-		public static final int TEXTFIELD_HEIGHT = 32;
-//		public static final int SUBVIEW_WIDTH = 360; // normal size
-		public static final int SUBVIEW_WIDTH = 290; // This is only for presentation
-		public static final int SUBVIEW_HEIGHT = 550;
-		public static final int SUBVIEW_HEADER_LINEY = 40;
-		public static final int SIDEVIEW_PADDING = 30;
-		
-		public static final String UDO_LOGO_IMG_DIR_256 = "/uDoLogo_256x256.png";
-		public static final String UDO_LOGO_IMG_DIR_64 = "/uDoLogo_64x64.png";
-		public static final String UDO_LOGO_IMG_DIR_32 = "/uDoLogo_32x32.png";
-		public static final String UDO_LOGO_IMG_DIR_16 = "/uDoLogo_16x16.png";
-		
-		public static final String CLOSE_BUTTON = "/closeButton.png";
-		public static final String CLOSE_BUTTON_HOVER = "/closeButtonHover.png";
-		
-		public static final int DAYVIEW_HEADER_HEIGHT = 100;
-		public static final String TICKER_IMAGE_DIR = "/dayViewTicker.png";
-		public static final int TICKER_Y = 18;
-
-		public static final int TODOVIEW_HEADER_HEIGHT = 40;
-		
-		public static final int ENTRY_SEPARATOR_HEIGHT = 40;
-		public static final int ENTRY_SEPARATOR_WIDTH = -5;
-		public static final int ENTRY_TIMEPANEL_WIDTH = 58;
-		public static final Dimension EMPTY_DATE = new Dimension(28,44);
-		public static final Dimension DONE_PANEL = new Dimension(28,28);
-		
-		public static final String ENTRY_ALL = "ALL";
-		public static final String ENTRY_EVENT = "EVENT";
-		public static final String ENTRY_TASK = "TASK";
-		public static final String ENTRY_PLAN = "PLAN";
-		
-		public static final Color MAIN_COLOR = Color.decode("#FFFFFF");
-		public static final Color MAIN_BORDER_COLOR = Color.decode("#E3E3E3");
-		public static final Color SUB_COLOR = Color.decode("#F4F4FF");
-		public static final Color ENTRY_DONE_COLOR = Color.decode("#46FF82");
-		public static final Color ENTRY_BORDERCOLOR = new Color(0,0,0);
-		public static final Color ENTRY_TITLE_COLOR = new Color(0,0,0);
-		public static final Color ENTRY_HASHTAGS_COLOR = new Color(150,150,150);
-		public static final Color ENTRY_DATE_COLOR = new Color(100,100,0);
-		
-		public static final Color UID_COLOR = Color.decode("#F4F4FF");
-		public static final Color EVENT_COLOR = Color.decode("#6A828A");
-		public static final Color PLAN_COLOR = Color.decode("#CDFF00");
-		public static final Color TASK_COLOR = Color.decode("#FF3B77");
-		
-		public static final Color POPUP_BGCOLOR = new Color(100,100,100);
-		public static final Color POPUP_FGCOLOR = new Color(255,255,255);
-		
-		public static final int SCROLLBAR_INCREMENT = 135;
-		
-	}
-}
-
-	// End of segment: .\udo\util\shared\Constants.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\ui\CommandHistory.java
-	 */
-
-package udo.util.ui;
+package udo.ui.util;
 
 public class CommandHistory {
 
@@ -1026,17 +1032,17 @@ public class CommandHistory {
 	}
 }
 
-	// End of segment: .\udo\util\ui\CommandHistory.java
+	// End of segment: .\udo\ui\util\CommandHistory.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\DayScreen.java
+	 * origin: .\udo\ui\util\DayScreen.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -1059,12 +1065,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.LoggingStrings;
+import udo.constants.Constants.UI;
+import udo.data.ItemData;
+import udo.enums.ItemType;
 import udo.language.LanguagePack;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.Constants.LoggingStrings;
-import udo.util.shared.Constants.UI;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
 
 public class DayScreen extends Screen {
 
@@ -1086,7 +1092,7 @@ public class DayScreen extends Screen {
 	private LanguagePack mLang = LanguagePack.getInstance();
 
 	 private static final Logger logger =
-	 Logger.getLogger(udo.util.ui.DayScreen.class.getName());
+	 Logger.getLogger(udo.ui.util.DayScreen.class.getName());
 
 	public DayScreen(int width, int height) throws IOException {
 
@@ -1121,11 +1127,9 @@ public class DayScreen extends Screen {
 			 new File(LoggingStrings.LOGPATH_UI).mkdirs();
 			 logger.addHandler(new FileHandler(LoggingStrings.LOGFILE_UI, true));
 		 } catch (SecurityException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
+			 e.printStackTrace();
 		 } catch (IOException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
+			 e.printStackTrace();
 		 }
 		populateView(data);
 	}
@@ -1306,17 +1310,17 @@ public class DayScreen extends Screen {
 
 }
 
-	// End of segment: .\udo\util\ui\DayScreen.java
+	// End of segment: .\udo\ui\util\DayScreen.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\Entry.java
+	 * origin: .\udo\ui\util\Entry.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -1334,6 +1338,13 @@ import javax.swing.SwingConstants;
 
 
 
+
+
+
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.UI;
+import udo.data.ItemData;
+import udo.enums.ItemType;
 import udo.language.LanguagePack;
 /*
  import javax.swing.JTextPane;
@@ -1342,10 +1353,6 @@ import udo.language.LanguagePack;
  import javax.swing.text.StyleConstants;
  import javax.swing.text.StyleContext;
  */
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.Constants.UI;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
 
 public class Entry extends JPanel {
 
@@ -1454,10 +1461,6 @@ public class Entry extends JPanel {
 				BorderLayout.NORTH);
 		mTimePanel.add(initDate((Calendar) item.get(Keys.DUE)),
 				BorderLayout.CENTER);
-		// mTimePanel.setBorder(BorderFactory.createEmptyBorder(0,
-		// (UI.ENTRY_TIMEPANEL_WIDTH - mTimePanel.getPreferredSize().width)/2,
-		// 0, (UI.ENTRY_TIMEPANEL_WIDTH -
-		// mTimePanel.getPreferredSize().width)/2));
 		add(mTimePanel);
 		add(initSeparator(item.getItemType()));
 		add(initDetails((Calendar) item.get(Keys.DUE),
@@ -1528,7 +1531,7 @@ public class Entry extends JPanel {
 			time += UI.DD.format(endCal.getTime()) + " " + 
 					mLang.convertMonthToLanguage(UI.MMM.format(endCal.getTime()));
 		}
-		time += UI.HOUR_12.format(endCal.getTime());
+		time += " " + UI.HOUR_12.format(endCal.getTime());
 		return time;
 	}
 
@@ -1618,17 +1621,17 @@ public class Entry extends JPanel {
 
 }
 
-	// End of segment: .\udo\util\ui\Entry.java
+	// End of segment: .\udo\ui\util\Entry.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\Feedback.java
+	 * origin: .\udo\ui\util\Feedback.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1638,15 +1641,15 @@ import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.UI;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
 import udo.language.LanguagePack;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.Constants.UI;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.ItemData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
 
 public class Feedback {
 
@@ -1896,21 +1899,21 @@ public class Feedback {
 	}
 }
 
-	// End of segment: .\udo\util\ui\Feedback.java
+	// End of segment: .\udo\ui\util\Feedback.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\ListView.java
+	 * origin: .\udo\ui\util\ListView.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.awt.Dimension;
 
-import udo.util.shared.Constants.UI;
+import udo.constants.Constants.UI;
 
 public class ListView extends View {
 
@@ -1926,22 +1929,22 @@ public class ListView extends View {
 
 }
 
-	// End of segment: .\udo\util\ui\ListView.java
+	// End of segment: .\udo\ui\util\ListView.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\MainScreen.java
+	 * origin: .\udo\ui\util\MainScreen.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
 
-import udo.util.shared.ItemData;
+import udo.data.ItemData;
 
 public class MainScreen extends Screen {
 
@@ -1958,30 +1961,23 @@ public class MainScreen extends Screen {
 		mScrollPane.setPreferredSize(new Dimension(mWidth, mHeight));
 		mScrollPane.getViewport().add(mEntryView);
 		mEntryView.populateView(data);
-		if (mEntryView.getPreferredSize().width > mWidth) {
-			// logger.info("TODAY mEntryView's preferredSize: " +
-			// mEntryView.getPreferredSize() +
-			// "\nmEntryView's preferredSize is wider than mScrollPane");
-		} else {
-			// logger.fine("TODAY mEntryView's preferredSize is contained in mScrollPane");
-		}
 
 		add(mScrollPane);
 	}
 
 }
 
-	// End of segment: .\udo\util\ui\MainScreen.java
+	// End of segment: .\udo\ui\util\MainScreen.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\Screen.java
+	 * origin: .\udo\ui\util\Screen.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -1991,10 +1987,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import udo.util.shared.Command;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
-import udo.util.shared.Constants.UI;
+import udo.constants.Constants.UI;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.enums.Command;
 
 public class Screen extends JPanel {
 
@@ -2048,42 +2044,40 @@ public class Screen extends JPanel {
 	}
 
 	public void init(Date date, ArrayList<ItemData> mData) {
-		// TODO Auto-generated method stub
 		// this is another stub to be overridden by subclass.
 
 	}
 
 	@Override
 	public void removeAll() {
-		// TODO also a stub method to be overridden by dayScreen.java
 		super.removeAll();
 	}
 }
 
-	// End of segment: .\udo\util\ui\Screen.java
+	// End of segment: .\udo\ui\util\Screen.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\SingleView.java
+	 * origin: .\udo\ui\util\SingleView.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.awt.Dimension;
 import java.util.Calendar;
 
 import javax.swing.JLabel;
 
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.UI;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.enums.Command;
+import udo.enums.EditField;
 import udo.language.LanguagePack;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.Constants.UI;
-import udo.util.shared.EditField;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
 
 public class SingleView extends View {
 
@@ -2116,9 +2110,6 @@ public class SingleView extends View {
 				initEdit(output);
 				break;
 				
-			case UNDO : //unreachable
-				break;
-				
 			case MARK_DONE :
 				initMarkDone();
 				break;
@@ -2149,7 +2140,6 @@ public class SingleView extends View {
 	}
 
 	private void initEdit(OutputData output) {
-		// TODO Auto-generated method stub
 		ItemData item = (ItemData) output.get(Keys.ITEM);
 		EditField field = (EditField) output.get(Keys.FIELD);
 		String fieldString = "";
@@ -2227,7 +2217,6 @@ public class SingleView extends View {
 		mMessage.setText("<html>" + "<br><br>"
 				+ mLang.getSINGLE_SUCCESFULLY_ADDED() + "</html>");
 		add(mMessage);
-		// TODO Auto-generated method stub
 
 	}
 
@@ -2235,23 +2224,22 @@ public class SingleView extends View {
 		mMessage.setText("<html>" + "<br><br>"
 				+ mLang.getSINGLE_SUCCESSFULLY_DELETED() + "</html>");
 		add(mMessage);
-		// TODO Auto-generated method stub
 
 	}
 
 }
 
-	// End of segment: .\udo\util\ui\SingleView.java
+	// End of segment: .\udo\ui\util\SingleView.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\ToDoScreen.java
+	 * origin: .\udo\ui\util\ToDoScreen.java
 	 */
 
-package udo.util.ui;
+package udo.ui.util;
 
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -2262,18 +2250,15 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 
+import udo.constants.Constants.UI;
+import udo.data.ItemData;
 import udo.language.LanguagePack;
-import udo.util.shared.Constants.UI;
-import udo.util.shared.ItemData;
 
 public class ToDoScreen extends Screen {
 
 	private static final long serialVersionUID = 1L;
 	
 	private LanguagePack mLang = LanguagePack.getInstance();
-
-	// private static final Logger logger =
-	// Logger.getLogger(udo.util.ui.DayView.class.getName());
 
 	public ToDoScreen(int width, int height) {
 		super(width, height);
@@ -2289,15 +2274,6 @@ public class ToDoScreen extends Screen {
 		initHeader();
 		mHeader.setPreferredSize(new Dimension(mWidth,
 				UI.TODOVIEW_HEADER_HEIGHT));
-		// try {
-		// logger.addHandler(new FileHandler("dayViewLog%u.txt", true));
-		// } catch (SecurityException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 		populateView(data);
 	}
 
@@ -2337,94 +2313,25 @@ public class ToDoScreen extends Screen {
 	}
 }
 
-	// End of segment: .\udo\util\ui\ToDoScreen.java
+	// End of segment: .\udo\ui\util\ToDoScreen.java
 
 
 
 
 
 	/**
-	 * origin: .\udo\util\ui\uDoPopup.java
+	 * origin: .\udo\ui\util\View.java
 	 */
 
-package udo.util.ui;
-
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-
-import udo.util.shared.Constants.UI;
-
-public class uDoPopup extends JLabel {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private float alpha;
-
-	public uDoPopup() {
-
-		setOpaque(false);
-		setFont(UI.FONT_14);
-		setBackground(UI.POPUP_BGCOLOR);
-		setForeground(UI.POPUP_FGCOLOR);
-		setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-	}
-
-	public void setAlpha(float value) {
-		if (alpha != value) {
-			float old = alpha;
-			alpha = value;
-			firePropertyChange("alpha", old, alpha);
-			repaint();
-		}
-	}
-
-	public float getAlpha() {
-		return alpha;
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-				getAlpha()));
-		super.paint(g2d);
-		g2d.dispose();
-	}
-
-	protected void paintComponent(Graphics g) {
-		g.setColor(getBackground());
-		g.fillRect(0, 0, getWidth(), getHeight());
-		super.paintComponent(g);
-	}
-
-}
-
-	// End of segment: .\udo\util\ui\uDoPopup.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\ui\View.java
-	 */
-
-package udo.util.ui;
+package udo.ui.util;
 
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-import udo.util.shared.Command;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.enums.Command;
 
 public class View extends JPanel {
 
@@ -2448,12 +2355,12 @@ public class View extends JPanel {
 	}
 
 	protected void init(OutputData output, Command type) {
-		// TODO also a stub
+		// a stub to be overridden by subclass
 	}
 
 }
 
-	// End of segment: .\udo\util\ui\View.java
+	// End of segment: .\udo\ui\util\View.java
 
 
 
