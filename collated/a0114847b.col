@@ -242,26 +242,33 @@ public abstract class LanguagePack {
 
 
 	/**
-	 * origin: .\udo\main\Parser.java
+	 * origin: .\udo\parser\Parser.java
 	 */
 
-package udo.main;
+package udo.parser;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import udo.constants.Constants.LoggingStrings;
+import udo.data.InputData;
+import udo.enums.Command;
 import udo.language.LanguagePack;
-import udo.util.parser.Action;
-import udo.util.parser.AddAction;
-import udo.util.parser.DeleteAction;
-import udo.util.parser.EditAction;
-import udo.util.parser.ExitAction;
-import udo.util.parser.ListAction;
-import udo.util.parser.MarkAction;
-import udo.util.parser.SaveAction;
-import udo.util.parser.SearchAction;
-import udo.util.parser.ToggleDoneAction;
-import udo.util.parser.TrashAction;
-import udo.util.parser.UndoAction;
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
+import udo.parser.util.Action;
+import udo.parser.util.AddAction;
+import udo.parser.util.DeleteAction;
+import udo.parser.util.EditAction;
+import udo.parser.util.ExitAction;
+import udo.parser.util.ListAction;
+import udo.parser.util.MarkAction;
+import udo.parser.util.SaveAction;
+import udo.parser.util.SearchAction;
+import udo.parser.util.ToggleDoneAction;
+import udo.parser.util.TrashAction;
+import udo.parser.util.UndoAction;
 
 /**
  * This class parses information from the input string and package it 
@@ -274,9 +281,20 @@ import udo.util.shared.InputData;
 public class Parser {
 	
 	private LanguagePack mLang;
+	private Logger mLogger;
 	
 	public Parser() {
 		mLang = LanguagePack.getInstance();
+		mLogger = Logger.getLogger(Parser.class.getSimpleName());
+		try {
+			new File(LoggingStrings.LOGPATH_PARSER).mkdirs();
+			mLogger.addHandler(new FileHandler(LoggingStrings.LOGFILE_PARSER));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mLogger.setLevel(Level.ALL);
 	}
 	
 	/**
@@ -287,8 +305,11 @@ public class Parser {
 	 * @return InputData object
 	 */
 	public InputData getInputData(String input) {
+		assert(input != null);
 		Command type = determineCommandType(input);
 		InputData data = processCommandType(type, input);
+		assert(data != null);
+		assert(data.getStatus() != null);
 		return data;
 	}
 	
@@ -366,6 +387,7 @@ public class Parser {
 				return search(commandType, details);
 				
 			default:
+				mLogger.log(Level.WARNING, "Command not typed", details);
 				return trash(commandType, details);
 			}
 	}
@@ -435,9 +457,2201 @@ public class Parser {
 		InputData data = exit.run(type);
 		return data;
 	}
+	
 }
 
-	// End of segment: .\udo\main\Parser.java
+	// End of segment: .\udo\parser\Parser.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\Action.java
+	 */
+
+package udo.parser.util;
+
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.language.LanguagePack;
+
+public interface Action {
+	public final LanguagePack mLang = LanguagePack.getInstance();
+	public InputData run(Command type, String input);
+	public InputData run(Command type);
+}
+
+	// End of segment: .\udo\parser\util\Action.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\add\AddActionEvent.java
+	 */
+
+package udo.parser.util.add;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.LoggingStrings;
+import udo.data.InputData;
+import udo.enums.ParsingStatus;
+import udo.language.LanguagePack;
+import udo.parser.Parser;
+import udo.parser.util.DateGetter;
+import udo.parser.util.TimeGetter;
+
+public class AddActionEvent implements AddActionType {
+	
+	/**
+	 * This class handles the raw input for add event. It fills up the InputData
+	 * passed to it.
+	 */
+
+	private Logger mLogger;
+	
+	public AddActionEvent() {
+		mLogger = Logger.getLogger(Parser.class.getSimpleName());
+		mLogger.setLevel(Level.ALL);
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		Calendar start = setFirstTimeAndDate(details);
+		Calendar end = setSecondTimeAndDate(details);
+		if (title != null && start != null && end != null) {
+			data.put(Keys.TITLE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.put(Keys.START, start);
+			data.put(Keys.END, end);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+	@Override
+	public String getTitle(String input) {
+		String title = input.replaceAll("#", "");
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i = 1; i < parts.length; i++) {
+			if (parts[i].equals(mLang.getFROM())) {
+				break;
+			}
+			newTitle = newTitle + parts[i] + " "; 
+		}
+		if (newTitle.length() != 0) {
+			newTitle = newTitle.trim();
+			return newTitle;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+	
+	public Calendar getDate(String input) {
+		DateGetter date = new DateGetter();
+		return date.getDate(input);
+	}
+	
+	public Calendar getTime(String input) {
+		TimeGetter time = new TimeGetter();
+		return time.getTime(input);
+	}
+	
+	public Calendar setFirstTimeAndDate(String details) {
+		Calendar start = getTime(details);
+		Calendar date = getDate(details);
+		if (start != null && date != null) {
+			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return start;
+		}
+		mLogger.log(Level.WARNING, 
+					"Event's first time and date cannot be set. 1 of this field is missing");
+		return null;
+	}
+	
+	public Calendar setSecondTimeAndDate(String details) {
+		int toStringIndex = details.lastIndexOf(mLang.getTO());
+		String endingTimeDateString = details.substring(toStringIndex);
+		Calendar end = getTime(endingTimeDateString);
+		Calendar date = getDate(endingTimeDateString);
+		if (end != null && date != null) {
+			end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			end.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return end;
+		} else if (end != null) {
+			date = getDate(details);
+			if (date != null) {
+				end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+				end.set(Calendar.MONTH, date.get(Calendar.MONTH));
+				end.set(Calendar.YEAR, date.get(Calendar.YEAR));
+				return end;
+			} else {
+				mLogger.log(Level.WARNING, "Event's 2nd time field is missing");
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\add\AddActionEvent.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\add\AddActionPlan.java
+	 */
+
+package udo.parser.util.add;
+
+import java.util.ArrayList;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.ParsingStatus;
+
+public class AddActionPlan implements AddActionType {
+
+	/**
+	 * This class handles all Plans. It fills in the InputData passed to it.
+	 */
+	
+	public AddActionPlan() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		if (title != null) {
+			data.put(Keys.TITLE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+	@Override
+	public String getTitle(String input) {
+		String title = input.replaceAll("#", "");
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i = 1; i < parts.length; i++) {
+			newTitle = newTitle + parts[i] + " "; 
+		}
+		if (newTitle.length() != 0) {
+			newTitle = newTitle.trim();
+			return newTitle;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			if (word.startsWith("#")) {
+				tag = word.replaceFirst("#", "");
+				assert(!tag.isEmpty());
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\add\AddActionPlan.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\add\AddActionTask.java
+	 */
+
+package udo.parser.util.add;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import udo.constants.Constants.Keys;
+import udo.constants.Constants.LoggingStrings;
+import udo.data.InputData;
+import udo.enums.ParsingStatus;
+import udo.parser.Parser;
+import udo.parser.util.DateGetter;
+import udo.parser.util.TimeGetter;
+
+public class AddActionTask implements AddActionType {
+
+	/**
+	 * This class handles all Tasks. It fills in the InputData passed to it.
+	 */
+	
+	private Logger mLogger;
+	
+	public AddActionTask() {
+		mLogger = Logger.getLogger(Parser.class.getSimpleName());
+		mLogger.setLevel(Level.ALL);
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		Calendar end = setFirstTimeAndDate(details);
+		if (title != null && end != null) {
+			data.put(Keys.TITLE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.put(Keys.DUE, end);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}	
+	}
+
+	@Override
+	public String getTitle(String input) {
+		String title = input.replaceAll("#", "");
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i = 1; i < parts.length; i++) {
+			if (parts[i].equals(mLang.getBY())) {
+				break;
+			}
+			newTitle = newTitle + parts[i] + " "; 
+		}
+		if (newTitle.length() != 0) {
+			newTitle = newTitle.trim();
+			return newTitle;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+	
+	public Calendar getDate(String input) {
+		DateGetter date = new DateGetter();
+		return date.getDate(input);
+	}
+	
+	public Calendar getTime(String input) {
+		TimeGetter time = new TimeGetter();
+		return time.getTime(input);
+	}
+	
+	public Calendar setFirstTimeAndDate(String details) {
+		Calendar start = getTime(details);
+		Calendar date = getDate(details);
+		if (start != null && date != null) {
+			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
+			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
+			return start;
+		} else {
+			mLogger.log(Level.WARNING, 
+						"Task's due time and due date not set. 1 of this field is missing");
+			return null;
+		}
+	}
+}
+
+	// End of segment: .\udo\parser\util\add\AddActionTask.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\add\AddActionType.java
+	 */
+
+package udo.parser.util.add;
+
+import java.util.ArrayList;
+
+import udo.data.InputData;
+import udo.language.LanguagePack;
+
+public interface AddActionType {
+	public final LanguagePack mLang = LanguagePack.getInstance();
+	public void fill(String details, InputData data);
+	public String getTitle(String input);
+	public ArrayList<String> getTags(String input);
+	
+}
+
+	// End of segment: .\udo\parser\util\add\AddActionType.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\AddAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.parser.util.add.AddActionEvent;
+import udo.parser.util.add.AddActionPlan;
+import udo.parser.util.add.AddActionTask;
+import udo.parser.util.add.AddActionType;
+
+
+/** 
+ * This class takes in ADD commands and break them into the following:
+ * ADD_EVENT, ADD_TASK, ADD_PLAN
+ * <p>
+ * ADD_EVENT command is for events. Events contain a starting time and an ending time.
+ * ADD_TASK command is for tasks. Tasks contain 1 deadline.
+ * ADD_PLAN command is for plans. Plans have no deadlines nor starting and ending time.
+ * <p>
+ * Input recieve by this class is in the format: 
+ * "add <<title>> from <<date>> <<time>> to <<date>> <<time>>"
+ * "add <<title>> from <<date>> <<time>> to <<time>>"
+ * "add <<title>> by <<date>> <<time>>"
+ * "add <<title>>"
+ */
+
+public class AddAction implements Action {
+	
+	
+	/**
+	 * This method takes in user input and returns an InputData of the following 
+	 * CommandType: ADD_EVENT, ADD_TASK, ADD_PLAN
+	 * and the stores them in the necessary fields.
+	 * 
+	 * @param type
+	 * @param details
+	 * @return an InputData
+	 */
+	@Override
+	public InputData run(Command type, String details) {
+		InputData data;
+		if (isEvent(details)) {
+			data = new InputData(Command.ADD_EVENT);
+			AddActionType event = new AddActionEvent();
+			event.fill(details, data);
+		} else if (isTask(details)) {
+			data = new InputData(Command.ADD_TASK);
+			AddActionType task = new AddActionTask();
+			task.fill(details, data);
+		} else {
+			data = new InputData(Command.ADD_PLAN);
+			AddActionType plan = new AddActionPlan();
+			plan.fill(details, data);
+		} 
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+
+	private boolean isEvent(String details) {
+		String task = details.toLowerCase();
+		task = task.replaceAll("#", "");
+		String parts[] = task.split(" ");
+		boolean containsKeywordFrom = false;
+		boolean containsKeywordTo = false;
+		for (int i = 0; i < parts.length; i++) {
+			if (parts[i].equals(mLang.getFROM())) {
+				containsKeywordFrom = true;
+			}
+			if (parts[i].equals(mLang.getTO())) {
+				containsKeywordTo = true;
+			}
+		}
+		if (containsKeywordFrom && containsKeywordTo) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean isTask(String details) {
+		String task = details.toLowerCase();
+		task = task.replaceAll("#", "");
+		String parts[] = task.split(" ");
+		boolean containsKeywordBy = false;
+		for (int i = 0; i < parts.length; i++) {
+			if (parts[i].equals(mLang.getBY())) {
+				containsKeywordBy = true;
+			}
+		}
+		if (containsKeywordBy) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\AddAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\DateGetter.java
+	 */
+
+package udo.parser.util;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import udo.language.LanguagePack;
+
+public class DateGetter {
+	
+	/**
+	 * This class returns a calendar object set to the first date it reads from 
+	 * the input. It takes in days and returns a date. 
+	 * Dates from days will be set a week from the current date.
+	 * It takes in date of format dd/MM, dd/MM/yy and dd/MM/yyyy
+	 */
+
+	private LanguagePack mLang = LanguagePack.getInstance();
+	
+	private static Calendar mDate = null;
+	// These strings are not extracted because their position matters. 
+	// Their positions are used in the functions below.
+	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""}; 
+	private String mDays[] = {
+			mLang.getTODAY(), 
+			mLang.getSUNDAY(), 
+			mLang.getMONDAY(), 
+			mLang.getTUESDAY(),					
+			mLang.getWEDNESDAY(), 
+			mLang.getTHURSDAY(), 
+			mLang.getFRIDAY(), 
+			mLang.getSATURDAY(), 
+			mLang.getTOMORROW()};
+	
+	public DateGetter() {
+		
+	}
+	
+	/**
+	 * Method returns the first date it reads from input.
+	 * Detects date by "/" character
+	 * Dates cannot contain spaces in-between
+	 * Days will be set a week from the the current date
+	 * 
+	 * @param input string
+	 * @return Calendar date object
+	 */
+	public Calendar getDate(String input) {
+		decipherText(input);
+		return mDate;
+	}
+	
+	// facilitates how all instructions are run
+	private void decipherText(String input) {
+		int dateFormat = getDateFormat(input);
+		if (dateFormat == -1) { 		// if date format does not exist, it is a day format
+			int day = getDay(input);
+			mDate = formatDaySubstring(day);
+		} else if (dateFormat != 3) {	// if date format is not "", it is one of the formats provided
+			String dateString = getDateString(input, dateFormat);
+			mDate = formatDateSubstring(dateString, dateFormat);
+		} else {
+			mDate = null;
+		}
+	}
+
+	private int getDateFormat(String input) {
+		if (input.contains("/")) {
+			int dayMonthSlashIndex = input.indexOf("/");
+			int offset = dayMonthSlashIndex + 1; 	// gets the second "/" from "dd/mm/yy" 
+			int monthYearSlashIndex = input.indexOf("/", offset); 
+	
+			if (monthYearSlashIndex == -1 ||
+				!containsYear(dayMonthSlashIndex, monthYearSlashIndex)) { // dd/MM format
+				return 0;
+			} else if (containsYear(dayMonthSlashIndex, monthYearSlashIndex) &&
+						!hasFourYearDigits(monthYearSlashIndex, input)) {
+				return 1;
+			} else if (containsYear(dayMonthSlashIndex, monthYearSlashIndex) &&
+					hasFourYearDigits(monthYearSlashIndex, input)) {
+				return 2;
+			} else {
+				return 3;
+			}
+		} else {
+			return -1;
+		}
+	}
+
+	// checks if the first "/" and second "/" are from the same date string
+	private boolean containsYear(int dayMonthSlashIndex, int monthYearSlashIndex) {
+		int difference = monthYearSlashIndex - dayMonthSlashIndex;
+		if (difference == 2 || difference == 3) { // xx/x/xx or xx/xx/xx (one month or 2 months)
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean hasFourYearDigits(int monthYearSlashIndex, String input) {
+		String year = input;
+		int yearStartIndex = monthYearSlashIndex + 1; 	// index of first year digit
+		int yearEndIndex = monthYearSlashIndex + 5;		// index of last year digit
+		if (yearEndIndex > year.length()) {				// takes into account substring API offset
+			yearEndIndex = year.length();
+		}
+		int yearDigits = 0;
+		String yearDigit;
+		for (int i = yearStartIndex; i < yearEndIndex; i++) {
+			yearDigit = year.substring(i, i + 1);
+			if (isInteger(yearDigit)) {
+				yearDigits++;
+			}
+		}
+		
+		if (yearDigits == 4) { 
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private String getDateString(String input, int dateFormat) {
+		switch (dateFormat) {
+			case 0:
+				return extractDateWithNoYears(input);
+			case 1:
+				return extractDateWithTwoYears(input);
+			case 2:
+				return extractDateWithFourYears(input);
+			default:
+				return null;
+		}
+	}
+
+	private String extractDateWithNoYears(String input) {
+		String dateString = input.toUpperCase();
+		String dateStringArr[] = dateString.split(" ");
+		boolean isOfValidLength;
+		String dayFirstDigit;
+		String monthLastDigit;
+		int monthLastDigitIndex;
+		for (int i = 0; i < dateStringArr.length; i++) {
+			isOfValidLength = (dateStringArr[i].length() >= 3 && dateStringArr[i].length() <= 5); // d/m to dd/mm
+			dayFirstDigit = dateStringArr[i].substring(0, 1);
+			monthLastDigitIndex = dateStringArr[i].length() - 1;
+			monthLastDigit = dateStringArr[i].substring(monthLastDigitIndex);
+			if (dateStringArr[i].contains("/") &&
+				isOfValidLength &&
+				isInteger(dayFirstDigit) &&
+				isInteger(monthLastDigit)) { 
+				return dateStringArr[i];
+			}
+		}
+		return null;
+	}
+
+	private String extractDateWithTwoYears(String input) {
+		String dateString = input.toUpperCase();
+		String dateStringArr[] = dateString.split(" ");
+		boolean isOfValidLength;
+		String dayFirstDigit;
+		String yearLastDigit;
+		int yearLastDigitIndex;
+		for (int i = 0; i < dateStringArr.length; i++) {
+			isOfValidLength = (dateStringArr[i].length() >= 6 && dateStringArr[i].length() <=8); // d/m/yy to dd/mm/yy
+			dayFirstDigit = dateStringArr[i].substring(0, 1);
+			yearLastDigitIndex = dateStringArr[i].length() - 1;
+			yearLastDigit = dateStringArr[i].substring(yearLastDigitIndex);
+			if (dateStringArr[i].contains("/") &&
+				isOfValidLength &&
+				isInteger(dayFirstDigit) &&
+				isInteger(yearLastDigit)) { 
+				return dateStringArr[i];
+			}
+		}
+		return null;
+	}
+
+	private String extractDateWithFourYears(String input) {
+		String dateString = input.toUpperCase();
+		String dateStringArr[] = dateString.split(" ");
+		boolean isOfValidLength;
+		String dayFirstDigit;
+		String yearLastDigit;
+		int yearLastDigitIndex;
+		for (int i = 0; i < dateStringArr.length; i++) {
+			isOfValidLength = (dateStringArr[i].length() >= 8 && dateStringArr[i].length() <=10); // d/m/yyyy to dd/mm/yyyy
+			dayFirstDigit = dateStringArr[i].substring(0, 1);
+			yearLastDigitIndex = dateStringArr[i].length() - 1;
+			yearLastDigit = dateStringArr[i].substring(yearLastDigitIndex);
+			if (dateStringArr[i].contains("/") &&
+				isOfValidLength &&
+				isInteger(dayFirstDigit) &&
+				isInteger(yearLastDigit)) { 
+				return dateStringArr[i];
+			}
+		}
+		return null;
+	}
+
+	private Calendar formatDateSubstring(String input, int dateFormat) {
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		SimpleDateFormat format = new SimpleDateFormat(mDateFormat[dateFormat]);
+		Date date;
+		if (input != null) {
+			try {
+				date = format.parse(input);
+				cal.setTime(date);
+				cal.set(Calendar.HOUR_OF_DAY, 23);
+				cal.set(Calendar.MINUTE, 59);
+				
+				if (dateFormat == 0) {
+					cal.set(Calendar.YEAR, year);
+				}
+			} catch (ParseException parserException) {
+				cal = null;
+				return cal;
+			}
+			return cal;
+		} else {
+			cal = null;
+			return cal;
+		}
+	}
+
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private int getDay(String input) {
+		String dayString = input.toLowerCase();
+		for (int i = 0; i < mDays.length; i++) {
+			if (dayString.contains(mDays[i])) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private Calendar formatDaySubstring(int day) {
+		Calendar cal = Calendar.getInstance();
+		int difference = getDayNextWeek(day, cal);
+		if (day == 0) {
+			return cal;
+		} else if (day == 8) {
+			cal.add(Calendar.DATE, 1);
+			return cal;
+		} else if (day > 0 && day < 8) {
+			cal.add(Calendar.DAY_OF_MONTH, difference);
+			return cal;
+		} else {
+			cal = null;
+			return cal;
+		}
+	}
+
+	private int getDayNextWeek(int day, Calendar cal) {
+		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+		int difference = day - dayOfWeek;
+		if (difference < 0) {
+			difference = 7 + difference;
+		} else if (difference == 0) {
+			difference = 7;
+		}
+		return difference;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\DateGetter.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\DeleteAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class DeleteAction implements Action {
+	
+	/**
+	 * This class reads in the uid to be deleted.
+	 * Input recieved by this class is in the format: "delete <<uid>>"
+	 */
+
+	public DeleteAction() {
+		
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	@Override
+	public InputData run(Command type, String input) {
+		InputData data = new InputData(type);
+		int uid = extractUid(input);
+		if (uid == -1) {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		} else {
+			data.put(Keys.UID, uid);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		}
+		return data;
+	}
+	
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private int extractUid(String input) {
+		String parts[] = input.split(" ");
+		if (parts.length >= 2) {
+			String uid = parts[1];
+			if (isInteger(uid)) {
+				int id = Integer.parseInt(uid);
+				return id;
+			}
+		} 
+		return -1;
+	}
+}
+
+	// End of segment: .\udo\parser\util\DeleteAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionDueDate.java
+	 */
+
+package udo.parser.util.edit;
+
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.EditField;
+import udo.enums.ParsingStatus;
+import udo.parser.util.DateGetter;
+
+public class EditActionDueDate implements EditActionField {
+
+	/**
+	 * This class handles the due date field
+	 */
+	
+	public EditActionDueDate() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		DateGetter date = new DateGetter();
+		Calendar dueDate = date.getDate(details);
+		if (dueDate != null) {
+			data.put(Keys.FIELD, EditField.DUE_DATE);
+			data.put(Keys.VALUE, dueDate);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionDueDate.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionDueTime.java
+	 */
+
+package udo.parser.util.edit;
+
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.EditField;
+import udo.enums.ParsingStatus;
+import udo.parser.util.TimeGetter;
+
+public class EditActionDueTime implements EditActionField {
+
+	/**
+	 * This class handles the due time field
+	 */
+	
+	public EditActionDueTime() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		TimeGetter time = new TimeGetter();
+		Calendar dueTime = time.getTime(details);
+		if (dueTime != null) {
+			data.put(Keys.FIELD, EditField.DUE_TIME);
+			data.put(Keys.VALUE, dueTime);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionDueTime.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionEndDate.java
+	 */
+
+package udo.parser.util.edit;
+
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.EditField;
+import udo.enums.ParsingStatus;
+import udo.parser.util.DateGetter;
+
+public class EditActionEndDate implements EditActionField {
+
+	/**
+	 * This class handles the end date field
+	 */
+	
+	public EditActionEndDate() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		DateGetter d = new DateGetter();
+		Calendar endDate = d.getDate(details);
+		if (endDate != null) {
+			data.put(Keys.FIELD, EditField.END_DATE);
+			data.put(Keys.VALUE, endDate);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);	
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionEndDate.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionEndTime.java
+	 */
+
+package udo.parser.util.edit;
+
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.EditField;
+import udo.enums.ParsingStatus;
+import udo.parser.util.TimeGetter;
+
+public class EditActionEndTime implements EditActionField {
+
+	/**
+	 * This class handles the end time field
+	 */
+	
+	public EditActionEndTime() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		TimeGetter time = new TimeGetter();
+		Calendar endTime = time.getTime(details);
+		if (endTime != null) {
+			data.put(Keys.FIELD, EditField.END_TIME);
+			data.put(Keys.VALUE, endTime);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionEndTime.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionField.java
+	 */
+
+package udo.parser.util.edit;
+
+import udo.data.InputData;
+
+public interface EditActionField {
+	
+	public void fill(String details, InputData data);
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionField.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionStartDate.java
+	 */
+
+package udo.parser.util.edit;
+
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.EditField;
+import udo.enums.ParsingStatus;
+import udo.parser.util.DateGetter;
+
+public class EditActionStartDate implements EditActionField {
+
+	/**
+	 * This class handles the start date field
+	 */
+	
+	public EditActionStartDate() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		DateGetter d = new DateGetter();
+		Calendar startDate = d.getDate(details);
+		if (startDate != null) {
+			data.put(Keys.FIELD, EditField.START_DATE);
+			data.put(Keys.VALUE, startDate);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionStartDate.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionStartTime.java
+	 */
+
+package udo.parser.util.edit;
+
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.EditField;
+import udo.enums.ParsingStatus;
+import udo.parser.util.TimeGetter;
+
+public class EditActionStartTime implements EditActionField {
+
+	/**
+	 * This class handles the start time field
+	 */
+	
+	public EditActionStartTime() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		TimeGetter time = new TimeGetter();
+		Calendar startTime = time.getTime(details);
+		if (startTime != null) {
+			data.put(Keys.FIELD, EditField.START_TIME);
+			data.put(Keys.VALUE, startTime);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionStartTime.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\edit\EditActionTitle.java
+	 */
+
+package udo.parser.util.edit;
+
+import java.util.ArrayList;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.EditField;
+import udo.enums.ParsingStatus;
+
+public class EditActionTitle implements EditActionField {
+
+	/**
+	 * This class handles the title field
+	 */
+	
+	public EditActionTitle() {
+		
+	}
+
+	@Override
+	public void fill(String details, InputData data) {
+		String title = getTitle(details);
+		ArrayList<String> tags = getTags(details);
+		if (title != null && !title.isEmpty()) {
+			data.put(Keys.FIELD, EditField.TITLE);
+			data.put(Keys.VALUE, title);
+			data.put(Keys.HASHTAGS, tags);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+	
+	private String getTitle(String details) {
+		String title = details.replaceAll("#", "");
+		String parts[] = title.split(" ");
+		String newTitle = "";
+		for (int i=3; i< parts.length; i++) { 		// "edit 12345 title <new title>"
+			newTitle = newTitle + parts[i] + " ";	// new title starts from index 3
+		}
+		newTitle = newTitle.trim();
+		if (newTitle.length() != 0) {
+			return newTitle;
+		} else {
+			return null;
+		}
+	}
+	
+	private ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\edit\EditActionTitle.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\EditAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+import udo.parser.util.edit.EditActionDueDate;
+import udo.parser.util.edit.EditActionDueTime;
+import udo.parser.util.edit.EditActionEndDate;
+import udo.parser.util.edit.EditActionEndTime;
+import udo.parser.util.edit.EditActionField;
+import udo.parser.util.edit.EditActionStartDate;
+import udo.parser.util.edit.EditActionStartTime;
+import udo.parser.util.edit.EditActionTitle;
+
+/**
+ * This class handles all editing done by the user.
+ * Input recieve by this class is in the format: 
+ * "edit <<uid>> <<field to edit>> <<new info>>"
+ */
+
+public class EditAction implements Action {
+	
+	String[] mFields = {
+			mLang.getTITLE(),
+			mLang.getSTART_TIME(), 
+			mLang.getEND_TIME(), 
+			mLang.getSTART_DATE(), 
+			mLang.getEND_DATE(),
+			mLang.getDUE_TIME(), 
+			mLang.getDUE_DATE()};
+	
+	@Override
+	public InputData run(Command type, String details) {
+		InputData data = new InputData(type);
+		int uid = getUid(details);
+		String field = getField(details);
+		
+		if (uid != -1 && field != null) {
+			data.put(Keys.UID, uid);
+			updateField(field, data, details);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	private void updateField(String field, InputData data, String details) {
+		if (field.equals(mLang.getTITLE())) {
+			setTitle(data, details);
+			
+		} else if (field.equals(mLang.getSTART_TIME())) {
+			setStartTime(data, details);
+			
+		} else if (field.equals(mLang.getEND_TIME())) {
+			setEndTime(data, details);
+			
+		} else if (field.equals(mLang.getSTART_DATE())) {
+			setStartDate(data, details);
+			
+		} else if (field.equals(mLang.getEND_DATE())) {
+			setEndDate(data, details);
+			
+		} else if (field.equals(mLang.getDUE_TIME())) {
+			setDueTime(data, details);
+			
+		} else if (field.equals(mLang.getDUE_DATE())) {
+			setDueDate(data, details);
+			
+		} else {
+			// do nothing
+		}
+	}
+	
+	// check whether any of the value returned is null
+	private void setTitle(InputData data, String details) {
+		EditActionField title = new EditActionTitle();
+		title.fill(details, data);
+	}
+	
+	private void setStartTime(InputData data, String details) {
+		EditActionField startTime = new EditActionStartTime();
+		startTime.fill(details, data);
+	}
+	
+	private void setEndTime(InputData data, String details) {
+		EditActionField endTime = new EditActionEndTime();
+		endTime.fill(details, data);
+	}
+	
+	private void setStartDate(InputData data, String details) {
+		EditActionField startDate = new EditActionStartDate();
+		startDate.fill(details, data);
+	}
+	
+	private void setEndDate(InputData data, String details) {
+		EditActionField endDate = new EditActionEndDate();
+		endDate.fill(details, data);
+	}
+	
+	private void setDueTime(InputData data, String details) {
+		EditActionField dueTime = new EditActionDueTime();
+		dueTime.fill(details, data);
+	}
+	
+	private void setDueDate(InputData data, String details) {
+		EditActionField dueDate = new EditActionDueDate();
+		dueDate.fill(details, data);
+	}
+
+	private int getUid(String details) {
+		String[] words = details.split(" ");
+		if (words.length > 1) {
+			String uidString = words[1];
+			int uid = -1;
+			try {
+				 uid = Integer.parseInt(uidString);
+			} catch (NumberFormatException nfe) {
+				
+			}
+			return uid;
+		} else {
+			return -1;
+		}
+	}
+	
+	private String getField(String details) {
+		details = details.toLowerCase();
+		for (int i = 0; i < mFields.length; i++) {
+			if (details.contains(mFields[i])) {
+				return mFields[i];
+			}
+		}
+		return null;
+	}
+	
+}
+
+	// End of segment: .\udo\parser\util\EditAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\ExitAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class ExitAction  implements Action {
+
+	/**
+	 * This class handles the exit command.
+	 * Input recieve by this class is in the format: 
+	 * "exit"
+	 */
+	
+	public ExitAction() {
+
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData exitInputData = new InputData(type);
+		exitInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return exitInputData;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\ExitAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\list\ListActionAll.java
+	 */
+
+package udo.parser.util.list;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+
+public class ListActionAll implements ListActionCommand {
+
+	/**
+	 * This class handles the All field
+	 */
+	
+	public ListActionAll() {
+		
+	}
+	
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		data.put(Keys.QUERY_TYPE, ListQuery.ALL);
+		data.setParsingStatus(ParsingStatus.SUCCESS);
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\list\ListActionAll.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\list\ListActionCommand.java
+	 */
+
+package udo.parser.util.list;
+
+import udo.data.InputData;
+import udo.enums.Command;
+
+public interface ListActionCommand {
+
+	public void fill(Command type, String details, InputData data);
+}
+
+	// End of segment: .\udo\parser\util\list\ListActionCommand.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\list\ListActionDate.java
+	 */
+
+package udo.parser.util.list;
+
+import java.util.Calendar;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+import udo.parser.util.DateGetter;
+
+public class ListActionDate implements ListActionCommand {
+
+	/**
+	 * This class handles the date field
+	 */
+	
+	public ListActionDate() {
+		
+	}
+
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		DateGetter listDate = new DateGetter();
+		Calendar date = listDate.getDate(details);
+		if (date != null) {
+			data.put(Keys.QUERY_TYPE, ListQuery.DATE);
+			data.put(Keys.QUERY_VALUE, date);	
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\list\ListActionDate.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\list\ListActionDone.java
+	 */
+
+package udo.parser.util.list;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+
+public class ListActionDone implements ListActionCommand {
+
+	/**
+	 * This class handles the done field
+	 */
+	
+	public ListActionDone() {
+		
+	}
+
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		data.put(Keys.QUERY_TYPE, ListQuery.DONE);
+		data.setParsingStatus(ParsingStatus.SUCCESS);
+
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\list\ListActionDone.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\list\ListActionHashtag.java
+	 */
+
+package udo.parser.util.list;
+
+import java.util.ArrayList;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+
+public class ListActionHashtag implements ListActionCommand {
+
+	/**
+	 * This class handles the hashtag field
+	 */
+	
+	public ListActionHashtag() {
+		
+	}
+
+	@Override
+	public void fill(Command type, String details, InputData data) {
+		ArrayList<String> tags = getTags(details);
+		if (!tags.isEmpty()) {
+			data.put(Keys.QUERY_VALUE, tags.get(0));
+			data.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		}
+	}
+	
+	private ArrayList<String> getTags(String input) {
+		ArrayList<String> tagArrayList = new ArrayList<String>();
+		String tag;
+		boolean hashTagFilled;
+		String words[] = input.split(" ");
+		for (String word : words) {
+			hashTagFilled = word.length() > 1;
+			if (word.startsWith("#") && hashTagFilled) {
+				tag = word.replaceFirst("#", "");
+				tagArrayList.add(tag);
+			}
+		}
+		return tagArrayList;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\list\ListActionHashtag.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\ListAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+import udo.parser.util.list.ListActionAll;
+import udo.parser.util.list.ListActionCommand;
+import udo.parser.util.list.ListActionDate;
+import udo.parser.util.list.ListActionDone;
+import udo.parser.util.list.ListActionEvent;
+import udo.parser.util.list.ListActionHashtag;
+import udo.parser.util.list.ListActionPlan;
+import udo.parser.util.list.ListActionTask;
+
+public class ListAction implements Action {
+	
+	/**
+	 * This class takes in the field to be displayed.
+	 * Input recieve by this class is in the format: 
+	 * "list <<field>>"
+	 */
+	
+	String mFields[] = {"#", 
+			mLang.getALL(), 
+			mLang.getDONE(), 
+			mLang.getEVENT(), 
+			mLang.getTASK(), 
+			mLang.getPLAN(), 
+			"/", 
+			mLang.getDAY(), 
+			mLang.getTOMORROW()};
+
+	@Override
+	public InputData run(Command type, String details) {
+		InputData data = new InputData(type);
+		int field = getField(details);
+		ListActionCommand list;
+		switch (field) {
+			case 0 :
+				list = new ListActionHashtag();
+				list.fill(type, details, data);
+				break;
+			case 1 :
+				list = new ListActionAll();
+				list.fill(type, details, data);
+				break;
+			case 2 :
+				list = new ListActionDone();
+				list.fill(type, details, data);
+				break;
+			case 3 :
+				list = new ListActionEvent();
+				list.fill(type, details, data);
+				break;
+			case 4 :
+				list = new ListActionTask();
+				list.fill(type, details, data);
+				break;
+			case 5 :
+				list = new ListActionPlan();
+				list.fill(type, details, data);
+				break;
+			case 6 :
+				list = new ListActionDate();
+				list.fill(type, details, data);
+				break;
+			case 7 :
+				list = new ListActionDate();
+				list.fill(type, details, data);
+				break;
+			case 8 :
+				list = new ListActionDate();
+				list.fill(type, details, data);
+				break;
+			default:
+				data.setParsingStatus(ParsingStatus.FAIL);
+				break;
+		}
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	private int getField(String input) {
+		String field = input.toLowerCase();
+		for (int i = 0; i < mFields.length; i++) {
+			if (field.contains(mFields[i])) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\ListAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\MarkAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class MarkAction implements Action {
+
+	/**
+	 * This class takes in the items that marked completed.
+	 * Input recieve by this class is in the format: 
+	 * "done <<uid>>"
+	 */
+	
+	public MarkAction() {
+		
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		InputData data = new InputData(type);
+		int uid = extractUid(input);
+		if (uid == -1) {
+			data.setParsingStatus(ParsingStatus.FAIL);
+		} else {
+			data.put(Keys.UID, uid);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		}
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private int extractUid(String input) {
+		String parts[] = input.split(" ");
+		if (parts.length >= 2) {
+			String uid = parts[1];
+			if (isInteger(uid)) {
+				int id = Integer.parseInt(uid);
+				return id;
+			}
+		} 
+		return -1;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\MarkAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\SaveAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class SaveAction implements Action {
+
+	/**
+	 * This class handles the save command.
+	 * Input recieve by this class is in the format: 
+	 * "save"
+	 */
+	
+	public SaveAction() {
+
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData saveInputData = new InputData(type);
+		saveInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return saveInputData;
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\SaveAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\SearchAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class SearchAction implements Action {
+
+	public SearchAction() {
+		
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		InputData searchInputData = new InputData(type);
+		if (isValidSearch(input)) {
+			String searchString = getSearchQuery(input);
+			searchInputData.put(Keys.SEARCH_QUERY, searchString);
+			searchInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		} else {
+			searchInputData.setParsingStatus(ParsingStatus.FAIL);
+		}
+		return searchInputData;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+	
+	private String getSearchQuery(String input) {
+		String parts[] = input.split(" ");
+		String searchString = "";
+		for (int i = 1; i < parts.length; i++) {
+			searchString = searchString + parts[i] + " ";
+		}
+		return searchString;
+	}
+ 
+	private boolean isValidSearch(String input) {
+		String parts[] = input.split(" ");
+		if (parts.length >= 2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\SearchAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\TimeGetter.java
+	 */
+
+package udo.parser.util;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class TimeGetter {
+	
+	/**
+	 * This class takes returns a calendar object set to the first time it reads 
+	 * from input. It takes in time of format hh:mma and hha
+	 */
+
+	private Calendar mTime;
+	private String mTimeFormat[] = {"hh:mma", "hha"};
+
+	public TimeGetter() {
+		
+	}
+	
+	/**
+	 * Method returns the first time it reads from input.
+	 * Time must not have space in-between
+	 * @param input
+	 * @return Calendar time object
+	 */
+	public Calendar getTime(String input) {
+		decipherText(input);
+		return mTime;
+	}
+	
+	private void decipherText(String input) {
+		int timeFormat = getTimeFormat(input);
+		if (timeFormat == 0 || timeFormat == 1) {
+			String timeString = getTimeString(input, timeFormat);
+			mTime = formatTimeSubstring(timeString, timeFormat);
+		} else {
+			mTime = null;
+		}
+	}
+
+	private String getTimeString(String input, int timeFormat) {
+		switch (timeFormat) {
+			case 0:
+				return extractTimeWithMinutes(input);
+			case 1:
+				return extractTimeWithoutMinutes(input);
+			default:
+				return null;
+		}
+	}
+	
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private String extractTimeWithMinutes(String input) {
+		String timeString = input.toUpperCase();
+		String time[] = timeString.split(" ");
+		for (int i = 0; i < time.length; i++) {
+			if (isValidTime(time[i])) {
+				return time[i];
+			}
+		}
+		return null;
+	}
+
+	private String extractTimeWithoutMinutes(String input) {
+		String time[] = input.split(" ");
+		for (int i = 0; i < time.length; i++) {
+			if (isValidTime(time[i])){
+				return time[i];
+			}
+		}
+		return null;
+	}
+
+	private boolean isValidTime(String time) {
+		time = time.toUpperCase();
+		if (time.length() == 3 || time.length() == 4) { // e.g. 3pm, 12am
+			String amPmString = time.substring(time.length() - 1);
+			String hour = time.substring(0, 1);
+			if (isInteger(hour) && amPmString.equals("M")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if (time.length() == 6 || time.length() == 7) { // e.g. 3:45am, 12:45pm
+			String amPmString = time.substring(time.length() - 1);
+			String hour = time.substring(0, 1);
+			if (isInteger(hour) && amPmString.equals("M")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	private Calendar formatTimeSubstring(String timeString, int timeFormat) {
+		Calendar cal = null;
+		SimpleDateFormat format = new SimpleDateFormat(mTimeFormat[timeFormat]);
+		Date date;
+		if (timeString != null) {
+			try {
+				date = format.parse(timeString);
+				cal = Calendar.getInstance();
+				cal.setTime(date);
+			} catch (ParseException parserException) {
+				cal = null;
+				return cal;
+			}
+		}
+		return cal;
+	}
+
+	private int getTimeFormat(String input) {
+		String parts[] = input.split(" ");
+		for (int i = 0; i < parts.length; i++) {
+			if (isValidTime(parts[i])) {
+				if (parts[i].length() == 3 || 	// e.g. 3pm 
+					parts[i].length() == 4) {	// e.g. 12pm
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+		return -1;
+	}
+}
+
+	// End of segment: .\udo\parser\util\TimeGetter.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\ToggleDoneAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class ToggleDoneAction implements Action {
+
+	/**
+	 * This class takes in the items that marked as not completed from the completed list.
+	 * Input recieve by this class is in the format: 
+	 * "toggle done <<uid>>"
+	 */
+	
+	public ToggleDoneAction() {
+		
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		InputData data = new InputData(type);
+		int uid = extractUid(input);
+		if (uid == -1) {
+			data.setParsingStatus(ParsingStatus.FAIL);	
+		} else {
+			data.put(Keys.UID, uid);
+			data.setParsingStatus(ParsingStatus.SUCCESS);
+		}
+		return data;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		return null;
+	}
+
+	private boolean isInteger(String input) {
+		try {
+			Integer.parseInt(input);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	private int extractUid(String input) {
+		String parts[] = input.split(" ");
+		if (parts.length >= 3) {
+			String uid = parts[2];
+			if (isInteger(uid)) {
+				int id = Integer.parseInt(uid);
+				return id;
+			}
+		} 
+		return -1;
+	}
+}
+
+	// End of segment: .\udo\parser\util\ToggleDoneAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\TrashAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class TrashAction implements Action {
+
+	/**
+	 * This class helps handle all input without command
+	 */
+	
+	public TrashAction() {
+
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData trashInputData = new InputData(type);
+		trashInputData.setParsingStatus(ParsingStatus.FAIL);
+		return trashInputData;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\TrashAction.java
+
+
+
+
+
+	/**
+	 * origin: .\udo\parser\util\UndoAction.java
+	 */
+
+package udo.parser.util;
+
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.ParsingStatus;
+
+public class UndoAction implements Action {
+
+	/**
+	 * This class undo previous commands
+	 * Input recieve by this class is in the format: 
+	 * "undo"
+	 */
+	
+	public UndoAction() {
+		
+	}
+
+	@Override
+	public InputData run(Command type) {
+		InputData undoInputData = new InputData(type);
+		undoInputData.setParsingStatus(ParsingStatus.SUCCESS);
+		return undoInputData;
+	}
+
+	@Override
+	public InputData run(Command type, String input) {
+		return null;
+	}
+
+}
+
+	// End of segment: .\udo\parser\util\UndoAction.java
 
 
 
@@ -456,13 +2670,13 @@ import java.util.Calendar;
 
 import org.junit.Test;
 
-import udo.main.Parser;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.ParsingStatus;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.enums.Command;
+import udo.enums.EditField;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+import udo.parser.Parser;
 
 public class ParserUnitTest {
 
@@ -681,7 +2895,7 @@ public class ParserUnitTest {
 	@Test
 	public void testAddTask() {
 		// boundary case of hashtag keyword
-		String task1 = "add Meet jane after #school #by saturday 7:55pm";
+		String task1 = "add Meet jane after #school #by today 7:55pm";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -699,11 +2913,10 @@ public class ParserUnitTest {
 		int hour = due.get(Calendar.HOUR);
 		int mins = due.get(Calendar.MINUTE);
 		
-		// This test case requires one to change the date
-		// commented out to next Saturday's date
-		// assertEquals(8, day);
-		// assertEquals(10, month);
-		// assertEquals(2014, year);
+		Calendar todayCal = Calendar.getInstance();
+		assertEquals(todayCal.get(Calendar.DAY_OF_MONTH), day);
+		assertEquals(todayCal.get(Calendar.MONTH), month);
+		assertEquals(todayCal.get(Calendar.YEAR), year);
 		assertEquals(7, hour);
 		assertEquals(55, mins);
 		
@@ -1371,2170 +3584,6 @@ public class ParserUnitTest {
 }
 
 	// End of segment: .\udo\tests\ParserUnitTest.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\Action.java
-	 */
-
-package udo.util.parser;
-
-import udo.language.LanguagePack;
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-
-public interface Action {
-	public final LanguagePack mLang = LanguagePack.getInstance();
-	public InputData run(Command type, String input);
-	public InputData run(Command type);
-}
-
-	// End of segment: .\udo\util\parser\Action.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\add\AddActionEvent.java
-	 */
-
-package udo.util.parser.add;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import udo.util.parser.DateGetter;
-import udo.util.parser.TimeGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class AddActionEvent implements AddActionType {
-	
-	/**
-	 * This class handles the raw input for add event. It fills up the InputData
-	 * passed to it.
-	 */
-
-	public AddActionEvent() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		String title = getTitle(details);
-		ArrayList<String> tags = getTags(details);
-		Calendar start = setFirstTimeAndDate(details);
-		Calendar end = setSecondTimeAndDate(details);
-		if (title != null && start != null && end != null) {
-			data.put(Keys.TITLE, title);
-			data.put(Keys.HASHTAGS, tags);
-			data.put(Keys.START, start);
-			data.put(Keys.END, end);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-	@Override
-	public String getTitle(String input) {
-		String title = input.replaceAll("#", "");
-		String parts[] = title.split(" ");
-		String newTitle = "";
-		for (int i = 1; i < parts.length; i++) {
-			if (parts[i].equals(mLang.getFROM())) {
-				break;
-			}
-			newTitle = newTitle + parts[i] + " "; 
-		}
-		if (newTitle.length() != 0) {
-			newTitle = newTitle.trim();
-			return newTitle;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public ArrayList<String> getTags(String input) {
-		ArrayList<String> tagArrayList = new ArrayList<String>();
-		String tag;
-		boolean hashTagFilled;
-		String words[] = input.split(" ");
-		for (String word : words) {
-			hashTagFilled = word.length() > 1;
-			if (word.startsWith("#") && hashTagFilled) {
-				tag = word.replaceFirst("#", "");
-				tagArrayList.add(tag);
-			}
-		}
-		return tagArrayList;
-	}
-	
-	public Calendar getDate(String input) {
-		DateGetter date = new DateGetter();
-		return date.getDate(input);
-	}
-	
-	public Calendar getTime(String input) {
-		TimeGetter time = new TimeGetter();
-		return time.getTime(input);
-	}
-	
-	public Calendar setFirstTimeAndDate(String details) {
-		Calendar start = getTime(details);
-		Calendar date = getDate(details);
-		if (start != null && date != null) {
-			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
-			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
-			return start;
-		}
-		return null;
-	}
-	
-	public Calendar setSecondTimeAndDate(String details) {
-		int toStringIndex = details.lastIndexOf(mLang.getTO());
-		String endingTimeDateString = details.substring(toStringIndex);
-		Calendar end = getTime(endingTimeDateString);
-		Calendar date = getDate(endingTimeDateString);
-		if (end != null && date != null) {
-			end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-			end.set(Calendar.MONTH, date.get(Calendar.MONTH));
-			end.set(Calendar.YEAR, date.get(Calendar.YEAR));
-			return end;
-		} else if (end != null) {
-			date = getDate(details);
-			if (date != null) {
-				end.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-				end.set(Calendar.MONTH, date.get(Calendar.MONTH));
-				end.set(Calendar.YEAR, date.get(Calendar.YEAR));
-				return end;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\add\AddActionEvent.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\add\AddActionPlan.java
-	 */
-
-package udo.util.parser.add;
-
-import java.util.ArrayList;
-
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
-
-public class AddActionPlan implements AddActionType {
-
-	/**
-	 * This class handles all Plans. It fills in the InputData passed to it.
-	 */
-	
-	public AddActionPlan() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		String title = getTitle(details);
-		ArrayList<String> tags = getTags(details);
-		if (title != null) {
-			data.put(Keys.TITLE, title);
-			data.put(Keys.HASHTAGS, tags);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-	@Override
-	public String getTitle(String input) {
-		String title = input.replaceAll("#", "");
-		String parts[] = title.split(" ");
-		String newTitle = "";
-		for (int i = 1; i < parts.length; i++) {
-			newTitle = newTitle + parts[i] + " "; 
-		}
-		if (newTitle.length() != 0) {
-			newTitle = newTitle.trim();
-			return newTitle;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public ArrayList<String> getTags(String input) {
-		ArrayList<String> tagArrayList = new ArrayList<String>();
-		String tag;
-		String words[] = input.split(" ");
-		for (String word : words) {
-			if (word.startsWith("#")) {
-				tag = word.replaceFirst("#", "");
-				assert(!tag.isEmpty());
-				tagArrayList.add(tag);
-			}
-		}
-		return tagArrayList;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\add\AddActionPlan.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\add\AddActionTask.java
-	 */
-
-package udo.util.parser.add;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import udo.util.parser.DateGetter;
-import udo.util.parser.TimeGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class AddActionTask implements AddActionType {
-
-	/**
-	 * This class handles all Tasks. It fills in the InputData passed to it.
-	 */
-	
-	public AddActionTask() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		String title = getTitle(details);
-		ArrayList<String> tags = getTags(details);
-		Calendar end = setFirstTimeAndDate(details);
-		if (title != null && end != null) {
-			data.put(Keys.TITLE, title);
-			data.put(Keys.HASHTAGS, tags);
-			data.put(Keys.DUE, end);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}	
-	}
-
-	@Override
-	public String getTitle(String input) {
-		String title = input.replaceAll("#", "");
-		String parts[] = title.split(" ");
-		String newTitle = "";
-		for (int i = 1; i < parts.length; i++) {
-			if (parts[i].equals(mLang.getBY())) {
-				break;
-			}
-			newTitle = newTitle + parts[i] + " "; 
-		}
-		if (newTitle.length() != 0) {
-			newTitle = newTitle.trim();
-			return newTitle;
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public ArrayList<String> getTags(String input) {
-		ArrayList<String> tagArrayList = new ArrayList<String>();
-		String tag;
-		boolean hashTagFilled;
-		String words[] = input.split(" ");
-		for (String word : words) {
-			hashTagFilled = word.length() > 1;
-			if (word.startsWith("#") && hashTagFilled) {
-				tag = word.replaceFirst("#", "");
-				tagArrayList.add(tag);
-			}
-		}
-		return tagArrayList;
-	}
-	
-	public Calendar getDate(String input) {
-		DateGetter date = new DateGetter();
-		return date.getDate(input);
-	}
-	
-	public Calendar getTime(String input) {
-		TimeGetter time = new TimeGetter();
-		return time.getTime(input);
-	}
-	
-	public Calendar setFirstTimeAndDate(String details) {
-		Calendar start = getTime(details);
-		Calendar date = getDate(details);
-		if (start != null && date != null) {
-			start.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
-			start.set(Calendar.MONTH, date.get(Calendar.MONTH));
-			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
-			return start;
-		} else {
-			return null;
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\add\AddActionTask.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\add\AddActionType.java
-	 */
-
-package udo.util.parser.add;
-
-import java.util.ArrayList;
-
-import udo.language.LanguagePack;
-import udo.util.shared.InputData;
-
-public interface AddActionType {
-	public final LanguagePack mLang = LanguagePack.getInstance();
-	public void fill(String details, InputData data);
-	public String getTitle(String input);
-	public ArrayList<String> getTags(String input);
-	
-}
-
-	// End of segment: .\udo\util\parser\add\AddActionType.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\AddAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.parser.add.AddActionEvent;
-import udo.util.parser.add.AddActionPlan;
-import udo.util.parser.add.AddActionTask;
-import udo.util.parser.add.AddActionType;
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-
-
-/** 
- * This class takes in ADD commands and break them into the following:
- * ADD_EVENT, ADD_TASK, ADD_PLAN
- * <p>
- * ADD_EVENT command is for events. Events contain a starting time and an ending time.
- * ADD_TASK command is for tasks. Tasks contain 1 deadline.
- * ADD_PLAN command is for plans. Plans have no deadlines nor starting and ending time.
- * <p>
- * Input recieve by this class is in the format: 
- * "add <<title>> from <<date>> <<time>> to <<date>> <<time>>"
- * "add <<title>> from <<date>> <<time>> to <<time>>"
- * "add <<title>> by <<date>> <<time>>"
- * "add <<title>>"
- */
-
-public class AddAction implements Action {
-	
-	
-	/**
-	 * This method takes in user input and returns an InputData of the following 
-	 * CommandType: ADD_EVENT, ADD_TASK, ADD_PLAN
-	 * and the stores them in the necessary fields.
-	 * 
-	 * @param type
-	 * @param details
-	 * @return an InputData
-	 */
-	@Override
-	public InputData run(Command type, String details) {
-		InputData data;
-		if (isEvent(details)) {
-			data = new InputData(Command.ADD_EVENT);
-			AddActionType event = new AddActionEvent();
-			event.fill(details, data);
-		} else if (isTask(details)) {
-			data = new InputData(Command.ADD_TASK);
-			AddActionType task = new AddActionTask();
-			task.fill(details, data);
-		} else {
-			data = new InputData(Command.ADD_PLAN);
-			AddActionType plan = new AddActionPlan();
-			plan.fill(details, data);
-		} 
-		return data;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-
-	private boolean isEvent(String details) {
-		String task = details.toLowerCase();
-		task = task.replaceAll("#", "");
-		String parts[] = task.split(" ");
-		boolean containsKeywordFrom = false;
-		boolean containsKeywordTo = false;
-		for (int i = 0; i < parts.length; i++) {
-			if (parts[i].equals(mLang.getFROM())) {
-				containsKeywordFrom = true;
-			}
-			if (parts[i].equals(mLang.getTO())) {
-				containsKeywordTo = true;
-			}
-		}
-		if (containsKeywordFrom && containsKeywordTo) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean isTask(String details) {
-		String task = details.toLowerCase();
-		task = task.replaceAll("#", "");
-		String parts[] = task.split(" ");
-		boolean containsKeywordBy = false;
-		for (int i = 0; i < parts.length; i++) {
-			if (parts[i].equals(mLang.getBY())) {
-				containsKeywordBy = true;
-			}
-		}
-		if (containsKeywordBy) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\AddAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\DateGetter.java
-	 */
-
-package udo.util.parser;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-import udo.language.LanguagePack;
-
-public class DateGetter {
-	
-	/**
-	 * This class returns a calendar object set to the first date it reads from 
-	 * the input. It takes in days and returns a date. 
-	 * Dates from days will be set a week from the current date.
-	 * It takes in date of format dd/MM, dd/MM/yy and dd/MM/yyyy
-	 */
-
-	private LanguagePack mLang = LanguagePack.getInstance();
-	
-	private static Calendar mDate = null;
-	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
-	private String mDays[] = {
-			mLang.getTODAY(), 
-			mLang.getSUNDAY(), 
-			mLang.getMONDAY(), 
-			mLang.getTUESDAY(),					
-			mLang.getWEDNESDAY(), 
-			mLang.getTHURSDAY(), 
-			mLang.getFRIDAY(), 
-			mLang.getSATURDAY(), 
-			mLang.getTOMORROW()};
-	
-	public DateGetter() {
-		
-	}
-	
-	/**
-	 * Method returns the first date it reads from input.
-	 * Detects date by "/" character
-	 * Dates cannot contain spaces in-between
-	 * Days will be set a week from the the current date
-	 * 
-	 * @param input string
-	 * @return Calendar date object
-	 */
-	public Calendar getDate(String input) {
-		decipherText(input);
-		return mDate;
-	}
-	
-	// facilitates how all instructions are run
-	private void decipherText(String input) {
-		int dateFormat = getDateFormat(input);
-		if (dateFormat == -1) { 		// if date format does not exist, it is a day format
-			int day = getDay(input);
-			mDate = formatDaySubstring(day);
-		} else if (dateFormat != 3) {	// if date format is not "", it is one of the formats provided
-			String dateString = getDateString(input, dateFormat);
-			mDate = formatDateSubstring(dateString, dateFormat);
-		} else {
-			mDate = null;
-		}
-	}
-
-	private int getDateFormat(String input) {
-		if (input.contains("/")) {
-			int dayMonthSlashIndex = input.indexOf("/");
-			int offset = dayMonthSlashIndex + 1; 	// gets the second "/" from "dd/mm/yy" 
-			int monthYearSlashIndex = input.indexOf("/", offset); 
-	
-			if (monthYearSlashIndex == -1 ||
-				!containsYear(dayMonthSlashIndex, monthYearSlashIndex)) { // dd/MM format
-				return 0;
-			} else if (containsYear(dayMonthSlashIndex, monthYearSlashIndex) &&
-						!hasFourYearDigits(monthYearSlashIndex, input)) {
-				return 1;
-			} else if (containsYear(dayMonthSlashIndex, monthYearSlashIndex) &&
-					hasFourYearDigits(monthYearSlashIndex, input)) {
-				return 2;
-			} else {
-				return 3;
-			}
-		} else {
-			return -1;
-		}
-	}
-
-	// checks if the first "/" and second "/" are from the same date string
-	private boolean containsYear(int dayMonthSlashIndex, int monthYearSlashIndex) {
-		int difference = monthYearSlashIndex - dayMonthSlashIndex;
-		if (difference == 2 || difference == 3) { // xx/x/xx or xx/xx/xx (one month or 2 months)
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private boolean hasFourYearDigits(int monthYearSlashIndex, String input) {
-		String year = input;
-		int yearStartIndex = monthYearSlashIndex + 1; 	// index of first year digit
-		int yearEndIndex = monthYearSlashIndex + 5;		// index of last year digit
-		if (yearEndIndex > year.length()) {				// takes into account substring API offset
-			yearEndIndex = year.length();
-		}
-		int yearDigits = 0;
-		String yearDigit;
-		for (int i = yearStartIndex; i < yearEndIndex; i++) {
-			yearDigit = year.substring(i, i + 1);
-			if (isInteger(yearDigit)) {
-				yearDigits++;
-			}
-		}
-		
-		if (yearDigits == 4) { 
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private String getDateString(String input, int dateFormat) {
-		switch (dateFormat) {
-			case 0:
-				return extractDateWithNoYears(input);
-			case 1:
-				return extractDateWithTwoYears(input);
-			case 2:
-				return extractDateWithFourYears(input);
-			default:
-				return null;
-		}
-	}
-
-	private String extractDateWithNoYears(String input) {
-		String dateString = input.toUpperCase();
-		String dateStringArr[] = dateString.split(" ");
-		boolean isOfValidLength;
-		String dayFirstDigit;
-		String monthLastDigit;
-		int monthLastDigitIndex;
-		for (int i = 0; i < dateStringArr.length; i++) {
-			isOfValidLength = (dateStringArr[i].length() >= 3 && dateStringArr[i].length() <= 5); // d/m to dd/mm
-			dayFirstDigit = dateStringArr[i].substring(0, 1);
-			monthLastDigitIndex = dateStringArr[i].length() - 1;
-			monthLastDigit = dateStringArr[i].substring(monthLastDigitIndex);
-			if (dateStringArr[i].contains("/") &&
-				isOfValidLength &&
-				isInteger(dayFirstDigit) &&
-				isInteger(monthLastDigit)) { 
-				return dateStringArr[i];
-			}
-		}
-		return null;
-	}
-
-	private String extractDateWithTwoYears(String input) {
-		String dateString = input.toUpperCase();
-		String dateStringArr[] = dateString.split(" ");
-		boolean isOfValidLength;
-		String dayFirstDigit;
-		String yearLastDigit;
-		int yearLastDigitIndex;
-		for (int i = 0; i < dateStringArr.length; i++) {
-			isOfValidLength = (dateStringArr[i].length() >= 6 && dateStringArr[i].length() <=8); // d/m/yy to dd/mm/yy
-			dayFirstDigit = dateStringArr[i].substring(0, 1);
-			yearLastDigitIndex = dateStringArr[i].length() - 1;
-			yearLastDigit = dateStringArr[i].substring(yearLastDigitIndex);
-			if (dateStringArr[i].contains("/") &&
-				isOfValidLength &&
-				isInteger(dayFirstDigit) &&
-				isInteger(yearLastDigit)) { 
-				return dateStringArr[i];
-			}
-		}
-		return null;
-	}
-
-	private String extractDateWithFourYears(String input) {
-		String dateString = input.toUpperCase();
-		String dateStringArr[] = dateString.split(" ");
-		boolean isOfValidLength;
-		String dayFirstDigit;
-		String yearLastDigit;
-		int yearLastDigitIndex;
-		for (int i = 0; i < dateStringArr.length; i++) {
-			isOfValidLength = (dateStringArr[i].length() >= 8 && dateStringArr[i].length() <=10); // d/m/yyyy to dd/mm/yyyy
-			dayFirstDigit = dateStringArr[i].substring(0, 1);
-			yearLastDigitIndex = dateStringArr[i].length() - 1;
-			yearLastDigit = dateStringArr[i].substring(yearLastDigitIndex);
-			if (dateStringArr[i].contains("/") &&
-				isOfValidLength &&
-				isInteger(dayFirstDigit) &&
-				isInteger(yearLastDigit)) { 
-				return dateStringArr[i];
-			}
-		}
-		return null;
-	}
-
-	private Calendar formatDateSubstring(String input, int dateFormat) {
-		Calendar cal = Calendar.getInstance();
-		int year = cal.get(Calendar.YEAR);
-		SimpleDateFormat format = new SimpleDateFormat(mDateFormat[dateFormat]);
-		Date date;
-		if (input != null) {
-			try {
-				date = format.parse(input);
-				cal.setTime(date);
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				cal.set(Calendar.MINUTE, 59);
-				
-				if (dateFormat == 0) {
-					cal.set(Calendar.YEAR, year);
-				}
-			} catch (ParseException parserException) {
-				cal = null;
-				return cal;
-			}
-			return cal;
-		} else {
-			cal = null;
-			return cal;
-		}
-	}
-
-	private boolean isInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	private int getDay(String input) {
-		String dayString = input.toLowerCase();
-		for (int i = 0; i < mDays.length; i++) {
-			if (dayString.contains(mDays[i])) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	private Calendar formatDaySubstring(int day) {
-		Calendar cal = Calendar.getInstance();
-		int difference = getDayNextWeek(day, cal);
-		if (day == 0) {
-			return cal;
-		} else if (day == 8) {
-			cal.add(Calendar.DATE, 1);
-			return cal;
-		} else if (day > 0 && day < 8) {
-			cal.add(Calendar.DAY_OF_MONTH, difference);
-			return cal;
-		} else {
-			cal = null;
-			return cal;
-		}
-	}
-
-	private int getDayNextWeek(int day, Calendar cal) {
-		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-		int difference = day - dayOfWeek;
-		if (difference < 0) {
-			difference = 7 + difference;
-		} else if (difference == 0) {
-			difference = 7;
-		}
-		return difference;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\DateGetter.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\DeleteAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class DeleteAction implements Action {
-	
-	/**
-	 * This class reads in the uid to be deleted.
-	 * Input recieved by this class is in the format: "delete <<uid>>"
-	 */
-
-	public DeleteAction() {
-		
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-	
-	@Override
-	public InputData run(Command type, String input) {
-		InputData data = new InputData(type);
-		int uid = extractUid(input);
-		if (uid == -1) {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		} else {
-			data.put(Keys.UID, uid);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		}
-		return data;
-	}
-	
-	private boolean isInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
-	private int extractUid(String input) {
-		String parts[] = input.split(" ");
-		if (parts.length >= 2) {
-			String uid = parts[1];
-			if (isInteger(uid)) {
-				int id = Integer.parseInt(uid);
-				return id;
-			}
-		} 
-		return -1;
-	}
-}
-
-	// End of segment: .\udo\util\parser\DeleteAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionDueDate.java
-	 */
-
-package udo.util.parser.edit;
-
-import java.util.Calendar;
-
-import udo.util.parser.DateGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class EditActionDueDate implements EditActionField {
-
-	/**
-	 * This class handles the due date field
-	 */
-	
-	public EditActionDueDate() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		DateGetter date = new DateGetter();
-		Calendar dueDate = date.getDate(details);
-		if (dueDate != null) {
-			data.put(Keys.FIELD, EditField.DUE_DATE);
-			data.put(Keys.VALUE, dueDate);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionDueDate.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionDueTime.java
-	 */
-
-package udo.util.parser.edit;
-
-import java.util.Calendar;
-
-import udo.util.parser.TimeGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class EditActionDueTime implements EditActionField {
-
-	/**
-	 * This class handles the due time field
-	 */
-	
-	public EditActionDueTime() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		TimeGetter time = new TimeGetter();
-		Calendar dueTime = time.getTime(details);
-		if (dueTime != null) {
-			data.put(Keys.FIELD, EditField.DUE_TIME);
-			data.put(Keys.VALUE, dueTime);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionDueTime.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionEndDate.java
-	 */
-
-package udo.util.parser.edit;
-
-import java.util.Calendar;
-
-import udo.util.parser.DateGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class EditActionEndDate implements EditActionField {
-
-	/**
-	 * This class handles the end date field
-	 */
-	
-	public EditActionEndDate() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		DateGetter d = new DateGetter();
-		Calendar endDate = d.getDate(details);
-		if (endDate != null) {
-			data.put(Keys.FIELD, EditField.END_DATE);
-			data.put(Keys.VALUE, endDate);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);	
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionEndDate.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionEndTime.java
-	 */
-
-package udo.util.parser.edit;
-
-import java.util.Calendar;
-
-import udo.util.parser.TimeGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class EditActionEndTime implements EditActionField {
-
-	/**
-	 * This class handles the end time field
-	 */
-	
-	public EditActionEndTime() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		TimeGetter time = new TimeGetter();
-		Calendar endTime = time.getTime(details);
-		if (endTime != null) {
-			data.put(Keys.FIELD, EditField.END_TIME);
-			data.put(Keys.VALUE, endTime);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionEndTime.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionField.java
-	 */
-
-package udo.util.parser.edit;
-
-import udo.util.shared.InputData;
-
-public interface EditActionField {
-	
-	public void fill(String details, InputData data);
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionField.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionStartDate.java
-	 */
-
-package udo.util.parser.edit;
-
-import java.util.Calendar;
-
-import udo.util.parser.DateGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class EditActionStartDate implements EditActionField {
-
-	/**
-	 * This class handles the start date field
-	 */
-	
-	public EditActionStartDate() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		DateGetter d = new DateGetter();
-		Calendar startDate = d.getDate(details);
-		if (startDate != null) {
-			data.put(Keys.FIELD, EditField.START_DATE);
-			data.put(Keys.VALUE, startDate);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionStartDate.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionStartTime.java
-	 */
-
-package udo.util.parser.edit;
-
-import java.util.Calendar;
-
-import udo.util.parser.TimeGetter;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class EditActionStartTime implements EditActionField {
-
-	/**
-	 * This class handles the start time field
-	 */
-	
-	public EditActionStartTime() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		TimeGetter time = new TimeGetter();
-		Calendar startTime = time.getTime(details);
-		if (startTime != null) {
-			data.put(Keys.FIELD, EditField.START_TIME);
-			data.put(Keys.VALUE, startTime);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionStartTime.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\edit\EditActionTitle.java
-	 */
-
-package udo.util.parser.edit;
-
-import java.util.ArrayList;
-
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class EditActionTitle implements EditActionField {
-
-	/**
-	 * This class handles the title field
-	 */
-	
-	public EditActionTitle() {
-		
-	}
-
-	@Override
-	public void fill(String details, InputData data) {
-		String title = getTitle(details);
-		ArrayList<String> tags = getTags(details);
-		if (title != null && !title.isEmpty()) {
-			data.put(Keys.FIELD, EditField.TITLE);
-			data.put(Keys.VALUE, title);
-			data.put(Keys.HASHTAGS, tags);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-	
-	private String getTitle(String details) {
-		String title = details.replaceAll("#", "");
-		String parts[] = title.split(" ");
-		String newTitle = "";
-		for (int i=3; i< parts.length; i++) { 		// "edit 12345 title <new title>"
-			newTitle = newTitle + parts[i] + " ";	// new title starts from index 3
-		}
-		newTitle = newTitle.trim();
-		if (newTitle.length() != 0) {
-			return newTitle;
-		} else {
-			return null;
-		}
-	}
-	
-	private ArrayList<String> getTags(String input) {
-		ArrayList<String> tagArrayList = new ArrayList<String>();
-		String tag;
-		boolean hashTagFilled;
-		String words[] = input.split(" ");
-		for (String word : words) {
-			hashTagFilled = word.length() > 1;
-			if (word.startsWith("#") && hashTagFilled) {
-				tag = word.replaceFirst("#", "");
-				tagArrayList.add(tag);
-			}
-		}
-		return tagArrayList;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\edit\EditActionTitle.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\EditAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.parser.edit.EditActionDueDate;
-import udo.util.parser.edit.EditActionDueTime;
-import udo.util.parser.edit.EditActionEndDate;
-import udo.util.parser.edit.EditActionEndTime;
-import udo.util.parser.edit.EditActionField;
-import udo.util.parser.edit.EditActionStartDate;
-import udo.util.parser.edit.EditActionStartTime;
-import udo.util.parser.edit.EditActionTitle;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-/**
- * This class handles all editing done by the user.
- * Input recieve by this class is in the format: 
- * "edit <<uid>> <<field to edit>> <<new info>>"
- */
-
-public class EditAction implements Action {
-	
-	String[] mFields = {
-			mLang.getTITLE(),
-			mLang.getSTART_TIME(), 
-			mLang.getEND_TIME(), 
-			mLang.getSTART_DATE(), 
-			mLang.getEND_DATE(),
-			mLang.getDUE_TIME(), 
-			mLang.getDUE_DATE()};
-	
-	@Override
-	public InputData run(Command type, String details) {
-		InputData data = new InputData(type);
-		int uid = getUid(details);
-		String field = getField(details);
-		
-		if (uid != -1 && field != null) {
-			data.put(Keys.UID, uid);
-			updateField(field, data, details);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-		return data;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-	
-	private void updateField(String field, InputData data, String details) {
-		if (field.equals(mLang.getTITLE())) {
-			setTitle(data, details);
-			
-		} else if (field.equals(mLang.getSTART_TIME())) {
-			setStartTime(data, details);
-			
-		} else if (field.equals(mLang.getEND_TIME())) {
-			setEndTime(data, details);
-			
-		} else if (field.equals(mLang.getSTART_DATE())) {
-			setStartDate(data, details);
-			
-		} else if (field.equals(mLang.getEND_DATE())) {
-			setEndDate(data, details);
-			
-		} else if (field.equals(mLang.getDUE_TIME())) {
-			setDueTime(data, details);
-			
-		} else if (field.equals(mLang.getDUE_DATE())) {
-			setDueDate(data, details);
-			
-		} else {
-			// do nothing
-		}
-	}
-	
-	// check whether any of the value returned is null
-	private void setTitle(InputData data, String details) {
-		EditActionField title = new EditActionTitle();
-		title.fill(details, data);
-	}
-	
-	private void setStartTime(InputData data, String details) {
-		EditActionField startTime = new EditActionStartTime();
-		startTime.fill(details, data);
-	}
-	
-	private void setEndTime(InputData data, String details) {
-		EditActionField endTime = new EditActionEndTime();
-		endTime.fill(details, data);
-	}
-	
-	private void setStartDate(InputData data, String details) {
-		EditActionField startDate = new EditActionStartDate();
-		startDate.fill(details, data);
-	}
-	
-	private void setEndDate(InputData data, String details) {
-		EditActionField endDate = new EditActionEndDate();
-		endDate.fill(details, data);
-	}
-	
-	private void setDueTime(InputData data, String details) {
-		EditActionField dueTime = new EditActionDueTime();
-		dueTime.fill(details, data);
-	}
-	
-	private void setDueDate(InputData data, String details) {
-		EditActionField dueDate = new EditActionDueDate();
-		dueDate.fill(details, data);
-	}
-
-	private int getUid(String details) {
-		String[] words = details.split(" ");
-		if (words.length > 1) {
-			String uidString = words[1];
-			int uid = -1;
-			try {
-				 uid = Integer.parseInt(uidString);
-			} catch (NumberFormatException nfe) {
-				
-			}
-			return uid;
-		} else {
-			return -1;
-		}
-	}
-	
-	private String getField(String details) {
-		details = details.toLowerCase();
-		for (int i = 0; i < mFields.length; i++) {
-			if (details.contains(mFields[i])) {
-				return mFields[i];
-			}
-		}
-		return null;
-	}
-	
-}
-
-	// End of segment: .\udo\util\parser\EditAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\ExitAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class ExitAction  implements Action {
-
-	/**
-	 * This class handles the exit command.
-	 * Input recieve by this class is in the format: 
-	 * "exit"
-	 */
-	
-	public ExitAction() {
-
-	}
-
-	@Override
-	public InputData run(Command type, String input) {
-		return null;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		InputData exitInputData = new InputData(type);
-		exitInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return exitInputData;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\ExitAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\list\ListActionAll.java
-	 */
-
-package udo.util.parser.list;
-
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.ParsingStatus;
-
-public class ListActionAll implements ListActionCommand {
-
-	/**
-	 * This class handles the All field
-	 */
-	
-	public ListActionAll() {
-		
-	}
-	
-	@Override
-	public void fill(Command type, String details, InputData data) {
-		data.put(Keys.QUERY_TYPE, ListQuery.ALL);
-		data.setParsingStatus(ParsingStatus.SUCCESS);
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\list\ListActionAll.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\list\ListActionCommand.java
-	 */
-
-package udo.util.parser.list;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-
-public interface ListActionCommand {
-
-	public void fill(Command type, String details, InputData data);
-}
-
-	// End of segment: .\udo\util\parser\list\ListActionCommand.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\list\ListActionDate.java
-	 */
-
-package udo.util.parser.list;
-
-import java.util.Calendar;
-
-import udo.util.parser.DateGetter;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.ParsingStatus;
-
-public class ListActionDate implements ListActionCommand {
-
-	/**
-	 * This class handles the date field
-	 */
-	
-	public ListActionDate() {
-		
-	}
-
-	@Override
-	public void fill(Command type, String details, InputData data) {
-		DateGetter listDate = new DateGetter();
-		Calendar date = listDate.getDate(details);
-		if (date != null) {
-			data.put(Keys.QUERY_TYPE, ListQuery.DATE);
-			data.put(Keys.QUERY_VALUE, date);	
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\list\ListActionDate.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\list\ListActionDone.java
-	 */
-
-package udo.util.parser.list;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
-
-public class ListActionDone implements ListActionCommand {
-
-	/**
-	 * This class handles the done field
-	 */
-	
-	public ListActionDone() {
-		
-	}
-
-	@Override
-	public void fill(Command type, String details, InputData data) {
-		data.put(Keys.QUERY_TYPE, ListQuery.DONE);
-		data.setParsingStatus(ParsingStatus.SUCCESS);
-
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\list\ListActionDone.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\list\ListActionHashtag.java
-	 */
-
-package udo.util.parser.list;
-
-import java.util.ArrayList;
-
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ListQuery;
-import udo.util.shared.ParsingStatus;
-
-public class ListActionHashtag implements ListActionCommand {
-
-	/**
-	 * This class handles the hashtag field
-	 */
-	
-	public ListActionHashtag() {
-		
-	}
-
-	@Override
-	public void fill(Command type, String details, InputData data) {
-		ArrayList<String> tags = getTags(details);
-		if (!tags.isEmpty()) {
-			data.put(Keys.QUERY_VALUE, tags.get(0));
-			data.put(Keys.QUERY_TYPE, ListQuery.SINGLE_HASHTAG);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		}
-	}
-	
-	private ArrayList<String> getTags(String input) {
-		ArrayList<String> tagArrayList = new ArrayList<String>();
-		String tag;
-		boolean hashTagFilled;
-		String words[] = input.split(" ");
-		for (String word : words) {
-			hashTagFilled = word.length() > 1;
-			if (word.startsWith("#") && hashTagFilled) {
-				tag = word.replaceFirst("#", "");
-				tagArrayList.add(tag);
-			}
-		}
-		return tagArrayList;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\list\ListActionHashtag.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\ListAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.parser.list.ListActionAll;
-import udo.util.parser.list.ListActionCommand;
-import udo.util.parser.list.ListActionDate;
-import udo.util.parser.list.ListActionDone;
-import udo.util.parser.list.ListActionEvent;
-import udo.util.parser.list.ListActionHashtag;
-import udo.util.parser.list.ListActionPlan;
-import udo.util.parser.list.ListActionTask;
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class ListAction implements Action {
-	
-	/**
-	 * This class takes in the field to be displayed.
-	 * Input recieve by this class is in the format: 
-	 * "list <<field>>"
-	 */
-	
-	String mFields[] = {"#", 
-			mLang.getALL(), 
-			mLang.getDONE(), 
-			mLang.getEVENT(), 
-			mLang.getTASK(), 
-			mLang.getPLAN(), 
-			"/", 
-			mLang.getDAY(), 
-			mLang.getTOMORROW()};
-
-	@Override
-	public InputData run(Command type, String details) {
-		InputData data = new InputData(type);
-		int field = getField(details);
-		ListActionCommand list;
-		switch (field) {
-			case 0 :
-				list = new ListActionHashtag();
-				list.fill(type, details, data);
-				break;
-			case 1 :
-				list = new ListActionAll();
-				list.fill(type, details, data);
-				break;
-			case 2 :
-				list = new ListActionDone();
-				list.fill(type, details, data);
-				break;
-			case 3 :
-				list = new ListActionEvent();
-				list.fill(type, details, data);
-				break;
-			case 4 :
-				list = new ListActionTask();
-				list.fill(type, details, data);
-				break;
-			case 5 :
-				list = new ListActionPlan();
-				list.fill(type, details, data);
-				break;
-			case 6 :
-				list = new ListActionDate();
-				list.fill(type, details, data);
-				break;
-			case 7 :
-				list = new ListActionDate();
-				list.fill(type, details, data);
-				break;
-			case 8 :
-				list = new ListActionDate();
-				list.fill(type, details, data);
-				break;
-			default:
-				data.setParsingStatus(ParsingStatus.FAIL);
-				break;
-		}
-		return data;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-	
-	private int getField(String input) {
-		String field = input.toLowerCase();
-		for (int i = 0; i < mFields.length; i++) {
-			if (field.contains(mFields[i])) {
-				return i;
-			}
-		}
-		return 0;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\ListAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\MarkAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
-
-public class MarkAction implements Action {
-
-	/**
-	 * This class takes in the items that marked completed.
-	 * Input recieve by this class is in the format: 
-	 * "done <<uid>>"
-	 */
-	
-	public MarkAction() {
-		
-	}
-
-	@Override
-	public InputData run(Command type, String input) {
-		InputData data = new InputData(type);
-		int uid = extractUid(input);
-		if (uid == -1) {
-			data.setParsingStatus(ParsingStatus.FAIL);
-		} else {
-			data.put(Keys.UID, uid);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		}
-		return data;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-	
-	private boolean isInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
-	private int extractUid(String input) {
-		String parts[] = input.split(" ");
-		if (parts.length >= 2) {
-			String uid = parts[1];
-			if (isInteger(uid)) {
-				int id = Integer.parseInt(uid);
-				return id;
-			}
-		} 
-		return -1;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\MarkAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\SaveAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class SaveAction implements Action {
-
-	/**
-	 * This class handles the save command.
-	 * Input recieve by this class is in the format: 
-	 * "save"
-	 */
-	
-	public SaveAction() {
-
-	}
-
-	@Override
-	public InputData run(Command type) {
-		InputData saveInputData = new InputData(type);
-		saveInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return saveInputData;
-	}
-
-	@Override
-	public InputData run(Command type, String input) {
-		return null;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\SaveAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\SearchAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class SearchAction implements Action {
-
-	public SearchAction() {
-		
-	}
-
-	@Override
-	public InputData run(Command type, String input) {
-		InputData searchInputData = new InputData(type);
-		if (isValidSearch(input)) {
-			String searchString = getSearchQuery(input);
-			searchInputData.put(Keys.SEARCH_QUERY, searchString);
-			searchInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		} else {
-			searchInputData.setParsingStatus(ParsingStatus.FAIL);
-		}
-		return searchInputData;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-	
-	private String getSearchQuery(String input) {
-		String parts[] = input.split(" ");
-		String searchString = "";
-		for (int i = 1; i < parts.length; i++) {
-			searchString = searchString + parts[i] + " ";
-		}
-		return searchString;
-	}
- 
-	private boolean isValidSearch(String input) {
-		String parts[] = input.split(" ");
-		if (parts.length >= 2) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\SearchAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\TimeGetter.java
-	 */
-
-package udo.util.parser;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
-public class TimeGetter {
-	
-	/**
-	 * This class takes returns a calendar object set to the first time it reads 
-	 * from input. It takes in time of format hh:mma and hha
-	 */
-
-	private Calendar mTime;
-	private String mTimeFormat[] = {"hh:mma", "hha"};
-
-	public TimeGetter() {
-		
-	}
-	
-	/**
-	 * Method returns the first time it reads from input.
-	 * Time must not have space in-between
-	 * @param input
-	 * @return Calendar time object
-	 */
-	public Calendar getTime(String input) {
-		decipherText(input);
-		return mTime;
-	}
-	
-	private void decipherText(String input) {
-		int timeFormat = getTimeFormat(input);
-		if (timeFormat == 0 || timeFormat == 1) {
-			String timeString = getTimeString(input, timeFormat);
-			mTime = formatTimeSubstring(timeString, timeFormat);
-		} else {
-			mTime = null;
-		}
-	}
-
-	private String getTimeString(String input, int timeFormat) {
-		switch (timeFormat) {
-			case 0:
-				return extractTimeWithMinutes(input);
-			case 1:
-				return extractTimeWithoutMinutes(input);
-			default:
-				return null;
-		}
-	}
-	
-	private boolean isInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	private String extractTimeWithMinutes(String input) {
-		String timeString = input.toUpperCase();
-		String time[] = timeString.split(" ");
-		for (int i = 0; i < time.length; i++) {
-			if (isValidTime(time[i])) {
-				return time[i];
-			}
-		}
-		return null;
-	}
-
-	private String extractTimeWithoutMinutes(String input) {
-		String time[] = input.split(" ");
-		for (int i = 0; i < time.length; i++) {
-			if (isValidTime(time[i])){
-				return time[i];
-			}
-		}
-		return null;
-	}
-
-	private boolean isValidTime(String time) {
-		time = time.toUpperCase();
-		if (time.length() == 3 || time.length() == 4) { // e.g. 3pm, 12am
-			String amPmString = time.substring(time.length() - 1);
-			String hour = time.substring(0, 1);
-			if (isInteger(hour) && amPmString.equals("M")) {
-				return true;
-			} else {
-				return false;
-			}
-		} else if (time.length() == 6 || time.length() == 7) { // e.g. 3:45am, 12:45pm
-			String amPmString = time.substring(time.length() - 1);
-			String hour = time.substring(0, 1);
-			if (isInteger(hour) && amPmString.equals("M")) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-
-	private Calendar formatTimeSubstring(String timeString, int timeFormat) {
-		Calendar cal = null;
-		SimpleDateFormat format = new SimpleDateFormat(mTimeFormat[timeFormat]);
-		Date date;
-		if (timeString != null) {
-			try {
-				date = format.parse(timeString);
-				cal = Calendar.getInstance();
-				cal.setTime(date);
-			} catch (ParseException parserException) {
-				cal = null;
-				return cal;
-			}
-		}
-		return cal;
-	}
-
-	private int getTimeFormat(String input) {
-		String parts[] = input.split(" ");
-		for (int i = 0; i < parts.length; i++) {
-			if (isValidTime(parts[i])) {
-				if (parts[i].length() == 3 || 	// e.g. 3pm 
-					parts[i].length() == 4) {	// e.g. 12pm
-					return 1;
-				} else {
-					return 0;
-				}
-			}
-		}
-		return -1;
-	}
-}
-
-	// End of segment: .\udo\util\parser\TimeGetter.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\ToggleDoneAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-import udo.util.shared.Constants.Keys;
-
-public class ToggleDoneAction implements Action {
-
-	/**
-	 * This class takes in the items that marked as not completed from the completed list.
-	 * Input recieve by this class is in the format: 
-	 * "toggle done <<uid>>"
-	 */
-	
-	public ToggleDoneAction() {
-		
-	}
-
-	@Override
-	public InputData run(Command type, String input) {
-		InputData data = new InputData(type);
-		int uid = extractUid(input);
-		if (uid == -1) {
-			data.setParsingStatus(ParsingStatus.FAIL);	
-		} else {
-			data.put(Keys.UID, uid);
-			data.setParsingStatus(ParsingStatus.SUCCESS);
-		}
-		return data;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		return null;
-	}
-
-	private boolean isInteger(String input) {
-		try {
-			Integer.parseInt(input);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
-	private int extractUid(String input) {
-		String parts[] = input.split(" ");
-		if (parts.length >= 3) {
-			String uid = parts[2];
-			if (isInteger(uid)) {
-				int id = Integer.parseInt(uid);
-				return id;
-			}
-		} 
-		return -1;
-	}
-}
-
-	// End of segment: .\udo\util\parser\ToggleDoneAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\TrashAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class TrashAction implements Action {
-
-	/**
-	 * This class helps handle all input without command
-	 */
-	
-	public TrashAction() {
-
-	}
-
-	@Override
-	public InputData run(Command type, String input) {
-		return null;
-	}
-
-	@Override
-	public InputData run(Command type) {
-		InputData trashInputData = new InputData(type);
-		trashInputData.setParsingStatus(ParsingStatus.FAIL);
-		return trashInputData;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\TrashAction.java
-
-
-
-
-
-	/**
-	 * origin: .\udo\util\parser\UndoAction.java
-	 */
-
-package udo.util.parser;
-
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
-import udo.util.shared.ParsingStatus;
-
-public class UndoAction implements Action {
-
-	/**
-	 * This class undo previous commands
-	 * Input recieve by this class is in the format: 
-	 * "undo"
-	 */
-	
-	public UndoAction() {
-		
-	}
-
-	@Override
-	public InputData run(Command type) {
-		InputData undoInputData = new InputData(type);
-		undoInputData.setParsingStatus(ParsingStatus.SUCCESS);
-		return undoInputData;
-	}
-
-	@Override
-	public InputData run(Command type, String input) {
-		return null;
-	}
-
-}
-
-	// End of segment: .\udo\util\parser\UndoAction.java
 
 
 
