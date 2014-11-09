@@ -59,8 +59,11 @@ public class Parser {
 	 * @return InputData object
 	 */
 	public InputData getInputData(String input) {
+		assert(input != null);
 		Command type = determineCommandType(input);
 		InputData data = processCommandType(type, input);
+		assert(data != null);
+		assert(data.getStatus() != null);
 		return data;
 	}
 	
@@ -138,7 +141,7 @@ public class Parser {
 				return search(commandType, details);
 				
 			default:
-				logWarning("command cannot be matched", details);
+				mLogger.log(Level.WARNING, "Command not typed", details);
 				return trash(commandType, details);
 			}
 	}
@@ -209,7 +212,4 @@ public class Parser {
 		return data;
 	}
 	
-	private void logWarning(String message, Object param) {
-		mLogger.log(Level.WARNING, message, param);
-	}
 }

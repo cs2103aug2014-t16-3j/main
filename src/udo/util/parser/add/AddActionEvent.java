@@ -29,14 +29,6 @@ public class AddActionEvent implements AddActionType {
 	
 	public AddActionEvent() {
 		mLogger = Logger.getLogger(Parser.class.getSimpleName());
-		try {
-			new File(LoggingStrings.LOGPATH_PARSER).mkdirs();
-			mLogger.addHandler(new FileHandler(LoggingStrings.LOGFILE_PARSER));
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		mLogger.setLevel(Level.ALL);
 	}
 
@@ -111,7 +103,8 @@ public class AddActionEvent implements AddActionType {
 			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
 			return start;
 		}
-		logInfo("Event first time and date cannot be set. 1 of this field is missing");
+		mLogger.log(Level.WARNING, 
+					"Event's first time and date cannot be set. 1 of this field is missing");
 		return null;
 	}
 	
@@ -133,16 +126,12 @@ public class AddActionEvent implements AddActionType {
 				end.set(Calendar.YEAR, date.get(Calendar.YEAR));
 				return end;
 			} else {
-				logInfo("Event 2nd time field is missing");
+				mLogger.log(Level.WARNING, "Event's 2nd time field is missing");
 				return null;
 			}
 		} else {
 			return null;
 		}
-	}
-	
-	private void logInfo(String message) {
-		mLogger.log(Level.INFO, message);
 	}
 
 }
