@@ -207,7 +207,7 @@ public class Entry extends JPanel {
 			time += UI.DD.format(endCal.getTime()) + " " + 
 					mLang.convertMonthToLanguage(UI.MMM.format(endCal.getTime()));
 		}
-		time += UI.HOUR_12.format(endCal.getTime());
+		time += " " + UI.HOUR_12.format(endCal.getTime());
 		return time;
 	}
 
