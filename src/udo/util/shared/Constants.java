@@ -112,6 +112,8 @@ public class Constants {
 		public static final String LOGFILE_ENGINE = LOGPATH_ENGINE + "engineLog.log";
 		public static final String LOGPATH_PARSER = "logs/parser/";
 		public static final String LOGFILE_PARSER = LOGPATH_PARSER + "parserLog.log";
+		public static final String LOGPATH_UI = "logs/ui/";
+		public static final String LOGFILE_UI = LOGPATH_UI + "uiLog.log";
 	}
 	
 	//@author A0108358B
@@ -140,6 +142,8 @@ public class Constants {
 		public static final KeyStroke ALT_E = KeyStroke.getKeyStroke("alt E");
 		public static final KeyStroke ALT_D = KeyStroke.getKeyStroke("alt D");
 		public static final KeyStroke ENTER = KeyStroke.getKeyStroke("ENTER");
+		public static final KeyStroke UP = KeyStroke.getKeyStroke("UP");
+		public static final KeyStroke DOWN = KeyStroke.getKeyStroke("DOWN");
 		
 		public static final int FONTSIZE_24 = 24;
 		public static final int FONTSIZE_20 = 20;

@@ -1,5 +1,6 @@
 package udo.tests;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -18,7 +19,16 @@ import udo.util.shared.ParsingStatus;
 
 public class UItest {
 
-	private static UserInterface ui = UserInterface.getInstance();
+	private static UserInterface UI = null;
+	{
+		try {
+			UI = UserInterface.getInstance();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(-1);
+		}
+	}
 	public static void main(String[] args) {
 		
 
@@ -58,7 +68,7 @@ public class UItest {
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		item.put(Keys.DONE, true);
 		output.put(Keys.ITEM, item);
-		ui.show(output);
+		UI.show(output);
 	}
 
 	private static void testMarkAsDone() {
@@ -70,7 +80,7 @@ public class UItest {
 		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		output.put(Keys.ITEM, item);
-		ui.show(output);
+		UI.show(output);
 	}
 
 	private static void testAddEvent() {
@@ -82,7 +92,7 @@ public class UItest {
 		item.put(Keys.END, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		output.put(Keys.ITEM, item);
-		ui.show(output);
+		UI.show(output);
 	}
 
 	private static void testAddTask() {
@@ -93,7 +103,7 @@ public class UItest {
 		item.put(Keys.DUE, Calendar.getInstance());
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		output.put(Keys.ITEM, item);
-		ui.show(output);
+		UI.show(output);
 	}
 
 	private static void testAddPlan() {
@@ -103,7 +113,7 @@ public class UItest {
 		item.put(Keys.TITLE, "sample SinglePLAN");
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		output.put(Keys.ITEM, item);
-		ui.show(output);	
+		UI.show(output);	
 	}
 
 	private static void testDeleteItem() {
@@ -113,7 +123,7 @@ public class UItest {
 		item.put(Keys.TITLE, "sample SingleItem");
 		item.put(Keys.HASHTAGS, new ArrayList<String>());
 		output.put(Keys.ITEM, item);
-		ui.show(output);
+		UI.show(output);
 		
 	}
 
@@ -125,7 +135,7 @@ public class UItest {
 		input.put(Keys.QUERY_VALUE, "test");
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData output = engine.execute(input);
-		ui.show(output);
+		UI.show(output);
 	}
 
 	private static void testListSingleDate() {
@@ -145,7 +155,7 @@ public class UItest {
 			data.add(input);
 		}
 		output.put(Keys.ITEMS, data);
-		ui.show(output);
+		UI.show(output);
 	}
 
 	private static void testEditItem() {
@@ -163,7 +173,7 @@ public class UItest {
 		newDate.set(2014, Calendar.DECEMBER, 14);
 		output.put(Keys.OLD_VALUE, newDate);
 		output.put(Keys.ITEM, item);
-		ui.show(output);
+		UI.show(output);
 		
 	}
 
@@ -185,7 +195,7 @@ public class UItest {
 			input.put(Keys.HASHTAGS, tags);
 			data.add(input);
 		}
-		ui.updateTodayScreen(data );
+		UI.updateTodayScreen(data );
 	}
 	
 	public static void testPermaToDoScreen() {
@@ -199,7 +209,7 @@ public class UItest {
 			input.put(Keys.HASHTAGS, new ArrayList<String>());
 			data.add(input);
 		}
-		ui.updateTodoScreen(data );
+		UI.updateTodoScreen(data );
 	}
 	
 	public static void testListAll() {
@@ -208,7 +218,7 @@ public class UItest {
 		input.put(Keys.QUERY_TYPE, ListQuery.ALL);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData output = engine.execute(input);
-		ui.show(output);
+		UI.show(output);
 	}
 	
 	public static void testListDone() {
@@ -217,7 +227,7 @@ public class UItest {
 		input.put(Keys.QUERY_TYPE, ListQuery.DONE);
 		input.setParsingStatus(ParsingStatus.SUCCESS);
 		OutputData output = engine.execute(input);
-		ui.show(output);
+		UI.show(output);
 	}
 
 }
