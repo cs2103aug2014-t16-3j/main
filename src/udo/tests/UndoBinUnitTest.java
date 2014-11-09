@@ -6,9 +6,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import udo.util.engine.UndoBin;
-import udo.util.shared.Command;
-import udo.util.shared.InputData;
+import udo.data.InputData;
+import udo.engine.util.UndoBin;
+import udo.enums.Command;
 
 public class UndoBinUnitTest {
 

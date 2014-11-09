@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.util.shared.Command;
-import udo.util.shared.Constants.MainVars;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.OutputData;
+import udo.constants.Constants.MainVars;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.Engine;
+import udo.enums.Command;
+import udo.enums.ExecutionStatus;
+import udo.parser.Parser;
+import udo.ui.UserInterface;
 
 /**
  * This is the main class that the user will run. This class will also

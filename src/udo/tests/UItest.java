@@ -1,21 +1,22 @@
+//@author A0114088H
 package udo.tests;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import udo.main.Engine;
-import udo.main.UserInterface;
-import udo.util.shared.Command;
-import udo.util.shared.Constants.Keys;
-import udo.util.shared.EditField;
-import udo.util.shared.ExecutionStatus;
-import udo.util.shared.InputData;
-import udo.util.shared.ItemData;
-import udo.util.shared.ItemType;
-import udo.util.shared.ListQuery;
-import udo.util.shared.OutputData;
-import udo.util.shared.ParsingStatus;
+import udo.constants.Constants.Keys;
+import udo.data.InputData;
+import udo.data.ItemData;
+import udo.data.OutputData;
+import udo.engine.Engine;
+import udo.enums.Command;
+import udo.enums.EditField;
+import udo.enums.ExecutionStatus;
+import udo.enums.ItemType;
+import udo.enums.ListQuery;
+import udo.enums.ParsingStatus;
+import udo.ui.UserInterface;
 
 public class UItest {
 
