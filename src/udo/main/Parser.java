@@ -1,6 +1,12 @@
 //@author A0114847B
 package udo.main;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import udo.language.LanguagePack;
 import udo.util.parser.Action;
 import udo.util.parser.AddAction;
@@ -16,6 +22,7 @@ import udo.util.parser.TrashAction;
 import udo.util.parser.UndoAction;
 import udo.util.shared.Command;
 import udo.util.shared.InputData;
+import udo.util.shared.Constants.LoggingStrings;
 
 /**
  * This class parses information from the input string and package it 
@@ -28,9 +35,20 @@ import udo.util.shared.InputData;
 public class Parser {
 	
 	private LanguagePack mLang;
+	private Logger mLogger;
 	
 	public Parser() {
 		mLang = LanguagePack.getInstance();
+		mLogger = Logger.getLogger(Parser.class.getSimpleName());
+		try {
+			new File(LoggingStrings.LOGPATH_PARSER).mkdirs();
+			mLogger.addHandler(new FileHandler(LoggingStrings.LOGFILE_PARSER));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mLogger.setLevel(Level.ALL);
 	}
 	
 	/**
@@ -120,6 +138,7 @@ public class Parser {
 				return search(commandType, details);
 				
 			default:
+				logWarning("command cannot be matched", details);
 				return trash(commandType, details);
 			}
 	}
@@ -188,5 +207,9 @@ public class Parser {
 		Action exit = new ExitAction();
 		InputData data = exit.run(type);
 		return data;
+	}
+	
+	private void logWarning(String message, Object param) {
+		mLogger.log(Level.WARNING, message, param);
 	}
 }

@@ -233,7 +233,7 @@ public class ParserUnitTest {
 	@Test
 	public void testAddTask() {
 		// boundary case of hashtag keyword
-		String task1 = "add Meet jane after #school #by saturday 7:55pm";
+		String task1 = "add Meet jane after #school #by today 7:55pm";
 		InputData data = p.getInputData(task1);
 		ParsingStatus status = data.getStatus();
 		Object title = data.get(Keys.TITLE);
@@ -251,11 +251,10 @@ public class ParserUnitTest {
 		int hour = due.get(Calendar.HOUR);
 		int mins = due.get(Calendar.MINUTE);
 		
-		// This test case requires one to change the date
-		// commented out to next Saturday's date
-		// assertEquals(8, day);
-		// assertEquals(10, month);
-		// assertEquals(2014, year);
+		Calendar todayCal = Calendar.getInstance();
+		assertEquals(todayCal.get(Calendar.DAY_OF_MONTH), day);
+		assertEquals(todayCal.get(Calendar.MONTH), month);
+		assertEquals(todayCal.get(Calendar.YEAR), year);
 		assertEquals(7, hour);
 		assertEquals(55, mins);
 		

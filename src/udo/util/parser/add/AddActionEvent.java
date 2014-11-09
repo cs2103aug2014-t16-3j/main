@@ -1,12 +1,20 @@
 //@author A0114847B
 package udo.util.parser.add;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import udo.language.LanguagePack;
+import udo.main.Parser;
 import udo.util.parser.DateGetter;
 import udo.util.parser.TimeGetter;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.LoggingStrings;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
@@ -17,8 +25,19 @@ public class AddActionEvent implements AddActionType {
 	 * passed to it.
 	 */
 
+	private Logger mLogger;
+	
 	public AddActionEvent() {
-		
+		mLogger = Logger.getLogger(Parser.class.getSimpleName());
+		try {
+			new File(LoggingStrings.LOGPATH_PARSER).mkdirs();
+			mLogger.addHandler(new FileHandler(LoggingStrings.LOGFILE_PARSER));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mLogger.setLevel(Level.ALL);
 	}
 
 	@Override
@@ -92,6 +111,7 @@ public class AddActionEvent implements AddActionType {
 			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
 			return start;
 		}
+		logInfo("Event first time and date cannot be set. 1 of this field is missing");
 		return null;
 	}
 	
@@ -113,11 +133,16 @@ public class AddActionEvent implements AddActionType {
 				end.set(Calendar.YEAR, date.get(Calendar.YEAR));
 				return end;
 			} else {
+				logInfo("Event 2nd time field is missing");
 				return null;
 			}
 		} else {
 			return null;
 		}
+	}
+	
+	private void logInfo(String message) {
+		mLogger.log(Level.INFO, message);
 	}
 
 }

@@ -20,7 +20,9 @@ public class DateGetter {
 	private LanguagePack mLang = LanguagePack.getInstance();
 	
 	private static Calendar mDate = null;
-	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""};
+	// These strings are not extracted because their position matters. 
+	// Their positions are used in the functions below.
+	private String mDateFormat[] = {"dd/MM", "dd/MM/yy", "dd/MM/yyyy", ""}; 
 	private String mDays[] = {
 			mLang.getTODAY(), 
 			mLang.getSUNDAY(), 

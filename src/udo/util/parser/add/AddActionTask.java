@@ -1,12 +1,19 @@
 //@author A0114847B
 package udo.util.parser.add;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import udo.main.Parser;
 import udo.util.parser.DateGetter;
 import udo.util.parser.TimeGetter;
 import udo.util.shared.Constants.Keys;
+import udo.util.shared.Constants.LoggingStrings;
 import udo.util.shared.InputData;
 import udo.util.shared.ParsingStatus;
 
@@ -16,8 +23,19 @@ public class AddActionTask implements AddActionType {
 	 * This class handles all Tasks. It fills in the InputData passed to it.
 	 */
 	
+	private Logger mLogger;
+	
 	public AddActionTask() {
-		
+		mLogger = Logger.getLogger(Parser.class.getSimpleName());
+		try {
+			new File(LoggingStrings.LOGPATH_PARSER).mkdirs();
+			mLogger.addHandler(new FileHandler(LoggingStrings.LOGFILE_PARSER));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mLogger.setLevel(Level.ALL);
 	}
 
 	@Override
@@ -89,8 +107,13 @@ public class AddActionTask implements AddActionType {
 			start.set(Calendar.YEAR, date.get(Calendar.YEAR));
 			return start;
 		} else {
+			logInfo("Task first time and date cannot be set. 1 of this field is missing");
 			return null;
 		}
+	}
+	
+	private void logInfo(String message) {
+		mLogger.log(Level.INFO, message);
 	}
 
 }
